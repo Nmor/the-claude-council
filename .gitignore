@@ -1,0 +1,69 @@
+# ============================================================
+# ~/.claude/ .gitignore
+# ============================================================
+# This file MUST exist before any `git add -A` — see Phase 0 of
+# the peppy-painting-parrot rebuild plan.
+#
+# Strategy: track the *config surface* (rules/, skills/, agents/,
+# commands/, hooks/, scripts/, settings*, CLAUDE.md, templates/,
+# plans/peppy-painting-parrot.md, etc.) and exclude every auto-
+# managed runtime artifact (conversation history, telemetry,
+# session locks, caches).
+# ============================================================
+
+# --- Heavy auto-managed runtime state (5+ GB total) ---
+projects/
+sessions/
+session-env/
+telemetry/
+statsig/
+file-history/
+shell-snapshots/
+todos/
+ide/
+debug/
+downloads/
+backups/
+
+# --- Auto-fetched caches ---
+cache/
+mcp-needs-auth-cache.json
+stats-cache.json
+.last-cleanup
+
+# --- macOS metadata ---
+.DS_Store
+**/.DS_Store
+
+# --- Per-user shell / history state ---
+history.jsonl
+
+# --- Lockfiles, tmp files ---
+*.lock
+*.tmp
+*.swp
+*.bak
+*.orig
+
+# --- Local secrets / personal config that must never enter git ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+.netrc
+.vault-token
+
+# --- Per-session plan-tasks that are auto-generated ---
+plans/tasks/
+
+# --- Audits archive (committed selectively, not bulk) ---
+# Keep root-level audit reports out by default; specific ones can be
+# force-added with `git add -f`.
+audits/archive/
+
+# --- Editor / IDE locks ---
+*.lock-info
+.swp

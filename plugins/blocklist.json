@@ -1,0 +1,41 @@
+{
+  "fetchedAt": "2026-05-23T12:30:00.000Z",
+  "plugins": [
+    {
+      "plugin": "code-review@claude-plugins-official",
+      "added_at": "2026-02-11T03:16:31.424Z",
+      "reason": "just-a-test",
+      "text": "This is a test #5"
+    },
+    {
+      "plugin": "fizz@testmkt-marketplace",
+      "added_at": "2026-02-12T00:00:00.000Z",
+      "reason": "security",
+      "text": "this is a security test"
+    },
+    {
+      "plugin": "*@unknown-marketplace",
+      "added_at": "2026-05-23T12:30:00.000Z",
+      "reason": "security",
+      "text": "Marketplaces not explicitly approved are blocked by default. Add an approved marketplace under ~/.claude/plugins/config.json repositories."
+    },
+    {
+      "plugin": "material-theme-free@*",
+      "added_at": "2026-05-23T12:30:00.000Z",
+      "reason": "supply-chain-compromise",
+      "text": "Material Theme Free was pulled from VS Code marketplace in Feb 2024 due to malware variants. Use ms-vscode.theme-material-* alternatives."
+    },
+    {
+      "plugin": "ethcode@*",
+      "added_at": "2026-05-23T12:30:00.000Z",
+      "reason": "supply-chain-compromise",
+      "text": "ETHCode publisher compromise in 2024. Verify the current publisher identity before reinstalling."
+    },
+    {
+      "plugin": "solidity-visual-auditor@*",
+      "added_at": "2026-05-23T12:30:00.000Z",
+      "reason": "supply-chain-compromise",
+      "text": "Backdoored copy circulated on open-vsx in 2023. Use the marketplace-verified publisher only."
+    }
+  ]
+}

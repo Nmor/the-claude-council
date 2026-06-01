@@ -1,3 +1,9 @@
+---
+name: update-codemaps
+description: Analyze codebase structure and generate token-lean architecture documentation.
+command: true
+---
+
 # Update Codemaps
 
 Analyze the codebase structure and generate token-lean architecture documentation.

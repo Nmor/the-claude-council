@@ -1,0 +1,174 @@
+// VS Code recommended extensions.
+// Apply by copying into <workspace>/.vscode/extensions.json OR by
+// running the install script in ~/.claude/templates/ide-configs/install.sh.
+//
+// Every publisher in this list is on the allowlist in
+// ~/.claude/rules/common/install-allowlist.md. Adding a new
+// extension whose publisher is NOT on that allowlist requires
+// explicit user approval per the rule.
+{
+  "recommendations": [
+    // ============================================================
+    // Anthropic / Claude
+    // ============================================================
+    "anthropic.claude-code",
+
+    // ============================================================
+    // GitHub / Microsoft core
+    // ============================================================
+    "github.copilot",
+    "github.copilot-chat",
+    "github.vscode-github-actions",
+    "github.vscode-pull-request-github",
+    "ms-vscode.vscode-typescript-next",
+    "ms-vsliveshare.vsliveshare",
+    "ms-vscode-remote.remote-ssh",
+    "ms-vscode-remote.remote-containers",
+
+    // ============================================================
+    // Formatting / linting
+    // ============================================================
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "editorconfig.editorconfig",
+    "sonarsource.sonarlint-vscode",
+    "davidanson.vscode-markdownlint",
+    "tamasfe.even-better-toml",
+
+    // ============================================================
+    // Git
+    // ============================================================
+    "eamodio.gitlens",
+    "github.codespaces",
+    "mhutchie.git-graph",
+
+    // ============================================================
+    // Python
+    // ============================================================
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.debugpy",
+    "charliermarsh.ruff",
+    "ms-toolsai.jupyter",
+
+    // ============================================================
+    // Go
+    // ============================================================
+    "golang.go",
+
+    // ============================================================
+    // Rust
+    // ============================================================
+    "rust-lang.rust-analyzer",
+
+    // ============================================================
+    // Web / framework
+    // ============================================================
+    "vue.volar",
+    "bradlc.vscode-tailwindcss",
+    "oxc.oxc-vscode",
+
+    // ============================================================
+    // Database / data
+    // ============================================================
+    "mtxr.sqltools",
+    "ms-mssql.mssql",
+    "mechatroner.rainbow-csv",
+
+    // ============================================================
+    // DevOps / IaC
+    // ============================================================
+    "hashicorp.terraform",
+    "ms-azuretools.vscode-docker",
+    "ms-kubernetes-tools.vscode-kubernetes-tools",
+    "redhat.vscode-yaml",
+    "amazonwebservices.aws-toolkit-vscode",
+
+    // ============================================================
+    // Testing
+    // ============================================================
+    "vitest.explorer",
+    "ms-playwright.playwright",
+    "ryanluker.vscode-coverage-gutters",
+
+    // ============================================================
+    // Markdown / docs
+    // ============================================================
+    "bierner.markdown-mermaid",
+    "yzhang.markdown-all-in-one",
+
+    // ============================================================
+    // C / C++ / C#
+    // ============================================================
+    "ms-vscode.cpptools",
+    "ms-vscode.cpptools-extension-pack",
+    "ms-dotnettools.csharp",
+    "ms-dotnettools.csdevkit",
+
+    // ============================================================
+    // Dart / Flutter
+    // ============================================================
+    "Dart-Code.dart-code",
+    "Dart-Code.flutter",
+
+    // ============================================================
+    // Swift / iOS
+    // ============================================================
+    "sswg.swift-lang",
+
+    // ============================================================
+    // Java / Kotlin / Spring
+    // ============================================================
+    "redhat.java",
+    "vscjava.vscode-java-pack",
+    "vmware.vscode-boot-dev-pack",
+    "fwcd.kotlin",
+    "Pivotal.vscode-spring-boot",
+
+    // ============================================================
+    // Ruby / Rails
+    // ============================================================
+    "Shopify.ruby-lsp",
+    "rebornix.Ruby",
+
+    // ============================================================
+    // Solidity / Web3
+    // ============================================================
+    "JuanBlanco.solidity",
+    "NomicFoundation.hardhat-solidity",
+
+    // ============================================================
+    // SQL
+    // ============================================================
+    "dorzey.vscode-sqlfluff",
+
+    // ============================================================
+    // Shell / Bash
+    // ============================================================
+    "foxundermoon.shell-format",
+    "timonwong.shellcheck",
+
+    // ============================================================
+    // Misc productivity
+    // ============================================================
+    "mikestead.dotenv",
+    "vscodevim.vim",
+    "redhat.vscode-xml",
+    "sumneko.lua",
+
+    // ============================================================
+    // Diagnostics + quality-of-life gems (wired in settings.json)
+    // ============================================================
+    "usernamehw.errorlens",            // inline diagnostics (per no-discards.md)
+    "gruntfuggly.todo-tree",           // TODO/FIXME/XXX surface (BANNED markers — per no-silent-drops.md)
+    "streetsidesoftware.code-spell-checker"  // typo catch in code + docs
+  ],
+  "unwantedRecommendations": [
+    // Known-bad / typosquatted / abandoned — per install-allowlist.md
+    "MaterialTheme-Free.material-theme",
+    "tintinweb.solidity-visual-auditor",
+    "SimonSiefke.prettier-vscode",
+    "Microsoft.CodeRunner",
+    "chinwobble.ethcode"
+  ]
+}

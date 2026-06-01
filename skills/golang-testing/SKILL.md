@@ -720,3 +720,114 @@ test:
 ```
 
 **Remember**: Tests are documentation. They show how your code is meant to be used. Write them clearly and keep them up to date.
+
+## Purpose
+
+Principal-level Go test methodology: table-driven tests + subtests, parallel execution (`t.Parallel()`), race detection, benchmarks (`testing.B`), fuzz testing (Go 1.18+), httptest + testcontainers, coverage with branch tracking, go-cmp for deep equality.
+
+**Negative scope** (NOT what this skill covers):
+- Go language idioms — see `golang-patterns`
+- Generic test taxonomy — see `testing.md` rule
+- TDD methodology — see `tdd-workflow`
+- Performance profiling — defer to project-specific
+- Mock generation strategies — use `gomock` / `mockery` per project
+
+## When NOT to use
+
+- Pure CLI tools with simple I/O (lighter testing models work)
+- Code-generation tools where snapshot tests beat unit tests
+- BDD-style requirement tests (use Ginkgo if mandated)
+
+## Standards Cited
+
+- **Go Specification + testing package** (`pkg.go.dev/testing`) — canonical
+- **Go Code Review Comments** (`go.dev/wiki/CodeReviewComments`) — test naming + organisation
+- **Effective Go** (`golang.org/doc/effective_go`) — idioms applied to tests
+- **github.com/google/go-cmp** — deep-equality helper
+- **github.com/stretchr/testify** — assertion + suite helpers (use sparingly)
+- **github.com/golang/mock** + **go.uber.org/mock** — mock generation
+- **Testcontainers Go** (`golang.testcontainers.org`) — ephemeral DB / Redis / Kafka
+- **Go 1.18+ Fuzz Testing** (`go.dev/security/fuzz/`)
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| `TestFoo_Bar` (underscore in test name) | Sonar S100 violation; non-idiomatic Go | `func TestFoo(t *testing.T) { t.Run("Bar", func(t *testing.T) { ... }) }` |
+| Test depends on order of execution | Brittle | Each `t.Run` self-contained; use `t.Parallel()` to surface order coupling |
+| `go test ./...` without `-race` | Data races missed | CI always runs `-race`; locally for concurrent code |
+| Mocking everything via `testify/mock` | Tests the mock, not the code | Prefer interface fakes + dependency injection |
+| `reflect.DeepEqual(got, want)` | No diff output on failure | `cmp.Diff(want, got)` from `go-cmp` |
+| `time.Sleep` for goroutine completion | Flaky | `WaitGroup` / channel-based sync |
+| `for _, tc := range cases { ... }` (capture-in-loop bug pre-Go-1.22) | All iterations see last `tc` | `tc := tc` at top of body OR use Go 1.22+ semantics (per-iter scoping) |
+| `t.Fatal()` deep in helper | Without `t.Helper()`, line points to helper | `t.Helper()` at top of helper functions |
+| Hardcoded `time.Now()` in code-under-test | Tests can't control clock | Inject `Clock` interface (per `no-ambient-globals.md`) |
+| Hardcoded ports / global state | Parallel tests collide | Random ports via `httptest.NewServer` |
+
+## Verification Checklist
+
+- [ ] `go test -race ./...` runs in CI
+- [ ] `-coverprofile=coverage.out` with `go tool cover -func` checked; ≥ 90% touched
+- [ ] Subtests via `t.Run("desc", func(t *testing.T) { ... })`
+- [ ] `t.Helper()` at top of every test helper
+- [ ] `t.Parallel()` used on independent subtests
+- [ ] Fuzz targets for parsers / serializers (`go test -fuzz=FuzzFoo`)
+- [ ] Benchmarks via `testing.B` with `b.ReportAllocs()`
+- [ ] No `time.Sleep`; sync via channels / WaitGroup
+- [ ] HTTP servers via `httptest.NewServer` (random port)
+- [ ] Diff failures via `cmp.Diff(want, got)` from go-cmp
+- [ ] Go 1.22+ per-iteration loop scoping OR explicit `tc := tc`
+
+## Cross-References
+
+- `~/.claude/skills/golang-patterns/SKILL.md` — code idioms under test
+- `~/.claude/skills/tdd-workflow/SKILL.md` — RED-GREEN-REFACTOR
+- `~/.claude/rules/common/testing.md` — coverage thresholds
+- `~/.claude/rules/common/no-ambient-globals.md` — Clock / RNG injection
+- `~/.claude/rules/golang/no-discards.md` — Go pattern hooks
+- `~/.claude/rules/golang/testing.md` — Go-specific testing rule
+- `~/.claude/agents/go-reviewer.md` — Go code review delegate
+- `~/.claude/agents/tdd-guide.md`
+
+## Why this skill exists
+
+Go test idioms have a deceptive cleanliness: table-driven tests look simple but capture-in-loop bugs (pre-Go-1.22), missing `t.Helper()`, and lack of `-race` produce hard-to-debug failures. The patterns above codify the production-ready posture: subtests for navigation, parallel-where-safe for speed, go-cmp for diff output, fuzz for parser invariants, testcontainers for integration. Following them produces test suites that run in seconds and catch real bugs (not vibes).
+
+## Compliance & Standards Mapping
+
+- **ISO/IEC 25010:2011 §6** — Product quality model (Functional
+  Suitability, Reliability, Performance Efficiency, Usability,
+  Security, Maintainability, Portability, Compatibility)
+- **ISO/IEC/IEEE 12207:2017 §6.4** — Software construction +
+  verification + validation processes
+- **NIST SP 800-218 SSDF §PW** — Produce Well-Secured Software
+  (applies to every code-authoring skill)
+- **NIST SP 800-53 Rev 5 §SA-11** — Developer testing +
+  evaluation
+- **OWASP ASVS 4.0.3 §V1.1** — Secure SDLC requirements
+- **OWASP ASVS 4.0.3 §V14.2** — Dependency lifecycle
+- **CWE Top 25 (2026)** — Weakness classes the patterns in this
+  skill prevent
+- **SLSA Framework v1.0 Build L2+** — Provenance + integrity
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Test name uses `_` separator (`TestFoo_Bar`) instead of `t.Run("sub test", ...)` (S100 violation)
+- Table-driven test entry not bound by index (sister `golang/no-discards.md` rule 2)
+- `testify` mock used where a fake / stub would be simpler (over-mocking)
+- `t.Fatal` used instead of `t.Errorf` when subsequent assertions should still run
+- Race detector not enabled in CI (`-race` flag missing)
+- Coverage gate below 80% on a package with active development
+- Benchmarks added without `b.ResetTimer()` before measurement block
+- Fuzz test missing on a parser / decoder / state machine
+- `testify` `assert` used where `require` was needed (test continues with nil receiver, panics later)
+- `t.Parallel()` skipped where tests are genuinely independent (slow suite)
+
+**Refinement candidates**:
+- New testing-package row when a new Go testing facility ships (synctest, fuzzing improvements)
+- Tightening of the coverage floor on packages flagged as critical
+- New cross-reference when a sister rule (golang/no-discards, testing) adds a per-language verification
+- New table-driven idiom when generics improve subtest dispatch patterns

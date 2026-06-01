@@ -1,0 +1,193 @@
+name: CI
+
+# Runs on every push and pull request. Verifies the global Claude
+# config repo passes:
+#   - bootstrap/verify.sh structural self-test
+#   - tests/verify-link-integrity.sh (every in-repo markdown link resolves)
+#   - tests/verify-no-orphans.sh (every tracked file is reachable)
+#   - tests/verify-standards-citations.sh (skills + agents cite ≥ 1 primary source)
+#   - markdownlint-cli2 on every *.md file
+#   - shellcheck on every *.sh file
+#
+# All third-party actions are SHA-pinned (per
+# ~/.claude/rules/common/security-controls-org-wide.md — tag
+# retargeting is a documented supply-chain vector).
+
+# NOTE: "on" is quoted because YAML 1.1 (used by several schema
+# validators + linters) parses unquoted `on:` as boolean `true`,
+# which then fails GitHub-workflow JSON Schema validation. GitHub
+# Actions itself uses YAML 1.2 and accepts either form; the quotes
+# only exist to silence the validator. See
+# ~/.claude/rules/common/github-actions-gotchas.md gotcha 7.
+"on":
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+# Cancel in-progress runs on the same ref when a new commit lands
+# (per ~/.claude/rules/common/github-actions-gotchas.md gotcha 8 —
+# always look at the LATEST run on HEAD).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  verify-structure:
+    name: Bootstrap verify.sh
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        # actions/checkout@v4.3.1
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+
+      - name: Run bootstrap/verify.sh against the checkout
+        run: |
+          bash bootstrap/verify.sh --prefix "${GITHUB_WORKSPACE}" --verbose
+
+  verify-links:
+    name: Link integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+
+      - name: Verify every in-repo markdown link resolves
+        run: bash tests/verify-link-integrity.sh
+
+  verify-orphans:
+    name: No-orphans sweep
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+
+      - name: Verify every tracked file is referenced
+        run: bash tests/verify-no-orphans.sh
+
+  verify-citations:
+    name: Standards-citations gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+
+      - name: Verify every in-scope skill + agent cites a primary source
+        run: bash tests/verify-standards-citations.sh
+
+  markdownlint:
+    name: Markdown lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+
+      - name: Run markdownlint-cli2 on every *.md
+        # DavidAnson/markdownlint-cli2-action@v20.0.0
+        uses: DavidAnson/markdownlint-cli2-action@992badcdf24e3b8eb7e87ff9287fe931bcb00c6e
+        with:
+          globs: |
+            **/*.md
+            !node_modules
+            !sessions
+            !projects
+            !file-history
+
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+
+      - name: Run ShellCheck on every *.sh
+        # ludeeus/action-shellcheck@2.0.0
+        uses: ludeeus/action-shellcheck@00b27aa7cb85167568cb48a3838b75f4265f2bca
+        with:
+          severity: style
+          scandir: '.'
+          ignore_paths: 'node_modules sessions projects file-history'
+
+  gitleaks:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+          fetch-depth: 0   # gitleaks scans the whole history
+
+      - name: Run gitleaks
+        # gitleaks/gitleaks-action@v2.3.9
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Aggregate job — branch protection rule should require this single
+  # check, which only passes when every upstream job passed. Keeps the
+  # required-checks list short + future-proof against job renames.
+  ci-summary:
+    name: CI summary
+    runs-on: ubuntu-latest
+    needs:
+      - verify-structure
+      - verify-links
+      - verify-orphans
+      - verify-citations
+      - markdownlint
+      - shellcheck
+      - gitleaks
+    if: always()
+    steps:
+      - name: Report aggregate result
+        run: |
+          set -euo pipefail
+          declare -A results=(
+            [verify-structure]="${{ needs.verify-structure.result }}"
+            [verify-links]="${{ needs.verify-links.result }}"
+            [verify-orphans]="${{ needs.verify-orphans.result }}"
+            [verify-citations]="${{ needs.verify-citations.result }}"
+            [markdownlint]="${{ needs.markdownlint.result }}"
+            [shellcheck]="${{ needs.shellcheck.result }}"
+            [gitleaks]="${{ needs.gitleaks.result }}"
+          )
+          failed=0
+          for job in "${!results[@]}"; do
+            result="${results[$job]}"
+            if [ "$result" != "success" ]; then
+              echo "::error::Job $job failed (result: $result)"
+              failed=$((failed + 1))
+            else
+              echo "✓ $job"
+            fi
+          done
+          if [ $failed -gt 0 ]; then
+            echo "$failed job(s) failed"
+            exit 1
+          fi
+          echo "All CI checks passed."

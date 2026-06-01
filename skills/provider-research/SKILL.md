@@ -79,7 +79,7 @@ durable home for citations). Required sections:
 # <Provider name> — research notes
 
 ## Surface in scope
-- <API + the StewardBot feature it backs>
+- <API + the application feature it backs>
 
 ## Auth model
 - <OAuth scopes / app passwords / service account / etc.>
@@ -134,3 +134,117 @@ durable home for citations). Required sections:
   provider-research file to exist and to be fresh.
 - `~/.claude/rules/common/no-overclaim.md` — never claim the
   integration is done without the citations.
+
+## Purpose
+
+Principal-level provider-research discipline: read primary sources
+(provider docs at provider's own domain, RFCs, W3C specs, ISO/IEC
+standards) BEFORE writing integration code; emit a durable
+`docs/provider-research/<provider>.md` artefact per integration;
+include auth model, scope deprecation cadence, rate limits, retry
+semantics, business-tier vs personal-tier separation, webhook
+signature verification, idempotency primitives, breaking-change
+calendar; refresh every 6 months or on provider-deprecation notice.
+
+**Negative scope** (NOT what this skill covers):
+- Code generation from OpenAPI / GraphQL SDL — out
+- Provider-specific integration implementation — out; that's the
+  per-provider skill (calendar-provider, web-push-notifications,
+  etc.)
+- Build-time API client generation tooling — defer to
+  `openapi-generator` / `graphql-codegen`
+
+## When NOT to use
+
+- Internal-only APIs where the team owns the spec
+- One-off, single-call integrations with no auth (e.g., public CDN)
+- Throwaway prototypes scheduled to be deleted within the week
+
+## Standards Cited
+
+- **`~/.claude/rules/common/official-docs-first.md`** — the rule
+- **`~/.claude/rules/common/docs-sync-with-code.md`** — keeps the
+  research file in sync with code
+- **`~/.claude/rules/common/done-criteria.md`** — completion gate
+- **RFC 6749 (OAuth 2.0)** — typical auth model
+- **RFC 7235 (HTTP Authentication)** — Bearer / Basic
+- **RFC 8725 (JWT BCP)** — token validation
+- **W3C Webhooks Working Group** — webhook delivery contracts
+- **OWASP ASVS 4.0.3 §3 (Session Management)** — token storage
+  + rotation
+- **OWASP ASVS 4.0.3 §10 (Malicious Code)** — verify SDK provenance
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Reading the npm README only | Wrappers lag provider docs; miss deprecations | Read provider's canonical docs at the provider's own domain |
+| Copying from Stack Overflow | Snippets are stale, tier-mismatched, security-naïve | Primary-source citation with URL + read-date in the research file |
+| Single-tier assumption ("we'll only support Google Workspace") | Personal-tier traffic still arrives; rejected late, with leakage risk | Explicit IN / OUT tier table + runtime rejection |
+| No webhook signature verification | Spoofed webhook payloads accepted | Implement provider's signed-payload check per their docs |
+| Polling instead of webhooks | API quota burn; eventual-consistency UX | Use webhooks where available; fall back to polling with backoff |
+| Treating retry policy as universal | Each provider has its own retry-after semantics | Document per-provider retry shape in research file |
+| Provider-research file written AFTER the integration | Discovery work done blindly; rework | Write the file BEFORE the first handler / lib file |
+| Stale file > 6 months untouched | Cited URLs may 404; scopes deprecated | Refresh quarterly OR on deprecation notice |
+
+## Verification Checklist
+
+- [ ] `docs/provider-research/<provider>.md` exists
+- [ ] Cites primary-source URLs (no Stack Overflow / blog posts as
+      sole source)
+- [ ] Read-date stamped on every citation
+- [ ] Auth model documented (OAuth flow, scopes, refresh semantics)
+- [ ] Rate limits + retry shape documented
+- [ ] Webhook signature verification documented
+- [ ] Idempotency primitive documented (provider's `Idempotency-Key`
+      pattern OR our app-side approach)
+- [ ] Business-tier vs personal-tier explicitly named + rejected
+      at runtime if out-of-scope
+- [ ] Breaking-change cadence noted (provider's deprecation policy)
+- [ ] File age ≤ 6 months OR refreshed on deprecation notice
+- [ ] Cross-linked from the plan file's ONLINE RESEARCH section
+- [ ] Cross-linked from any code module that consumes the provider
+
+## Cross-References
+
+- `~/.claude/skills/calendar-provider/SKILL.md` — applies this
+  discipline to calendar
+- `~/.claude/skills/web-push-notifications/SKILL.md` — applies it
+  to web push (FCM / APNs / Web Push)
+- `~/.claude/skills/api-design/SKILL.md` — consumer-side patterns
+- `~/.claude/rules/common/official-docs-first.md` — the mandate
+- `~/.claude/rules/common/docs-sync-with-code.md` — sync gate
+- `~/.claude/rules/common/done-criteria.md` — completion gate
+- `~/.claude/agents/architect.md` — Council Division 1 enforces
+  this in Phase 0
+
+## Why this skill exists
+
+External integrations fail when teams skip primary-source research:
+they read the npm wrapper's README, copy a tutorial snippet from
+2021, and ship integration code against a deprecated scope or a
+mistyped webhook secret. The cost is months of mystery failures
+that primary-source docs would have prevented in one hour. The
+research file + refresh cadence + tier discipline turn the
+"$1k-of-engineering-time" research investment into a durable
+artefact every future maintainer can read.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Integration code shipped before `docs/provider-research/<provider>.md` exists (rule weakening)
+- Provider-research file older than 6 months and not refreshed before a change (staleness threshold breached)
+- Stack Overflow / npm README / blog post cited as the canonical source (primary-source-first rule weakening)
+- Auth model section missing scope deprecation cadence + token rotation semantics (failure-mode gap)
+- Rate-limit section missing per-tenant + per-endpoint figures (capacity-planning gap)
+- Commercial-vs-personal tier scope absent or ambiguous (out-of-scope tier silently accepted at runtime)
+- Webhook signature verification + replay window absent from research note (security gap)
+- File treated as one-shot artifact rather than living doc updated on every provider change
+
+**Refinement candidates**:
+- New section in template when a recurring research-gap surfaces (e.g., SDK breaking-change tracking, region-specific endpoint differences)
+- Freshness-threshold tightening when staleness causes incidents (e.g., 3 months for fast-moving providers like OpenAI vs 6 months for stable like RFC-protocol providers)
+- New provider type when an integration class arrives that doesn't fit existing slots (e.g., blockchain RPC, ML model provider, EDR / SIEM vendor)
+- Automation candidate: provider-research file generator that scaffolds the template + queues canonical URLs for fresh-fetch

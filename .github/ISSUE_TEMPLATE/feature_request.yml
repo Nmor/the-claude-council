@@ -1,0 +1,142 @@
+name: Feature request
+description: Propose an enhancement to an existing rule / skill / agent /
+  command / verifier, or a new structural capability.
+title: "[feature] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for **enhancements** to something that already exists,
+        or for structural changes (new verifier, new hook, new install
+        target). For **a new skill, agent, or rule**, use the
+        "Skill / agent / rule proposal" template instead — it has
+        the standards-citation + Council-trigger fields that proposal
+        warrants.
+
+        **Before filing:**
+        - Search existing issues + discussions; this may already be
+          tracked or have an ADR explaining why we said no.
+        - Re-read the relevant rule under `rules/common/` — the
+          requested change may already be the documented behaviour.
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Affected surface
+      description: Which part of the config does this enhance?
+      options:
+        - Existing rule (`rules/common/*` or `rules/<lang>/*`)
+        - Existing skill (`skills/<name>/SKILL.md`)
+        - Existing agent (`agents/<name>.md`)
+        - Existing command (`commands/<name>.md`)
+        - Verifier script (`tests/*.sh` or `bootstrap/verify.sh`)
+        - Install script (`bootstrap/install.sh` or `install.ps1`)
+        - IDE integration (`ide-integrations/<ide>/`)
+        - Template (`templates/<name>/`)
+        - Documentation (`docs/`, `README.md`, `CHANGELOG.md`)
+        - Hook (`hooks/` or `scripts/hooks/`)
+        - Cross-cutting / new capability
+    validations:
+      required: true
+
+  - type: input
+    id: file
+    attributes:
+      label: Affected file path (when applicable)
+      description: Path under the repo root. Use "N/A" for cross-cutting
+        proposals.
+      placeholder: rules/common/error-codes.md
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem this solves
+      description: What's broken / missing / costly today? Be concrete —
+        cite a real session, recurring incident, or measurable gap.
+        Avoid "would be nice" framing.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: What specifically changes? List file edits, new
+        sections, new rules, new fields, removed behaviour.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Per `task-intake-due-diligence.md` Q5 — what other
+        approaches did you weigh, and why was this one chosen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Blast radius + rollback
+      description: |
+        - Which existing artifacts does this touch?
+        - Is the change additive, or does it deprecate / remove
+          something?
+        - Per `deprecation-lifecycle.md`, if anything is being
+          removed, name the announce → soft → hard → remove timeline.
+        - Per `task-intake-due-diligence.md` Q17, name the rollback
+          path.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: council-class
+    attributes:
+      label: Change class (per Council Protocol)
+      description: Drives which Extended Divisions auto-engage on the
+        PR — see `~/.claude/rules/common/council-triggers.md`.
+      options:
+        - Trivial (typo / single-file doc tweak)
+        - Standard (single-rule change, additive skill section)
+        - Critical (auth / payment / compliance / Council protocol)
+        - Strategic (architecture / vendor / new product surface)
+    validations:
+      required: true
+
+  - type: textarea
+    id: divisions
+    attributes:
+      label: Council divisions expected to engage
+      description: List the Core Five (always) plus any Extended Eleven
+        that auto-fire on this change's triggers. Use the trigger
+        ruleset in `rules/common/council-triggers.md` as the source.
+      placeholder: |
+        Core Five (always)
+        + Division 6 (Compliance — touches GDPR consent UI)
+        + Division 7 (UX — copy change visible to users)
+    validations:
+      required: true
+
+  - type: textarea
+    id: standards
+    attributes:
+      label: Standards / primary sources cited
+      description: |
+        Per `official-docs-first.md`, link to RFCs / ISO / NIST / OWASP /
+        W3C / vendor docs the proposal relies on. URL + section.
+        Use "N/A" when the change is purely internal style.
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Screenshots, prior-art links, related PRs / issues,
+        verifier outputs that demonstrate the gap.
+    validations:
+      required: false

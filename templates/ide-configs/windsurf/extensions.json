@@ -1,0 +1,165 @@
+// Windsurf recommended extensions.
+// Apply by copying into <workspace>/.windsurf/extensions.json OR by
+// running `windsurf --install-extension <id>` per recommendation
+// (see this directory's README.md for the install script).
+//
+// Windsurf is a VS Code fork (Codeium) and supports both the
+// Microsoft Marketplace and Open-VSX. Every publisher in this list
+// is on the allowlist in ~/.claude/rules/common/install-allowlist.md.
+// Adding a new extension whose publisher is NOT on that allowlist
+// requires explicit user approval per the rule.
+//
+// Notes:
+// - Windsurf ships Cascade (built-in AI chat) and Supercomplete
+//   (in-editor AI). When using Anthropic's Claude Code alongside,
+//   disable Cascade per-workspace to avoid prompting competition
+//   (see settings.json `codeium.enableCodeLens` + readme §4).
+// - `anthropic.claude-code` is published to both Marketplace + Open-VSX
+//   and works in Windsurf.
+{
+  "recommendations": [
+    // ============================================================
+    // Anthropic / Claude
+    // ============================================================
+    "anthropic.claude-code",
+
+    // ============================================================
+    // Formatting / linting (same allowlist as VS Code)
+    // ============================================================
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "editorconfig.editorconfig",
+    "sonarsource.sonarlint-vscode",
+    "davidanson.vscode-markdownlint",
+    "tamasfe.even-better-toml",
+
+    // ============================================================
+    // Git
+    // ============================================================
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+
+    // ============================================================
+    // Python
+    // ============================================================
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.debugpy",
+    "charliermarsh.ruff",
+    "ms-toolsai.jupyter",
+
+    // ============================================================
+    // Go
+    // ============================================================
+    "golang.go",
+
+    // ============================================================
+    // Rust
+    // ============================================================
+    "rust-lang.rust-analyzer",
+
+    // ============================================================
+    // Web / framework
+    // ============================================================
+    "vue.volar",
+    "bradlc.vscode-tailwindcss",
+    "oxc.oxc-vscode",
+
+    // ============================================================
+    // Database / data
+    // ============================================================
+    "mtxr.sqltools",
+    "mechatroner.rainbow-csv",
+
+    // ============================================================
+    // DevOps / IaC
+    // ============================================================
+    "hashicorp.terraform",
+    "ms-azuretools.vscode-docker",
+    "ms-kubernetes-tools.vscode-kubernetes-tools",
+    "redhat.vscode-yaml",
+
+    // ============================================================
+    // Testing
+    // ============================================================
+    "vitest.explorer",
+    "ms-playwright.playwright",
+    "ryanluker.vscode-coverage-gutters",
+
+    // ============================================================
+    // Markdown / docs
+    // ============================================================
+    "bierner.markdown-mermaid",
+    "yzhang.markdown-all-in-one",
+
+    // ============================================================
+    // C / C++ / C#
+    // ============================================================
+    "ms-vscode.cpptools",
+    "ms-dotnettools.csharp",
+
+    // ============================================================
+    // Dart / Flutter
+    // ============================================================
+    "Dart-Code.dart-code",
+    "Dart-Code.flutter",
+
+    // ============================================================
+    // Swift
+    // ============================================================
+    "sswg.swift-lang",
+
+    // ============================================================
+    // Java / Kotlin / Spring
+    // ============================================================
+    "redhat.java",
+    "vscjava.vscode-java-pack",
+    "vmware.vscode-boot-dev-pack",
+    "fwcd.kotlin",
+    "Pivotal.vscode-spring-boot",
+
+    // ============================================================
+    // Ruby / Rails
+    // ============================================================
+    "Shopify.ruby-lsp",
+
+    // ============================================================
+    // Solidity / Web3
+    // ============================================================
+    "JuanBlanco.solidity",
+    "NomicFoundation.hardhat-solidity",
+
+    // ============================================================
+    // SQL
+    // ============================================================
+    "dorzey.vscode-sqlfluff",
+
+    // ============================================================
+    // Shell / Bash
+    // ============================================================
+    "foxundermoon.shell-format",
+    "timonwong.shellcheck",
+
+    // ============================================================
+    // Misc productivity
+    // ============================================================
+    "mikestead.dotenv",
+    "vscodevim.vim",
+    "redhat.vscode-xml",
+    "sumneko.lua"
+  ],
+  "unwantedRecommendations": [
+    // Known-bad / typosquatted / abandoned — per install-allowlist.md
+    "MaterialTheme-Free.material-theme",
+    "tintinweb.solidity-visual-auditor",
+    "SimonSiefke.prettier-vscode",
+    "Microsoft.CodeRunner",
+    "chinwobble.ethcode",
+    // GitHub Copilot in Windsurf is redundant with Cascade/Supercomplete
+    // AND with Claude Code; pick ONE AI assistant per workspace to
+    // avoid three AI suggestion popups overlapping. If you actually
+    // want Copilot here, remove this entry consciously.
+    "github.copilot",
+    "github.copilot-chat"
+  ]
+}

@@ -25,7 +25,7 @@ a rule violation.
 
 ```
 # BANNED
-docker stop unvamp-nominatim   # "to free CPU for Infisical"
+docker stop <noisy-container>   # "to free CPU for <service-under-pressure>"
 
 # REQUIRED
 # 1. Diagnose: which container is event-loop-blocking which?
@@ -67,17 +67,15 @@ response.
 ### 3. Editing config without reading the canonical docs first
 
 ```ruby
-# BANNED — guessed at the env var name, hit "Access denied" at runtime
-POSTAL_MAIN_DB_HOST: postal-mariadb        # wrong: no POSTAL_ prefix
-POSTAL_MAIN_DB_PASSWORD: ${POSTAL_MARIADB_PASSWORD}
+# BANNED — guessed at the env-var name, hit "Access denied" at runtime
+APP_PREFIX_MAIN_DB_HOST: db-host         # wrong: prefix shouldn't be there
+APP_PREFIX_MAIN_DB_PASSWORD: ${DB_PASS}
 
 # REQUIRED — read the source / docs FIRST
-# https://postalserver.io/config-v2 + Postal source uses Konfig.
-# Konfig's Environment source: `[:main_db, :host]` → MAIN_DB_HOST,
-# NOT POSTAL_MAIN_DB_HOST. The `:postal` group prefix is reserved
-# for postal-namespace keys, not a global prefix.
-MAIN_DB_HOST: postal-mariadb
-MAIN_DB_PASSWORD: ${POSTAL_MARIADB_PASSWORD:?}
+# The framework's config loader documents which env-var prefix it
+# strips. Use the canonical name the loader expects, not a guess.
+MAIN_DB_HOST: db-host
+MAIN_DB_PASSWORD: ${DB_PASS:?}
 ```
 
 Per `official-docs-first.md`, primary-source citations come BEFORE
@@ -87,14 +85,12 @@ violations of the same rule.
 ### 4. Storing secret values without validating expected format
 
 ```bash
-# BANNED — Infisical stored a bare hex token, Unleash expects
-# `<project>:<environment>.<secret>` and crashed at startup
-UNLEASH_ADMIN_TOKEN=895b3a27...      # missing `*:*.` prefix
-UNLEASH_FRONTEND_TOKEN=54e4b3df...   # missing `default:development.` prefix
-UNLEASH_CLIENT_TOKEN=8302639d...     # missing `default:development.` prefix
+# BANNED — vault stored a bare hex token; consumer expects a
+# `<scope>:<environment>.<secret>` shape and crashes at startup
+SERVICE_TOKEN=<bare-hex>              # missing `<scope>:<env>.` prefix
 
 # REQUIRED — validate at push time
-infisical secrets set "UNLEASH_ADMIN_TOKEN=*:*.${hex}" ...
+vault set "SERVICE_TOKEN=<scope>:<env>.${hex}" ...
 ```
 
 Every secret stored in a vault has an expected format. The
@@ -105,21 +101,22 @@ that declares the regex for every key.
 ### 5. Rotating a credential non-atomically
 
 ```
-# BANNED sequence (this session, May 25):
-# 1. Generated new POSTGRES_PASSWORD in memory
-# 2. Pushed to Infisical
-# 3. ALTER USER inside running postgres
+# BANNED sequence:
+# 1. Generated new DB password in memory
+# 2. Pushed to vault
+# 3. ALTER USER inside running DB
 # 4. Attempted to recreate all consumers via runner →
-#    Infisical's connection to postgres broke (it had OLD password
-#    in its in-memory pool) → cascading recovery loop
+#    Vault's own connection to the DB broke (it cached the OLD
+#    password in its in-memory pool) → cascading recovery loop
 
 # REQUIRED sequence:
 # 1. Pre-flight: list every container with the old credential
-# 2. Push new value to Infisical
+# 2. Push new value to the vault
 # 3. SHORT-CIRCUIT: write new value to a `.env.rotate` file
 # 4. ALTER USER inside DB
-# 5. Recreate Infisical FIRST (so it has new creds for the runner)
-# 6. Wait for Infisical health
+# 5. Recreate the vault container FIRST so it has new creds for
+#    the runner
+# 6. Wait for vault health
 # 7. Recreate every consumer via runner
 # 8. Verify each consumer connected with new creds
 # 9. Scrub `.env.rotate`
@@ -132,12 +129,13 @@ at `scripts/rotate-secret.sh <KEY>` in every project.
 
 ```yaml
 # BANNED
-# Unleash crashed on INIT_ADMIN_API_TOKENS format → "just remove it"
+# Service crashed on a malformed config value → "just remove that
+# feature from the config so the service starts"
 
 # REQUIRED
 # 1. Read why the value is malformed
-# 2. Fix the value at source (Infisical)
-# 3. Keep the seeded-token feature so dev onboarding still works
+# 2. Fix the value at source (vault / config file)
+# 3. Keep the feature so onboarding / downstream paths still work
 ```
 
 "Remove the offending feature" is the same shape as "swallow the
@@ -146,8 +144,8 @@ error". Don't do either.
 ### 7. Half-completing a migration and walking away
 
 ```
-# BANNED: "postal-web is up, postal-worker is failing — I'll come
-# back to it". Walking away leaves the deployment broken-by-design.
+# BANNED: "service-a is up, service-b is failing — I'll come back
+# to it". Walking away leaves the deployment broken-by-design.
 
 # REQUIRED: a migration finishes or doesn't ship. If it can't
 # finish in this session, every consumer of the half-state is
@@ -171,6 +169,11 @@ Proper-fix audit (this turn):
   [ ] No migration was left in a half-state.
   [ ] No "we'll fix it next session" / "TODO: do this properly"
       markers were introduced.
+  [ ] Code-graph integrity green this turn (per
+      `code-graph-validation.md`): every dangling reference
+      uncovered was resolved (wired, defined, or removed with
+      user confirmation); no `BUG(unwired-<slug>)` markers left
+      behind without explicit user awareness.
 ```
 
 A `[ ]` in any row blocks the "done" claim. Resolve each row by
@@ -205,6 +208,10 @@ silently.
   silent failures.
 - `no-silent-drops.md` — half-finished work that's marked "done"
   is a silent drop.
+- `code-graph-validation.md` — a code-graph gap discovered
+  mid-task gets a root-cause fix (wire it, define it, or
+  delete it with user confirmation), never a `// TODO: wire
+  later` marker.
 - `official-docs-first.md` — primary-source citations BEFORE
   edits, not after failures.
 - `deploy-failures-become-checks.md` — every failure mode
@@ -212,21 +219,58 @@ silently.
 
 ## Why this rule exists
 
-Session 2026-05-25 hit five workaround patterns in a single sweep,
-each masking a real root cause:
+Recurring incident classes that all share the same root pattern
+("ship the symptom-fix, leave the cause"):
 
-1. Killed `unvamp-nominatim` (CPU-hungry) to free resources for
-   Infisical password-reset.
-2. Bumped Infisical healthcheck 15s/5s → 30s/25s.
-3. Migrated Postal v1 → v2 in three iterations because env-var
-   names were guessed, not researched.
-4. Stored Unleash tokens in Infisical without the
-   `<project>:<environment>.` prefix, only catching the format at
-   runtime through a stack trace.
-5. Rotated POSTGRES_PASSWORD non-atomically, breaking Infisical's
-   own DB connection mid-rotation and triggering a recovery
-   cascade.
+1. **Resource starvation under load** — a noisy container is
+   killed instead of CPU/memory-limited, so the next time it boots
+   it starves a different neighbour.
+2. **Healthcheck drift** — bumped from 15s/5s to 30s/25s "because
+   it kept failing", hiding the actual event-loop block.
+3. **Config-by-guesswork** — env-var names guessed from the
+   library README instead of the loader's source, producing
+   repeated runtime failures of the same shape.
+4. **Format-blind secret pushes** — bare hex tokens stored in a
+   vault when the consumer requires a prefixed shape, surfacing
+   only as a startup stack trace.
+5. **Non-atomic credential rotation** — DB password rotated
+   step-by-step instead of via a single atomic script, breaking
+   the vault's own DB connection mid-flight.
+6. **"Just remove the offending feature"** — silencing a startup
+   error by dropping the config block that triggered it, instead
+   of fixing the value the feature required.
+7. **Half-finished migrations** — one of two paired services up,
+   the other broken-by-design, with a verbal promise to "come
+   back to it".
 
-Each one cost more time to fix than doing it right would have. The
-user's directive captures the pattern: **clean, extensive and
-proper fixes always**.
+In every case the workaround cost MORE total time than the proper
+fix would have: the workaround needed a follow-up, the follow-up
+revealed a related issue, the related issue surfaced when the
+team was rotating personnel, and so on. The proper-fix path is
+cheaper in absolute hours even when it feels slower in the
+moment.
+
+User directive (verbatim): **"clean, extensive and proper fixes
+always"** / **"nothing simple please"**.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Container `docker stop`-ed to "free resources" rather than CPU/memory-limited (banned pattern 1 recurrence)
+- Healthcheck `timeout` / `retries` / `start_period` bumped without naming an underlying slow code path (banned pattern 2 recurrence)
+- Config env-var name guessed from a README instead of canonical loader source (banned pattern 3 — `official-docs-first.md` weakening)
+- Secret pushed to vault without format-validation against the consumer's expected shape (banned pattern 4 recurrence)
+- Credential rotation done step-by-step rather than via an atomic script (banned pattern 5 recurrence)
+- Startup error silenced by removing the offending config / feature instead of fixing the value (banned pattern 6 recurrence)
+- Migration half-completed and left running; consumer of half-state undocumented (banned pattern 7 recurrence)
+- Proper-fix audit rows ticked without verification this turn (audit weakening)
+- "I'll come back to it next session" markers introduced (any TODO-shape silent defer)
+- Time-pressure context used as justification to skip the audit (rule 8 "I'm being rushed" failure mode)
+
+**Refinement candidates**:
+- New row in the banned-pattern list when a new shortcut class recurs (e.g., `kubectl delete pod` to recover, `restart-loop` to mask leak, dependency downgrade to escape a bug)
+- Tightening of the proper-fix audit when a row consistently gets ticked without real verification
+- New cross-reference when a sister rule (no-silent-failures, no-overclaim, deploy-failures-become-checks) provides the underlying gate the shortcut bypassed
+- New "atomic rotation" template when a new credential class (signing key, OAuth client, vault token) recurs

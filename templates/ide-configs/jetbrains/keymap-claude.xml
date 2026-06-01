@@ -1,0 +1,79 @@
+<!--
+  JetBrains keymap — Claude Code mappings + repo conventions.
+
+  Import via: Settings → Keymap → gear icon → Import Keymap from XML.
+
+  Cross-references:
+  - ~/.claude/templates/ide-configs/jetbrains/README.md
+  - ~/.claude/rules/common/install-allowlist.md
+
+  The shortcuts below assume the Anthropic Claude Code [Beta] plugin
+  is installed. Action IDs come from the plugin's plugin.xml; if the
+  plugin's action IDs change in a future release, update this file
+  + bump the JetBrains plugin version pin in install scripts.
+-->
+<keymap version="1" name="Claude Council" parent="$default">
+  <!-- Claude Code primary surface -->
+  <action id="anthropic.claudecode.OpenSidebar">
+    <keyboard-shortcut first-keystroke="meta ESCAPE"/>
+    <keyboard-shortcut first-keystroke="control ESCAPE"/>
+  </action>
+  <action id="anthropic.claudecode.ToggleInline">
+    <keyboard-shortcut first-keystroke="meta I"/>
+    <keyboard-shortcut first-keystroke="control I"/>
+  </action>
+  <action id="anthropic.claudecode.ExplainSelection">
+    <keyboard-shortcut first-keystroke="meta alt E"/>
+    <keyboard-shortcut first-keystroke="control alt E"/>
+  </action>
+  <action id="anthropic.claudecode.RefactorSelection">
+    <keyboard-shortcut first-keystroke="meta alt R"/>
+    <keyboard-shortcut first-keystroke="control alt R"/>
+  </action>
+
+  <!-- Verification + run shortcuts (universal across IDEs) -->
+  <action id="RunClass">
+    <keyboard-shortcut first-keystroke="meta shift F10"/>
+    <keyboard-shortcut first-keystroke="control shift F10"/>
+  </action>
+  <action id="Run">
+    <keyboard-shortcut first-keystroke="meta F10"/>
+    <keyboard-shortcut first-keystroke="control F10"/>
+  </action>
+
+  <!-- Code quality navigation -->
+  <action id="GotoNextError">
+    <keyboard-shortcut first-keystroke="F2"/>
+  </action>
+  <action id="GotoPreviousError">
+    <keyboard-shortcut first-keystroke="shift F2"/>
+  </action>
+  <action id="ShowErrorDescription">
+    <keyboard-shortcut first-keystroke="meta F1"/>
+    <keyboard-shortcut first-keystroke="control F1"/>
+  </action>
+
+  <!-- VCS — signed commits required per docs/branch-protection.md -->
+  <action id="CheckinProject">
+    <keyboard-shortcut first-keystroke="meta K"/>
+    <keyboard-shortcut first-keystroke="control K"/>
+  </action>
+  <action id="Vcs.UpdateProject">
+    <keyboard-shortcut first-keystroke="meta T"/>
+    <keyboard-shortcut first-keystroke="control T"/>
+  </action>
+
+  <!-- File navigation -->
+  <action id="GotoFile">
+    <keyboard-shortcut first-keystroke="meta shift O"/>
+    <keyboard-shortcut first-keystroke="control shift N"/>
+  </action>
+  <action id="GotoClass">
+    <keyboard-shortcut first-keystroke="meta O"/>
+    <keyboard-shortcut first-keystroke="control N"/>
+  </action>
+  <action id="GotoSymbol">
+    <keyboard-shortcut first-keystroke="meta alt O"/>
+    <keyboard-shortcut first-keystroke="control alt shift N"/>
+  </action>
+</keymap>

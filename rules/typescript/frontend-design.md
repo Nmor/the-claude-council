@@ -20,7 +20,7 @@ paths:
 
 # Frontend Design Aesthetics
 
-> This rule ensures all frontend UI work follows the `frontend-design` skill guidelines automatically. Works alongside `coding-style.md` and the `frontend-patterns` skill.
+> Applies the visual-design quality bar to every UI surface. Works alongside `coding-style.md` and the `frontend-patterns` skill (which owns the visual-design guidelines in its "Visual design quality" section).
 
 ## Mandatory Design Checklist
 
@@ -38,9 +38,8 @@ When creating or modifying any visible UI:
 
 When working on frontend files, these skills activate together:
 
-1. **frontend-design** — Visual design quality, aesthetics, typography, color, motion
-2. **frontend-patterns** — Component architecture, state management, hooks, performance
-3. **coding-standards** — Code quality, naming, structure, readability
-4. **security-review** — XSS prevention in dynamic content/styling
+1. **frontend-patterns** — Component architecture, state management, hooks, performance, AND visual design quality (typography, color, motion, spatial composition)
+2. **coding-standards** — Code quality, naming, structure, readability
+3. **security-review** — XSS prevention in dynamic content/styling
 
-All four must be satisfied before frontend work is considered complete.
+All three must be satisfied before frontend work is considered complete.

@@ -5,6 +5,15 @@ description: TypeScript-specific idioms, type-system patterns, narrowing techniq
 
 # TypeScript Patterns
 
+> **Reuse-first** (per `~/.claude/rules/common/reuse-first.md`):
+> One source of truth per type. If `User`, `ApiError`,
+> `PaginatedResponse<T>` already exists in `types/` / `lib/`,
+> import it — never redeclare or redefine. Extend with a
+> generic parameter, conditional type, or branded subtype —
+> never fork the type into a near-duplicate. The same applies to
+> runtime utilities: one `fetch` wrapper, one schema validator
+> entry-point, one error envelope, one HTTP client factory.
+
 TypeScript-specific patterns that go beyond universal `coding-standards`. Use when the type-system shape of the code is the question — discriminated unions, narrowing, branded types, conditional types, exhaustiveness.
 
 ## When to Activate
@@ -234,3 +243,108 @@ Library consumers should import types, never your implementation classes.
 2. **typescript-patterns** — this skill (TS-specific)
 3. **frontend-patterns** or **backend-patterns** — runtime shape (Vue / Node)
 4. **security-review** — auth, input validation, secret hygiene
+
+## Purpose
+
+TypeScript-specific idioms for type-safety-first code: discriminated unions, branded types, narrowing, generics, `satisfies`, never-narrowing, exhaustiveness checks, strict mode, and tooling alignment (`tsc`, typescript-eslint, biome).
+
+**Negative scope**: NOT framework-specific patterns (React / Vue / Next each have their own skill). NOT runtime validation library catalogue (Zod / Valibot belong in `api-design` or `backend-patterns`). NOT JavaScript-only patterns (use `coding-standards`).
+
+## When NOT to use
+
+- Pure JavaScript projects with no migration plan
+- Greenfield projects where adopting a stricter alternative (Effect-TS, ReScript, Gleam) is being evaluated
+- Vanilla scripts / build tools where types add friction without payoff
+- Library publishing where DTS-bundling decisions dominate (api-extractor, dts-bundle-generator)
+
+## Standards Cited
+
+- **TypeScript 5.6 Handbook** — `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`
+- **Effective TypeScript 2e (Vanderkam, 2024)** — Item 13 (apparent type), Item 38 (any escape hatches)
+- **typescript-eslint v8** — `strict-type-checked` preset
+- **ECMAScript 2024 (ES15)** — language baseline TypeScript compiles to
+- **TC39 Proposal: Records & Tuples (Stage 2)** — informs immutability discipline
+- **OWASP ASVS 4.0.3 §5** — validation requires types at the boundary
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| `any` as escape hatch | Disables type checking transitively; spreads through call chains | `unknown` + type guard; discriminated union |
+| `as` cast hiding shape drift | Bypasses compiler; silent break when source shape changes | Type predicate `function isFoo(x: unknown): x is Foo` |
+| Optional everywhere (`name?: string`) | Forces null-check noise downstream; types lie about reality | Make required when always present; discriminated union for "loaded vs not" |
+| `Function` type or `() => any` | Loses argument + return types | Specific signature `(input: T) => U` |
+| Numeric `enum` instead of string literal union | Larger output, harder to debug, can't tree-shake | `type Status = "pending" \| "paid" \| "shipped"` |
+| `// @ts-ignore` / `// @ts-expect-error` without comment | Hides real errors; rots silently | Fix the underlying type; if unavoidable, comment with reason + ticket |
+| `Object` / `{}` for "any object" | Includes primitives; allows anything | `Record<string, unknown>` or specific shape |
+| Mutable types on shared state | Type system can't catch accidental mutation | `readonly` modifiers; `Readonly<T>`; `as const` literals |
+
+## Verification Checklist
+
+- [ ] `tsc --noEmit` exits 0 with `strict: true` + `noUncheckedIndexedAccess: true`
+- [ ] Zero `any` types in shipped code (use `unknown` + narrow)
+- [ ] No `as` casts except where a type predicate isn't possible
+- [ ] Discriminated unions for "one of N states"
+- [ ] Exhaustiveness check via `assertNever` in every closed `switch`
+- [ ] Public API surface uses branded types for IDs (`UserId`, `OrgId`)
+- [ ] `satisfies` used for config objects (preserves literal types AND validates shape)
+- [ ] No `@ts-ignore` / `@ts-expect-error` without a ticket reference + removal date
+
+## Cross-References
+
+- `~/.claude/rules/typescript/no-discards.md` — banned TS patterns
+- `~/.claude/rules/common/extreme-lint-policy.md` — strict TS lint config
+- `~/.claude/rules/common/no-discards.md` — `console.log`, hardcoded creds, banned discards
+- `~/.claude/skills/coding-standards/SKILL.md` — language-agnostic floor
+- `~/.claude/skills/frontend-patterns/SKILL.md` — TS in React / Vue context
+- `~/.claude/skills/api-design/SKILL.md` — response-shape contracts via shared types
+- `~/.claude/agents/code-reviewer.md` — TS review with severity findings
+
+## Why this skill exists
+
+TypeScript exists to catch shape bugs at compile time. Without disciplined strict-mode use, the type system devolves into documentation that doesn't run:
+
+- `any` spreads through call chains, silently invalidating downstream types
+- `as` casts hide shape drift between backend + frontend (server returns `items`, code reads `events` → empty UI)
+- Numeric enums emit runtime code that breaks tree-shaking
+- Optional-everywhere types force null-check noise that hides the genuine "this is optional" cases
+- Type predicates skipped → manual narrowing → `as` casts proliferate
+
+Cost of strict-mode discipline: minutes per type definition. Cost of stale types pretending to validate code: incidents that look like backend bugs but are frontend reading the wrong key.
+
+## Compliance & Standards Mapping
+
+- **ISO/IEC 25010:2011 §6** — Product quality model (Functional
+  Suitability, Reliability, Performance Efficiency, Usability,
+  Security, Maintainability, Portability, Compatibility)
+- **ISO/IEC/IEEE 12207:2017 §6.4** — Software construction +
+  verification + validation processes
+- **NIST SP 800-218 SSDF §PW** — Produce Well-Secured Software
+  (applies to every code-authoring skill)
+- **NIST SP 800-53 Rev 5 §SA-11** — Developer testing +
+  evaluation
+- **OWASP ASVS 4.0.3 §V1.1** — Secure SDLC requirements
+- **OWASP ASVS 4.0.3 §V14.2** — Dependency lifecycle
+- **CWE Top 25 (2026)** — Weakness classes the patterns in this
+  skill prevent
+- **SLSA Framework v1.0 Build L2+** — Provenance + integrity
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- `any` introduced where `unknown` + narrowing would work (sister `typescript/no-discards.md` rule 7)
+- Type assertion `as T` used where a runtime guard / Zod schema would catch malformed input (rule 8)
+- `// @ts-ignore` / `// @ts-expect-error` / `// @ts-nocheck` introduced (rule 5 violation)
+- `tsconfig.json` strict-mode flags loosened (`noImplicitAny: false`, etc.)
+- Discriminated union missing exhaustiveness check (`never` default branch absent)
+- Branded type pattern abandoned where domain identity matters (e.g., `UserId` vs `OrgId` mixed)
+- `Promise<any>` returned from public API
+- `Readonly<>` wrapper missing on React props (sister `S6759`)
+
+**Refinement candidates**:
+- New strictness flag row when a new TS release ships (e.g., `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)
+- Tightening of the branded-type adoption when ID-confusion bugs recur
+- New cross-reference when a sister rule (typescript/no-discards, sonarlint-checks) adds a TS-specific check
+- New discriminated-union template when a recurring state-machine shape benefits from it

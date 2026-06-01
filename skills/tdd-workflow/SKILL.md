@@ -407,3 +407,157 @@ npm test && npm run lint
 ---
 
 **Remember**: Tests are not optional. They are the safety net that enables confident refactoring, rapid development, and production reliability.
+
+## Purpose
+
+Principal-level TDD: Red-Green-Refactor cycle, test-first as a
+design tool (not just a verification step), the test pyramid
+(unit > integration > E2E), coverage targets (≥90% touched, ≥80%
+project per `extreme-lint-policy.md`), property-based testing for
+invariants, mutation testing for test-suite quality, contract tests
+between services (per `contract-testing.md`), test isolation via
+DI (per `no-ambient-globals.md`), deterministic test execution
+(random order, virtual time, seeded RNG), and the
+faster-feedback-loop disciplines that keep TDD enjoyable instead
+of bureaucratic.
+
+**Negative scope** (NOT what this skill covers):
+- Language-specific testing patterns — see `golang-testing`,
+  `python-testing`, `springboot-tdd`, `django-tdd`,
+  `swift-protocol-di-testing`, `cpp-testing`
+- E2E + browser automation — see `e2e-runner` agent
+- Performance testing — different discipline
+- Load testing — out
+
+## When NOT to use
+
+- Throwaway scripts (one-off ETL, prototype branch deleted within
+  a week)
+- Documentation-only changes
+- Pure infrastructure changes where the test surface is the deploy
+  pipeline itself
+- Exploratory spike work (NOTE: any spike that crosses the line
+  to "we're shipping this" gets the TDD discipline applied
+  before merge)
+
+## Standards Cited
+
+- **Kent Beck — "Test-Driven Development: By Example" (2002)** —
+  canonical reference
+- **Martin Fowler — "Refactoring" 2e (2018)** — refactor-with-tests
+  discipline
+- **Michael Feathers — "Working Effectively with Legacy Code"
+  (2004)** — adding tests to untested code
+- **Test Pyramid (Mike Cohn, "Succeeding with Agile" 2009)** —
+  unit > integration > E2E layering
+- **ISO/IEC/IEEE 29119** — Software testing standard (parts 1-5
+  cover concepts, processes, documentation, techniques)
+- **ISO/IEC 25010:2011 §6** — Product quality model: functional
+  suitability + reliability requires automated tests
+- **NIST SP 800-218 SSDF §PW.7** — Review and/or analyse human-
+  readable code (TDD is one mechanism)
+- **NIST SP 800-53 Rev 5 §SA-11** — Developer testing + evaluation
+- **OWASP ASVS 4.0.3 §1.1 (Secure Software Development Lifecycle)** —
+  tests are part of SSDLC
+- **OWASP ASVS 4.0.3 §V14.2** — Dependency testing (CDC + contract
+  tests fall under tdd-workflow)
+- **CWE-1059** — Insufficient Technical Documentation (test cases
+  ARE the executable spec; TDD prevents the CWE)
+- **PEP 8** + **JEP 158** — Style + JUnit/JVM-side TDD ergonomics
+- **W3C Web Platform Tests (wpt.fyi)** — Reference TDD harness for
+  browser-side contracts
+- **`~/.claude/rules/common/testing.md`** — global testing rule
+- **`~/.claude/rules/common/extreme-lint-policy.md`** — coverage
+  threshold (≥90% touched / ≥80% project)
+- **`~/.claude/rules/common/contract-testing.md`** — consumer-driven
+  contract tests
+- **`~/.claude/rules/common/no-ambient-globals.md`** — DI for
+  test isolation
+- **`~/.claude/rules/common/local-testability.md`** — testable-before-
+  write mandate
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Writing tests after production code | Tests fit the code instead of driving design | RED-GREEN-REFACTOR; test first |
+| Skipping the RED verification | Test may already pass — false-positive guard | Run the test BEFORE the implementation; confirm it fails for the right reason |
+| Tests with `Thread.sleep` / `time.sleep` | Flaky under load | Awaitility / virtual time / event-based wait |
+| Test that exercises the network / real DB | Slow + flaky | Stub at the boundary; integration tier uses Testcontainers / equivalent |
+| `Math.random()` / `time.Now()` directly in tested code | Non-deterministic; can't reproduce | Inject `Random` / `Clock` (per `no-ambient-globals.md`) |
+| One huge test that asserts everything | Hard to localise failure; rebuilds entire context | One assertion per behaviour; descriptive test names |
+| Test name describes the method, not the behaviour | "test_login" tells you nothing on failure | "rejects_login_when_password_expired" describes the contract |
+| Coverage gaming (touch every line with empty assertions) | Coverage % rises; bugs ship | Mutation testing catches it; coverage is a floor, not a goal |
+| Tests dependent on each other's order | One change breaks 20 tests | Each test sets up + tears down its own state; randomise order |
+| No contract tests between services | Producer changes break consumers in production | Pact-style consumer-driven contracts per `contract-testing.md` |
+| Skipped tests with `@Disabled` / `xit` / `t.Skip` | Coverage drift; forgotten | Quarantine with deadline; fix or delete |
+| Mock-heavy unit tests | Tests verify implementation, not behaviour | Stub external boundaries only; use real instances for everything else |
+
+## Verification Checklist
+
+- [ ] Test written + verified RED before implementation
+- [ ] Test fails for the right reason (assertion fails, not import
+      error)
+- [ ] Implementation makes the test GREEN with minimal code
+- [ ] Refactor pass keeps tests green
+- [ ] Test name describes the behaviour, not the method
+- [ ] Test isolation: random-order run passes
+- [ ] No `sleep` / wall-clock dependencies (use virtual time)
+- [ ] Coverage ≥ 90% on touched files (per `extreme-lint-policy.md`)
+- [ ] Coverage ≥ 80% on the project as a whole
+- [ ] Mutation score ≥ 80% on business-logic packages (where the
+      ecosystem has a mutation tool — PIT for Java, Stryker for
+      JS/TS, mutmut for Python)
+- [ ] Test pyramid respected (unit > integration > E2E)
+- [ ] Contract tests gate the producer's deploy (per
+      `contract-testing.md`)
+- [ ] No `@Disabled` / `xit` / `t.Skip` without a tracked deadline
+- [ ] Test runs locally in < 30s (unit tier)
+
+## Cross-References
+
+- `~/.claude/skills/golang-testing/SKILL.md` — Go-specific
+- `~/.claude/skills/python-testing/SKILL.md` — Python-specific
+- `~/.claude/skills/springboot-tdd/SKILL.md` — Spring Boot
+- `~/.claude/skills/django-tdd/SKILL.md` — Django
+- `~/.claude/skills/swift-protocol-di-testing/SKILL.md` — Swift
+- `~/.claude/skills/cpp-testing/SKILL.md` — C++
+- `~/.claude/rules/common/testing.md` — global testing rule
+- `~/.claude/rules/common/contract-testing.md` — CDC + schema
+- `~/.claude/rules/common/local-testability.md` — testable-before-write
+- `~/.claude/rules/common/no-ambient-globals.md` — DI patterns
+- `~/.claude/agents/tdd-guide.md` — Council Division 5
+
+## Why this skill exists
+
+TDD is not about coverage percentages — it's about design
+feedback. Writing the test first forces the code to be testable,
+which forces explicit dependencies, which forces interfaces, which
+forces single-responsibility. Teams that adopt TDD properly ship
+fewer bugs AND refactor more aggressively because the safety net
+catches regressions. Teams that skip it (or do test-after) ship
+the same bugs and stop refactoring because nothing catches the
+regressions. The patterns above codify the principal-level
+posture: RED-VERIFY before GREEN, test isolation, deterministic
+time + RNG, descriptive names, mutation testing for test quality,
+contract tests for service boundaries.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Production code written before its failing test (RED-VERIFY skipped — workflow violation)
+- Test written that passes without the implementation (false-positive RED — flaky guard)
+- "70%" coverage target cited (stale — canonical is 90% touched / 80% project per `extreme-lint-policy.md`)
+- REFACTOR step skipped — code stays unmaintainable after GREEN
+- Skipped / disabled test introduced without ticket reference + fix deadline
+- Test asserts on `message` not `error_code` (sister `error-handling-with-context.md` rule 10 violation)
+- Slow test (> 5s) added without justification + isolation
+- Mock used where Testcontainers / real DB would catch the bug class
+
+**Refinement candidates**:
+- Tightening of the success-metrics coverage figures when the canonical floor moves
+- New test-pyramid row when a recurring test class emerges (e.g., contract-pact, mutation testing, AI eval harness)
+- New cross-reference when a sister rule (testing, verify-before-claim, local-testability) adds a verification surface
+- New per-framework RED-GREEN-REFACTOR template when a new test runner gains adoption (Vitest 2+, JUnit 6, pytest 9)

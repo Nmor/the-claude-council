@@ -175,6 +175,22 @@ touch ~/.claude/homunculus/observations.jsonl
 | `/instinct-export` | Export instincts for sharing |
 | `/instinct-import <file>` | Import instincts from others |
 
+### Background observer (manual launch)
+
+The observer agent runs on a schedule from the hook system. To
+control it manually, use the CLI helper script:
+
+```bash
+bash agents/start-observer.sh         # Start observer in background
+bash agents/start-observer.sh status  # Check if observer is running
+bash agents/start-observer.sh stop    # Stop the running observer
+```
+
+The script lives at
+[`agents/start-observer.sh`](agents/start-observer.sh) and writes
+its PID to `${CONFIG_DIR}/.observer.pid`. The observer agent
+definition is at [`agents/observer.md`](agents/observer.md).
+
 ## Configuration
 
 Edit `config.json`:
@@ -290,3 +306,123 @@ v2 is fully compatible with v1:
 ---
 
 *Instinct-based learning: teaching Claude your patterns, one observation at a time.*
+
+## Purpose
+
+Implementation arm of the continuous-learning-mandate: emit
+`learning-candidate` events on every Council-mediated task,
+score them with calibrated confidence, batch them for user
+review, and apply approved refinements to global / workspace
+rules / skills / agents. Closes the loop that makes the
+ruleset sharper over time instead of stale.
+
+**Negative scope** (NOT what this skill covers):
+- Authoring new rules from scratch — see
+  `rule-authoring-global-vs-project.md`
+- Workspace-side learning bootstrap — see
+  `project-scoped-artifacts.md`
+- Manual rule edits without going through the candidate
+  workflow
+
+## When NOT to use
+
+- One-off observations the user explicitly says don't
+  generalise
+- Trivial preferences already covered by an existing rule
+  (just cite the rule)
+- Cross-vendor (Gemini / Codex) — out of current scope
+
+## Standards Cited
+
+- **NIST SP 800-53 Rev 5 §SI-4** — Information system
+  monitoring (the learning-event stream IS the monitoring
+  surface for rule efficacy)
+- **NIST SP 800-218 SSDF §PO.4** — Implement and maintain
+  secure development practices (continuous improvement)
+- **ISO/IEC 27001:2022 Annex A.5.36** — Compliance with
+  policies, rules and standards (audit + refinement loop)
+- **ISO/IEC 27005:2022** — Information security risk
+  management (refinement candidates are risk-treatment
+  outputs)
+- **OWASP SAMM v2 — Education + Guidance** — Continuous
+  improvement of organisational knowledge
+- **CWE-1059** — Insufficient Technical Documentation
+  (learning hooks ARE living documentation)
+- **`~/.claude/rules/common/continuous-learning-mandate.md`**
+  — the rule this skill implements
+- **`~/.claude/rules/common/rule-authoring-global-vs-project.md`**
+  — promotion / demotion classification
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Auto-applying candidates without user review | Silent rule mutation; surprise effects | Batch + AskUserQuestion approval gate |
+| Logging every micro-observation | Signal-to-noise drops; review fatigue | Confidence threshold ≥ 0.6 to log; ≥ 0.8 to recommend |
+| One-session rule promotion | Premature generalisation | Require 2+ sessions / workspaces before global promotion |
+| Hoarding candidates indefinitely | User loses context; candidates rot | Session-end batch review by default; `/learn` for manual |
+| Same candidate fires every session without resolution | Approval-rate metric drift | Auto-archive `deferred` candidates older than 30 days |
+| Project-specific learning written to global path | Pollutes global ruleset | Classify via `rule-authoring-global-vs-project.md` first |
+| Demotion never happens | Stale global rules linger | Track contradiction count; flag refresh review at 5+ |
+| Learning event has no `target` field | Can't apply refinement automatically | Schema enforced: `target: <path>` required |
+
+## Verification Checklist
+
+- [ ] Every Council Phase 3 emits at least one learning-event
+      (or explicit "none — no signal")
+- [ ] `learning-events.jsonl` schema-validated (required
+      fields present)
+- [ ] Confidence scoring documented + calibrated against
+      user approval rates
+- [ ] `/learn` batch review surface works end-to-end
+- [ ] Promotion path tested on at least one cross-workspace
+      pattern this rebuild
+- [ ] Demotion path documented for the next contradicted
+      rule
+
+## Cross-References
+
+- `~/.claude/rules/common/continuous-learning-mandate.md` —
+  the policy this skill enforces
+- `~/.claude/rules/common/rule-authoring-global-vs-project.md`
+  — classification of approved refinements
+- `~/.claude/rules/common/project-scoped-artifacts.md` —
+  workspace-side learning loop
+- `~/.claude/skills/learned/SKILL.md` — final-disposition
+  archival pattern
+- `~/.claude/audits/learning-events.jsonl` — the event store
+- `/learn`, `/learn-eval`, `/evolve`, `/instinct-status`
+  commands — operator interface
+
+## Why this skill exists
+
+A static ruleset degrades. Languages change, vendors retire
+APIs, incident classes evolve, cross-workspace patterns
+surface only after multiple incidents. Without an explicit
+learning loop, the rules optimised for last quarter's bugs
+miss this quarter's. Continuous-learning-v2 turns the
+ruleset into a living system: every Council task emits
+signals, the signals cluster into refinement candidates,
+candidates with track record promote to active rules. Cost:
+one batch-review prompt per session. Benefit: a ruleset that
+grows sharper rather than stale.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Council-mediated task finishes without a `learning-candidate` event written to `audits/learning-events.jsonl` (mandate rule 1 weakening)
+- Candidate emitted with `confidence < 0.6` but auto-applied anyway (review-policy violation)
+- Candidate with same shape emitted 5+ times across sessions without surfacing for promotion (workspace → global promotion gap)
+- Approved refinement landed without updating the targeted artifact in the same session (loop-closure gap)
+- Contradicted rule (`rule-contradiction` event) accumulating ≥ 5 contradictions without refresh review (mandate rule 5 weakening)
+- Confidence scoring drifts (same pattern oscillates between 0.5 and 0.85 across sessions — calibration needed)
+- Hook events (PostToolUse, SessionEnd, SessionStart) firing without producing candidates (instrumentation gap)
+- Operator commands (`/learn`, `/evolve`, `/instinct-*`) failing silently or returning empty batches
+
+**Refinement candidates**:
+- New event shape when a recurring learning class (e.g., cross-tool failure correlation, latent rule conflict) needs its own schema
+- Confidence-calibration update when scoring proves systematically too-high or too-low against user approval rates
+- Promotion / demotion automation when the manual review batches stay stuck for > 4 weeks
+- New operator command when a recurring manual workflow surfaces (e.g., `/learn-cluster` to group candidates by target artifact)

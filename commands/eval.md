@@ -1,3 +1,9 @@
+---
+name: eval
+description: Manage eval-driven development workflow.
+command: true
+---
+
 # Eval Command
 
 Manage eval-driven development workflow.

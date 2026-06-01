@@ -178,3 +178,23 @@ Consumers do NOT carry:
   a pre-deploy check (same family)
 - `dependency-overrides-not-exceptions.md` — prefer fix-the-dep over
   add-an-exception
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Per-consumer security-exceptions file found (rule 2 violation — exceptions live in org repo)
+- Layer skipped (e.g., pre-push hook bypassed via `--no-verify`) — defence-in-depth weakening
+- Required-workflow ruleset's SHA pin not bumped after gate logic change (org-side drift)
+- CODEOWNERS approval bypassed on a gate-script change (layer 5 weakening)
+- Exception without expiry date (anti-pattern — permanent exception)
+- New control class added but only enforced in 1-2 of 5 layers (rule needs broadening)
+- Deploy pipeline running gates that differ from PR-time gates (CI vs deploy drift)
+- Bypass actor allowlist non-empty for branch protection on `main` (configuration drift)
+
+**Refinement candidates**:
+- New row in the 5-layer table when a new enforcement surface emerges (e.g., MCP gateway, IDE plugin)
+- Tightening of the SHA-pin lifecycle when a malicious-tag retargeting incident is observed
+- New cross-reference when a sister rule (dependency-vulnerabilities, license-allowlist-gate) provides the gate this enforces
+- New exception-flow row when a new exception class (vendor-pending-fix, etc.) recurs

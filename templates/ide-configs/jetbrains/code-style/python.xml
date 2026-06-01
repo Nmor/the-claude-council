@@ -1,0 +1,50 @@
+<!--
+  JetBrains Python code-style scheme.
+
+  Import via: Settings → Editor → Code Style → Python → Scheme
+  gear icon → Import Scheme → IntelliJ IDEA code style XML.
+
+  Aligned with:
+  - ~/.claude/rules/python/coding-style.md
+  - ~/.claude/rules/common/extreme-lint-policy.md (line length 100,
+    indent 4 — PEP 8 default)
+  - Black / Ruff defaults
+
+  Function length / parameter count / cognitive complexity enforced
+  by inspections (Ruff + SonarLint), not here.
+-->
+<code_scheme name="Claude Council — Python" version="173">
+  <option name="RIGHT_MARGIN" value="100"/>
+  <option name="LINE_SEPARATOR" value="&#10;"/>
+
+  <PyCodeStyleSettings>
+    <option name="USE_CONTINUATION_INDENT_FOR_ARGUMENTS" value="true"/>
+    <option name="USE_CONTINUATION_INDENT_FOR_PARAMETERS" value="true"/>
+    <option name="NEW_LINE_AFTER_COLON_MULTI_CLAUSE" value="true"/>
+    <option name="HANG_CLOSING_BRACKETS" value="false"/>
+    <option name="USE_DOUBLE_QUOTES" value="true"/>
+    <option name="ALIGN_COLLECTIONS_AND_COMPREHENSIONS" value="false"/>
+    <option name="ALIGN_MULTILINE_IMPORTS" value="true"/>
+    <option name="DICT_WRAPPING" value="2"/>
+    <option name="DICT_NEW_LINE_AFTER_LEFT_BRACE" value="false"/>
+    <option name="DICT_NEW_LINE_BEFORE_RIGHT_BRACE" value="false"/>
+    <option name="OPTIMIZE_IMPORTS_SORT_BY_TYPE_FIRST" value="false"/>
+    <option name="OPTIMIZE_IMPORTS_JOIN_FROM_IMPORTS_WITH_SAME_SOURCE" value="false"/>
+    <option name="OPTIMIZE_IMPORTS_SORT_NAMES_IN_FROM_IMPORTS" value="true"/>
+    <option name="BLANK_LINES_AROUND_TOP_LEVEL_CLASSES_FUNCTIONS" value="2"/>
+    <option name="BLANK_LINES_AFTER_LOCAL_IMPORTS" value="1"/>
+  </PyCodeStyleSettings>
+
+  <codeStyleSettings language="Python">
+    <option name="RIGHT_MARGIN" value="100"/>
+    <option name="WRAP_ON_TYPING" value="0"/>
+    <option name="KEEP_LINE_BREAKS" value="true"/>
+    <option name="WRAP_LONG_LINES" value="true"/>
+    <indentOptions>
+      <option name="INDENT_SIZE" value="4"/>
+      <option name="CONTINUATION_INDENT_SIZE" value="4"/>
+      <option name="TAB_SIZE" value="4"/>
+      <option name="USE_TAB_CHARACTER" value="false"/>
+    </indentOptions>
+  </codeStyleSettings>
+</code_scheme>

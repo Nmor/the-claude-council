@@ -1,3 +1,9 @@
+---
+name: sessions
+description: Manage Claude Code session history: list, load, alias, edit sessions in ~/.claude/sessions/.
+command: true
+---
+
 # Sessions Command
 
 Manage Claude Code session history - list, load, alias, and edit sessions stored in `~/.claude/sessions/`.

@@ -1,3 +1,9 @@
+---
+name: orchestrate
+description: Sequential agent workflow for complex tasks.
+command: true
+---
+
 # Orchestrate Command
 
 Sequential agent workflow for complex tasks.

@@ -30,11 +30,19 @@ Universal coding standards applicable across all projects.
 - No premature optimization
 - Easy to understand > clever code
 
-### 3. DRY (Don't Repeat Yourself)
+### 3. DRY (Don't Repeat Yourself) — see also `~/.claude/rules/common/reuse-first.md`
 - Extract common logic into functions
 - Create reusable components
 - Share utilities across modules
 - Avoid copy-paste programming
+- Apply the rule of three: implement inline on first occurrence;
+  extract a shared primitive on the SECOND occurrence (the
+  abstraction has paid for itself); never reach a third copy
+- Extend the shared primitive with a prop / parameter — never
+  fork it into a "slightly different" variant
+- Defaults live at the primitive, not the call site
+- One source of truth per conceptual unit (one Description
+  editor, one currency formatter, one auth middleware, etc.)
 
 ### 4. YAGNI (You Aren't Gonna Need It)
 - Don't build features before they're needed
@@ -527,3 +535,111 @@ setTimeout(callback, DEBOUNCE_DELAY_MS)
 ```
 
 **Remember**: Code quality is not negotiable. Clear, maintainable code enables rapid development and confident refactoring.
+
+## Purpose
+
+Language-agnostic coding standards: naming conventions, immutability, error handling, type safety, file organisation, comment policy, performance heuristics, test structure, and code-smell detection. Applies across TypeScript, JavaScript, React, React Native, Vue, Swift, Flutter / Dart, C++, C#, Node.js.
+
+**Negative scope**: NOT language-specific deep idioms (use `typescript-patterns`, `python-patterns`, `golang-patterns` etc.). NOT framework-specific patterns (use `springboot-patterns`, `django-patterns`, `vue3-patterns`). NOT static-analysis tooling configuration (use `extreme-lint-policy.md`).
+
+## When NOT to use
+
+- Domain-specific guidance — defer to per-language pattern skills
+- Lint configuration — `~/.claude/rules/common/extreme-lint-policy.md` is the canonical home
+- Project-specific overrides — those live in `<project>/.claude/rules/`
+- Mature codebases with established conventions that already meet or exceed this floor
+
+## Standards Cited
+
+- **Robert C. Martin, *Clean Code* (2008)** — function length, naming, single-responsibility heuristics
+- **Steve McConnell, *Code Complete 2e* (2004)** — file organisation + complexity caps
+- **Effective Java 3e (Bloch, 2017)** — immutability + constructor patterns (cross-language applicable)
+- **Effective TypeScript (Vanderkam, 2024)** — type safety idioms
+- **PEP 8 / PEP 257** — Python style + docstrings
+- **Effective Go (golang.org/doc/effective_go)** — error handling, naming, simplicity
+- **OWASP ASVS 4.0.3 §5** — Validation, Sanitisation, Encoding
+- **MISRA C++ 2023** (when applicable) — safety-critical C++ rules
+- **Conventional Comments 1.0** — code review tone
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| `any` / `dynamic` type for "I don't know yet" | Defeats type safety; pushes errors to runtime; spreads through callers | Narrow with discriminated unions; `unknown` + type guard if truly opaque |
+| Direct mutation of incoming objects | Spooky action at a distance; React stale-closure bugs | Spread + return new object; pure functions |
+| Boolean parameters as primary signal (`doThing(true)`) | Unclear at call site; explodes combinatorially | Options object: `doThing({ async: true })` |
+| Magic numbers inline (`if (count > 3)`, `setTimeout(cb, 500)`) | Reader can't tell intent; refactor risk | Named const: `MAX_RETRIES = 3`; `DEBOUNCE_MS = 500` |
+| Functions > 80 lines with deep nesting | Cognitive complexity > 10; untestable in isolation | Extract helpers; flip negation + early return |
+| Single-letter vars outside `i, j, k, _` | Self-documenting code lost; review friction | Descriptive name: `userIndex`, `lineNumber` |
+| Stale-state reference in async (`setCount(count + 1)`) | Returns wrong value under fast re-render | Functional setter: `setCount(prev => prev + 1)` |
+| Comments stating WHAT the code does | Drift risk; reader can already read code | Comments explain WHY only; non-obvious invariants |
+
+## Verification Checklist
+
+- [ ] Functions ≤ 80 lines, ≤ 5 parameters, cognitive complexity ≤ 10 (per `extreme-lint-policy.md`)
+- [ ] No `any` / `dynamic` types; `unknown` + narrowing where genuinely opaque
+- [ ] Immutability: spread / `Object.freeze` / `readonly` on data structures
+- [ ] Errors handled at every async boundary (no silent rejections)
+- [ ] Magic numbers extracted to named constants (allowlist: `0, 1, -1, 2`)
+- [ ] Naming: camelCase variables/functions, PascalCase types/classes, SCREAMING_SNAKE_CASE constants
+- [ ] No `console.log` in production source — structured logger only
+- [ ] Tests follow AAA (Arrange/Act/Assert) with descriptive names
+
+## Cross-References
+
+- `~/.claude/rules/common/coding-style.md` — file organisation + comment policy (deeper)
+- `~/.claude/rules/common/reuse-first.md` — rule of three; extend never fork
+- `~/.claude/rules/common/extreme-lint-policy.md` — strict-mode lint config + thresholds
+- `~/.claude/rules/common/no-discards.md` — banned discard / suppression patterns
+- `~/.claude/rules/common/no-silent-failures.md` — error handling shape
+- `~/.claude/skills/typescript-patterns/SKILL.md` — TS-specific idioms
+- `~/.claude/skills/python-patterns/SKILL.md` — Python-specific
+- `~/.claude/skills/golang-patterns/SKILL.md` — Go-specific
+- `~/.claude/agents/code-reviewer.md` — cross-language review with severity findings
+
+## Why this skill exists
+
+Coding standards are the floor below which review noise drowns out signal. Without a shared floor:
+
+- Every PR review re-litigates naming, immutability, and error handling instead of business logic
+- Test files diverge from production style; their bugs are harder to spot
+- New contributors mimic the worst-style file they happen to read first; debt compounds
+- Lint config is project-by-project; cross-team rotation is painful
+- Code-smell detection becomes subjective ("I don't like this")
+
+The cost of enforcing a clear floor: one shared doc + lint config. The cost of NOT enforcing it: every PR is a style debate AND a domain review at the same time, both done badly.
+
+## Compliance & Standards Mapping
+
+- **ISO/IEC 25010:2011 §6** — Product quality model (Functional
+  Suitability, Reliability, Performance Efficiency, Usability,
+  Security, Maintainability, Portability, Compatibility)
+- **ISO/IEC/IEEE 12207:2017 §6.4** — Software construction +
+  verification + validation processes
+- **NIST SP 800-218 SSDF §PW** — Produce Well-Secured Software
+  (applies to every code-authoring skill)
+- **NIST SP 800-53 Rev 5 §SA-11** — Developer testing +
+  evaluation
+- **OWASP ASVS 4.0.3 §V1.1** — Secure SDLC requirements
+- **OWASP ASVS 4.0.3 §V14.2** — Dependency lifecycle
+- **CWE Top 25 (2026)** — Weakness classes the patterns in this
+  skill prevent
+- **SLSA Framework v1.0 Build L2+** — Provenance + integrity
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Magic-number literals introduced past the sister `extreme-lint-policy.md` allowed set (`0, 1, -1, 2`)
+- Function > 80 lines or > 5 parameters introduced (sister `extreme-lint-policy.md` threshold violations)
+- Cognitive complexity > 10 on a function (S3776 recurrence)
+- Naming convention mismatch (camelCase / PascalCase / SCREAMING_SNAKE_CASE) in new code
+- Comment introduced explaining WHAT instead of WHY (per coding-style sister rule)
+- Boolean / nullable param treated as a primary signal instead of an explicit options object
+- New code shipped without immutability discipline on data flow (per coding-style sister rule)
+
+**Refinement candidates**:
+- New language-specific naming row when a new ecosystem (e.g., Solidity, Zig, Gleam) is adopted
+- Tightening of the magic-number allowlist when a recurring sentinel proves load-bearing
+- New cross-reference when a sister rule (no-discards, no-silent-failures, extreme-lint-policy) provides the canonical pattern

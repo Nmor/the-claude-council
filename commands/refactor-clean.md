@@ -1,3 +1,9 @@
+---
+name: refactor-clean
+description: Safely identify and remove dead code with test verification at every step.
+command: true
+---
+
 # Refactor Clean
 
 Safely identify and remove dead code with test verification at every step.

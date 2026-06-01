@@ -11,6 +11,11 @@
 # session locks, caches).
 # ============================================================
 
+# --- Per-user secrets / project-token list ---
+# `~/.claude/.local/` holds the operator's own per-machine values
+# (project-name token list, vault paths, etc.). NEVER committed.
+.local/
+
 # --- Heavy auto-managed runtime state (5+ GB total) ---
 projects/
 sessions/
@@ -59,11 +64,20 @@ id_ed25519*
 # --- Per-session plan-tasks that are auto-generated ---
 plans/tasks/
 
-# --- Audits archive (committed selectively, not bulk) ---
-# Keep root-level audit reports out by default; specific ones can be
-# force-added with `git add -f`.
-audits/archive/
+# --- Audits archive: TRACKED so historical security audits preserve
+# their git history. Per-session auto-generated logs are excluded.
+audits/learning-events.jsonl
+audits/bypass-log.jsonl
+
+# --- Python bytecode (improve-prompt.py is committed source) ---
+__pycache__/
+*.pyc
+*.pyo
 
 # --- Editor / IDE locks ---
 *.lock-info
 .swp
+
+# --- Settings backups (kept out of VCS) ---
+settings.json.bak-*
+*.bak-council-audit-*

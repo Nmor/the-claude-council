@@ -79,11 +79,11 @@ const client = await buildGoogleCalendarClient(connection, {
 ### 4. Echo suppression on push
 
 When we write to a provider, we stamp the event with
-`stewardbot_origin_id` extended property. The provider push channel
+`app_origin_id` extended property. The provider push channel
 then sends the event back to us as a "new event". The sync worker:
 
 1. Looks up the row via the `origin_index` GSI by
-   `stewardbot_origin_id`.
+   `app_origin_id`.
 2. If status = `pending_external_write`: reconcile (update etag +
    external_event_id, flip to `synced`).
 3. If status = `synced`: no-op (recognise our own echo).
@@ -112,7 +112,7 @@ handled centrally. The HTTP response is 202 with the local row
 already visible to the client. The outbox worker dispatches via
 `lib/calendar/writeBack.ts`.
 
-Idempotency key: `cal:write:<stewardbot_origin_id>:v<version>`.
+Idempotency key: `cal:write:<app_origin_id>:v<version>`.
 
 ### 7. PII envelope at rest
 
@@ -169,6 +169,139 @@ For every provider-touching change:
 - `provider-research` skill — workflow for the citations.
 - `~/.claude/rules/common/no-discards.md` — refresh-token rotation
   must be bound + persisted, never dropped.
-- StewardBot project `docs/calendar-integration.md` — feature page.
-- StewardBot project `docs/runbook.md` §21a–§21l — recovery
-  procedures.
+- The consuming project's `docs/<calendar-feature>.md` — feature
+  page describing user-visible behaviour.
+- The consuming project's `docs/runbook.md` — recovery procedures
+  for reconnect / token-expiry / write-conflict states.
+
+## Purpose
+
+Principal-level multi-provider calendar integration: OAuth scope
+negotiation (read vs write vs free-busy), incremental sync via
+`syncToken` (Google) / delta queries (Microsoft Graph) / CTag +
+ETag (CalDAV), push notification channels with TTL rotation
+(Google watch, Graph change-notifications, CalDAV `WebDAV-Sync`),
+write conflict resolution (ETag If-Match), recurring-event
+expansion (RFC 5545 RRULE), timezone correctness, business-tier
+vs personal-tier rejection at sign-up, refresh-token storage with
+rotation detection, and the iMIP / iTIP message contracts for
+invite + reply flows.
+
+**Negative scope** (NOT what this skill covers):
+- Calendar UI components — out
+- Local calendar (.ics file) parsing in isolation — see RFC 5545
+  directly
+- iCloud consumer-tier integration — explicitly out per
+  business-tier scope policy
+- Custom scheduling logic (free-busy availability matching) — see
+  domain-specific scheduling skills
+
+## When NOT to use
+
+- Single-provider integrations where multi-vendor abstraction is
+  premature (Google-only) — wire directly to the SDK
+- Read-only consumption of an exported `.ics` URL with no live
+  sync — parse the file; no provider integration needed
+- Synchronous one-shot lookups (e.g., "what's my next meeting")
+  where push channels are over-engineered
+
+## Standards Cited
+
+- **RFC 4791 (CalDAV)** — calendar access via WebDAV
+- **RFC 6638 (CalDAV Scheduling)** — invite + reply protocol
+- **RFC 5545 (iCalendar)** — VCALENDAR / VEVENT / RRULE format
+- **RFC 5546 (iTIP)** — calendar transport
+- **RFC 6047 (iMIP)** — iCalendar over MIME (email-borne invites)
+- **RFC 6749 (OAuth 2.0)** — auth framework
+- **RFC 7636 (PKCE)** — public-client flow
+- **Google Calendar API v3 docs** (developers.google.com/calendar)
+- **Microsoft Graph API v1.0** (learn.microsoft.com/graph)
+- **W3C Push API** (web push channel deliveries on the client side)
+- **OWASP ASVS 4.0.3 §3.5 (Token-based Session Management)** —
+  refresh-token rotation + reuse detection
+- **OWASP ASVS 4.0.3 §4 (Access Control)** — per-tenant scope
+  enforcement
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Full sync on every poll | API quota burn; slow | `syncToken` / delta-query incremental sync |
+| Push channel without TTL renewal cron | Watch expires (Google: 7 days), updates silently stop | Scheduled re-subscribe before `expiration` |
+| Storing refresh token unencrypted | Vault breach = calendar access for every user | Encrypt at field level + rotate on reuse |
+| Single-write without ETag | Lost update on concurrent edit | `If-Match: <etag>` + 412 retry on conflict |
+| Timezone derived from server clock | Wrong-day bug across DST + cross-region users | Always include `TZID` + canonical IANA zone |
+| Treating personal Gmail as Workspace | Wrong scope set; tenant policy mismatch | Reject at signup via `tid` claim / email-domain blocklist |
+| Ignoring `cancelled` / `tentative` status | Stale UI shows past invites | Parse `STATUS:` field on every event |
+| RRULE expansion in DB query | Cartesian explosion | Expand on demand at read-time, capped horizon |
+| Polling for write confirmation | Race + duplicate writes | Push notification + idempotency key |
+| Single-provider abstraction leaking to UI | Switching cost on second provider is total rewrite | Domain-shape boundary + adapter per provider |
+
+## Verification Checklist
+
+- [ ] OAuth scope is minimum-necessary (read vs write vs free-busy)
+- [ ] `docs/provider-research/<provider>.md` exists + cites primary
+      sources per `official-docs-first.md`
+- [ ] Refresh-token rotation + reuse-detection wired
+- [ ] Personal-tier vs business-tier rejected at sign-up
+      (documented in plan + handler)
+- [ ] Incremental sync uses `syncToken` / delta / CTag (no
+      poll-and-diff)
+- [ ] Push channel TTL renewal cron scheduled
+- [ ] ETag `If-Match` on every write
+- [ ] Timezone stored as IANA zone + `TZID` round-tripped
+- [ ] RRULE expansion capped to a horizon (e.g., 18 months out)
+- [ ] iMIP / iTIP message handling tested (accept / decline /
+      counter)
+- [ ] Webhook signature verification on every change notification
+- [ ] Audit log of every write per `audit-logging.md`
+- [ ] Failure modes documented in `docs/runbook.md`
+
+## Cross-References
+
+- `~/.claude/skills/provider-research/SKILL.md` — primary-source
+  citation discipline
+- `~/.claude/skills/web-push-notifications/SKILL.md` — sister
+  notification surface
+- `~/.claude/skills/api-design/SKILL.md` — calendar API consumer
+  patterns
+- `~/.claude/rules/common/official-docs-first.md` — provider docs
+  research mandate
+- `~/.claude/rules/common/secrets-management.md` — refresh-token
+  storage
+- `~/.claude/rules/common/audit-logging.md` — write audit
+- `~/.claude/agents/security-reviewer.md` — Council Division 4
+- `~/.claude/agents/architect.md` — Council Division 1
+
+## Why this skill exists
+
+Multi-provider calendar integrations fail in predictable ways:
+quota exhaustion from full polling, silent stop after watch
+channel expiry, lost updates from missing ETag, wrong-day bugs
+from naive timezone handling, personal-tier accounts leaking into
+business scope. The patterns above codify the production posture:
+incremental sync, push channel with TTL renewal, ETag-checked
+writes, IANA-zoned timestamps, business-tier-only at signup,
+refresh-token rotation with reuse detection. Teams that adopt
+these survive scope changes; teams that don't rebuild from scratch
+every time a provider deprecates a scope.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Calendar handler written before `docs/provider-research/<provider>.md` exists (RFC 4791 / Microsoft Graph / Google Calendar primary-source citation skipped)
+- Refresh-token rotation silently dropped (no-discards extension fires on token write path)
+- Personal Gmail / Outlook.com / iCloud consumer accepted instead of rejected at signup (commercial-tier scope drift)
+- Write-conflict (ETag mismatch / If-Match-failed) silently overwriting remote state (lost-update class)
+- Webhook channel subscription not auto-renewed (Google Calendar 7-day TTL, Graph subscription expiry) — push deliveries silently stop
+- Recurrence expansion (RRULE) computed client-side without timezone-aware library (DST / locale bugs)
+- All-day vs floating vs zoned events conflated (Outlook + Google + Apple disagree on semantics)
+- Reconnect flow doesn't preserve in-flight pending writes (data loss on auth-expiry)
+
+**Refinement candidates**:
+- New provider row when a new calendar service (FastMail JMAP, ProtonMail Calendar, Zoho Calendar) is integrated
+- Conflict-resolution policy update when a recurring write-collision pattern surfaces (last-write-wins vs OT vs CRDT decision)
+- Webhook-renewal cron pattern when push subscriptions drop silently across multiple incidents
+- Timezone-handling addendum when DST / locale bugs recur (e.g., floating events across user's home / travel locales)

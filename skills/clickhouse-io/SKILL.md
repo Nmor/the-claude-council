@@ -436,3 +436,115 @@ pgClient.on('notification', async (msg) => {
 - Review slow query log
 
 **Remember**: ClickHouse excels at analytical workloads. Design tables for your query patterns, batch inserts, and leverage materialized views for real-time aggregations.
+
+## Purpose
+
+Principal-level ClickHouse engineering: MergeTree engine family
+selection, sort-key + partitioning design, materialised views for
+real-time aggregation, dictionary-based JOIN avoidance, batched
+ingest, TTL-based retention, projection use, distributed table +
+sharding semantics, query-plan reading (`EXPLAIN PLAN/PIPELINE`),
+mutation cost awareness, and the ClickHouse data-type discipline
+(LowCardinality, Nullable cost, codecs).
+
+**Negative scope** (NOT what this skill covers):
+- Relational OLTP — see `postgres-patterns`
+- Document / key-value workloads — see `dynamodb-patterns`
+- Druid / Pinot / StarRocks / Doris (different engines, similar shape)
+- Stream processors (Kafka Streams, Flink) — ClickHouse consumes; doesn't replace
+- ETL orchestration — see `database-migrations` + sister tooling
+
+## When NOT to use
+
+- Point lookups by primary key < 100ms p99 — use OLTP store
+- High-frequency single-row INSERT/UPDATE/DELETE — wrong shape entirely
+- Strong consistency across writers — ClickHouse is eventually consistent
+- Complex multi-table OLTP JOINs — ClickHouse can JOIN, but the
+  cost is paid in memory; denormalise or use Dictionary lookups
+- Sub-second mutation visibility — MUTATIONs are async + expensive
+
+## Standards Cited
+
+- **ClickHouse Documentation v25.x** (clickhouse.com/docs) — engine
+  reference + system tables + tuning
+- **MergeTree Engine Reference** — clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree
+- **SQL:2023 (ISO/IEC 9075)** — base SQL semantics; ClickHouse extends
+- **Altinity Best Practices** — community-canonical operational guide
+- **OWASP ASVS 4.0.3 §13.3 (SQL Queries)** — parameterisation
+- **CWE-89 (SQL Injection)** — applies even on OLAP
+- **NIST SP 800-53 Rev 5 AC-3 (Access Enforcement)** — row policies
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Single-row `INSERT INTO events VALUES (...)` | Each INSERT creates a new part; merger overwhelmed → "Too many parts" error | Buffer at the producer; batch ≥ 1000 rows; or use Buffer engine / Kafka engine |
+| `SELECT *` on wide event table | Reads every column (columnar penalty); breaks consumers on column add | Explicit projection list |
+| ORDER BY in `MergeTree()` set to high-cardinality column | Sort-key bloat; merges slow; index ineffective | Sort key starts with low-cardinality filter columns |
+| Missing PARTITION BY on time-series | Cannot drop old partitions cheaply; queries scan all data | `PARTITION BY toYYYYMM(event_time)` (or day for high-volume) |
+| `MUTATION` (UPDATE/DELETE) on large table at scale | Rewrites every affected part; multi-hour ops | Use ReplacingMergeTree / CollapsingMergeTree / VersionedCollapsingMergeTree; or insert tombstones |
+| Distributed query without sharding-key alignment | Cross-shard JOIN explodes to N²; ALL nodes scan | Co-locate by sharding key; use `GLOBAL` JOIN sparingly |
+| `Nullable(Type)` everywhere | Nullable carries 1 bit/row + branch overhead; codecs less effective | Use sentinel values where semantics allow; reserve Nullable for true unknowns |
+| Hand-rolled JOIN for ref data (users / accounts) | Memory blowup at scale | Dictionary (External Dict) + `dictGet*()` |
+| Missing TTL on event tables | Cost balloon; old data slow merge | `TTL event_time + INTERVAL 90 DAY DELETE` |
+| `OPTIMIZE TABLE FINAL` on production | Forces synchronous merge; blocks query path | Let background merges handle it; rare manual OPTIMIZE only at off-peak |
+
+## Verification Checklist
+
+- [ ] EXPLAIN PLAN/PIPELINE inspected for every hot query
+- [ ] Sort key starts with the most-selective equality filter
+- [ ] PARTITION BY chosen for the access pattern (time-series ⇒ time)
+- [ ] Inserts batched (producer-side buffering or Buffer engine)
+- [ ] TTL declared on event / log / metric tables
+- [ ] LowCardinality applied to string columns with < ~10k distinct values
+- [ ] Codecs (CODEC(ZSTD(level)) / Delta / DoubleDelta) tuned for data shape
+- [ ] Materialised views target a real-time aggregate (not duplicate raw data)
+- [ ] Dictionary lookups replace small-table JOINs
+- [ ] Slow query log monitored (`system.query_log`)
+- [ ] Disk usage + part count monitored (`system.parts`)
+- [ ] Backup strategy via `clickhouse-backup` or managed-service equivalent
+
+## Cross-References
+
+- `~/.claude/skills/postgres-patterns/SKILL.md` — OLTP sister; ClickHouse is the OLAP complement
+- `~/.claude/skills/dynamodb-patterns/SKILL.md` — operational NoSQL sister
+- `~/.claude/skills/database-migrations/SKILL.md` — schema evolution discipline
+- `~/.claude/skills/observability-patterns/SKILL.md` — ClickHouse is often the metrics / log store backend
+- `~/.claude/rules/common/schema-evolution.md` — additive, reversible migrations
+- `~/.claude/agents/database-reviewer.md` — Council Division 9 reviewer
+- `~/.claude/agents/data-reviewer.md` — schema + analytics governance
+
+## Why this skill exists
+
+ClickHouse is the easiest-to-misuse OLAP engine in the market: it
+accepts almost any SQL, hides cost beneath an interactive query
+surface, and rewards naïve table designs with sub-second responses
+on small data — then collapses at 100×. The patterns above codify
+the production-ready posture: batched ingest, partition+sort key
+discipline, materialised views over MUTATIONs, dictionaries over
+JOINs, TTLs by default, EXPLAIN before merge. Teams that adopt
+these scale from 1 GB to 100 TB without re-architecting; teams that
+don't pay for it in merge stalls, "Too many parts" outages, and
+ballooning storage cost.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Single-row INSERT into MergeTree (batching weakening — should be ≥ 1000 rows / batch)
+- Query missing PRIMARY KEY prefix in WHERE clause (full-table scan)
+- ORDER BY column not in sort key (sort-on-read latency balloon)
+- Materialized view that re-aggregates the same data the source table already aggregates (cost duplication)
+- Disk merging stuck (Too many parts warning — insert rate too high vs background merge)
+- Dictionary lookup not used where it would replace a JOIN (perf opportunity)
+- Skipping index (data_skipping_indices) absent on high-cardinality filter column
+- TTL not declared on time-series table (cost balloon)
+- Distributed table without sharding key (skewed shards)
+- Query timing out via `max_execution_time` instead of optimised — slow-query log signal
+
+**Refinement candidates**:
+- New row in MergeTree engine selection guide (e.g., ReplicatedReplacingMergeTree, AggregatingMergeTree)
+- New materialized-view pattern when a recurring real-time aggregation shape emerges
+- New cross-reference when a sister skill (postgres-patterns, dynamodb-patterns, observability-patterns) adds an analytical pattern
+- Tightening of the insert-batch rule when ingestion rate scales

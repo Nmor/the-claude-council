@@ -127,14 +127,36 @@ justification lives where humans look for it.
   CVE-flagged-versions rule.
 - `security.md` — the dep-CVE gate sits in the same family as the
   broader OWASP / supply-chain hardening rules.
+- `dependency-overrides-not-exceptions.md` — when a transitive
+  dep is archived / abandoned, use overrides to force-upgrade the
+  consumer; only request a documented exception as a last resort.
 
-## Reback-workspace cross-references
+## How this rule pairs with workspace rules
 
-The `/Users/APPLE/Reback/CLAUDE.md` workspace file enforces several
-of these as Reback-specific lessons:
-- §5.11 — JWT lib: `golang-jwt/jwt/v5`, not `dgrijalva/jwt-go`.
-- §5.12 — Mock package: `go.uber.org/mock`, not the archived
-  `github.com/golang/mock`.
+This global rule states the principle (latest stable + no
+abandoned deps). Workspace `CLAUDE.md` files codify the
+project-specific pins + incidents that motivated each choice
+(e.g., "JWT lib must be the maintained fork, not the archived
+original"). The split keeps global guidance reusable across
+workspaces while letting workspace files carry the concrete
+package names a given codebase has burned on.
 
-This global rule is the umbrella; the workspace file holds the
-project-specific incidents that motivated each pin.
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Archived / deprecated package added or kept on first-touch (Hard rule 1 violation)
+- EOL runtime (Go ≤ 1.21, Node ≤ 18, Python ≤ 3.9) targeted by new code (Hard rule 2 violation)
+- HIGH / CRITICAL CVE present in pinned version (Hard rule 3 violation — sister `dependency-vulnerabilities.md` gate weakening)
+- Pre-release (alpha / beta / RC / nightly) pinned without documented user request (Hard rule 4 violation)
+- Drift > 1 major behind ecosystem current (Hard rule 5 violation)
+- Lockfile missing in committed tree (Hard rule 6 violation)
+- Renovate / Dependabot not enabled on repo (Hard rule 7 violation — security PRs lag)
+- "We'll bump it later" markers introduced (deferred-bump anti-pattern)
+
+**Refinement candidates**:
+- New row in the abandoned-deps table when a new archive surfaces (e.g., `node-postgres` ↔ `pg`, new SDK retirements)
+- Tightening of the "one major behind maximum" cap when N-1 versions consistently carry security debt
+- New cross-reference when a sister rule (dependency-overrides-not-exceptions, install-allowlist) provides the replacement workflow
+- New layer row in the "what rule applies to" table when a new artifact class (browser extension, edge worker, IoT runtime) emerges

@@ -1,0 +1,121 @@
+name: Bug report
+description: A rule / skill / agent / command / verifier / install script
+  is broken or behaves incorrectly.
+title: "[bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. Please include the exact reproduction
+        steps + the verifier output. Vague reports cost reviewer time;
+        precise reports get fixed quickly.
+
+        **Before filing:**
+        - Search existing issues — your report may already be tracked.
+        - Try `bash bootstrap/verify.sh --verbose` first; many issues
+          surface there.
+        - Do NOT include real secrets, API keys, or PII in this report.
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Affected surface
+      description: Which part of the config has the bug?
+      options:
+        - Rule (`rules/common/*` or `rules/<lang>/*`)
+        - Skill (`skills/<name>/SKILL.md` or its sub-assets)
+        - Agent (`agents/<name>.md`)
+        - Command (`commands/<name>.md`)
+        - Verifier script (`tests/*.sh` or `bootstrap/verify.sh`)
+        - Install script (`bootstrap/install.sh` or `install.ps1`)
+        - IDE integration (`ide-integrations/<ide>/`)
+        - Template (`templates/<name>/`)
+        - Documentation (`docs/`, `README.md`, `CHANGELOG.md`)
+        - Hook (`hooks/` or `scripts/hooks/`)
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: file
+    attributes:
+      label: Affected file path
+      description: Exact path under the repo root (e.g.,
+        `rules/common/security.md` or `tests/verify-no-orphans.sh`).
+      placeholder: rules/common/security.md
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: What actually happened? Paste exact error messages
+        and verifier output (sanitised — no secrets).
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Minimum steps for someone else to reproduce. Numbered.
+      placeholder: |
+        1. `git clone …`
+        2. `bash bootstrap/install.sh --prefix /tmp/test`
+        3. `bash bootstrap/verify.sh --prefix /tmp/test`
+        4. Observe error: …
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS (Apple Silicon)
+        - macOS (Intel)
+        - Linux (Ubuntu / Debian)
+        - Linux (Arch / Fedora / RHEL)
+        - Windows 11 (PowerShell)
+        - Windows 11 (WSL2)
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: bash-version
+    attributes:
+      label: Bash version (`bash --version` head line)
+      description: macOS default is bash 3.2 — many bash 4+ idioms
+        (mapfile, associative arrays) break there.
+      placeholder: GNU bash, version 3.2.57(1)-release (arm64-apple-darwin25)
+    validations:
+      required: false
+
+  - type: input
+    id: ide
+    attributes:
+      label: IDE / shell (if relevant)
+      placeholder: VS Code 1.95 / Cursor 1.0 / GoLand 2025.2 / iTerm2
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Logs, screenshots, related issues, anything else.
+    validations:
+      required: false

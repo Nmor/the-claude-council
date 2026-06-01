@@ -5,6 +5,14 @@ description: AWS Lambda + API Gateway + Step Functions + EventBridge + SQS/SNS p
 
 # AWS Serverless Patterns
 
+> **Reuse-first** (per `~/.claude/rules/common/reuse-first.md`):
+> One source of truth per Lambda layer concern — one auth
+> middleware, one error responder, one body parser, one
+> idempotency helper, one DDB client factory, one outbox
+> publisher. Lambda layers (or shared `/lib/` for monorepo
+> deploys) are the canonical home. Each new handler imports the
+> shared primitives; never re-implement them per handler.
+
 Lambda + API Gateway + the surrounding event-driven AWS surface. The patterns here matter because the failure modes (cold starts, lost messages, double-processing, runaway concurrency) show up at customer scale, not in dev.
 
 ## When to Activate
@@ -223,3 +231,117 @@ The auto-rollback window is your safety net. Outside it, manual rollback (re-dep
 3. **dynamodb-patterns** — when DDB is involved
 4. **security-review** — IAM, secrets, signature verification
 5. **backend-patterns** — handler / repository shape
+
+## Purpose
+
+AWS serverless architecture patterns for Lambda + API Gateway + DynamoDB + SQS + EventBridge + Step Functions: handler structure, cold-start optimisation, async-by-default for webhooks, idempotent processing, observability with EMF + X-Ray, and IaC discipline (AWS SAM, CDK, Serverless Framework).
+
+**Negative scope**: NOT general backend patterns (use `backend-patterns`). NOT DynamoDB single-table modelling (use `dynamodb-patterns`). NOT GCP / Azure serverless (different SDKs + IAM models). NOT container-on-Fargate workloads (different concurrency + cost model).
+
+## When NOT to use
+
+- Long-running tasks > 15 minutes (Lambda hard limit) → use ECS Fargate or Step Functions with task tokens
+- Workloads with steady > 100 req/s sustained (Lambda becomes more expensive than containers around this point)
+- Stateful WebSocket servers (use AppSync or API Gateway WebSocket + DDB session store)
+- Heavy CPU-bound work (Lambda CPU scales with memory; cheaper on dedicated compute)
+- Hot-path workloads with < 50ms P99 latency budget (cold-start tail will breach it)
+
+## Standards Cited
+
+- **AWS Lambda Developer Guide** (current) — execution model, cold starts, concurrency
+- **AWS Well-Architected Framework — Serverless Lens (Dec 2023)** — operational excellence + cost
+- **AWS Lambda Powertools v3** — structured logging, metrics, tracing, idempotency utility
+- **AWS API Gateway Documentation** — REST vs HTTP API, throttling, custom authorizers
+- **EventBridge / SQS / SNS Best Practices** — fan-out, dead-letter queues, retry semantics
+- **OpenTelemetry on AWS Lambda** — trace context propagation
+- **AWS IAM Best Practices** — least-privilege role design
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Webhook handler doing DB writes + external API calls inline | API Gateway 29-second timeout; provider retries on timeout → double-processing | Acknowledge fast (200 OK) → enqueue to SQS → worker processes |
+| Lambda function with > 50MB deps zipped | Cold start > 2s; deploy slow; cost per invocation up | Trim bundle (esbuild / parcel); use Lambda layers for shared deps |
+| Lambda concurrency unbounded | One viral request burst exhausts account-wide concurrency; other Lambdas throttle | Set `ReservedConcurrentExecutions` per function |
+| `console.log` for production logging | No structure; no metrics; CloudWatch costs higher | Lambda Powertools `Logger` + EMF for metrics |
+| IAM role wildcards (`Resource: "*"`) | Lateral movement on compromise | Least-privilege per-resource ARN |
+| Hardcoded ARNs / endpoints in handler | Cross-environment deploys break; per-stage config impossible | Environment variables resolved via SSM Parameter Store / Secrets Manager |
+| SQS consumer without DLQ | Poison-pill message blocks queue forever | Dead-letter queue + alarm on > 0 |
+| Provisioned concurrency on every function | Cost surge for no benefit on rarely-invoked functions | Provisioned only on user-facing hot paths |
+
+## Verification Checklist
+
+- [ ] Every Lambda function has reserved concurrency OR is documented as "best-effort burst"
+- [ ] Every SQS queue has a DLQ + CloudWatch alarm on `ApproximateNumberOfMessagesVisible > 0`
+- [ ] Webhook handlers acknowledge fast (200 OK) before doing the work
+- [ ] Idempotency via Lambda Powertools `@idempotent` decorator on at-least-once consumers
+- [ ] Structured logs via Powertools Logger; metrics via EMF inline
+- [ ] X-Ray / OTel tracing enabled with sampling rate documented
+- [ ] IAM role: no `*` resources; per-function least-privilege
+- [ ] Cold-start budget documented per function (e.g., user-facing < 500ms p99 with provisioned conc.)
+- [ ] Environment variables resolved from SSM / Secrets Manager — never hardcoded
+- [ ] `sam validate` or `cdk synth` passes; no orphan resources
+
+## Cross-References
+
+- `~/.claude/skills/backend-patterns/SKILL.md` — handler / repository / service layering
+- `~/.claude/skills/dynamodb-patterns/SKILL.md` — single-table modelling
+- `~/.claude/skills/deployment-patterns/SKILL.md` — CI/CD + canary + rollback
+- `~/.claude/skills/observability-patterns/SKILL.md` — EMF + X-Ray + structured logs
+- `~/.claude/rules/common/idempotency.md` — Idempotency-Key + dedupe table
+- `~/.claude/rules/common/secrets-management.md` — vault-first, never hardcoded
+- `~/.claude/rules/common/no-local-fs.md` — Lambda /tmp is ephemeral
+- `~/.claude/agents/security-reviewer.md` — IAM least-privilege audit
+
+## Why this skill exists
+
+Lambda's strengths (autoscaling, no server management, per-request billing) come with sharp edges: 15-min hard timeout, 29-sec API Gateway timeout, ephemeral /tmp, cold-start tail latency, account-wide concurrency limits. The recurring failure modes:
+
+- Webhook handler does the work inline → 30s timeout → provider retries → double-processing on Stripe / Twilio
+- No DLQ on SQS → one poison-pill message blocks the queue indefinitely → cascading backlog
+- IAM wildcards (`Action: "*"`, `Resource: "*"`) → one compromised function pivots the whole account
+- Hardcoded ARNs → cross-region / cross-account deploys break
+- No reserved concurrency → one Lambda's burst starves the rest; account-wide throttle
+- /tmp persistence assumption → container reuse caches it across invocations; assumption fails on cold container
+
+Cost of disciplined serverless patterns: minutes per function at write time. Cost of skipping them: incidents that look like AWS bugs but are configuration gaps.
+
+## Compliance & Standards Mapping
+
+- **ISO/IEC 25010:2011 §6** — Product quality model (Functional
+  Suitability, Reliability, Performance Efficiency, Usability,
+  Security, Maintainability, Portability, Compatibility)
+- **ISO/IEC/IEEE 12207:2017 §6.4** — Software construction +
+  verification + validation processes
+- **NIST SP 800-218 SSDF §PW** — Produce Well-Secured Software
+  (applies to every code-authoring skill)
+- **NIST SP 800-53 Rev 5 §SA-11** — Developer testing +
+  evaluation
+- **OWASP ASVS 4.0.3 §V1.1** — Secure SDLC requirements
+- **OWASP ASVS 4.0.3 §V14.2** — Dependency lifecycle
+- **CWE Top 25 (2026)** — Weakness classes the patterns in this
+  skill prevent
+- **SLSA Framework v1.0 Build L2+** — Provenance + integrity
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Lambda cold-start sustained > 1s p99 (provisioned concurrency / runtime / bundle-size review)
+- Throttle alarms firing (reserved-concurrency / account-concurrency exhaustion)
+- Webhook handler doing the work inline instead of enqueueing (async-by-default weakening)
+- Local FS write in Lambda source (`fs.writeFile` / `os.Create` / `open(...,"w")` — `no-local-fs.md` violation)
+- Env-bag size approaching 4 KB (multi-cell deployment filler — derive table names from cell-id + stage instead)
+- IAM policy with `*:*` or overbroad resource scope (least-privilege weakening)
+- Stream consumer's iterator-age sustained > 60s (consumer lagging behind producer)
+- Function package > 50 MB (cold-start tax) — split into smaller functions or move to container image
+- Step Function with > 25 states or > 10 deep nesting (split or use distributed map)
+- API Gateway endpoint without throttling configured (DoS exposure)
+- EventBridge rule without DLQ on target (poison-message loss)
+
+**Refinement candidates**:
+- New IaC template row when a new event-source binding becomes common (e.g., Kafka MSK trigger)
+- Tightening of the env-bag size rule when multi-cell deployment scales
+- New cross-reference when a sister skill (dynamodb-patterns, observability-patterns, deployment-patterns) adds a serverless gate
+- New cold-start mitigation pattern when a new AWS feature ships (e.g., LLRT, SnapStart for Node)

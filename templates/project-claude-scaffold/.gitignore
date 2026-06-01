@@ -1,0 +1,12 @@
+# Per-user overrides
+settings.local.json
+
+# Runtime audit streams (kept as durable per-workspace state but
+# not committed — they accumulate per-session data that doesn't
+# belong in shared history).
+audits/*.jsonl
+audits/<date>/
+
+# Project memory feedback files are committed; only local override
+# files are ignored.
+memory/.local/

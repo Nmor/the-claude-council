@@ -726,3 +726,109 @@ open htmlcov/index.html
 | `mail.outbox` | Check sent emails |
 
 Remember: Tests are documentation. Good tests explain how your code should work. Keep them simple, readable, and maintainable.
+
+## Purpose
+
+Principal-level Django test methodology: pytest-django + factory_boy + freezegun + pytest-mock + responses; transaction isolation via `pytest.mark.django_db`; reusable fixtures via session scope; DRF APIClient patterns; coverage gates.
+
+**Negative scope** (NOT what this skill covers):
+- Django architecture under test — see `django-patterns`
+- Security testing patterns — see `django-security`
+- Deployment / coverage / build gates — see `django-verification`
+- Generic Python testing — see `python-testing`
+- TDD methodology (RED-GREEN-REFACTOR) — see `tdd-workflow`
+
+## When NOT to use
+
+- Non-Django Python tests (use generic `python-testing`)
+- DRF-only APIs without Django models (still mostly applies; lighter setup)
+- Async-first Django ASGI tests (different fixture model — `asgi_application` fixture)
+
+## Standards Cited
+
+- **pytest 8+ Documentation** (`docs.pytest.org/en/stable/`) — core fixture system
+- **pytest-django 4.9+** (`pytest-django.readthedocs.io`) — Django integration
+- **factory_boy 3.3** (`factoryboy.readthedocs.io`) — fixture factories
+- **freezegun 1.5+** — clock control in tests
+- **responses 0.25+** + **pytest-mock** — HTTP / function mocking
+- **Django Test Reference** (`docs.djangoproject.com/en/5.1/topics/testing/`)
+- **DRF Testing** (`www.django-rest-framework.org/api-guide/testing/`)
+- **coverage.py 7+** — coverage instrumentation
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Tests that mock the ORM | Brittle; doesn't catch query / migration regressions | Use real DB via `@pytest.mark.django_db`; transactions rolled back per test |
+| Hardcoded test data inline | Duplicated across tests; brittle | factory_boy `DjangoModelFactory` with traits |
+| `time.sleep(...)` in async / Celery tests | Flaky | `freezegun.freeze_time(...)` for time; `CELERY_TASK_ALWAYS_EAGER = True` for tasks |
+| `self.assertEqual(..., len(qs))` after DB write | Caches query — second eval is stale | Use `assert qs.count() == N` (forces fresh query) |
+| Mocking `User.objects` instead of using factory | Reimplementing the ORM | `UserFactory.create_batch(3)` |
+| Tests that read `settings.DEBUG` directly | Settings frozen at import; override needs `@override_settings` | `@override_settings(DEBUG=True)` decorator |
+| Skipping `pytest.mark.django_db` for "fast" tests | Database access errors at runtime | Mark explicitly; use `transaction=False` for non-mutating tests |
+| Sharing factory instances between tests via module-level | Order-dependent | Per-test factories OR `@pytest.fixture` with explicit scope |
+
+## Verification Checklist
+
+- [ ] `pytest-django` configured with `DJANGO_SETTINGS_MODULE=myapp.settings.test`
+- [ ] factory_boy factories for every model used in tests
+- [ ] DB tests marked `@pytest.mark.django_db`; transactions rolled back
+- [ ] Time-dependent tests use `freezegun`
+- [ ] External HTTP mocked via `responses` library
+- [ ] Coverage ≥ 90% on touched files (per `extreme-lint-policy.md`)
+- [ ] DRF API tests use `APIClient` with auth helpers
+- [ ] Migrations tested: `pytest --create-db --migrations`
+- [ ] No `time.sleep`; no order-dependence (run with `pytest --random-order`)
+- [ ] Fixtures use `scope="session"` for read-only test data
+
+## Cross-References
+
+- `~/.claude/skills/django-patterns/SKILL.md` — code under test
+- `~/.claude/skills/django-security/SKILL.md` — security testing
+- `~/.claude/skills/django-verification/SKILL.md` — coverage + CI gates
+- `~/.claude/skills/python-testing/SKILL.md` — pytest baseline
+- `~/.claude/skills/tdd-workflow/SKILL.md` — RED-GREEN-REFACTOR
+- `~/.claude/rules/common/testing.md` — coverage thresholds
+- `~/.claude/rules/common/no-ambient-globals.md` — Clock / RNG injection
+- `~/.claude/agents/tdd-guide.md` — test-first delegate
+
+## Why this skill exists
+
+Django tests can become unusable through three predictable failures: mocking the ORM (tests pass, queries break), Thread.sleep() for async work (flaky), and fixture re-creation per test (slow suite). pytest-django + factory_boy + freezegun + session-scoped fixtures keep the suite fast AND faithful to production. Django's `assertRedirects`, `assertTemplateUsed`, `mail.outbox` give expressive integration assertions for free.
+
+## Compliance & Standards Mapping
+
+- **ISO/IEC 25010:2011 §6** — Product quality model (Functional
+  Suitability, Reliability, Performance Efficiency, Usability,
+  Security, Maintainability, Portability, Compatibility)
+- **ISO/IEC/IEEE 12207:2017 §6.4** — Software construction +
+  verification + validation processes
+- **NIST SP 800-218 SSDF §PW** — Produce Well-Secured Software
+  (applies to every code-authoring skill)
+- **NIST SP 800-53 Rev 5 §SA-11** — Developer testing +
+  evaluation
+- **OWASP ASVS 4.0.3 §V1.1** — Secure SDLC requirements
+- **OWASP ASVS 4.0.3 §V14.2** — Dependency lifecycle
+- **CWE Top 25 (2026)** — Weakness classes the patterns in this
+  skill prevent
+- **SLSA Framework v1.0 Build L2+** — Provenance + integrity
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- View tested by mocking ORM instead of using `pytest-django` + factory_boy (mock-heavy weakening)
+- Fixture re-creating DB state from scratch when shared `@pytest.fixture(scope="session")` would suffice (test runtime balloon)
+- Test calling external API directly (network in tests — `responses` / `vcr` weakening)
+- Settings overridden ad-hoc with `@override_settings` instead of dedicated test settings module
+- Test depending on database row count (order-dependent) instead of querying for specific shape
+- `transactional_db` not used when test needs to span transactions (TransactionTestCase replacement gap)
+- Coverage missing on signal handlers / management commands / Celery tasks
+- E2E browser test using direct DB writes instead of going through API (test isolation weakening)
+
+**Refinement candidates**:
+- New factory_boy pattern when a new model relationship emerges
+- New cross-reference when a sister skill (django-patterns, django-verification, tdd-workflow) adds a TDD gate
+- New fixture template when a recurring test-setup pattern emerges
+- Tightening of the coverage gate per touched-file when project-wide coverage drops

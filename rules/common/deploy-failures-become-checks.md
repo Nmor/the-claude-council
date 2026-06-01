@@ -6,10 +6,10 @@ When a deployment fails on a documented platform limit (AWS, GCP,
 Azure, Vercel, Cloudflare, Fly, Render, Kubernetes, anything with a
 cap that ships in vendor docs), the next commit MUST add a local
 pre-deploy check that would have caught it. The check goes wherever
-the project runs its local-pre-flight script (in StewardBot that's
-`infra/verify-local.sh`; in a typical Node project it's
-`scripts/preflight.sh` or a `predeploy` npm script). CI runs the same
-script, so the check fires both locally and in pre-deploy.
+the project runs its local-pre-flight script (typical names:
+`infra/verify-local.sh`, `scripts/preflight.sh`, or a `predeploy`
+npm script). CI runs the same script, so the check fires both
+locally and in pre-deploy.
 
 The check is part of the SAME commit that fixes the failure — never a
 follow-up ticket. Without this, the same class of bug will hit again
@@ -69,14 +69,15 @@ pattern that's filling the budget is the real problem. The proper
 fix is to redesign so the budget isn't continuously approached.
 
 For the Lambda env-bag specifically, the recurring filler is
-per-table env vars in a multi-cell deployment — each cell carries
-~37 table-name vars in `provider.environment`. The architectural
-fix is to derive table names in code from `CELL_ID` + `STAGE` + a
-known suffix pattern (a single `lib/tableNames.ts` module), reducing
-the env-bag to a small handful of vars. The project rule should
-name the threshold at which the architectural fix becomes mandatory
-(StewardBot's project rule sets it at ~30 bytes of headroom on the
-largest function).
+per-table env vars in a multi-cell deployment — each cell can
+carry dozens of table-name vars in `provider.environment`. The
+architectural fix is to derive table names in code from a
+cell-id + stage + known suffix pattern (a single
+`lib/tableNames.ts`-style module), reducing the env-bag to a
+small handful of vars. The project rule should name the
+threshold at which the architectural fix becomes mandatory
+(e.g. when headroom drops below one full env-var-row's worth on
+the largest function).
 
 ## Sister rules
 
@@ -90,3 +91,22 @@ Every new deploy failure → new row in the table above (or in the
 project's local equivalent) → new check function. The list grows
 with the codebase. Never assume "we won't hit that again" — assume
 the opposite and codify it.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Deploy failure on a documented platform limit + no pre-deploy check added in the SAME commit as the fix (core rule violation)
+- Same-shape failure recurs across deploys (codification never happened)
+- Pre-deploy check exists locally but not in CI (local-CI parity gap)
+- Pre-deploy check exists but threshold is soft (warns instead of fails) when failure mode is hard
+- Same check fires more than once in a quarter without an architectural fix considered (rule "When the check fires repeatedly" weakening)
+- Verification block reports "deploy green" without naming the pre-deploy checks that ran
+- New platform / vendor adopted without canvassing its documented limits before first deploy
+
+**Refinement candidates**:
+- New row in the platform-limits table when a new vendor or service class adopted (e.g., new edge runtime, new K8s admission limit)
+- Tightening of the soft limit when the gap to the documented cap shrinks (e.g., from 90% headroom to 50%)
+- New cross-reference when a sister rule (done-criteria, no-overclaim, runbook-template) provides the verification surface
+- New "architectural fix" template when an architectural pattern (e.g., env-var consolidation, sidecar shedding) recurs across services

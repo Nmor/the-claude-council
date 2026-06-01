@@ -1,4 +1,5 @@
 ---
+name: go-review
 description: Comprehensive Go code review for idiomatic patterns, concurrency safety, error handling, and security. Invokes the go-reviewer agent.
 ---
 

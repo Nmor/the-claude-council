@@ -1,3 +1,9 @@
+---
+name: multi-backend
+description: Backend-focused multi-model workflow (Research, Ideation, Plan, Execute, Optimize, Review).
+command: true
+---
+
 # Backend - Backend-Focused Development
 
 Backend-focused workflow (Research → Ideation → Plan → Execute → Optimize → Review), Codex-led.

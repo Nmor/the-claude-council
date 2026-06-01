@@ -5,6 +5,16 @@ description: Vue 3 idioms — Composition API, `<script setup>`, composables, Pi
 
 # Vue 3 Patterns
 
+> **Reuse-first** (per `~/.claude/rules/common/reuse-first.md`):
+> Before creating any new component, composable, store, or
+> utility, sweep `components/`, `components/ui/`, `composables/`,
+> `stores/`, `lib/`, `utils/`. One source of truth per primitive
+> (one `<BaseButton>`, one `<DescriptionEditor>`, one
+> `useApi()`, one `useToast()`). Extend with a prop or option —
+> never fork. Compositional helpers (renderless components,
+> `provide` / `inject`, slot-based APIs) are the canonical
+> mechanism for extending shared primitives in Vue.
+
 Vue 3 patterns that go beyond the generic `frontend-patterns` skill. Use
 when the question is "how should this Vue component / composable / store be
 shaped" — reactivity correctness, composable design, Pinia layout, and the
@@ -247,3 +257,135 @@ app grows.
 2. **vue3-patterns** — this skill (Vue-specific depth)
 3. **frontend-design** — typography, color, motion, aesthetics
 4. **typescript-patterns** — narrowing, branded types, exhaustiveness
+
+## Purpose
+
+Principal-level Vue 3 engineering: Composition API + `<script
+setup>` as the canonical default, composables (the `useX()`
+pattern) for reusable logic, Pinia for global state, reactivity
+discipline (no destructuring `reactive()` — that loses
+reactivity), `ref` vs `reactive` semantics, computed vs watchers,
+provide / inject scoping, async setup + `<Suspense>`, Teleport
+for portals, dynamic + async components for code-splitting,
+defineModel for v-model, TypeScript + Volar for type safety, and
+the SSR + hydration discipline (Nuxt 3 / Vite SSR).
+
+**Negative scope** (NOT what this skill covers):
+- Generic frontend patterns — see `frontend-patterns`
+- Visual design quality (typography, colour, motion) — see
+  `frontend-patterns` design section
+- TypeScript depth — see `typescript-patterns`
+- Vue 2 / Options API patterns — out (Vue 2 EOL 2024-Dec-31)
+- React / Svelte / Angular — different frameworks
+
+## When NOT to use
+
+- Pure server-rendered HTML pages with no interactivity (use
+  templates + a sprinkle of vanilla JS)
+- Single-file widget embedded in another app's DOM (Vue's runtime
+  cost is large relative to vanilla / Preact for tiny widgets)
+- Existing Vue 2 codebase mid-migration (Composition API can be
+  introduced gradually; full Vue 3 patterns require the runtime)
+
+## Standards Cited
+
+- **Vue 3 Documentation** (vuejs.org) — canonical reference
+- **Vue Style Guide — Priority A/B/C/D** (vuejs.org/style-guide)
+- **Pinia Documentation** (pinia.vuejs.org) — official state mgmt
+- **Vue Router 4 Documentation** — routing
+- **Nuxt 3 Documentation** (nuxt.com) — SSR + meta-framework
+- **Volar / vue-tsc** — type checking
+- **WHATWG HTML Living Standard** — base
+- **WAI-ARIA 1.2** — accessibility primitives for custom components
+- **WCAG 2.2** — accessibility floor (via `a11y.md`)
+- **OWASP ASVS 4.0.3 §5.3 (Output Encoding + Injection Prevention)** —
+  XSS guards (Vue's auto-escaping + sanitisation)
+- **OWASP ASVS 4.0.3 §14.4 (HTTP Security Headers)** — CSP +
+  framework integration
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Options API in new code | Inconsistent with team standard; harder to reuse logic | `<script setup>` + Composition API |
+| Destructuring `reactive()` | Loses reactivity (silent bug) | Use `toRefs(state)` OR keep state as `reactive` and access via `state.x` |
+| Mutating props directly | Vue dev mode warns; breaks one-way data flow | `emit('update:modelValue', x)` or `defineModel()` |
+| `v-html` with user input | XSS vector | Render text content; or sanitise via DOMPurify before `v-html` |
+| Inline event handler with complex logic | Untestable; coupling | Extract to method / composable |
+| Watching reactive object without `deep: true` | Misses nested changes | Use `watch(source, fn, { deep: true })` OR `watchEffect` |
+| `ref().value` reassign in template | Templates auto-unwrap; manual `.value` breaks reactivity | Use the ref directly in templates |
+| Global state in module-level `ref()` | Singleton across tests / SSR (memory leak across requests) | Pinia store (per-app instance) |
+| `setup()` with async work + no `<Suspense>` | Component hangs without fallback | Wrap in `<Suspense>` with `#fallback` |
+| Component name collision with HTML | Some browsers ignore custom elements without `-` | Multi-word PascalCase / kebab-case |
+| Provide / inject without `Symbol` keys | Name collision in larger apps | Typed `InjectionKey<T>` |
+| List rendering with index as `:key` | Animation glitches on reorder | Stable id from data |
+| Composable side effects in setup() not cleaned up | Leaks across HMR / hot reload | Use `onScopeDispose` / `onBeforeUnmount` |
+
+## Verification Checklist
+
+- [ ] Composition API + `<script setup>` used in all new files
+- [ ] Volar + `vue-tsc --noEmit` returns zero errors
+- [ ] No `reactive()` destructured without `toRefs()`
+- [ ] No `v-html` with user-controlled input
+- [ ] Composables extracted on second occurrence (rule of three)
+- [ ] Global state via Pinia (per-app instance), never module-level
+      `ref()`
+- [ ] Lists keyed by stable id from data (S6479)
+- [ ] Async setup wrapped in `<Suspense>` with fallback
+- [ ] Provide / inject use typed `InjectionKey<T>` symbols
+- [ ] Watchers use appropriate `deep` / `immediate` flags
+- [ ] `defineModel()` (3.4+) for two-way binding
+- [ ] Accessibility audited per `a11y.md` (ARIA, keyboard nav,
+      focus management)
+- [ ] No raw colour literals; design tokens via CSS vars
+- [ ] SSR-safe (no `window` access outside `onMounted`)
+- [ ] Bundle size budgeted (Vite chunk analysis)
+
+## Cross-References
+
+- `~/.claude/skills/frontend-patterns/SKILL.md` — generic patterns
+- `~/.claude/skills/typescript-patterns/SKILL.md` — TS depth
+- `~/.claude/skills/coding-standards/SKILL.md` — universal baseline
+- `~/.claude/rules/common/a11y.md` — accessibility floor
+- `~/.claude/rules/common/no-discards.md` — Vue-specific S6299
+  (no-bypass-sanitization) ban
+- `~/.claude/rules/common/extreme-lint-policy.md` — eslint-plugin-vue
+  + sonarjs strict
+- `~/.claude/agents/code-reviewer.md` — Council Division 3
+- `~/.claude/agents/ux-reviewer.md` — Council Division 7
+- Vue 3 Style Guide (vuejs.org/style-guide)
+
+## Why this skill exists
+
+Vue 3's Composition API + `<script setup>` are the canonical
+baseline for new Vue work — but the framework's flexibility means
+teams ship Vue 2 idioms, reactive() destructuring bugs, `v-html`
+XSS, and Pinia-vs-module-level-state confusion. The patterns above
+codify the production-ready posture: Composition API, typed
+composables, reactivity discipline, Pinia for global state,
+SSR-safety, ARIA-correct components, design-token-based styling.
+Teams that adopt these maintain Vue's velocity advantage; teams
+that don't accumulate the silent-bug debt the reactivity system
+hides behind interactive UIs.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Options API used in new code where Composition API + `<script setup>` is the canonical baseline
+- `ref` / `reactive` misuse (e.g., destructuring reactive object loses reactivity — silent bug)
+- `watchEffect` used where `watch` with explicit deps would be clearer
+- Composable function not prefixed with `use` (Vue convention drift)
+- Pinia store accessed inside `setup` without `storeToRefs` for destructuring (reactivity loss)
+- Template directives misused (`v-if` + `v-for` on same element, deprecated `v-html` without sanitization)
+- `provide` / `inject` used as a global state shortcut instead of Pinia
+- Component prop typed as `any` / `Object` instead of typed interface
+- `defineExpose` used to leak internals instead of defining a proper public API
+- Reactivity gotcha: mutating a `readonly` prop / mutating arrays / Maps without `.value`
+
+**Refinement candidates**:
+- New idiom row when Vue ships a new release (e.g., Vapor mode, new macros)
+- Tightening of the `<script setup>` enforcement when Options API recurs in new code
+- New cross-reference when a sister skill (frontend-patterns, typescript-patterns, accessible-forms) adds a Vue-relevant gate
+- New composable template when a recurring shared pattern emerges (e.g., `useDebounce`, `usePagination`)

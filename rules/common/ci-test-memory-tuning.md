@@ -207,3 +207,22 @@ CI test memory tuning (this turn):
   CI, not just locally
 - `deploy-failures-become-checks.md` — every CI failure mode
   becomes a documented check
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- CI test job cancelled at consistent ~5-min mark with post-cleanup `skipped` (Mode A: runner OOM preempt — diagnostic recipe applies)
+- CI test job hits its `timeout-minutes` cap with post-cleanup `success` (Mode B: worker thrash — `--workerIdleMemoryLimit` too aggressive)
+- `--max-old-space-size × --maxWorkers > 0.75 × runner_total_RAM` (OS headroom budget violated)
+- Diagnostic recipe not run before tuning (mode-recognition skipped → wrong fix applied)
+- `--workerIdleMemoryLimit` set below natural per-test heap (~1.5-2 GB for TS) — recycle thrash
+- Single-process Go tests panic with OOM on `ubuntu-latest` (GOMEMLIMIT not set)
+- Verification block missing the before/after heap × workers math after a tuning change
+
+**Refinement candidates**:
+- New runner row in the RAM reference table when GitHub Actions ships a new runner size (e.g., 32 GB linux-large, M4 mac)
+- New per-framework tuning section when a new test runner adopts worker recycling (e.g., Vitest worker memory limits, pytest-xdist process recycling)
+- Tightening of the OS-headroom percentage when 75% proves too tight on a recurring stack
+- New cross-reference when a sister rule (github-actions-gotchas, deploy-failures-become-checks) adds a CI symptom pattern

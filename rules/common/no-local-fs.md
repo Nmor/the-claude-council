@@ -140,19 +140,32 @@ suppression.
 
 ## Why this rule exists
 
-Real incidents at multiple companies (and in Reback's own audit) trace
-to local-FS-as-state on ephemeral platforms. The pattern:
+Recurring failure mode on ephemeral container platforms:
 
 1. Engineer writes "save CSV to /tmp, return path".
 2. Works on laptop and in CI (long-lived containers).
-3. Production runs on Fargate / Lambda / ECS — pod recycles, file
-   gone, follow-up read 404s.
-4. Worse: ALB / load balancer routes the follow-up read to a
-   different replica that never saw the file.
+3. Production runs on Fargate / Lambda / ECS / Cloud Run — pod
+   recycles, file gone, follow-up read 404s.
+4. Worse: load balancer routes the follow-up read to a different
+   replica that never saw the file in the first place.
+5. Even worse: a `.tmp` file written during request N is read
+   during request N+1 from a different pod, leaking data across
+   tenants when paths aren't request-scoped.
 
-The cost of fixing the pattern proactively is one S3 PutObject call
-and one `bytes.Buffer`. The cost of finding it in production is a
-P1 incident.
+The cost of fixing the pattern proactively is one object-store
+PutObject call and one in-memory buffer. The cost of finding it in
+production is a P1 incident.
+
+Sister failure modes worth naming:
+
+- **Sticky-session affinity required** — once a session-id has to
+  pin to a specific pod because of local FS state, horizontal
+  scaling stops working.
+- **Cold-start tax** — re-mounting / re-creating "cache" dirs at
+  boot adds seconds to every cold start.
+- **Disk-full incidents** — long-lived (non-FaaS) containers fill
+  their writable layer with logs / exports / temp files and crash
+  the runtime.
 
 ## Cross-references
 
@@ -162,14 +175,25 @@ P1 incident.
   becomes a pre-deploy check; the local-FS class is one of them.
 - `no-discards.md` — discarding the error from `os.Remove(path)` is
   a separate violation that compounds with this one.
+- `secrets-management.md` — credential material on local disk is a
+  sister problem; never write a token to `/tmp`.
 
-## Reback-workspace cross-reference
+## Learning hooks
 
-The Reback workspace (`/Users/APPLE/Reback/CLAUDE.md`) mandates this
-rule explicitly:
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
-> CSV exports stream to in-memory buffer → S3, never to local FS.
-> Production code does not write to the container disk.
+**Signals to watch**:
+- `os.Create` / `os.WriteFile` / `fs.writeFile` / `open(path, "w")` introduced in production source (Hard rules 1-4 violation)
+- Generated artifact (CSV, PDF, image) written to local FS instead of streamed / object-store-uploaded (use-case mapping violation)
+- Local cache directory created without request-scoped TTL + cleanup (allowed-exception 1 weakening)
+- Session storage on local FS (rule scope violation — should be Redis / signed cookies)
+- `os.TempDir()` artifact left behind without `defer os.Remove(path)` / `try/finally` cleanup
+- Tests rely on local FS read-back rather than mocked object store / MinIO container (test-isolation drift)
+- Mechanical grep gate missing from CI / pre-commit (rule "Mechanical gate" weakening)
+- Sticky-session affinity required because of local FS state (horizontal-scaling block introduced)
 
-This global rule is the umbrella; project files codify the specific
-endpoint / module fixes that motivated the rule.
+**Refinement candidates**:
+- New row in the "where to write instead" table when a new artifact class recurs (e.g., generated PDFs needing fonts cache, ML inference temp files)
+- Tightening of the allowlist-exception criteria when transient request-scoped writes prove load-bearing
+- New language entry in the Hard rules when a new ecosystem appears (e.g., Bun's filesystem APIs, Deno's permissions model)
+- New cross-reference when a sister rule (no-discards, secrets-management, idempotency) adds a write-path consumer

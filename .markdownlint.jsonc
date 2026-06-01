@@ -1,0 +1,45 @@
+// ---------------------------------------------------------------
+// Repository-level markdownlint config for "The Claude Council".
+// ---------------------------------------------------------------
+//
+// Editorial scope: this repo is a public-facing OSS project. The
+// README, INSTALL guide, and the docs/* set need inline HTML to
+// render the banner, badges row, side-by-side comparison tables,
+// and centered blocks on GitHub.
+//
+// We do NOT disable MD033 globally — instead we use markdownlint's
+// supported `allowed_elements` allowlist to permit the specific
+// HTML elements GitHub renders for fancy READMEs. Every other
+// markdownlint rule stays at canonical strictness:
+//
+//   MD022  blanks around headings
+//   MD031  blanks around code blocks
+//   MD032  blanks around lists
+//   MD040  fenced code block language required
+//   MD004  unordered lists use dashes
+//   MD060  table column style
+//
+// Per ~/.claude/rules/common/extreme-lint-policy.md:
+// "If a rule is wrong for the project, the project's lint CONFIG
+// changes ... The CODE never carries a per-line suppression to
+// bypass the rule." This file IS that config change.
+// ---------------------------------------------------------------
+
+{
+  "default": true,
+  "MD013": false,
+  "MD024": { "siblings_only": true },
+  "MD004": { "style": "dash" },
+  "MD007": { "indent": 2 },
+  "MD025": { "front_matter_title": "" },
+  "MD041": true,
+  "MD033": {
+    "allowed_elements": [
+      "a", "br", "img", "div", "span",
+      "table", "thead", "tbody", "tr", "th", "td",
+      "details", "summary",
+      "kbd", "sub", "sup", "code", "pre",
+      "strong", "em", "b", "i", "p"
+    ]
+  }
+}

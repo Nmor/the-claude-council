@@ -113,14 +113,12 @@ For each selected category, print the full list of skills below and ask the user
 
 | Skill | Description |
 |-------|-------------|
-| `continuous-learning` | Auto-extract reusable patterns from sessions as learned skills |
-| `continuous-learning-v2` | Instinct-based learning with confidence scoring, evolves into skills/commands/agents |
+| `continuous-learning-v2` | Instinct-based learning with confidence scoring, evolves into skills/commands/agents (canonical) |
 | `eval-harness` | Formal evaluation framework for eval-driven development (EDD) |
 | `iterative-retrieval` | Progressive context refinement for subagent context problem |
 | `security-review` | Security checklist: auth, input, secrets, API, payment features |
-| `strategic-compact` | Suggests manual context compaction at logical intervals |
-| `tdd-workflow` | Enforces TDD with 70%+ coverage: unit, integration, E2E |
-| `verification-loop` | Verification and quality loop patterns |
+| `tdd-workflow` | Enforces TDD with 90% touched / 80% project coverage: unit, integration, E2E |
+| `verification-loop` | Verification and quality loop patterns, plus strategic context-management at logical phase boundaries |
 
 **Standalone**
 
@@ -296,3 +294,129 @@ Then print a summary report:
 ### "Path reference errors after project-level install"
 - Some skills assume `~/.claude/` paths. Run Step 4 verification to find and fix these.
 - For `continuous-learning-v2`, the `~/.claude/homunculus/` directory is always user-level — this is expected and not an error.
+
+## Purpose
+
+Operate the install / sync / update lifecycle for `~/.claude/`
+artifacts (skills, agents, rules, commands, plans, hooks) across
+machines and IDEs. Configure-ECC keeps the global config
+reproducible: clone the canonical repo, run `bootstrap.sh`, and
+the user's Claude Code (and Cursor / JetBrains / Windsurf via
+shims) operates with the same rule-set everywhere.
+
+**Negative scope** (NOT what this skill covers):
+- Authoring new skills / rules / agents — see
+  `rule-authoring-global-vs-project.md` for placement, the
+  `principal-level-mandate.md` for depth contract
+- Project-specific configuration — workspace `.claude/`
+  directories per `project-scoped-artifacts.md`
+- Secret distribution — `secrets-management.md` covers vault-
+  based secret flow
+- Per-IDE deep settings — see `ide-integrations/` in the
+  shareable repo (Phase 14)
+
+## When NOT to use
+
+- Single-machine setup with no plans to share / sync
+- Working inside a workspace `.claude/` (those don't sync via
+  ECC; they're per-repo)
+- Editing global rules in-place rather than via the canonical
+  repo workflow
+
+## Standards Cited
+
+- **POSIX shell** (IEEE Std 1003.1-2024) — bootstrap script
+  portability requirement
+- **Semantic Versioning 2.0.0** — per `semver.md`, the
+  shareable repo versions follow MAJOR.MINOR.PATCH semantics
+- **Keep a Changelog 1.1.0** — every release ships with
+  CHANGELOG.md entries
+- **NIST SP 800-218 SSDF §PO.1** — Documented + automated
+  configuration management; configure-ecc IS the
+  implementation
+- **NIST SP 800-53 Rev 5 §CM-2** — Baseline configuration
+- **OWASP ASVS 4.0.3 §14.1** — Build pipeline integrity
+- **SLSA Framework v1.0 Build L2** — Reproducible
+  configuration deployment
+- **`~/.claude/rules/common/install-allowlist.md`** — Every
+  install passes the publisher allowlist
+- **`~/.claude/rules/common/dependency-pinning.md`** — Lockfile
+  + digest pinning applies to ECC's dependencies
+- **CWE-829** — Inclusion of Functionality from Untrusted
+  Control Sphere (relevant when ECC pulls remote artifacts)
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Editing `~/.claude/` files directly without going through the repo | Drift between machines; lost work on next sync | Edit in the repo's working tree, commit, push, pull on each machine |
+| Hardcoded `~/.claude/` paths inside skill / rule content | Breaks on machines where `$HOME` differs (e.g., shared dev hosts) | Use placeholders (`<claude-home>`) or env-var expansion |
+| `curl https://... \| sh` for bootstrap | Supply-chain risk; no integrity verification | Download → verify SHA → execute (per `install-allowlist.md`) |
+| Sync mechanism that overwrites local edits silently | Loses unmerged work | Three-way merge with clear "local vs remote" prompt |
+| Skipping `verify-repo-setup.sh` after bootstrap | First-touch posture gaps go undetected | Bootstrap runs the 20-point checklist; failures block |
+| Manual `pnpm install -g` of ECC's runtime deps | Each install pulls latest; non-reproducible | Pin via lockfile; `pnpm install --frozen-lockfile` |
+| `git push --force` to the shared repo | Overwrites teammates' updates | Use branch + PR; never force-push to `main` |
+| ECC bootstrap runs as root | Excessive privilege; supply-chain blast radius | Run as user; sudo only for explicit steps the user approves |
+
+## Verification Checklist
+
+- [ ] Bootstrap script runs cleanly on a fresh machine
+      (`./bootstrap.sh` exits 0)
+- [ ] Post-install verify script (`./verify.sh`) reports all
+      sub-system checks green
+- [ ] No hardcoded `~/.claude/` paths in skill content (run
+      `grep -r "~/.claude" skills/ rules/ | grep -v <claude-home>`)
+- [ ] Per-IDE integration shims installed where the user has
+      the IDE (VS Code / Cursor / JetBrains / Windsurf)
+- [ ] CHANGELOG.md updated for the release
+- [ ] Tag matches semver (`vMAJOR.MINOR.PATCH`)
+- [ ] Lockfile committed; `pnpm install --frozen-lockfile`
+      succeeds in CI
+
+## Cross-References
+
+- `~/.claude/rules/common/install-allowlist.md` — publisher gate
+- `~/.claude/rules/common/dependency-pinning.md` — lockfile +
+  digest discipline
+- `~/.claude/rules/common/repo-setup-checklist.md` — first-touch
+  posture (configure-ecc invokes this on bootstrap)
+- `~/.claude/rules/common/project-scoped-artifacts.md` —
+  workspace `.claude/` lifecycle (separate from global ECC)
+- `~/.claude/rules/common/rule-authoring-global-vs-project.md`
+  — promotion / demotion path between workspace + global
+- `~/.claude/rules/common/secrets-management.md` — ECC never
+  carries plaintext secrets
+
+## Why this skill exists
+
+The global Claude config rebuild created a comprehensive
+ruleset spanning 60+ rules, 50+ skills, 20+ agents, and 30+
+commands. Without an install / sync mechanism, every
+contributor's machine drifts from the canonical state within
+weeks: someone edits a rule locally, another machine never
+sees it; an agent gets updated centrally, an old version
+persists on a teammate's laptop. Configure-ECC closes the
+drift loop by making the canonical repo the source of truth
+and `bootstrap.sh` the deterministic install path. Cost: one
+script + one PR per change. Benefit: cross-machine, cross-IDE
+consistency that compounds over time.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Skill installed without Step 4 verification (hardcoded `~/.claude/` paths break in project-level install)
+- Cross-project skill duplication (same skill installed in N projects instead of promoted to global per `~/.claude/rules/common/rule-authoring-global-vs-project.md`)
+- Project-level install of a skill that should be global (universal applicability misread)
+- Global install of a skill that should be project-specific (vendor / domain pollution into global surface)
+- `$TARGET/rules/common/` subdirectory used instead of flat `$TARGET/rules/` (project-vs-global install shape confusion)
+- Restart after install skipped — skill auto-discovery doesn't pick up new file
+- `homunculus/` directory created at project level (should be user-level only)
+- Install command misuses `--global` flag when project install was intended (or vice versa)
+
+**Refinement candidates**:
+- New installer flag when a recurring install pattern (e.g., bulk-install from a manifest, sync from a shared repo) needs codification
+- Promotion path automation (workspace → global) per `rule-authoring-global-vs-project.md` rule 7
+- Demotion path documentation when global skill turns out workspace-specific
+- Pre-install validator that flags hardcoded `~/.claude/` paths before the copy step

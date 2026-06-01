@@ -5,6 +5,14 @@ description: Pythonic idioms, PEP 8 standards, type hints, and best practices fo
 
 # Python Development Patterns
 
+> **Reuse-first** (per `~/.claude/rules/common/reuse-first.md`):
+> Before creating a new class, function, or module, sweep
+> `<pkg>/lib/`, `<pkg>/utils/`, `<pkg>/services/`, `<pkg>/dto/`.
+> One source of truth per primitive (one HTTP client, one logger
+> config, one Pydantic base model, one validator, one
+> serializer). Extend via subclass / Protocol / dependency
+> injection — never fork the module into a parallel variant.
+
 Idiomatic Python patterns and best practices for building robust, efficient, and maintainable applications.
 
 ## When to Activate
@@ -747,3 +755,73 @@ except SpecificError as e:
 ```
 
 __Remember__: Python code should be readable, explicit, and follow the principle of least surprise. When in doubt, prioritize clarity over cleverness.
+
+## Purpose
+
+Pythonic idioms and patterns for production code: dataclasses + `__slots__`, type hints under `mypy --strict`, context managers, async/await with `asyncio`, comprehensions, `pathlib`, `pydantic` for validation, `pytest` for testing, and dependency management with `uv` / Poetry.
+
+**Negative scope**: NOT framework-specific (Django / FastAPI / Flask have their own skills). NOT data-science / Jupyter patterns (different concerns). NOT machine-learning pipelines (use `cost-aware-llm-pipeline`).
+
+## When NOT to use
+
+- Pure Bash / shell scripting tasks
+- Performance-critical loops where Cython / Rust extension is the right answer
+- Notebooks where reproducibility != production discipline
+- Throw-away one-off scripts where mypy strictness is more friction than value
+
+## Standards Cited
+
+- **PEP 8** — Style Guide for Python Code
+- **PEP 257** — Docstring Conventions
+- **PEP 484 / PEP 526 / PEP 604** — Type Hints (variable, parameter, union syntax `X | Y`)
+- **PEP 604** — Union types `int | str` (Python 3.10+)
+- **PEP 695** — Type Parameter Syntax (Python 3.12+)
+- **PEP 8 / PEP 257** — Style + docstrings
+- **mypy / pyright** — strict-mode type checkers
+- **ruff 0.7+** — linter + formatter (Astral)
+- **OWASP ASVS 4.0.3 §5** — validation
+- **Effective Python 3e (Slatkin, 2024)** — idiomatic patterns
+
+## Cross-References
+
+- `~/.claude/rules/python/no-discards.md` — banned Python patterns (bare except, `# noqa`, mutable defaults)
+- `~/.claude/rules/common/extreme-lint-policy.md` — strict ruff / mypy config
+- `~/.claude/rules/common/no-discards.md` — universal discards (hardcoded creds, `print()` in product code)
+- `~/.claude/skills/coding-standards/SKILL.md` — language-agnostic floor
+- `~/.claude/skills/django-patterns/SKILL.md` — Django framework specifics
+- `~/.claude/skills/python-testing/SKILL.md` — pytest + factories + property-based testing
+- `~/.claude/agents/python-reviewer.md` — PEP 8 + type hint + framework review
+
+## Why this skill exists
+
+Python's dynamic nature makes it easy to ship subtle bugs that types would catch. The recurring failure modes:
+
+- `except:` swallows every error including `KeyboardInterrupt` and `SystemExit` → uninterruptible / undebuggable code paths
+- Mutable default args (`def f(items=[])`) share state across calls → spooky bugs that look like "the function changed itself"
+- `Optional[T]` accessed without narrowing → `AttributeError: 'NoneType'` in production
+- `print()` debug statements left in product code → no structure, no levels, no correlation
+- `subprocess.run(cmd, shell=True)` with user input → command injection
+
+Cost of typed-Python discipline (mypy strict + ruff ALL): minutes per module. Cost of skipping it: incidents that look like Python bugs but are really developer-discipline gaps.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- `except:` / `except Exception:` without specific type + log + rethrow (sister `python/no-discards.md` rules 1-2)
+- `raise NewErr(...)` without `from err` (loses cause chain — rule 4)
+- `logging.error(...)` inside `except` instead of `logging.exception(...)` (rule 5)
+- `# noqa` / `# type: ignore` / `# pragma: no cover` introduced (rule 6 violation)
+- Mutable default argument (`def f(items=[])`) — rule 7 violation
+- `Optional[T]` accessed without narrowing (rule 8)
+- `Any` type used where a TypedDict / dataclass / Pydantic model would work (rule 9)
+- `print()` in production source (rule 10 — use `logging`)
+- `assert` used in production code paths (rule 13 — strips under `python -O`)
+- `subprocess.run(..., shell=True)` (rule 14 — command injection)
+
+**Refinement candidates**:
+- New per-version idiom row when a new Python release ships (e.g., 3.13 free-threaded, structural pattern-matching improvements)
+- Tightening of the strict-typing baseline when a Pydantic v3 / mypy improvement ships
+- New cross-reference when a sister rule (python/no-discards, security) adds a banned pattern
+- New error-handling template when a recurring exception class needs canonical wrapping

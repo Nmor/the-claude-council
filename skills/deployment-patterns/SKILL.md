@@ -424,3 +424,127 @@ Before any production deployment:
 - [ ] Database migration tested against production-sized data
 - [ ] Runbook for common failure scenarios
 - [ ] On-call rotation and escalation path defined
+
+## Purpose
+
+Principal-level deployment engineering: progressive delivery
+(blue/green, canary, rolling), feature-flag-decoupled releases,
+health-check gating (liveness vs readiness vs startup), automated
+rollback predicates, deploy-time idempotency, CI/CD pipeline
+discipline (build once, deploy many), artefact provenance (SLSA),
+deployment audit + traceability, and the migration-deploy decoupling
+that turns schema changes from outage candidates into routine.
+
+**Negative scope** (NOT what this skill covers):
+- Application code patterns — see `backend-patterns` /
+  `frontend-patterns`
+- Container image construction — see `docker-patterns`
+- Schema migration mechanics — see `database-migrations`
+- AWS-specific serverless deploy — see `aws-serverless-patterns`
+- Observability after deploy — see `observability-patterns`
+
+## When NOT to use
+
+- Pure local dev where there is no remote deployment target
+- One-off scripts run by a single operator on a workstation
+- Single-user single-instance hobby projects
+
+## Standards Cited
+
+- **SRE Workbook (Google, O'Reilly 2018)** — error budgets,
+  progressive rollout, change-management
+- **Accelerate (Forsgren, Humble, Kim 2018)** — DORA metrics
+  (deployment frequency, lead time, MTTR, change-failure rate)
+- **DORA State of DevOps 2024** — empirical baselines
+- **SLSA Framework v1.0** — supply-chain integrity for build artefacts
+- **NIST SP 800-218 (SSDF)** — secure software development framework
+- **OWASP CI/CD Security Top 10**
+- **Kubernetes Deployment API v1** — rolling-update semantics
+- **`~/.claude/rules/common/deploy-failures-become-checks.md`** —
+  every deploy failure becomes a pre-deploy gate
+- **`~/.claude/rules/common/plan-completion-before-push.md`** —
+  push gate after plan completion
+- **`~/.claude/rules/common/feature-flags.md`** — decoupling release
+  from deploy
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| `kubectl apply -f` from a developer laptop to production | No audit trail, no review, no provenance | GitOps (Argo CD / Flux) reads from immutable git ref |
+| Deploy that also runs migrations atomically | Coupling: migration failure rolls back code, leaves DB intact | Migrate first (separately) → deploy code that reads new schema |
+| Big-bang deploy of all services together | Failure surface = entire system | Independent deploy per service; contract tests gate the cross |
+| No automated rollback | Manual rollback during incident = MTTR blowup | Health-check + SLO predicate triggers auto-rollback |
+| Promotion via "rebuild from main" | Different artefact in prod vs staging | Build once, promote the SAME image / artefact through environments |
+| Floating image tag (`:latest`, `:main`) | Drift between deploy intent and runtime | Digest-pinned image references |
+| Health check that hits `/` instead of `/healthz` | Reports healthy on cached static page | Dedicated readiness probe touches real dependencies |
+| Readiness probe = liveness probe | Restart loops when deps are slow | Separate liveness (am I alive?) from readiness (am I serving?) |
+| Deploy without canary on a P0 service | Bug hits 100% of traffic at once | 1% → 5% → 25% → 100% with SLO gate at each step |
+| Disabling rollback "to ship the fix" | Locks you into broken state | Roll forward via the same pipeline; never disable rollback |
+| Manual config drift via console / kubectl | Cannot reproduce; cannot audit | IaC source of truth (Terraform / Pulumi / CDK) |
+| Deploy that requires "stop the world" | Forces calendared outage windows | Zero-downtime rolling update + connection draining |
+
+## Verification Checklist
+
+- [ ] Pipeline is reproducible (build once, promote artefact)
+- [ ] Artefacts signed (Cosign / Sigstore) + SBOM attached
+- [ ] Progressive delivery (canary OR blue/green) on every P0 service
+- [ ] Health probes: separate liveness / readiness / startup
+- [ ] Auto-rollback predicate defined + tested
+- [ ] DB migration deploy is decoupled from code deploy
+- [ ] Pre-deploy gate runs the same checks as CI (no parity gap)
+- [ ] Feature flag exists for risky changes (decouple release)
+- [ ] DORA metrics tracked: frequency, lead time, MTTR, failure rate
+- [ ] Audit log captures who-deployed-what-when-from-which-commit
+- [ ] Rollback path tested in non-prod within last 30 days
+- [ ] On-call rotation has runbook for each deploy class
+- [ ] Connection draining configured (`terminationGracePeriodSeconds`)
+
+## Cross-References
+
+- `~/.claude/skills/docker-patterns/SKILL.md` — image construction
+- `~/.claude/skills/aws-serverless-patterns/SKILL.md` — Lambda
+  alias-based canary
+- `~/.claude/skills/database-migrations/SKILL.md` — migrate-first
+  decoupling
+- `~/.claude/skills/observability-patterns/SKILL.md` — SLO + alerting
+  feeds rollback predicate
+- `~/.claude/rules/common/deploy-failures-become-checks.md` —
+  every failure becomes a gate
+- `~/.claude/rules/common/plan-completion-before-push.md` — push
+  gate enforcement
+- `~/.claude/rules/common/feature-flags.md` — release vs deploy
+- `~/.claude/agents/ops-reviewer.md` — Council Division 8
+
+## Why this skill exists
+
+Deployment is the most-failed boundary in software engineering:
+DORA's research shows that low performers fail 46-60% of deploys
+versus high performers' 0-15%. The gap is mechanical: high
+performers decouple release from deploy via flags, promote a
+single artefact through environments, gate canary on SLO predicates,
+and auto-rollback on failure. The patterns above codify those
+disciplines so deploys move from calendared events to background
+hum.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Deploy without rollback path tested in staging (per `~/.claude/rules/common/deploy-failures-become-checks.md`)
+- Canary stage skipped on a high-risk change (blast-radius weakening — Division 11 Risk concern)
+- Pre-deploy gate (CVE scan, license gate, schema migration dry-run) bypassed (per `~/.claude/rules/common/security-controls-org-wide.md`)
+- Deploy succeeds without post-deploy health check verification (false-positive success)
+- Database migration shipped in same deploy as code that reads new shape (atomicity violation — per `~/.claude/rules/common/schema-evolution.md`)
+- Feature flag introduced without owner / expiry / removal-task (per `~/.claude/rules/common/feature-flags.md`)
+- Production deploy on Friday afternoon / before weekend without explicit override
+- Deploy that touches > 10% of services without Risk Division engagement
+- Blue-green / canary metric thresholds set arbitrarily (without observed-baseline justification)
+- Rollback drill not run on a quarterly cadence (muscle-memory atrophy)
+
+**Refinement candidates**:
+- New deploy-strategy row when a new pattern emerges (e.g., progressive delivery via service mesh)
+- Tightening of the canary metrics / bake time when a deploy-related incident recurs
+- New cross-reference when a sister skill (aws-serverless-patterns, docker-patterns, ops-reviewer) adds a deploy gate
+- New rollback-procedure template per service class (stateless web, stateful DB, queue consumer, scheduled job)

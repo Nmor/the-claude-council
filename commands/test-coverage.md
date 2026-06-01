@@ -1,3 +1,9 @@
+---
+name: test-coverage
+description: Analyze test coverage, identify gaps, and generate missing tests to reach 80% project / 90% touched.
+command: true
+---
+
 # Test Coverage
 
 Analyze test coverage, identify gaps, and generate missing tests to reach 80%+ coverage.

@@ -173,3 +173,22 @@ incident.
   citations exist.
 - Council protocol Phase 0 (`~/.claude/CLAUDE.md`) — Architecture &
   Planning division enforces this rule.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- `docs/provider-research/<provider>.md` missing for an integration that shipped (rule violation pattern)
+- Provider-research note > 6 months stale and integration touched without refresh (cadence rule needs reinforcement)
+- Integration shaped from npm README / Stack Overflow instead of provider docs (Phase 0 discipline weak)
+- Personal-tier vs commercial-tier scope unclear — boundary missing (rule needs new section example)
+- Auth model assumed instead of cited (recurring shortcut pattern)
+- Deprecation notice from provider arrived but integration not re-read (cadence rule needs reinforcement)
+- Same provider integrated by multiple agents independently (candidate for shared provider-research template)
+
+**Refinement candidates**:
+- New canonical-doc-surface entry when a provider's docs need named anchor (table extension)
+- New anti-pattern entry when a shortcut recurs across 2+ integrations
+- Tightening of the 6-month refresh cadence when provider deprecations get missed
+- New pairing entry when sister rules consistently catch what this rule misses

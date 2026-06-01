@@ -1,4 +1,5 @@
 ---
+name: search-first
 description: Research-before-coding workflow. Search for existing tools, libraries, and patterns before writing custom code. Invokes the researcher agent.
 ---
 
@@ -156,3 +157,132 @@ Result: 1 package + 1 schema file, no custom validation logic
 - **Ignoring MCP**: Not checking if an MCP server already provides the capability
 - **Over-customizing**: Wrapping a library so heavily it loses its benefits
 - **Dependency bloat**: Installing a massive package for one small feature
+
+## Purpose
+
+Sweep the codebase, sister workspaces, vetted dependencies,
+and the broader OSS ecosystem BEFORE writing new code. Pairs
+with `reuse-first.md` as its execution arm: reuse-first says
+"don't rewrite," search-first says "here's how you find what
+exists." Covers the 4-radius escalation (in-file → in-module
+→ in-project → in-workspace → in-ecosystem) and the
+adoption gate (license + CVE + maintenance + tests).
+
+**Negative scope** (NOT what this skill covers):
+- Authoring net-new code when the search comes up empty —
+  that's the language-specific patterns skill
+- Authoring new rules — see `rule-authoring-global-vs-project.md`
+- Vendor selection at the org level — see `strategy-reviewer`
+  + `task-intake-due-diligence.md`
+
+## When NOT to use
+
+- Trivial fix in an existing function (no new abstraction)
+- The user explicitly says "write a custom one for learning"
+- Reach-out is genuinely unavailable (air-gapped env, etc.)
+
+## Standards Cited
+
+- **NIST SP 800-218 SSDF §PO.3** — Implement supporting
+  toolchains (the search-first sweep IS the toolchain
+  pre-step)
+- **NIST SP 800-53 Rev 5 §SA-15** — Development process,
+  standards, and tools (search before write enforces
+  toolchain awareness)
+- **ISO/IEC 25010:2011 §6.6** — Maintainability (reuse
+  reduces maintenance surface)
+- **OWASP ASVS 4.0.3 §V14.2** — Dependency
+  (search-first identifies the dep before adding)
+- **OWASP Dependency-Check** — applies to anything found
+  via search-first per `dependency-vulnerabilities.md`
+- **SLSA Framework v1.0** — Trusted source for adopted
+  dependencies
+- **SPDX License List** (spdx.org/licenses) — license
+  compatibility check before adoption
+- **CWE-1357** — Reliance on Insufficiently Trustworthy
+  Component (search-first's adoption gate prevents this)
+- **`~/.claude/rules/common/reuse-first.md`** — the policy
+  this skill executes
+- **`~/.claude/rules/common/install-allowlist.md`** —
+  publisher allowlist gate on adoption
+- **`~/.claude/rules/common/dependency-vulnerabilities.md`**
+  — CVE gate on adoption
+- **`~/.claude/rules/common/license-allowlist-gate.md`** —
+  SPDX gate on adoption
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Jump to code without grep | Reinvent existing utility | Sweep first per `reuse-first.md` 4-step gate |
+| Search only the current file | Misses module-level / project-level primitives | Escalate radii in order: file → module → project → workspace → ecosystem |
+| Adopt OSS without license + CVE + maintenance check | Inherit unfixable debt | Adoption gate: SPDX allowlist + CVE clean + recent maintenance + tests + docs |
+| Adopt because "the README looks good" | README ≠ code quality | Read source; check publish history; check open + closed issues |
+| Fork the library to fix one thing | Maintenance burden compounds | Send the patch upstream first; fork only as last resort |
+| Wrap an entire library in a thin adapter | Loses library benefits; doubles surface | Extend with prop / parameter / option per `reuse-first.md` rule 3 |
+| Install a 5MB package for one small function | Bundle bloat; supply-chain exposure | Copy the small function with attribution OR write inline |
+| Search only English / official sources | Misses major non-English ecosystems (Chinese / Japanese / Russian OSS) | Multi-language search when the domain is global |
+| Skip the adoption gate "just for a prototype" | Prototype becomes prod; debt entrenches | Same gate for prototype + prod |
+
+## Verification Checklist
+
+- [ ] 4-radius sweep run (in-file / module / project /
+      workspace / ecosystem) and findings documented
+- [ ] Adoption gate passed: license SPDX-allowlisted, CVE
+      clean, maintained < 12mo, tests present, docs
+      sufficient
+- [ ] Publisher allowlist check per
+      `~/.claude/rules/common/install-allowlist.md`
+- [ ] If extending existing primitive: rule of three honored
+      (extract on 2nd occurrence; never fork on 3rd)
+- [ ] Rationale documented (reuse / extend / custom — and
+      why)
+
+## Cross-References
+
+- `~/.claude/rules/common/reuse-first.md` — the policy
+- `~/.claude/rules/common/install-allowlist.md` — adoption
+  publisher gate
+- `~/.claude/rules/common/dependency-vulnerabilities.md` —
+  adoption CVE gate
+- `~/.claude/rules/common/license-allowlist-gate.md` —
+  adoption license gate
+- `~/.claude/rules/common/dependency-pinning.md` — pin
+  what's adopted
+- `~/.claude/rules/common/updated-frameworks.md` — adopt
+  current stable, not abandoned
+- `~/.claude/rules/common/task-intake-due-diligence.md` Q1,
+  Q3, Q4 — search-first is the intake's prior-art arm
+- `~/.claude/skills/iterative-retrieval/SKILL.md` —
+  subagent-driven cross-codebase search
+
+## Why this skill exists
+
+Every line of net-new code is a line of net-new maintenance
+debt. Existing primitives — in the codebase, in vetted deps,
+in mature OSS — solve most problems already. Search-first
+disciplines the agent to find them before writing parallel
+implementations. Cost: a few greps + an adoption-gate check.
+Benefit: maintenance surface stays flat; security posture
+inherits from the adopted lib's track record; team
+onboarding stays simple because the codebase uses canonical
+patterns rather than parallel home-rolled variants.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- New component / function / module written without a codebase sweep first (sister `reuse-first.md` rule 1 violation)
+- Same conceptual unit implemented twice in same project (rule of three violated at occurrence 2)
+- Existing primitive copied + modified instead of extended via prop / option / parameter (forking anti-pattern)
+- Dependency installed for one small feature when an internal helper exists (dependency-bloat)
+- MCP capability re-implemented as custom code when an existing server provides it
+- Search query too narrow — primitive missed due to naming variance (search heuristic gap)
+- Selection criteria skipped on a new OSS adoption (no license / maintenance / security gate)
+
+**Refinement candidates**:
+- New scoring axis when a recurring evaluation gap appears (e.g., bundle size, cold-start cost, accessibility built-in)
+- New OSS-vs-custom heuristic row when a recurring tradeoff class emerges
+- Tightening of the "rule of three" trigger threshold when twin implementations consistently drift
+- New cross-reference when a sister rule (reuse-first, install-allowlist, dependency-vulnerabilities) provides the canonical adoption gate

@@ -332,3 +332,105 @@ Day 7: Migration drops old status column
 | Inline index on large table | Blocks writes during build | CREATE INDEX CONCURRENTLY |
 | Schema + data in one migration | Hard to rollback, long transactions | Separate migrations |
 | Dropping column before removing code | Application errors on missing column | Remove code first, drop column next deploy |
+| Long-running transaction holding table lock | Connection pool starves; downstream timeouts | Batch the data migration; commit per batch |
+| Backfill loop with `WHERE id > $last` but no index on `id` | Sequential scan per batch | Verify primary-key / sequential index before backfill |
+| Renaming column in one step | Old code still queries old name during deploy window | Add new column → dual-write → backfill → switch reads → drop old |
+| Foreign-key add without `NOT VALID` | Locks both tables for validation | `ADD CONSTRAINT ... NOT VALID` then `VALIDATE CONSTRAINT` |
+| Changing column type in place | Full table rewrite + downtime | Add new column with new type → backfill → swap → drop old |
+| Migration that depends on application logic | Cannot be replayed deterministically | Migrations are pure SQL OR pure data-only scripts; not both |
+
+## Purpose
+
+Principal-level migration discipline: zero-downtime schema
+evolution, expand-contract pattern, backfill batching, idempotent
++ reversible migrations, blue/green schema compatibility, FK + index
+add-without-lock semantics (Postgres `NOT VALID` / MySQL `ALGORITHM
+INPLACE LOCK NONE`), the migration calendar (announce → deploy →
+backfill → cutover → cleanup), and cross-ORM migration semantics
+(Prisma / Drizzle / Django / TypeORM / golang-migrate / Alembic).
+
+**Negative scope** (NOT what this skill covers):
+- Application-level schema (Zod / Pydantic / class-validator) — out
+- Data lake schema evolution (Iceberg / Delta) — separate domain
+- NoSQL schema-less migration — see `dynamodb-patterns`
+- ClickHouse analytics-side migration — see `clickhouse-io`
+
+## When NOT to use
+
+- Schema-less stores where each write may have its own shape — the
+  application owns the shape contract instead
+- Workloads where downtime is acceptable AND schema changes are rare
+  (the discipline still helps, but is over-investment for the scale)
+- Single-developer hobby projects without production users
+
+## Standards Cited
+
+- **PostgreSQL Documentation v17** — ALTER TABLE, CREATE INDEX
+  CONCURRENTLY, NOT VALID + VALIDATE CONSTRAINT
+- **MySQL Reference Manual 8.4** — Online DDL operations matrix
+  (ALGORITHM=INPLACE, LOCK=NONE)
+- **SQL:2023 (ISO/IEC 9075)** — DDL grammar
+- **`~/.claude/rules/common/schema-evolution.md`** — expand-contract
+- **`~/.claude/rules/common/deprecation-lifecycle.md`** — old-column
+  retirement runway
+- **OWASP ASVS 4.0.3 §1.4 (Architectural Documentation)** —
+  versioned schema as ADR
+- **NIST SP 800-53 Rev 5 CM-3 (Configuration Change Control)**
+
+## Verification Checklist
+
+- [ ] Migration is reversible OR a documented one-way exception
+- [ ] Migration is idempotent (re-running is safe)
+- [ ] EXPLAIN run on every ALTER on tables > 1M rows
+- [ ] `CREATE INDEX` uses `CONCURRENTLY` (Postgres) / online DDL (MySQL)
+- [ ] FK adds use `NOT VALID` + separate `VALIDATE CONSTRAINT`
+- [ ] Backfills batched (≤ 10k rows per commit) with progress logging
+- [ ] Expand-contract pattern used for any breaking change
+- [ ] Old column retirement follows `deprecation-lifecycle.md`
+- [ ] Migration tested against production-sized snapshot in staging
+- [ ] Application deploys decoupled from migration deploys
+- [ ] Rollback path documented + tested
+- [ ] Migration runner has timeout + lock-wait limits configured
+
+## Cross-References
+
+- `~/.claude/skills/postgres-patterns/SKILL.md` — OLTP target
+- `~/.claude/skills/clickhouse-io/SKILL.md` — OLAP migration shape
+- `~/.claude/skills/dynamodb-patterns/SKILL.md` — NoSQL evolution
+- `~/.claude/rules/common/schema-evolution.md` — expand-contract
+- `~/.claude/rules/common/deprecation-lifecycle.md` — runway
+- `~/.claude/rules/common/idempotency.md` — re-runnable migrations
+- `~/.claude/agents/database-reviewer.md` — Council Division 9
+
+## Why this skill exists
+
+Migrations are where teams pay the deferred cost of every schema
+shortcut they took during early development. Without zero-downtime
+discipline, a single `ALTER TABLE ... ADD COLUMN NOT NULL` blocks
+writes for minutes on a multi-million-row table; a one-step rename
+breaks every running instance during deploy; a backfill in one
+transaction holds locks until the connection pool exhausts. The
+expand-contract pattern + online DDL + batched backfills + decoupled
+deploys turn schema evolution from a calendared outage into a
+non-event.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Migration not reversible (no down-migration; sister `schema-evolution.md` rule 2 violation)
+- Migration not idempotent (re-run fails — rule 3 violation)
+- `CREATE INDEX` without `CONCURRENTLY` on a > 1M row table (Postgres lock-wait)
+- `ALTER TABLE ... ADD COLUMN ... NOT NULL DEFAULT x` on a populated table without bridge constraint (table rewrite)
+- Schema + data backfill bundled in a single migration (long-transaction lock contention)
+- Column dropped before consumer code removed (deploy ordering violated)
+- Production-only schema change applied manually (no migration file in repo)
+- Backfill UPDATE not batched (single transaction locks the table)
+- Migration tested on dev (10k rows) but not production-sized data
+
+**Refinement candidates**:
+- New row in the anti-pattern table when a recurring migration failure class emerges
+- Tightening of the "test against production size" gate when a recurring slow-migration incident recurs
+- New cross-reference when a sister rule (schema-evolution, dependency-pinning, deploy-failures-become-checks) adds a migration gate
+- New per-engine guidance when a new DB version's online-DDL semantics change (MySQL 8.4, Postgres 17 partitioning)

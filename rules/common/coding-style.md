@@ -188,3 +188,26 @@ just the one introduced — pre-existing violations are now in scope too.
 
 Operator override (humans only, never the agent):
 `export CLAUDE_NO_DISCARDS_HOOK=off`.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Mutation on an existing object instead of returning a new copy (Immutability rule violation)
+- Files past 800 LOC introduced (file-organization warning)
+- Functions > 50 lines / files > 800 lines created (size discipline weakening)
+- Deep nesting (> 4 levels) recurring in new code
+- User input not validated at system boundary (validation-at-boundary weakening)
+- Errors swallowed in UI-facing code (no user-friendly message surfaced)
+- Comment introduced with banned tokens (Sonar rule IDs, ticket numbers, "legacy" / "byte-identical" / "preserved" framing)
+- TODO / FIXME / XXX markers introduced (banned per Comments section)
+- Suppression directive (`// nolint`, `// eslint-disable`, `# noqa`, `@ts-ignore`) attempted (PostToolUse hook blocked)
+- Hardcoded credential prefix detected (hook blocked: `sk-proj-`, `sk_live_`, `ghp_`, `AKIA…`, `Bearer eyJ…`)
+- Raw color literal added to UI source (hook blocked: hex / rgb / hsl / oklch)
+
+**Refinement candidates**:
+- New row in the "banned vocabulary" comment table when a new refactor-history phrasing recurs
+- Tightening of the file-LOC warning threshold (currently 800) when small files consistently produce cleaner reviews
+- New cross-reference when a sister rule (no-discards, no-silent-failures, no-silent-drops) provides the canonical home for a banned pattern
+- New hardcoded-credential prefix entry when a new vendor's key shape appears (e.g., new OAuth provider, new cloud)

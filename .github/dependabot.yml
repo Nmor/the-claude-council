@@ -1,0 +1,51 @@
+# Dependabot configuration — The Claude Council
+#
+# Scope: this repo is overwhelmingly Markdown + shell + PowerShell.
+# The only managed-dependency surface is GitHub Actions (third-
+# party actions in `.github/workflows/`). All third-party actions
+# are SHA-pinned per `rules/common/security-controls-org-wide.md`
+# (tag retargeting is a documented supply-chain vector), and
+# Dependabot is configured to bump the SHA while preserving the
+# version comment.
+#
+# Schedule: weekly bumps on Monday morning UTC. Security advisories
+# fast-track via the GitHub-side "security updates" feature
+# (always-on; not configured here).
+#
+# Reference:
+# https://docs.github.com/en/code-security/dependabot/working-with-
+# dependabot/dependabot-options-reference
+
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: chore
+      include: scope
+    pull-request-branch-name:
+      separator: "/"
+    # SHA-pin discipline: Dependabot bumps the digest + the version
+    # comment in lockstep. No manual version-string editing needed.
+    groups:
+      gh-actions-non-major:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+      gh-actions-major:
+        applies-to: version-updates
+        update-types:
+          - major
+    reviewers:
+      - nmor

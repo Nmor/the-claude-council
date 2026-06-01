@@ -1,5 +1,28 @@
 # Git Workflow
 
+## Per-org git identity (set before the first commit)
+
+When a developer or agent works across multiple GitHub organisations
+with distinct email identities (personal account, employer org, side
+project org, client orgs), the canonical shape is:
+
+1. **Global default** in `~/.gitconfig` — set to the most-used or
+   least-sensitive identity (typically personal).
+2. **Per-org override** via `[includeIf
+   "hasconfig:remote.*.url:https://github.com/<org>/**"]` blocks
+   loading a `~/.gitconfig-<org>` snippet that pins `user.name`,
+   `user.email`, AND `user.signingkey`.
+3. **Per-org signing key** registered as a *Signing Key* (not just
+   an Authentication Key) on the matching GitHub account.
+4. **First-touch protocol**: on first clone / first edit of a repo
+   from a new org, the agent verifies `git config user.email`
+   matches the org's identity BEFORE the first commit. Mismatched
+   commits create attribution accidents; never rewrite already-
+   pushed history without explicit user authorization.
+5. **Per-workspace specifics** (exact identities, signing-key paths,
+   path-coverage globs) live in that workspace's `.claude/rules/`,
+   not in global. Global states only the principle.
+
 ## Commit Message Format
 
 ```
@@ -43,3 +66,23 @@ When creating PRs:
 4. **Commit & Push**
    - Detailed commit messages
    - Follow conventional commits format
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Commit authored with wrong identity for the target org (per-org `includeIf` block missing or misconfigured)
+- Commit unsigned when the repo's policy requires signing (signing-key not registered for that org's identity)
+- First-touch protocol skipped — agent commits before verifying `git config user.email` matches the org (rule "First-touch protocol" weakening)
+- PR created from only the latest commit's diff instead of the full divergence diff vs base (PR workflow violation)
+- Branch pushed without `-u` flag on first push (workflow weakening — upstream tracking missing)
+- TDD coverage gate of 70% used instead of canonical 90% touched / 80% project (sister rule `extreme-lint-policy.md` weakening — stale threshold)
+- Already-pushed history rewritten without explicit user authorization
+- Conventional-commits type misused (e.g., `feat:` for a pure refactor; `fix:` for a feature)
+
+**Refinement candidates**:
+- New conventional-commit type row when a recurring change class needs distinct labelling (e.g., `revert:`, `deps:`, `i18n:`)
+- Tightening of the per-org first-touch check when identity mismatches recur in retrospectives
+- New cross-reference when a sister rule (plan-completion-before-push, no-overclaim) provides a pre-push gate
+- New PR template row when a recurring section (security checklist, accessibility checklist) belongs in every PR body

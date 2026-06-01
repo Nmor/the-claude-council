@@ -136,5 +136,32 @@ The cost of pausing to verify is low; the cost of silently dropping product work
 ## Reference
 
 - `done-criteria.md` — the service-migration "done" checklist that complements this principle for large refactors.
+- `code-graph-validation.md` — graph gaps (dangling-inbound "unused"
+  imports, commented-out half-implementations, defined-but-unused
+  exports) are NOT silent-drop cleanup fodder. The incremental
+  code-graph check runs BEFORE any delete decision; verify before
+  removing; ask the user when a graph edge's intent is ambiguous;
+  every uncovered gap is wired, defined, or removed with explicit
+  confirmation — never silently. `BUG(unwired-<slug>)` markers are
+  the documented-deferral form per Rule 0 above.
 - `sonarlint-checks.md` — linter-level rules. S1135 (TODO) and S125 (commented-out code) interact directly with Rule 1 above.
 - `~/.claude/scripts/hooks/lib/no-discards-rules.js` — the PostToolUse hook that auto-blocks meta-comments, suppression directives, and TODO/FIXME placeholders before they reach disk.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Commented-out code deleted without user confirmation (Rule 0 violation pattern)
+- TODO / FIXME / XXX marker removed without implementing the underlying work (Rule 1 violation)
+- "Unused" import deleted that was actually a wiring gap (Rule 2 enforcement weak)
+- Three-layer (BE + FE + infra) restoration shipping with only one layer touched (Rule 8 weakening)
+- Recent deletion audit skipped on a "fix everything" sweep (Rule 7 weakening)
+- Suppression directive added to silence a warning rather than fix the underlying code (Rule 4 violation)
+- Same "we'll do this later" pattern recurring across PRs (taxonomy needs new banned shape)
+
+**Refinement candidates**:
+- New entry in the "Specific Rules" list when a new silent-drop shape recurs across 2+ incidents
+- Tightening of the three-layer-restoration evidence requirements when a layer is consistently missed
+- New cross-reference when a sister rule (no-discards, no-overclaim) covers a pattern previously thought unique to this rule
+- New hook integration when the PostToolUse rule could mechanically catch what currently requires manual review

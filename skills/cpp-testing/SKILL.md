@@ -320,3 +320,109 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 
 - **Catch2**: header-only, expressive matchers
 - **doctest**: lightweight, minimal compile overhead
+
+## Purpose
+
+Principal-level C++ test methodology: GoogleTest fixtures + parameterised tests, CTest integration, sanitiser-instrumented runs in CI, fuzz testing for parser/serializer paths, benchmark harness (Google Benchmark), code coverage via gcov / llvm-cov.
+
+**Negative scope** (NOT what this skill covers):
+- C++ language idioms — see `cpp-coding-standards`
+- Build configuration — see `deployment-patterns`
+- Cross-language testing concepts — see `tdd-workflow`
+- Performance profiling (perf, vtune) — defer to project-specific
+
+## When NOT to use
+
+- C-only test suites (use Unity / CMock)
+- Embedded / no-libstdc++ targets (use bare-metal test harnesses)
+- Property-based testing as primary mode (use RapidCheck integration directly)
+
+## Standards Cited
+
+- **GoogleTest 1.15 User Manual** (`google.github.io/googletest/`) — fixture, parameterised, typed, death tests
+- **Google Benchmark 1.9+** (`github.com/google/benchmark`) — microbenchmark harness
+- **CTest 3.30+ Documentation** (`cmake.org/cmake/help/latest/manual/ctest.1.html`) — test orchestration
+- **AddressSanitizer / UBSan / TSan / MSan documentation** (`clang.llvm.org/docs/AddressSanitizer.html`) — runtime instrumentation
+- **libFuzzer / AFL++** — fuzz testing
+- **OpenSSF Scorecard** — supply-chain checks
+- **CWE-787 / CWE-416 / CWE-119** — memory-safety bug classes sanitisers detect
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Running tests without sanitisers | UB / UAF / leaks invisible | CI matrix: `Debug+ASan+UBSan`, `Debug+TSan`, `Release` |
+| `EXPECT_EQ(ptr, nullptr)` instead of `ASSERT_EQ` | Subsequent dereference is UB | `ASSERT_EQ` halts on failure; `EXPECT_*` continues |
+| Test fixtures sharing static state | Order-dependent failures | Per-fixture `SetUp` / `TearDown`; no statics |
+| Mocking via macros without `MOCK_METHOD` | No verification of call shape | GoogleMock `MOCK_METHOD` + `EXPECT_CALL` |
+| `EXPECT_TRUE(complicated_expression)` | Failure message says "false" — useless | Break into named bool + `EXPECT_TRUE(named)` OR use richer matcher |
+| Death tests without `EXPECT_DEATH` regex | Matches ANY death | `EXPECT_DEATH(stmt, "expected error message regex")` |
+| Sleeping `std::this_thread::sleep_for(...)` for race conditions | Flaky | `std::promise/future` synchronisation OR atomics with condition |
+| Test depending on system locale / timezone | CI flake | Fix locale + tz via env vars in test setup |
+
+## Verification Checklist
+
+- [ ] AddressSanitizer + UBSan enabled in Debug build (CMake `-fsanitize=address,undefined`)
+- [ ] ThreadSanitizer separately enabled for concurrency tests
+- [ ] CTest runs via `ctest --output-on-failure --parallel N`
+- [ ] Coverage via `llvm-cov gcov`; ≥ 90% on touched files
+- [ ] Fuzz targets for parsers / deserializers (libFuzzer corpus committed)
+- [ ] Benchmarks pinned via Google Benchmark with `--benchmark_min_time=1.0s`
+- [ ] Death tests use specific regex match
+- [ ] Tests deterministic (no `sleep_for`, locale-fixed, tz-fixed)
+- [ ] CI matrix covers GCC + Clang + MSVC where applicable
+- [ ] No static state between tests; `SetUp` / `TearDown` enforced
+
+## Cross-References
+
+- `~/.claude/skills/cpp-coding-standards/SKILL.md` — code idioms under test
+- `~/.claude/skills/security-review/SKILL.md` — memory-safety review
+- `~/.claude/skills/tdd-workflow/SKILL.md` — RED-GREEN-REFACTOR
+- `~/.claude/rules/common/testing.md` — coverage thresholds
+- `~/.claude/rules/common/no-ambient-globals.md` — DI for testability
+- `~/.claude/rules/cpp/testing.md` — C++-specific
+- `~/.claude/agents/code-reviewer.md`
+- `~/.claude/agents/security-reviewer.md`
+
+## Why this skill exists
+
+C++ tests that don't run with AddressSanitizer + UBSan are passing tests with hidden landmines — use-after-free + buffer overflow happen silently in production and present as crashes weeks later. CI-instrumented runs catch these at PR time. Add fuzz testing for parsers + GoogleBenchmark for perf-critical paths, and the suite serves both correctness AND regression detection. The cost is one CMake flag per build mode; the benefit is C++ code that doesn't ship the next memory-safety CVE.
+
+## Compliance & Standards Mapping
+
+- **ISO/IEC 25010:2011 §6** — Product quality model (Functional
+  Suitability, Reliability, Performance Efficiency, Usability,
+  Security, Maintainability, Portability, Compatibility)
+- **ISO/IEC/IEEE 12207:2017 §6.4** — Software construction +
+  verification + validation processes
+- **NIST SP 800-218 SSDF §PW** — Produce Well-Secured Software
+  (applies to every code-authoring skill)
+- **NIST SP 800-53 Rev 5 §SA-11** — Developer testing +
+  evaluation
+- **OWASP ASVS 4.0.3 §V1.1** — Secure SDLC requirements
+- **OWASP ASVS 4.0.3 §V14.2** — Dependency lifecycle
+- **CWE Top 25 (2026)** — Weakness classes the patterns in this
+  skill prevent
+- **SLSA Framework v1.0 Build L2+** — Provenance + integrity
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- AddressSanitizer disabled in CI (use-after-free / heap-overflow caught at runtime)
+- UndefinedBehaviorSanitizer disabled in CI (signed-overflow / null-deref escapes)
+- ThreadSanitizer skipped on concurrent code (data race undetected)
+- Test linking against production binary instead of test target (link-cycle issue)
+- Mock framework abuse (over-mocking — testing the mock, not the code)
+- Flaky test attributed to "timing" instead of root-cause fix (per `~/.claude/rules/common/proper-fixes-first.md`)
+- Coverage gate not enforcing per-module minimum
+- Death-test absent on assert-fail / abort-able paths
+- `ASSERT_EQ` used where `EXPECT_EQ` would let later assertions run (test-stop weakening)
+- Test using `sleep(N)` instead of synchronization primitive (flaky)
+
+**Refinement candidates**:
+- New sanitizer row when a new compiler sanitizer ships (e.g., MemorySanitizer on Clang)
+- New cross-reference when a sister skill (cpp-coding-standards, tdd-workflow, security-review) adds a C++ test gate
+- New mocking template when a recurring shape emerges (e.g., GMock for callback interfaces)
+- Tightening of the test-runtime budget when slow tests recur

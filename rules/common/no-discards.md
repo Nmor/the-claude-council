@@ -607,6 +607,7 @@ exists so the workflow is explicit and the failure cannot recur as
 | 38 | Empty function body (S108) | `grep -nE "\{\s*\}"` | Implement or document why |
 | 39 | `catch (e) { throw e }` useless rethrow (S2737) | Visual | Drop the try/catch or add real handling |
 | 40 | Caught exception used only for `instanceof`, never logged (S1166) | Visual | Always log on the way through |
+| 41 | `throw` / `reject` / `raise` in a user-facing path WITHOUT a paired user-visible surface (toast / inline validation / banner / state transition / modal) — `no-silent-failures.md` rule 7 | Visual + grep for `throw ` / `reject(` / `raise ` in views / handlers / form-submit / API client; confirm each is caught + surfaced | Pair every throw in a user-facing path with toast.error / inline error / banner / status transition. NEVER rely on a generic ErrorBoundary as the first UX surface. Server-side throws route through a centralised exception handler that emits a typed `{error_code, message, details}` envelope per `error-handling-with-context.md` rule 4 |
 
 ### How to run the audit
 
@@ -646,3 +647,22 @@ Operator override (humans only, never the agent):
 - `sonarlint-checks.md` — exhaustive SonarLint rule table with per-rule fix recipes.
 - `done-criteria.md` — service-migration done checklist.
 - `coding-style.md` — broader code style (comments, file organization, immutability).
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Hook rejection on a new pattern not in the current rule list (candidate for promotion to documented pattern)
+- Discard pattern shipping despite the hook (hook coverage gap — refine the regex / AST query)
+- Suppression directive (`// eslint-disable`, `//nolint`, `# noqa`) attempted (rule violation — log + reinforce)
+- Same SonarLint code (S1192, S3776, S6571, etc.) recurring across PRs in 30 days (lint config or developer-pattern signal)
+- New language added to the rebuild without a per-language `no-discards.md` extension (rule needs extension)
+- Pre-delivery self-audit checklist row repeatedly missed (rule discipline weak — needs sharpening)
+- Hardcoded credential prefix appearing in source despite hook (new prefix pattern to add to the hook)
+
+**Refinement candidates**:
+- New banned-pattern entry when a class recurs across 2+ services
+- New hook check when a pattern bypass surfaces
+- Tightening of complexity / length / parameter caps when chronic violation observed
+- New per-language `no-discards.md` extension when a language enters the rebuild

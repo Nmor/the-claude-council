@@ -224,3 +224,22 @@ Already applied in `~/.claude/settings.local.json`:
 - `official-docs-first.md` — every new external integration requires
   primary-source provider research first
 - `~/.claude/plugins/blocklist.json` — programmatic deny-list
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Auto-run install (`npx -y`, `pnpm dlx`, `curl … | sh`) attempted (rule 2 / 3 violation)
+- Unknown-publisher VS Code / Cursor extension installed without ask (publisher allowlist breach)
+- New MCP server registered without source review (rule 5 weakening)
+- Homebrew install from unofficial tap without ask (rule 6 violation)
+- New typosquat / supply-chain-compromise incident matches an existing extension publisher pattern
+- "Allowed" publisher discovered to have rotated maintainer with new account-takeover risk (allowlist needs revalidation)
+- Post-install CVE scan skipped (rule 7 weakening)
+
+**Refinement candidates**:
+- New package on the DO-NOT-INSTALL list when a supply-chain compromise emerges
+- New verified publisher row when an org maintainer proves trustworthy across multiple extensions
+- Tightening of the MCP publisher check when a new MCP-specific attack surface (binary substitution, etc.) is observed
+- New cross-reference when a sister rule (dependency-vulnerabilities, security-controls-org-wide) provides the post-install gate

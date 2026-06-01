@@ -1,0 +1,339 @@
+// Windsurf settings template — security-hardened + Claude-integrated.
+// Apply by merging into:
+//   macOS:   ~/Library/Application Support/Windsurf/User/settings.json
+//   Linux:   ~/.config/Windsurf/User/settings.json
+//   Windows: %APPDATA%\Windsurf\User\settings.json
+//
+// Windsurf is a VS Code fork; most VS Code settings apply identically.
+// This file augments the VS Code baseline with Windsurf-specific
+// Codeium settings (privacy + AI feature toggles) so the Codeium
+// telemetry surface is brought down to the same posture as Microsoft
+// VS Code telemetry per ~/.claude/rules/common/secrets-management.md.
+//
+// References:
+// - ~/.claude/templates/ide-configs/vscode/settings.json (base)
+// - ~/.claude/rules/common/install-allowlist.md
+// - ~/.claude/rules/common/secrets-management.md
+// - ~/.claude/rules/common/extreme-lint-policy.md
+// - Codeium / Windsurf docs: codeium.com/windsurf/docs
+{
+  // ============================================================
+  // Security & workspace trust (per install-allowlist.md)
+  // ============================================================
+  "security.workspace.trust.enabled": true,
+  "security.workspace.trust.untrustedFiles": "prompt",
+  "security.workspace.trust.emptyWindow": false,
+  "security.workspace.trust.startupPrompt": "always",
+
+  // ============================================================
+  // Extension governance (per install-allowlist.md)
+  // ============================================================
+  "extensions.autoCheckUpdates": true,
+  "extensions.autoUpdate": false, // Manual review before update
+  "extensions.ignoreRecommendations": false,
+
+  // ============================================================
+  // Git safety (per plan-completion-before-push.md + git-workflow.md)
+  // ============================================================
+  "git.allowNoVerifyCommit": false,
+  "git.allowForcePush": false,
+  "git.confirmSync": true,
+  "git.enableCommitSigning": true,
+  "git.suggestSmartCommit": false,
+
+  // ============================================================
+  // Telemetry (privacy) — VS Code side
+  // ============================================================
+  "telemetry.telemetryLevel": "off",
+  "workbench.enableExperiments": false,
+
+  // ============================================================
+  // Codeium / Windsurf privacy + AI feature controls
+  // ============================================================
+  // Disable Codeium telemetry. Codeium-Codeium (free) opts into
+  // training data sharing by default; Codeium Teams / Enterprise
+  // does not. Either way, opt out explicitly per
+  // ~/.claude/rules/common/gdpr-ccpa.md customer-data minimisation.
+  "codeium.enableConfig": {
+    "*": true,
+    // Per-language opt-outs go here when a workspace handles
+    // regulated data (PHI / PCI scope / classified).
+  },
+  "codeium.telemetry.telemetryLevel": "off",
+  "codeium.telemetry.optOut": true,
+
+  // Windsurf Cascade — disable inline AI suggestions by default
+  // when using Claude Code as the primary AI assistant. Re-enable
+  // per-workspace when Cascade is the chosen tool. Two-AI-overlapping
+  // produces ghost-text and prompt-popup conflicts.
+  "windsurf.cascade.enabled": false,
+  "windsurf.supercomplete.enabled": false,
+  "codeium.enableCodeLens": false,
+
+  // ============================================================
+  // Task safety (per install-allowlist.md)
+  // ============================================================
+  "task.allowAutomaticTasks": "off",
+
+  // ============================================================
+  // Editor — format on save (per extreme-lint-policy.md)
+  // ============================================================
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.formatOnType": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always",
+    "source.organizeImports": "always"
+  },
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.trimFinalNewlines": true,
+  "editor.rulers": [80, 100], // matches MD013 line-length floor
+
+  // ============================================================
+  // Per-language defaults (mirror VS Code baseline)
+  // ============================================================
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "always",
+      "source.organizeImports.ruff": "always"
+    }
+  },
+  "[go]": {
+    "editor.defaultFormatter": "golang.go",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "always"
+    }
+  },
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    "editor.formatOnSave": true,
+    "editor.wordWrap": "on"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features",
+    "editor.formatOnSave": true
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features",
+    "editor.formatOnSave": true
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.formatOnSave": true
+  },
+  "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.formatOnSave": true
+  },
+  "[cpp]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[c]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4
+  },
+  "[dart]": {
+    "editor.defaultFormatter": "Dart-Code.dart-code",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[swift]": {
+    "editor.defaultFormatter": "sswg.swift-lang",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4
+  },
+  "[lua]": {
+    "editor.defaultFormatter": "sumneko.lua",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4
+  },
+  "[kotlin]": {
+    "editor.defaultFormatter": "fwcd.kotlin",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4
+  },
+  "[ruby]": {
+    "editor.defaultFormatter": "Shopify.ruby-lsp",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[solidity]": {
+    "editor.defaultFormatter": "JuanBlanco.solidity",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "dorzey.vscode-sqlfluff",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+
+  // ============================================================
+  // TypeScript / JavaScript strictness (per extreme-lint-policy.md)
+  // ============================================================
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.importModuleSpecifier": "shortest",
+  "typescript.suggest.completeFunctionCalls": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "eslint.run": "onType",
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "eslint.codeActionsOnSave.rules": null,
+
+  // ============================================================
+  // Python strictness
+  // ============================================================
+  "python.analysis.typeCheckingMode": "strict",
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.autoImportCompletions": true,
+  "ruff.lint.select": ["ALL"],
+
+  // ============================================================
+  // Go strictness
+  // ============================================================
+  "go.lintTool": "golangci-lint",
+  "go.lintOnSave": "workspace",
+  "go.vetOnSave": "workspace",
+  "go.formatTool": "goimports",
+  "go.useLanguageServer": true,
+
+  // ============================================================
+  // SonarLint (per sonarlint-checks.md + extreme-lint-policy.md)
+  // ============================================================
+  "sonarlint.rules": {
+    "typescript:S3776": { "level": "on" }, // cognitive complexity ≤ 10
+    "typescript:S138":  { "level": "on" }, // function lines ≤ 80
+    "typescript:S107":  { "level": "on" }, // function params ≤ 5
+    "typescript:S104":  { "level": "on" }, // file lines ≤ 500
+    "typescript:S134":  { "level": "on" }, // nested depth ≤ 3
+    "typescript:S1067": { "level": "on" }, // boolean operators ≤ 2
+    "typescript:S109":  { "level": "on" }  // magic numbers
+  },
+  "sonarlint.output.showVerboseLogs": false,
+
+  // ============================================================
+  // Files (exclude noise)
+  // ============================================================
+  "files.exclude": {
+    "**/.git": false,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.mypy_cache": true,
+    "**/.ruff_cache": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.next": true,
+    "**/.nuxt": true,
+    "**/.turbo": true,
+    "**/coverage": true,
+    "**/.coverage": true,
+    "**/.terraform": true,
+    "**/.serverless": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/coverage": true,
+    "**/.next": true,
+    "**/.nuxt": true,
+    "**/.turbo": true,
+    "**/pnpm-lock.yaml": true,
+    "**/package-lock.json": true,
+    "**/yarn.lock": true,
+    "**/go.sum": true,
+    "**/Cargo.lock": true
+  },
+
+  // ============================================================
+  // Terminal
+  // ============================================================
+  "terminal.integrated.confirmOnExit": "hasChildProcesses",
+  "terminal.integrated.confirmOnKill": "always",
+  "terminal.integrated.scrollback": 10000,
+
+  // ============================================================
+  // UI / quality of life
+  // ============================================================
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.highlightModifiedTabs": true,
+  "explorer.confirmDelete": true,
+  "explorer.confirmDragAndDrop": true,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "scm.diffDecorationsGutterAction": "diff",
+
+  // ============================================================
+  // Anthropic / Claude integration
+  // ============================================================
+  "anthropic.claudeCode.alwaysThinkingEnabled": true,
+  "anthropic.claudeCode.permissionMode": "ask",
+  "anthropic.claudeCode.dangerouslySkipPermissions": false
+}

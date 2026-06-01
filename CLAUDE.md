@@ -23,12 +23,12 @@ This `~/.claude/CLAUDE.md` file is loaded at the start of every Claude Code sess
 Every session and every prompt loads, in this order:
 
 1. **Global** — this file plus every file under `~/.claude/rules/common/` and the language-specific subdirectories.
-2. **Workspace** — the nearest `CLAUDE.md` walking up from the cwd until the first `CLAUDE.md` is found, OR until the home directory is reached. For example, work under `/Users/APPLE/Reback/` MUST load `/Users/APPLE/Reback/CLAUDE.md`.
+2. **Workspace** — the nearest `CLAUDE.md` walking up from the cwd until the first `CLAUDE.md` is found, OR until the home directory is reached. Work under `<workspace>/` MUST load `<workspace>/CLAUDE.md` if one exists.
 3. **Project** — any further `CLAUDE.md` inside the workspace (e.g., `core-backend/CLAUDE.md`) that applies to the cwd.
 
 When layers conflict, the **strictest** rule wins — they are additive, never relaxing. If a project file appears to relax a rule, that is a bug in the project file; the assistant flags it, does not apply it.
 
-If the workspace or project file would apply to the cwd but is not in context, the assistant pauses, surfaces the missing-context state to the user, and re-reads the file before continuing. Never proceed with work in `/Users/APPLE/Reback/` (or any workspace with a `CLAUDE.md`) without that file loaded into context.
+If the workspace or project file would apply to the cwd but is not in context, the assistant pauses, surfaces the missing-context state to the user, and re-reads the file before continuing. Never proceed with work inside any workspace that has a `CLAUDE.md` without that file loaded into context.
 
 If a new project doesn't have a `CLAUDE.md` yet, the Council still applies — it's loaded from this user-level file. The first significant edit in that project SHOULD propose creating one so workspace-specific rules can accumulate.
 
@@ -38,7 +38,14 @@ If a new project doesn't have a `CLAUDE.md` yet, the Council still applies — i
 2. **All 5 Council divisions contribute** — Architecture, Implementation, Quality, Security, and Testing divisions all analyze the task and provide their input. Their findings inform every decision.
 3. **Agents delegate automatically** — when a task needs deep expertise (security review, build fix, code review, TDD), the right agent is invoked. No narration of the delegation — just do it.
 4. **Post-write verification runs** — build/lint/test after every change. Rule 5 applies (fix all issues in touched files).
-5. **Prompt improver evaluates** — the UserPromptSubmit hook checks prompt clarity and enriches vague prompts automatically.
+5. **Prompt improver evaluates** — the UserPromptSubmit hook checks prompt clarity and enriches vague prompts automatically. Non-trivial prompts route through the `prompt-improver` skill which runs the full `task-intake-due-diligence.md` 29-question questionnaire.
+6. **Task intake precedes every non-trivial task** — per `~/.claude/rules/common/task-intake-due-diligence.md`, every task or plan starts by answering: has it been done before, who built it, is there a maintained commercially-free OSS option, can it be done better, is it scalable, how does it integrate, what are the failure modes, what's the security posture / data lifecycle / compliance impact / accessibility commitment / i18n / test strategy / observability / cost / rollback / deprecation / UX writing / docs / risk register / success criteria / post-launch watch / AI ethics / vendor + IP review / operational handoff (29 questions in total). Online research is mandatory.
+7. **Reuse-first** — per `~/.claude/rules/common/reuse-first.md`, never rewrite anything that exists. Sweep before write. Rule of three: extract on the SECOND occurrence; extend, never fork.
+8. **Plan structure** — multi-phase work follows `plan-task-breakdown.md` (long list of small atomic tasks; mandatory bloat-removal phase at end), `plan-execution-progress.md` (structured per-phase progress updates), and `plan-completion-before-push.md` (the active plan declares its commit-policy; no push until the plan is complete unless explicit bug-fix override).
+9. **Error handling with context** — per `error-handling-with-context.md`, every failure wraps the cause with operation + ids; server logs structured fields; client receives `{error_code, message, details}` envelope; tests assert on `error_code` not `message`.
+10. **Lint at extreme strictness** — per `extreme-lint-policy.md`, every language runs its strictest available linters with thresholds tightened beyond defaults (cognitive complexity ≤ 10, function lines ≤ 80, function parameters ≤ 5). Zero per-line suppressions anywhere; fix the config or the code, never the rule.
+11. **Rule placement** — per `rule-authoring-global-vs-project.md`, every new rule is classified as global or project before writing. Global rules contain only pure guidance, no workspace / project / session-specific content. Project specifics live in `<workspace>/.claude/rules/`.
+12. **Code-graph validation incremental on every task** — per `~/.claude/rules/common/code-graph-validation.md`, every task / todo / commit / phase / claim of completion is paired with an incremental code-graph validation run THIS turn against the touched surface + immediate neighbors. Outbound refs (imports / calls / routes / schema columns / env vars / IAM actions / agent files / skill files / hook scripts / rule citations / docs links) must all resolve. Inbound edges checked (every defined node referenced OR documented as entry point). Cross-artifact integrity (hook event → script path, agent / skill frontmatter, council-triggers ↔ agent, commands → agent refs, auto-skills.md mapping) must close. Phase boundaries trigger a wider sweep; pre-push runs full-graph validation across plan surface + 2-hop closure. Discovered gaps are root-cause fixed (wired, defined, or removed with user confirmation) — never silently deleted, never bandaged with `// TODO: wire later`. The verification block on every "done" claim names the code-graph row alongside lint / test / type-check gates.
 
 ### Output Style
 
@@ -110,7 +117,7 @@ The Council is organized into 5 divisions, each backed by specialized subagents:
 
 **When to engage**: After writing any code, before PRs, documentation updates, code quality assessment.
 
-**Skills auto-activated for frontend work**: When touching `.vue`, `.tsx`, `.jsx`, CSS, or files in `views/`, `components/`, `pages/`, `layouts/` directories, the `frontend-design` skill activates automatically alongside `frontend-patterns` and `coding-standards` to ensure visual design quality (typography, color, motion, spatial composition) meets production standards.
+**Skills auto-activated for frontend work**: When touching `.vue`, `.tsx`, `.jsx`, CSS, or files in `views/`, `components/`, `pages/`, `layouts/` directories, the `frontend-patterns` skill activates automatically alongside `coding-standards` to ensure component architecture AND visual design quality (typography, color, motion, spatial composition) meet production standards.
 
 ### Division 4: Security
 
@@ -130,10 +137,135 @@ The Council is organized into 5 divisions, each backed by specialized subagents:
 
 | Agent | Model | Responsibility |
 | ----- | ----- | -------------- |
-| **tdd-guide** | sonnet | Test-first methodology, Red-Green-Refactor, 70%+ coverage enforcement |
+| **tdd-guide** | sonnet | Test-first methodology, Red-Green-Refactor, 90% touched / 80% project coverage |
 | **e2e-runner** | sonnet | End-to-end tests, Playwright, critical user journeys, flaky test management |
 
 **When to engage**: Writing new features (tdd-guide first), after implementation (e2e-runner), coverage gaps, test failures, regression risks.
+
+---
+
+## The Extended Eleven Divisions
+
+The Core Five always speak. The Extended Eleven auto-fire on file-pattern / keyword / change-scope triggers per `~/.claude/rules/common/council-triggers.md`. Engagement is mechanical, not judgmental — if a trigger matches, the Division engages.
+
+### Division 6: Compliance & Legal
+
+**Lead**: `compliance-reviewer` (opus)
+
+**Auto-fires on**: PII / GDPR / CCPA / HIPAA / PCI-DSS / SOC 2 / payments / billing / licensing / IP / contracts / KYC / AML / regulatory documents.
+
+**Veto authority**: Yes — on any unresolved regulatory finding (GDPR, CCPA, HIPAA, PCI, SOC2, etc.).
+
+### Division 7: Product, UX & Customer Experience
+
+**Leads**: `ux-reviewer` (sonnet), `accessibility-reviewer` (opus)
+
+**Auto-fires on**: UI files (`.vue` / `.tsx` / `.jsx` / `.swift` / `.dart`), views/components/pages/screens dirs, copy / strings / microcopy / i18n / locale files, email templates, push / SMS notifications, accessibility / a11y / WCAG / ARIA work, forms, error UX.
+
+**Veto authority**: No — but BLOCKER-severity findings (WCAG violation, error UX that violates user rights) escalate to Compliance.
+
+### Division 8: Operations & Reliability
+
+**Lead**: `ops-reviewer` (sonnet)
+
+**Auto-fires on**: Runbooks, SLO/SLA/SLI files, on-call / PagerDuty / Opsgenie config, observability dashboards, CI/CD workflows, IaC (Terraform / CDK / Helm), Dockerfile / compose, deploy / release configs, incident comms, monitoring / alerting rules.
+
+**Veto authority**: No (invokes Risk for prod-posture-affecting changes).
+
+### Division 9: Data & Analytics
+
+**Lead**: `data-reviewer` (sonnet)
+
+**Auto-fires on**: Schema migrations, DB models, event tracking, analytics pipelines, ETL / ELT / dbt models, data warehouse work, PII flow surfaces, schema registry entries.
+
+**Veto authority**: No (invokes Compliance when PII is touched).
+
+### Division 10: Finance & FinOps
+
+**Lead**: `finance-reviewer` (sonnet)
+
+**Auto-fires on**: Pricing / plan-tier / billing changes, cloud-cost-sensitive resources (Lambda, RDS, S3, CloudFront, DynamoDB), instance sizing / replica count / autoscaling bounds, data transfer pattern changes, unit-economics models.
+
+**Veto authority**: No (invokes Strategy for material economic impact).
+
+### Division 11: Risk Management
+
+**Lead**: `risk-reviewer` (sonnet)
+
+**Auto-fires on**: Destructive operations (DROP TABLE, DELETE FROM, file unlink, `rm -rf`), backup / restore / DR config, multi-region / SPOF changes, blast-radius-extending changes, deploys touching > 10% of services.
+
+**Veto authority**: Yes — on changes whose blast radius exceeds the defined scope.
+
+### Division 12: Strategy & Innovation
+
+**Lead**: `strategy-reviewer` (sonnet)
+
+**Auto-fires on**: New features / surfaces / markets, ADRs / RFCs, roadmap / vision / strategy docs, deprecation / sunset / EOL work, vendor selection, build-vs-buy decisions, experiments / A/B tests / MVPs / spikes.
+
+**Veto authority**: No (advisory).
+
+### Division 13: People & Culture
+
+**Lead**: `people-reviewer` (sonnet)
+
+**Auto-fires on**: CONTRIBUTING / CODE_OF_CONDUCT / CODEOWNERS changes, onboarding / hiring / career docs, team-structure / org-chart docs, dev-experience tooling, bus-factor-affecting changes.
+
+**Veto authority**: No (advisory).
+
+### Division 14: Sustainability & ESG
+
+**Lead**: `esg-reviewer` (sonnet)
+
+**Auto-fires on**: ESG / sustainability / carbon-footprint docs, cloud-region selection (carbon intensity varies), always-on workload introduction, supplier ethics + ISO 14001 / ISO 9001:2026 work.
+
+**Veto authority**: No (advisory).
+
+### Division 15: Ethics & Responsible AI
+
+**Lead**: `ai-ethics-reviewer` (opus)
+
+**Auto-fires on**: ML / AI / LLM / model / inference / training files, prompts / embeddings / RAG / fine-tune work, openai/anthropic/bedrock/vertex SDK use, recommendation / personalization / ranking / scoring features, automated-decision systems (GDPR Article 22), model cards / datasheets.
+
+**Veto authority**: Yes — on AI safety / fairness / bias findings.
+
+### Division 16: Communications & Documentation
+
+**Leads**: `doc-updater` (haiku), `comms-reviewer` (sonnet)
+
+**Auto-fires on**: Any public-facing artifact, README / CHANGELOG / RELEASE_NOTES, API docs (OpenAPI / GraphQL SDL / Proto), blog / marketing / press files, status-page + incident-comms templates.
+
+**Veto authority**: No — but BLOCKER on misleading / non-compliant comms (escalates to Compliance + Strategy).
+
+---
+
+## Council Operating Principle (Always-On)
+
+**Council is the DEFAULT MODE for every interaction.** No bypasses:
+
+- The `*` prefix skips ONLY the prompt-improver clarification step. Council still convenes.
+- "Quick Council Check" mode is REPLACED with "Abbreviated Council Check" — same divisions speak, terser output (2-3 sentences each). NEVER zero divisions.
+- Every interaction routes through Council. Bypass attempts are audit-logged to `~/.claude/audits/bypass-log.jsonl`.
+
+Trigger model:
+
+- **Core Five always engage.** Minimum 2 sentences each on every task.
+- **Extended Eleven auto-fire on signals.** Per `~/.claude/rules/common/council-triggers.md` — file patterns + keywords + change scope + plan-tier impact.
+- **Any Division can request convening of any other** mid-discussion when scope crosses their domain.
+
+### Tiebreaker Matrix
+
+When divisions disagree, named tiebreakers apply:
+
+| Disagreement type | Decided by |
+| --- | --- |
+| Technical (architecture vs implementation) | **Division 1 (Architecture)** — casting vote |
+| Security BLOCKER | **Division 4 (Security)** — VETO |
+| Regulatory BLOCKER (GDPR / CCPA / HIPAA / PCI / SOC2) | **Division 6 (Compliance)** — VETO |
+| AI safety / fairness / bias | **Division 15 (Ethics)** — VETO |
+| Blast radius exceeds defined scope | **Division 11 (Risk)** — VETO |
+| Unresolved consensus | Escalate to user with named options |
+
+Vetoes are explicit; they're documented in the Council consensus block.
 
 ---
 
@@ -185,11 +317,15 @@ Before the Council Protocol begins, a **UserPromptSubmit hook** (`~/.claude/hook
    - Presents questions via AskUserQuestion tool (Phase 3)
    - Executes the enriched request with full context (Phase 4)
 
-### Bypass Modes
+### Bypass Modes (clarification step only — NOT Council)
 
-- `*` prefix: Skip evaluation entirely (e.g., `* just do it`)
+The bypass prefixes below skip only the prompt-improver clarification step. **Council still convenes on every interaction** per `~/.claude/rules/common/council-default.md`.
+
+- `*` prefix: Skip prompt-improver clarification (e.g., `* just do it`). Council Phase 0-1-2-3 still runs.
 - `/` prefix: Slash commands pass through unchanged
 - `#` prefix: Memory notes pass through unchanged
+
+Bypass attempts that try to skip Council itself are audit-logged to `~/.claude/audits/bypass-log.jsonl` with timestamp + justification + session-id. Council convenes anyway.
 
 ### Integration with Council
 
@@ -203,7 +339,18 @@ Before the Council Protocol begins, a **UserPromptSubmit hook** (`~/.claude/hook
 
 ### Phase 0: Deep Research (MANDATORY - Before any discussion)
 
-Before divisions can speak, conduct exhaustive research:
+Before divisions can speak, conduct exhaustive research. Phase 0
+begins with the 29-question task intake from
+`~/.claude/rules/common/task-intake-due-diligence.md` — this
+populates the prior-art / OSS-option / scalability / integration
+/ failure-mode / security / data-lifecycle / compliance /
+accessibility / i18n / test-strategy / observability / cost /
+rollback / deprecation / UX-writing / docs / risk / success-
+criteria / monitoring / AI-ethics / vendor-IP / handoff fields
+that the divisions then discuss in Phase 1. Online research is
+mandatory (per `~/.claude/rules/common/official-docs-first.md`).
+Skipping the intake is a violation of the same severity as
+skipping the divisions.
 
 ```text
 ===============================================================
@@ -211,6 +358,49 @@ Before divisions can speak, conduct exhaustive research:
 ===============================================================
 
 TASK: [Restate the user's request clearly]
+
+---------------------------------------------------------------
+TASK INTAKE (per `task-intake-due-diligence.md`)
+---------------------------------------------------------------
+
+29 questions. Compact-table form for medium tasks; per-question
+subsections for large plans; abbreviated (Q1 + Q2 + Q27) for
+trivial work. Output documented and durable — the intake lives
+in the plan file (`~/.claude/plans/<slug>.md` or
+`<project>/.claude/plans/`) and is not redone for the same task
+across sessions.
+
+| # | Question | Answer summary |
+| --- | --- | --- |
+| 1 | Prior art (codebase) | <findings, paths> |
+| 2 | Prior art (people) | <internal blame + external maintainers> |
+| 3 | Canonical reference | <project/RFC, URL> |
+| 4 | OSS option | USE / EXTEND / CUSTOM — <rationale> |
+| 5 | SOTA scan | <findings + improvements OR "baseline accepted"> |
+| 6 | Scalability | <QPS target, failure modes at 10x, inflection> |
+| 7 | Integration map | <upstream / downstream / shared infra> |
+| 8 | FMEA | <top 3-5 failure modes + mitigations> |
+| 9 | Security (STRIDE) | <S/T/R/I/D/E summaries> |
+| 10 | Data lifecycle | <PII class, retention, residency> |
+| 11 | Compliance | <applicable regs + N/A items> |
+| 12 | Accessibility | <WCAG level + checklist> |
+| 13 | i18n | <locale coverage + RTL + plural> |
+| 14 | Test strategy | <unit / integration / e2e / contract / load / sec / a11y> |
+| 15 | Observability | <metrics + logs + traces + alerts + SLO> |
+| 16 | Cost | <delta forecast: today vs 10x users> |
+| 17 | Rollback / DR | <RPO + RTO + procedure> |
+| 18 | Deprecation lifecycle | <announce → soft → hard → remove> |
+| 19 | UX writing | <tone + clarity + edge-case copy> |
+| 20 | Documentation | <feature page + README + runbook + ADR> |
+| 21 | Risk register | <top 5 risks + owner + mitigation> |
+| 22 | Success criteria | <outcome metric + guardrails + window> |
+| 23 | Post-launch watch | <duration + on-call + rollback predicate> |
+| 24 | AI / ML ethics | <bias eval + disclosure + human-in-loop> OR N/A |
+| 25 | Vendor / IP / license | <new vendors + license check + IP review> |
+| 26 | Operational handoff | <runbook + on-call brief + bus-factor ≥ 2> |
+| 27 | Action plan | <reference to plan file or inline TODO list> |
+| 28 | Other | <team capacity, blackouts, sales/CS coordination> |
+| 29 | Online sources consulted | <URL, read date, key finding — table form> |
 
 ---------------------------------------------------------------
 CODEBASE EXPLORATION (MANDATORY)
@@ -361,7 +551,7 @@ DIVISION 2: IMPLEMENTATION & BUILD
 ---------------------------------------------------------------
 DIVISION 3: QUALITY & REVIEW
 [code-reviewer, go-reviewer, python-reviewer, doc-updater]
-[frontend-design skill auto-activates for UI work]
+[frontend-patterns skill auto-activates for UI work — covers component + visual design]
 ---------------------------------------------------------------
 **Codebase findings**:
 - [Existing quality standards]
@@ -498,7 +688,7 @@ Only proceed to write code after:
 
 1. **tdd-guide** writes tests first (Red phase)
 2. **Implementation** writes code to pass tests (Green phase)
-3. **frontend-design** skill validates UI aesthetics (if frontend work)
+3. **frontend-patterns** skill validates UI aesthetics + component patterns (if frontend work)
 4. **refactor-cleaner** cleans up (Refactor phase)
 5. **security-reviewer** scans for vulnerabilities
 6. **code-reviewer** (or language-specific reviewer) does final review
@@ -732,16 +922,13 @@ Remaining items:
 
 ## Task Classification
 
-### Quick Tasks (Abbreviated Council check)
+### Abbreviated Council Check (terse, NEVER zero divisions)
 
-- Bug fixes in single file
-- Small refactors
-- Configuration changes
-- Documentation updates
+For trivial work (bug fixes in a single file, small refactors, configuration changes, documentation updates), the Council still convenes — output is terser. Core Five always speak; Extended Eleven auto-fire only when their trigger ruleset hits.
 
 ```text
 ===============================================================
-                     QUICK COUNCIL CHECK
+                  ABBREVIATED COUNCIL CHECK
 ===============================================================
 TASK: [Task description]
 
@@ -753,11 +940,15 @@ Quality & Review: [2-3 sentences]
 Security: [2-3 sentences]
 Testing & QA: [2-3 sentences]
 
+Extended Divisions fired: [list, or "none — no triggers matched"]
+
 AGENTS TO DELEGATE: [Which agents, if any, for post-implementation]
 
 CONSENSUS: GO - Proceeding with implementation
 ===============================================================
 ```
+
+The Abbreviated mode is a SPEED option, not a SKIP option. Every Core Division writes minimum 2 sentences. Zero Council = rule violation.
 
 ### Standard Tasks (Full Council protocol)
 
@@ -805,9 +996,9 @@ Use this reference to know when to delegate work to specialized subagents:
 | Python code review | `python-reviewer` | PEP 8, type hints, framework patterns |
 | Documentation updates | `doc-updater` | Codemaps, READMEs, guides |
 | Security audit | `security-reviewer` | OWASP Top 10, secrets, auth bypass |
-| Writing tests first (TDD) | `tdd-guide` | Red-Green-Refactor, 70%+ coverage |
+| Writing tests first (TDD) | `tdd-guide` | Red-Green-Refactor, 90% touched / 80% project coverage |
 | E2E test creation/runs | `e2e-runner` | Playwright, critical user journeys |
-| Frontend UI/design work | `frontend-design` skill | Typography, color, motion, aesthetics (auto-activates for .vue/.tsx/.jsx) |
+| Frontend UI/design work | `frontend-patterns` skill | Component architecture + typography, color, motion, aesthetics (auto-activates for .vue/.tsx/.jsx) |
 | Vague/ambiguous user prompt | `prompt-improver` skill | Research-grounded clarification questions (auto-invoked by UserPromptSubmit hook) |
 
 ---
@@ -1044,7 +1235,7 @@ STEP 3: Test Execution (if test file was modified)
   MUST: All tests pass
 
 STEP 4: Coverage Check (if test file was modified)
-  MUST: Coverage meets or exceeds 70%
+  MUST: Coverage meets or exceeds 90% on touched files (project ≥ 80%) per `~/.claude/rules/common/extreme-lint-policy.md`
 ```
 
 ### Dart/Flutter Files (.dart)
@@ -1064,7 +1255,7 @@ STEP 3: Test Execution (if test file was modified)
 
 STEP 4: Coverage Check (if test file was modified)
   $ flutter test --coverage
-  MUST: Coverage meets or exceeds 70%
+  MUST: Coverage meets or exceeds 90% on touched files (project ≥ 80%) per `~/.claude/rules/common/extreme-lint-policy.md`
 ```
 
 ### C# Files (.cs)
@@ -1084,7 +1275,7 @@ STEP 3: Test Execution (if test file was modified)
 
 STEP 4: Coverage Check (if test file was modified)
   $ dotnet test --collect:"XPlat Code Coverage"
-  MUST: Coverage meets or exceeds 70%
+  MUST: Coverage meets or exceeds 90% on touched files (project ≥ 80%) per `~/.claude/rules/common/extreme-lint-policy.md`
 ```
 
 ### React Native Files (.tsx, .jsx for mobile)
@@ -1103,7 +1294,7 @@ STEP 3: Test Execution (if test file or tested file was modified)
   MUST: All tests pass
 
 STEP 4: Coverage Check
-  MUST: Coverage meets or exceeds 70%
+  MUST: Coverage meets or exceeds 90% on touched files (project ≥ 80%) per `~/.claude/rules/common/extreme-lint-policy.md`
 ```
 
 ### Lua Files (.lua)
@@ -1365,7 +1556,7 @@ Files:         kebab-case or match framework convention
 
 | Metric | Target |
 | ------ | ------ |
-| Code Coverage | >70% for new code |
+| Code Coverage | ≥ 90% on touched files; ≥ 80% project per `extreme-lint-policy.md` |
 | Cyclomatic Complexity | <10 per function |
 | Maintainability Index | >65 |
 | Technical Debt Ratio | <5% |
@@ -1451,7 +1642,7 @@ Files:         kebab-case or match framework convention
 
 | Test Type | Coverage Target | Priority |
 | --------- | --------------- | -------- |
-| Unit Tests | 70%+ code coverage | P0 |
+| Unit Tests | ≥ 90% touched / ≥ 80% project (per `extreme-lint-policy.md`) | P0 |
 | Integration Tests | All service boundaries | P0 |
 | API Tests | All endpoints | P0 |
 | E2E Tests | Critical user journeys | P1 |

@@ -174,7 +174,28 @@ user-facing rework and trust loss.
 - `docs-sync-with-code.md` — docs are part of the done checklist.
 - `official-docs-first.md` — primary-source citations are part of
   the done checklist for external integrations.
+- `code-graph-validation.md` — strong-completion phrases require
+  the code-graph row in the verification block to be green this
+  turn.
 - `no-silent-drops.md` — partially-completed work that gets quietly
   marked "done" is itself a silent drop.
 - `no-silent-failures.md` — claiming completion without running the
   gates is a silent failure mode of the work itself.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- "Done" claim issued without a verification block this turn (rule violation pattern)
+- User challenges a completion claim and finds it wrong (re-affirm discipline weak)
+- Strong-completion language ("100%", "shipped", "bulletproof") used without proof
+- Same rhetorical phrase ("looks clean", "should be fine") recurring across sessions
+- Verification block missing a gate that later proved load-bearing (gate roster needs extension)
+- Re-claim after the same gate failed in the prior turn (verify-before-claim discipline weak)
+
+**Refinement candidates**:
+- New banned-phrase entry when a rhetorical claim recurs without proof
+- New verification gate when a missed dimension produces a false "done" in 2+ retrospectives
+- Tightening of the "verified this turn" definition when stale-verification incidents recur
+- New cross-reference when a sister rule's gate is the proof a "done" claim depended on

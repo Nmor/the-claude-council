@@ -233,3 +233,125 @@ Capability: 5/5 passed (pass@3: 100%)
 Regression: 3/3 passed (pass^3: 100%)
 Status: SHIP IT
 ```
+
+## Purpose
+
+Quantitative evaluation harness for agent / prompt / skill
+changes. Pairs pass@k (capability — does it work at least once
+in k tries?) with pass^k (regression — does it work k-of-k
+tries reliably?). Without eval-harness, "this prompt feels
+better" is the only signal; with it, ship/no-ship is a number.
+
+**Negative scope** (NOT what this skill covers):
+- Manual UX testing — see `e2e-runner` agent / `e2e-testing`
+  skill for browser-driven flows
+- Unit tests of code — see `tdd-workflow`
+- A/B testing in production — see `feature-flags.md`
+  guardrail metrics
+
+## When NOT to use
+
+- Prompt tweaks too small to warrant a full eval pass (just
+  ship + monitor)
+- Code-only changes with no LLM behaviour in scope
+- One-off scripts the user explicitly says don't need to
+  pass regression bars
+
+## Standards Cited
+
+- **NIST AI Risk Management Framework (AI RMF 1.0) §MEASURE**
+  — Trustworthiness measurement (pass@k + pass^k are MEASURE
+  artifacts)
+- **NIST SP 800-160 v2 §3.4** — Evaluation as an engineering
+  practice
+- **ISO/IEC 23053:2022 §7.4** — AI system evaluation
+- **ISO/IEC 25010:2011 §6.5** — Reliability quality
+  characteristic (pass^k measures it)
+- **OWASP LLM Top 10 (2025) LLM09** — Misinformation / unsafe
+  outputs caught by capability evals
+- **OWASP ASVS 4.0.3 §V11.1.4** — Resource-intensive
+  operations rate-limited (the eval harness respects per-tenant
+  budgets per `cost-aware-llm-pipeline`)
+- **CWE-697** — Incorrect Comparison (pass-rate computation
+  must use the same scorer for capability + regression)
+- **Anthropic Eval Best Practices** — pass@k methodology
+- **OpenAI Evals Framework** — open-source reference
+  implementation
+- **`~/.claude/rules/common/contract-testing.md`** — evals as
+  the contract between intent + behaviour
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| pass@1 only (single shot) | Hides non-determinism; one lucky run = "shipped" | pass@3 minimum; pass^3 for regression confidence |
+| Same prompt eval after eval (drift not caught) | Improvement masked by prompt-tuning vs real capability | Hold the prompt constant; eval the change |
+| Rubric written by the same person who wrote the change | Reviewer bias | External rubric defined BEFORE the change |
+| Capability evals only; no regression eval | Improvement at the cost of breaking old workflows | Always run BOTH capability + regression on every change |
+| pass^k threshold below 100% on critical paths | Flaky behaviour in production | 100% pass^k required for auth / payments / data-mutation |
+| Scoring by manual judgment when automated check exists | Subjective; doesn't scale | Use exact-match / structured-output / LLM-judge with rubric |
+| Eval dataset never updated | Stale signal; new failure modes invisible | Add the failure case to the suite WHEN it surfaces in prod |
+| LLM-judge bias unchecked | Same model judging itself overestimates | Use a different model as judge OR a deterministic scorer |
+| Cost-blind eval runs | Single eval pass costs $$$ | Budget per eval-run; alert on overrun (`cost-aware-llm-pipeline`) |
+
+## Verification Checklist
+
+- [ ] Capability suite has ≥ 5 distinct scenarios per
+      capability
+- [ ] Regression suite has every shipped failure case
+- [ ] pass^k threshold defined per criticality (e.g., 100%
+      auth / 95% UX / 90% nice-to-have)
+- [ ] Same eval dataset + scorer used before / after the
+      change
+- [ ] Cost per eval-run within budget (per
+      `cost-aware-llm-pipeline`)
+- [ ] Eval report committed to repo (reproducibility)
+- [ ] LLM-judge (if used) is a different model from the
+      one being evaluated
+
+## Cross-References
+
+- `~/.claude/skills/tdd-workflow/SKILL.md` — eval is the
+  test-driven approach applied to LLM behaviour
+- `~/.claude/skills/cost-aware-llm-pipeline/SKILL.md` — keeps
+  eval-run cost bounded
+- `~/.claude/skills/iterative-retrieval/SKILL.md` — paired with
+  evals for retrieval-quality measurement
+- `~/.claude/rules/common/contract-testing.md` — capability +
+  regression are LLM contracts
+- `~/.claude/rules/common/feature-flags.md` — guardrail
+  metrics + eval thresholds
+- Anthropic Cookbook eval examples + OpenAI Evals repo for
+  reference
+
+## Why this skill exists
+
+Subjective "this prompt is better" is the universal failure
+mode of prompt engineering. Without a number, every change
+ships on vibes; regressions are detected by customer
+complaints; iteration speed is bounded by manual judgment.
+Eval-harness puts a number on it: capability (does it work?)
++ regression (does it keep working?). Once a team has eval
+infrastructure, the question becomes "did the metric move"
+instead of "did it feel better" — and that turns
+LLM-shipping from an art into engineering.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Skill / rule / agent shipped without a capability eval (no pass@k baseline)
+- Regression suite missing for a previously-shipped capability (regression coverage gap)
+- pass@k computed on n=1 sample (statistical-significance theatre — need n≥3 typically, n≥10 for high-stakes)
+- Eval prompt drift — eval cases evolve without versioning (apples-vs-oranges across runs)
+- Capability eval green but production behaviour degrades (eval-vs-reality gap; rubric needs sharpening)
+- Eval cases overlap with training / few-shot examples (data leakage inflates scores)
+- "SHIP IT" status applied without verification block from `~/.claude/rules/common/verify-before-claim.md`
+- Eval rubric assesses surface form (string match) instead of semantic correctness
+
+**Refinement candidates**:
+- New eval class when a recurring capability surfaces that needs its own pass@k baseline (e.g., security-fix eval, refactor-safety eval)
+- Rubric tightening when capability evals plateau at 100% but real-world performance shows residual gaps
+- Regression suite expansion when a shipped change causes user-reported regression (add the failure case to the suite)
+- pass^k tightening (e.g., pass^5 instead of pass^3) when high-stakes capabilities need stricter regression confidence

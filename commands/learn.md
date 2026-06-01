@@ -1,3 +1,9 @@
+---
+name: learn
+description: Analyze the current session and extract any patterns worth saving as skills.
+command: true
+---
+
 # /learn - Extract Reusable Patterns
 
 Analyze the current session and extract any patterns worth saving as skills.

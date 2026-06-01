@@ -1,0 +1,513 @@
+// ---------------------------------------------------------------
+// Cursor User Settings — The Claude Council
+// ---------------------------------------------------------------
+//
+// Cursor is a VS Code fork, so the entire VS Code settings surface
+// applies as-is. This file is self-contained: copy it into
+// `~/Library/Application Support/Cursor/User/settings.json`
+// (macOS), `~/.config/Cursor/User/settings.json` (Linux), or
+// `%APPDATA%\Cursor\User\settings.json` (Windows).
+//
+// Mirrors `vscode/settings.json` with Cursor-specific additions
+// for the cursor.* namespace (Pyright, Cmd-K, Composer, Tab,
+// Privacy Mode, Background Agent). All values harmonised with the
+// global rules in ~/.claude/rules/common/.
+// ---------------------------------------------------------------
+{
+  // ============================================================
+  // Workspace trust + extension governance
+  // (per ~/.claude/rules/common/install-allowlist.md)
+  // ============================================================
+  "security.workspace.trust.enabled": true,
+  "security.workspace.trust.untrustedFiles": "prompt",
+  "security.workspace.trust.startupPrompt": "always",
+  "security.workspace.trust.emptyWindow": false,
+  "extensions.autoCheckUpdates": true,
+  "extensions.autoUpdate": false,
+  "extensions.ignoreRecommendations": false,
+  "task.allowAutomaticTasks": "off",
+
+  // ============================================================
+  // Git safety (per ~/.claude/rules/common/git-workflow.md)
+  // ============================================================
+  "git.allowNoVerifyCommit": false,
+  "git.allowForcePush": false,
+  "git.confirmSync": true,
+  "git.autofetch": true,
+  "git.enableCommitSigning": true,
+  "git.pullBeforeCheckout": true,
+  "git.suggestSmartCommit": false,
+  "git.requireGitUserConfig": true,
+
+  // ============================================================
+  // Telemetry off everywhere — Cursor + VS Code + extensions
+  // ============================================================
+  "telemetry.telemetryLevel": "off",
+  "redhat.telemetry.enabled": false,
+  "gitlens.telemetry.enabled": false,
+  "sonarlint.disableTelemetry": true,
+
+  // ============================================================
+  // Editor — defaults consistent across every language
+  // ============================================================
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.rulers": [80, 100, 120],
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.trimAutoWhitespace": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.linkedEditing": true,
+  "editor.suggestSelection": "first",
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.semanticHighlighting.enabled": true,
+  "editor.minimap.enabled": false,
+  "editor.stickyScroll.enabled": true,
+  "editor.wordWrap": "off",
+  "editor.suggest.preview": true,
+  "editor.inlineSuggest.enabled": true,
+  "editor.guides.indentation": true,
+  "editor.renderWhitespace": "boundary",
+  "editor.fontLigatures": true,
+  "editor.unicodeHighlight.nonBasicASCII": false,
+  "editor.unicodeHighlight.invisibleCharacters": true,
+
+  // Per-language format-on-save (every language Council supports)
+  "[javascript]":     { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescript]":     { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[javascriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]":           { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[jsonc]":          { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[yaml]":           { "editor.defaultFormatter": "redhat.vscode-yaml" },
+  "[html]":           { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[css]":            { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[scss]":           { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[vue]":            { "editor.defaultFormatter": "Vue.volar" },
+  "[python]":         { "editor.defaultFormatter": "charliermarsh.ruff" },
+  "[go]":             { "editor.defaultFormatter": "golang.go", "editor.tabSize": 4, "editor.insertSpaces": false },
+  "[rust]":           { "editor.defaultFormatter": "rust-lang.rust-analyzer" },
+  "[java]":           { "editor.defaultFormatter": "redhat.java" },
+  "[ruby]":           { "editor.defaultFormatter": "Shopify.ruby-lsp" },
+  "[csharp]":         { "editor.defaultFormatter": "ms-dotnettools.csharp" },
+  "[swift]":          { "editor.defaultFormatter": "sswg.swift-lang" },
+  "[dart]":           { "editor.defaultFormatter": "Dart-Code.dart-code" },
+  "[markdown]":       { "editor.defaultFormatter": "DavidAnson.vscode-markdownlint" },
+  "[sql]":            { "editor.defaultFormatter": "mtxr.sqltools" },
+  "[shellscript]":    { "editor.defaultFormatter": "foxundermoon.shell-format" },
+  "[dockerfile]":     { "editor.defaultFormatter": "ms-azuretools.vscode-docker" },
+  "[terraform]":      { "editor.defaultFormatter": "hashicorp.terraform" },
+
+  // ============================================================
+  // TypeScript / JavaScript strictness
+  // (per ~/.claude/rules/typescript/no-discards.md)
+  // ============================================================
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "js/ts.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.suggest.completeFunctionCalls": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.inlayHints.parameterNames.enabled": "literals",
+  "typescript.inlayHints.variableTypes.enabled": false,
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "typescript.preferences.useAliasesForRenames": true,
+  "typescript.suggest.paths": true,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+  "javascript.preferences.quoteStyle": "single",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+
+  // ============================================================
+  // Python strictness
+  // (per ~/.claude/rules/python/no-discards.md)
+  // ============================================================
+  "python.analysis.typeCheckingMode": "strict",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.inlayHints.variableTypes": false,
+  "python.analysis.inlayHints.functionReturnTypes": true,
+  "python.analysis.inlayHints.callArgumentNames": "partial",
+  "python.terminal.activateEnvironment": true,
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+
+  // ============================================================
+  // Go strictness
+  // (per ~/.claude/rules/golang/no-discards.md)
+  // ============================================================
+  "go.useLanguageServer": true,
+  "go.lintTool": "golangci-lint",
+  "go.lintOnSave": "workspace",
+  "go.vetOnSave": "workspace",
+  "go.formatTool": "goimports",
+  "go.testFlags": ["-race", "-count=1"],
+  "go.coverOnSave": false,
+  "go.toolsManagement.checkForUpdates": "local",
+  "gopls": {
+    "ui.semanticTokens": true,
+    "ui.completion.usePlaceholders": true,
+    "ui.diagnostic.staticcheck": true,
+    "ui.diagnostic.analyses": {
+      "unusedparams": true,
+      "shadow": true,
+      "fieldalignment": true,
+      "nilness": true,
+      "unusedwrite": true
+    }
+  },
+
+  // ============================================================
+  // Rust strictness
+  // (per ~/.claude/rules/rust/no-discards.md)
+  // ============================================================
+  "rust-analyzer.check.command": "clippy",
+  "rust-analyzer.check.allTargets": true,
+  "rust-analyzer.check.extraArgs": ["--", "-D", "warnings", "-W", "clippy::pedantic"],
+  "rust-analyzer.cargo.allFeatures": true,
+  "rust-analyzer.procMacro.enable": true,
+  "rust-analyzer.diagnostics.experimental.enable": true,
+
+  // ============================================================
+  // SonarLint thresholds — STRICT
+  // (per ~/.claude/rules/common/extreme-lint-policy.md)
+  // ============================================================
+  "sonarlint.rules": {
+    "javascript:S3776": { "level": "on", "parameters": { "Threshold": "10" } },
+    "typescript:S3776": { "level": "on", "parameters": { "Threshold": "10" } },
+    "python:S3776":     { "level": "on", "parameters": { "Threshold": "10" } },
+    "go:S3776":         { "level": "on", "parameters": { "Threshold": "10" } },
+    "java:S3776":       { "level": "on", "parameters": { "Threshold": "10" } },
+    "javascript:S138":  { "level": "on", "parameters": { "max": "80"  } },
+    "typescript:S138":  { "level": "on", "parameters": { "max": "80"  } },
+    "python:S138":      { "level": "on", "parameters": { "max": "80"  } },
+    "go:S138":          { "level": "on", "parameters": { "max": "80"  } },
+    "java:S138":        { "level": "on", "parameters": { "max": "80"  } },
+    "javascript:S107":  { "level": "on", "parameters": { "max": "5"   } },
+    "typescript:S107":  { "level": "on", "parameters": { "max": "5"   } },
+    "python:S107":      { "level": "on", "parameters": { "max": "5"   } },
+    "go:S107":          { "level": "on", "parameters": { "max": "5"   } },
+    "java:S107":        { "level": "on", "parameters": { "max": "5"   } },
+    "javascript:S104":  { "level": "on", "parameters": { "maximum": "500" } },
+    "typescript:S104":  { "level": "on", "parameters": { "maximum": "500" } },
+    "python:S104":      { "level": "on", "parameters": { "maximum": "500" } },
+    "go:S104":          { "level": "on", "parameters": { "maximum": "500" } },
+    "java:S104":        { "level": "on", "parameters": { "maximum": "500" } },
+    "javascript:S134":  { "level": "on", "parameters": { "max": "3"   } },
+    "typescript:S134":  { "level": "on", "parameters": { "max": "3"   } },
+    "python:S134":      { "level": "on", "parameters": { "max": "3"   } },
+    "go:S134":          { "level": "on", "parameters": { "max": "3"   } },
+    "java:S134":        { "level": "on", "parameters": { "max": "3"   } },
+    "javascript:S1067": { "level": "on", "parameters": { "max": "2"   } },
+    "typescript:S1067": { "level": "on", "parameters": { "max": "2"   } }
+  },
+
+  // ============================================================
+  // ESLint (with sonarjs/recommended per ~/.claude/rules/common/
+  // sonarlint-checks.md)
+  // ============================================================
+  "eslint.run": "onType",
+  "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact", "vue"],
+  "eslint.format.enable": false,
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "eslint.useFlatConfig": true,
+
+  // ============================================================
+  // Prettier
+  // ============================================================
+  "prettier.singleQuote": true,
+  "prettier.semi": true,
+  "prettier.trailingComma": "all",
+  "prettier.printWidth": 100,
+  "prettier.tabWidth": 2,
+  "prettier.requireConfig": true,
+
+  // ============================================================
+  // Files — excludes (no node_modules/.git noise in search/explorer)
+  // ============================================================
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "files.autoSave": "off",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.pnpm-store": true,
+    "**/.next": true,
+    "**/.nuxt": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.turbo": true,
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.mypy_cache": true,
+    "**/.ruff_cache": true,
+    "**/.venv": true,
+    "**/target": true,
+    "**/.cargo-target": true,
+    "**/Pods": true,
+    "**/.gradle": true,
+    "**/.idea": true,
+    "**/.vscode-test": true
+  },
+  "search.exclude": {
+    "**/pnpm-lock.yaml": true,
+    "**/package-lock.json": true,
+    "**/yarn.lock": true,
+    "**/go.sum": true,
+    "**/Cargo.lock": true,
+    "**/Gemfile.lock": true,
+    "**/Pipfile.lock": true,
+    "**/poetry.lock": true,
+    "**/composer.lock": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/target/**": true
+  },
+
+  // ============================================================
+  // Terminal
+  // ============================================================
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.fontSize": 13,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.copyOnSelection": true,
+  "terminal.integrated.scrollback": 10000,
+  "terminal.integrated.persistentSessionScrollback": 10000,
+  "terminal.integrated.enableMultiLinePasteWarning": "auto",
+
+  // ============================================================
+  // UI quality of life
+  // ============================================================
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.highlightModifiedTabs": true,
+  "workbench.editor.tabSizing": "shrink",
+  "workbench.tree.indent": 16,
+  "workbench.list.smoothScrolling": true,
+  "workbench.startupEditor": "none",
+  "explorer.confirmDelete": true,
+  "explorer.confirmDragAndDrop": true,
+  "explorer.compactFolders": false,
+  "breadcrumbs.enabled": true,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "diffEditor.renderSideBySide": true,
+
+  // ============================================================
+  // Cursor-specific: AI features (governance per
+  // ~/.claude/rules/common/install-allowlist.md and
+  // performance.md model-selection policy)
+  // ============================================================
+  // Cursor's own Pyright wrapper. Stricter than the upstream
+  // Microsoft Pylance configuration for parity with
+  // python/no-discards.md.
+  "cursor.pyright": {
+    "enabled": true,
+    "diagnosticMode": "workspace",
+    "typeCheckingMode": "strict"
+  },
+
+  // Cmd-K (inline edit) — require explicit chat opt-in; don't
+  // surprise the user with chat before a Tab completion.
+  "cursor.cmdk.alwaysShowChatBeforeTabbing": false,
+
+  // Composer (multi-file refactor) — no custom modes; we don't
+  // want users adding unverified prompt templates that bypass
+  // the Council protocol.
+  "cursor.composer.shouldAllowCustomModes": false,
+  "cursor.composer.alwaysShowChatBeforeTabbing": false,
+
+  // Composer default model. Cursor's built-in AI is separate
+  // from Anthropic Claude Code (which lives in ~/.claude/agents/
+  // and follows performance.md model policy). Default to a
+  // capable Anthropic model; users override per project.
+  "cursor.composer.defaultModel": "claude-sonnet-4-6",
+
+  // Chat tab — same default; consistent model across surfaces.
+  "cursor.chat.defaultModel": "claude-sonnet-4-6",
+  "cursor.chat.alwaysShowChatBeforeTabbing": false,
+
+  // Privacy Mode — no prompts / responses sent to Cursor servers
+  // for indexing or training. Required for any work touching
+  // proprietary code, PII, PHI, or regulated data (per gdpr-ccpa.md
+  // and security.md).
+  "cursor.diagnostics.privateMode": true,
+  "cursor.general.enableShadowWorkspace": false,
+  "cursor.general.disableHttp2": false,
+
+  // Background Agent — disabled by default. Background agents
+  // execute tool calls without per-action user confirmation,
+  // which contradicts the global rule that destructive /
+  // hard-to-reverse / visible-to-others actions require explicit
+  // user approval (see global "Executing actions with care").
+  // Users can opt in per project; the global default is off.
+  "cursor.background.enabled": false,
+  "cursor.background.autoExecute": false,
+
+  // Tab completion — accept on Tab only, never on Right Arrow
+  // (which interferes with normal cursor movement).
+  "cursor.tab.acceptOnTab": true,
+  "cursor.tab.acceptOnRightArrow": false,
+
+  // Indexing — exclude common heavy dirs to keep the embedding
+  // pipeline fast and avoid sending unintended content.
+  "cursor.indexing.disabledFiles": [
+    "node_modules/**",
+    ".git/**",
+    "dist/**",
+    "build/**",
+    ".next/**",
+    ".nuxt/**",
+    "target/**",
+    "__pycache__/**",
+    ".venv/**",
+    "*.pem",
+    "*.key",
+    "*.pfx",
+    "*.p12",
+    ".env",
+    ".env.*",
+    "!.env.example",
+    "!.env.template"
+  ],
+
+  // ============================================================
+  // Anthropic Claude Code integration (Cursor extension)
+  // ============================================================
+  "anthropic.claudeCode.alwaysThinkingEnabled": true,
+  "anthropic.claudeCode.maxThinkingTokens": 31999,
+  "anthropic.claudeCode.permissionMode": "ask",
+  "anthropic.claudeCode.dangerouslySkipPermissions": false,
+  "anthropic.claudeCode.preserveConfigOnUpgrade": true,
+  "anthropic.claudeCode.enableTelemetry": false,
+
+  // ============================================================
+  // GitLens (when installed)
+  // ============================================================
+  "gitlens.codeLens.enabled": false,
+  "gitlens.currentLine.enabled": true,
+  "gitlens.hovers.enabled": true,
+  "gitlens.statusBar.enabled": true,
+
+  // ============================================================
+  // Spell — code-aware, off in commit messages by default
+  // (project commit-msg hook handles tone)
+  // ============================================================
+  "cSpell.enabled": true,
+  "cSpell.diagnosticLevel": "Information",
+  "cSpell.allowCompoundWords": true,
+  "cSpell.enableFiletypes": [
+    "asciidoc", "git-commit", "markdown", "plaintext", "yaml"
+  ],
+  "cSpell.ignorePaths": [
+    "node_modules/**", "dist/**", "build/**", "coverage/**",
+    ".git/**", ".turbo/**", ".next/**", ".nuxt/**",
+    "pnpm-lock.yaml", "package-lock.json", "yarn.lock",
+    "go.sum", "Cargo.lock", "Gemfile.lock", "poetry.lock"
+  ],
+
+  // ============================================================
+  // Diagnostics surface (per no-discards.md + extreme-lint-policy.md)
+  // Inline diagnostics — every warning a bug to fix, never to dismiss
+  // ============================================================
+  "errorLens.enabled": true,
+  "errorLens.enabledDiagnosticLevels": ["error", "warning", "info"],
+  "errorLens.gutterIconsEnabled": true,
+  "errorLens.followCursor": "allLines",
+  "errorLens.fontStyleItalic": false,
+  "errorLens.delay": 100,
+
+  // Problems panel — severity-first so blockers surface above style
+  "problems.sortOrder": "severity",
+  "problems.showCurrentInStatus": true,
+  "problems.decorations.enabled": true,
+
+  // ============================================================
+  // YAML schemas — auto-validate canonical YAML shapes
+  // ============================================================
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": [
+      ".github/workflows/*.{yml,yaml}"
+    ],
+    "https://json.schemastore.org/github-action.json": [
+      ".github/actions/*/action.{yml,yaml}",
+      "action.{yml,yaml}"
+    ],
+    "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json": [
+      "docker-compose*.{yml,yaml}",
+      "compose*.{yml,yaml}"
+    ],
+    "https://json.schemastore.org/dependabot-2.0.json": [
+      ".github/dependabot.{yml,yaml}"
+    ],
+    "https://json.schemastore.org/renovate.json": [
+      "renovate.json", ".renovaterc", ".renovaterc.json"
+    ],
+    "https://json.schemastore.org/pre-commit-config.json": [
+      ".pre-commit-config.{yml,yaml}"
+    ],
+    "kubernetes": [
+      "k8s/**/*.{yml,yaml}", "kubernetes/**/*.{yml,yaml}",
+      "manifests/**/*.{yml,yaml}", "helm/**/templates/*.{yml,yaml}"
+    ]
+  },
+  "yaml.validate": true,
+  "yaml.format.enable": true,
+  "yaml.completion": true,
+  "yaml.hover": true,
+  "yaml.schemaStore.enable": true,
+
+  // ============================================================
+  // File associations — surface odd/extensionless files correctly
+  // ============================================================
+  "files.associations": {
+    "*.json5": "jsonc",
+    "*.jsonc": "jsonc",
+    ".env*": "dotenv",
+    "Dockerfile.*": "dockerfile",
+    "*.containerfile": "dockerfile",
+    "Containerfile": "dockerfile",
+    "Makefile.*": "makefile",
+    "*.mk": "makefile",
+    "*.tfvars": "terraform",
+    "*.hcl": "terraform",
+    ".gitignore": "ignore",
+    ".dockerignore": "ignore",
+    ".eslintignore": "ignore",
+    ".prettierignore": "ignore",
+    "*.code-snippets": "jsonc",
+    "*.code-workspace": "jsonc",
+    ".sqlfluff": "ini",
+    ".luacheckrc": "lua",
+    "*.bats": "shellscript"
+  },
+
+  // ============================================================
+  // TODO highlighting — TODO/FIXME/XXX BANNED per no-silent-drops.md
+  // ============================================================
+  "todo-tree.general.tags": ["TODO", "FIXME", "XXX", "BUG", "HACK"],
+  "todo-tree.highlights.defaultHighlight": {
+    "foreground": "#ffffff",
+    "background": "#d70000",
+    "icon": "alert",
+    "type": "tag-and-comment",
+    "iconColour": "#d70000",
+    "fontWeight": "bold"
+  },
+  "todo-tree.tree.showCountsInTree": true,
+  "todo-tree.tree.showBadges": true
+}

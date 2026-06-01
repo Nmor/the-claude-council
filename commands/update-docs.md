@@ -1,3 +1,9 @@
+---
+name: update-docs
+description: Sync documentation with the codebase, generating from source-of-truth files.
+command: true
+---
+
 # Update Documentation
 
 Sync documentation with the codebase, generating from source-of-truth files.

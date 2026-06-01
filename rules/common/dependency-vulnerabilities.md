@@ -160,11 +160,10 @@ recommended fix, and the file/lockfile entry that needs updating.
 
 ## Authoring the gate
 
-The check goes wherever the project keeps its local pre-flight (in
-StewardBot that's `infra/verify-local.sh`; in a typical Node project
-it's `scripts/preflight.sh` or a `predeploy` npm script). CI runs
-the same script, so the same output appears locally and in PR
-checks.
+The check goes wherever the project keeps its local pre-flight
+(typical names: `infra/verify-local.sh`, `scripts/preflight.sh`,
+or a `predeploy` npm script). CI runs the same script, so the
+same output appears locally and in PR checks.
 
 Minimal gate shape (illustrative — adapt to the project's
 scanner mix):
@@ -293,3 +292,23 @@ hours each.
 - `security.md` — broader OWASP / supply-chain rules.
 - `deploy-failures-become-checks.md` — same family: every failure
   mode becomes a mechanical pre-deploy check.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- CVE published in a dep the project uses but no PR opened within 7 days (Renovate / Dependabot misconfigured)
+- HIGH / MODERATE finding suppressed via `audit-ignore` / per-line comment (rule 1 weakening)
+- MODERATE backlog growing > 5 entries in `docs/security-advisories.md` (rule 8 weakening — exception drift)
+- `--audit-level=high` (instead of `moderate`) configured (rule 8 weakening — floor relaxation)
+- Local pre-flight script lacks the dep-audit step (rule 1 weakening — local-CI parity gap)
+- Pre-deploy gate diverges from CI gate (rule 9 weakening)
+- Exception entry past expiry but gate still passing (rule 11 weakening — bypass drift)
+- Deploy reached production with a CRITICAL CVE in the dep graph (5-layer enforcement weakening)
+
+**Refinement candidates**:
+- New scanner row when a new ecosystem ships (e.g., new Wasm registry, new mobile SDK store) and OSV-Scanner / npm-audit coverage gap
+- Tightening of the MODERATE floor when a recurring CVE class shows MODERATE underestimates real exploitability
+- New cross-reference when a sister rule (dependency-overrides-not-exceptions, install-allowlist, license-allowlist-gate) provides the toolkit to close a finding
+- New exception template when a recurring "upstream patch pending" / "dev-only dep" / "reachability mitigated" class emerges

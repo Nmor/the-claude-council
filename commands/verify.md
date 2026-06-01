@@ -1,3 +1,9 @@
+---
+name: verify
+description: Run comprehensive verification on current codebase state (build, lint, type, test, code-graph).
+command: true
+---
+
 # Verification Command
 
 Run comprehensive verification on current codebase state.

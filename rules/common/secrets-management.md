@@ -237,3 +237,24 @@ in `repo-setup-checklist.md` § "Secrets surface", which includes:
 - `security-controls-org-wide.md` — 5-layer enforcement pattern
 - `no-overclaim.md` — never claim "done" on a security task without
   the rotation + history scrub steps both completed
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Long-term AWS access key (`AKIA...`) found in `~/.aws/credentials` (rule 1 violation — Keychain via aws-vault required)
+- `.env` tracked by git (rule 3 violation)
+- Private key (`*.pem`, `*.key`, `id_rsa*`) found in repo (rule 6 violation)
+- Postman / Insomnia collection committed with real response bodies (rule 5 violation)
+- Kubernetes `Secret` manifest with raw `data:` (rule 7 violation — Sealed/External Secrets required)
+- Rotation done step-by-step instead of via atomic script (per `proper-fixes-first.md`)
+- Suspected exposure: scrub attempted before rotation (rule 9 violation — rotate FIRST)
+- Pre-commit hook missing or not catching the leak in CI
+- Secret format-validation skipped on push to vault
+
+**Refinement candidates**:
+- New vault provider row when a new secrets manager gains adoption
+- Tightening of the rotation cadence table when a regulator (PCI / SOC2) updates frequency requirements
+- New banned-pattern entry when a new credential prefix shape recurs
+- New cross-reference when a sister rule (no-discards, install-allowlist) provides complementary hook enforcement

@@ -200,3 +200,23 @@ the override fixes the tree.
 - `security-controls-org-wide.md` — where real exceptions live
   (org-side, not consumer-side)
 - `no-discards.md` — don't suppress findings per-line; fix the code
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Exception added to `docs/security-exceptions.json` without first trying override path (escalation order violated)
+- `pnpm.overrides` / `resolutions` / Go `replace` directive not attempted on a transitive CVE / license finding
+- Override version pinned exactly (`X.Y.Z`) instead of forward-compatible (`>=X.Y.Z`) — rule 5 violation
+- Per-line suppression (`// audit-ignore`, `//nolint:gosec`) used to silence a dep finding (rule 1 violation)
+- Per-consumer security-exceptions file found in a consumer repo (rule 2 violation — must live in org-side)
+- Exception applied to an abandoned consumer when the consumer should have been REPLACED (rule "Replace abandoned consumers" weakening)
+- Override forces a transitive past a major-version boundary the parent doesn't tolerate without `pnpm patch` fallback considered (decision-tree gap)
+- Exception added without expiry date (drift toward permanent state)
+
+**Refinement candidates**:
+- New row in the abandoned-consumer replacement table when a recurring class emerges (e.g., `formidable`, `multer`, new Go HTTP libs)
+- Tightening of the override-vs-exception decision tree when a new framework's overrides syntax appears (e.g., `bun` overrides, `pnpm` v11 changes)
+- New cross-reference when a sister rule (updated-frameworks, install-allowlist) provides a replacement target
+- New ecosystem entry when a new package manager ships an override mechanism (Composer 3, Cargo's `[patch]` improvements)

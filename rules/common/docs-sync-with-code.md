@@ -149,3 +149,24 @@ debugging "is the docs lying or is the code lying" is high.
 - `no-overclaim.md` — never claim "done" when the docs are stale.
 - `no-silent-drops.md` — silently letting docs drift behind code is
   itself a silent drop of the work the doc was supposed to capture.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Feature PR merged without corresponding `docs/<feature>.md` update (rule 1 violation)
+- README lists a feature that doesn't work end-to-end from fresh clone (advertised-but-broken pattern)
+- Marketing / landing page references a feature that isn't shipped yet
+- Provider integration ships without `docs/provider-research/<provider>.md` (sister-rule `official-docs-first.md` weakening)
+- Runbook entry stale > 6 months yet still referenced by alerts (decay pattern)
+- "I'll do the docs next" markers introduced (deferred-docs anti-pattern)
+- Docs-sync gate missing from local pre-flight script in a docs-touching repo
+- New failure-mode shipped without `docs/runbook.md` entry in the same PR
+- CHANGELOG.md entry missing on releases that change user-visible behaviour
+
+**Refinement candidates**:
+- New row in the doc surface table when a recurring artifact class (status page, partner portal, ToS update) emerges
+- Tightening of the docs-sync gate's grep scope when a new surface (e.g., `docs/api/` for OpenAPI) appears
+- New cross-reference when a sister rule (deprecation-lifecycle, runbook-template, adr-template) provides the canonical home for a docs artifact
+- Promotion of `BUG(docs-gap-*)` markers to real tickets when they accumulate past N per service

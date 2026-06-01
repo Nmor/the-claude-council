@@ -1,3 +1,9 @@
+---
+name: build-fix
+description: Incrementally fix build and type errors with minimal, safe changes.
+command: true
+---
+
 # Build and Fix
 
 Incrementally fix build and type errors with minimal, safe changes.

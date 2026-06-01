@@ -1,0 +1,61 @@
+<!--
+  JetBrains Java code-style scheme.
+
+  Import via: Settings → Editor → Code Style → Java → Scheme
+  gear icon → Import Scheme → IntelliJ IDEA code style XML.
+
+  Aligned with:
+  - ~/.claude/rules/java/coding-style.md
+  - ~/.claude/rules/common/extreme-lint-policy.md (line length 120
+    — common Java norm; Google Java Style allows up to 100, but
+    JetBrains default 120 is the more practical floor for
+    annotation-heavy Spring code; lint is what fails CI)
+  - Google Java Style as the conceptual reference; deviations
+    documented in `~/.claude/rules/java/coding-style.md`
+
+  Function length / parameter count / cyclomatic complexity
+  enforced by Checkstyle / PMD / SonarLint, not here.
+-->
+<code_scheme name="Claude Council — Java" version="173">
+  <option name="RIGHT_MARGIN" value="120"/>
+  <option name="LINE_SEPARATOR" value="&#10;"/>
+
+  <JavaCodeStyleSettings>
+    <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999"/>
+    <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999"/>
+    <option name="USE_FQ_CLASS_NAMES" value="false"/>
+    <option name="IMPORT_LAYOUT_TABLE">
+      <value>
+        <package name="" withSubpackages="true" static="false"/>
+        <emptyLine/>
+        <package name="" withSubpackages="true" static="true"/>
+      </value>
+    </option>
+    <option name="ALIGN_MULTILINE_RECORDS" value="true"/>
+    <option name="ALIGN_MULTILINE_ANNOTATION_PARAMETERS" value="true"/>
+    <option name="ALIGN_MULTILINE_TEXT_BLOCKS" value="true"/>
+    <option name="LAMBDA_BRACE_STYLE" value="1"/>
+    <option name="ENABLE_JAVADOC_FORMATTING" value="true"/>
+    <option name="JD_PRESERVE_LINE_FEEDS" value="true"/>
+  </JavaCodeStyleSettings>
+
+  <codeStyleSettings language="JAVA">
+    <option name="RIGHT_MARGIN" value="120"/>
+    <option name="WRAP_ON_TYPING" value="0"/>
+    <option name="KEEP_LINE_BREAKS" value="true"/>
+    <option name="KEEP_FIRST_COLUMN_COMMENT" value="false"/>
+    <option name="WRAP_LONG_LINES" value="true"/>
+    <option name="BLANK_LINES_AROUND_METHOD" value="1"/>
+    <option name="BLANK_LINES_AROUND_CLASS" value="1"/>
+    <option name="METHOD_PARAMETERS_WRAP" value="1"/>
+    <option name="CALL_PARAMETERS_WRAP" value="1"/>
+    <option name="EXTENDS_LIST_WRAP" value="1"/>
+    <option name="THROWS_LIST_WRAP" value="1"/>
+    <indentOptions>
+      <option name="INDENT_SIZE" value="4"/>
+      <option name="CONTINUATION_INDENT_SIZE" value="8"/>
+      <option name="TAB_SIZE" value="4"/>
+      <option name="USE_TAB_CHARACTER" value="false"/>
+    </indentOptions>
+  </codeStyleSettings>
+</code_scheme>

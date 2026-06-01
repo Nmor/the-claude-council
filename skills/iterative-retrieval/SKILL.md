@@ -206,5 +206,123 @@ When retrieving context for this task:
 ## Related
 
 - [The Longform Guide](https://x.com/affaanmustafa/status/2014040193557471352) - Subagent orchestration section
-- `continuous-learning` skill - For patterns that improve over time
+- `continuous-learning-v2` skill - For patterns that improve over time (instinct-based learning with confidence scoring)
 - Agent definitions in `~/.claude/agents/`
+
+## Purpose
+
+Subagent orchestration pattern: spawn read-only Explore /
+general-purpose agents to traverse a large codebase / large
+context, return synthesised findings to the main agent, and
+let the main agent compose decisions without burning its
+own context window. Used for "find all consumers of X",
+deep code archaeology, cross-repo audits, multi-file research.
+
+**Negative scope** (NOT what this skill covers):
+- Writing code via subagents — they're read-only here
+- One-shot questions answered by direct grep — that's faster
+  in-line
+- Subagent-spawned-subagent recursion (depth limited per
+  global Council rules)
+
+## When NOT to use
+
+- Question scope is < 3 file reads (direct tools faster)
+- Subagent would duplicate work the main agent already did
+- Time-sensitive interactive context — main agent's
+  latency-aware path is better
+
+## Standards Cited
+
+- **NIST SP 800-53 Rev 5 §AC-6** — Least privilege (subagents
+  receive only the brief, not the full session context)
+- **NIST SP 800-218 SSDF §PW.6** — Configure compilation,
+  interpreter, and build processes to improve executable
+  security (apply to agent prompts as build artifacts)
+- **ISO/IEC 27001:2022 Annex A.8.2** — Privileged access
+  rights (subagents inherit only what their brief requires)
+- **OWASP ASVS 4.0.3 §V13.1** — Generic web service security
+  (subagent ↔ main agent contract is an API)
+- **CWE-1284** — Improper Validation of Specified Quantity
+  in Input (subagent briefs validate scope before fan-out)
+- **W3C Trace Context** — `traceparent` propagates from main
+  → subagent for telemetry
+- **Anthropic Multi-Agent Patterns** (docs.anthropic.com) —
+  parallel + sequential subagent patterns
+- **`~/.claude/rules/common/no-silent-failures.md`** —
+  subagent results MUST surface back; never silently dropped
+- **`~/.claude/rules/common/error-handling-with-context.md`**
+  — subagent failures wrapped with operation context for
+  main-agent retry
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Vague brief ("look at the codebase") | Subagent flails; main agent burns turns clarifying | Specific question + scope: file globs + acceptance criteria |
+| Spawning a subagent for a single file read | Setup cost > work | Use `Read` directly; subagent is for breadth, not depth |
+| Subagent writes code | Tool-permission expansion; review surface explodes | Subagent reads only; main agent writes |
+| No convergence criterion | Subagent loops forever | Brief includes "stop when X" predicate |
+| Main agent ignores subagent's "I couldn't find X" signal | False-negative finding bubbles up | Treat empty result as a signal; ask follow-up |
+| Sequential subagents when parallel would work | Latency × N | Spawn independent subagents in one Agent block (parallel) |
+| Subagent inherits secrets via context | Privilege expansion | Brief carries only the question + scope, never tokens |
+| Subagent result quoted verbatim into prod artifact | Bypass review; potential prompt-injection content | Synthesise + validate before promotion |
+
+## Verification Checklist
+
+- [ ] Each subagent brief is self-contained (no implicit
+      context the subagent can't see)
+- [ ] Scope limited (file globs / max-file-count) to prevent
+      runaway traversal
+- [ ] Convergence criterion in brief ("stop when X found" or
+      "max N iterations")
+- [ ] Subagent output budget (≤ 500 words back to main agent
+      unless explicitly larger)
+- [ ] Subagent failures surface back to main; never silent
+- [ ] Independent subagents spawned in parallel (single
+      Agent tool block with multiple calls)
+
+## Cross-References
+
+- `~/.claude/skills/search-first/SKILL.md` — when to search vs
+  build; iterative-retrieval is the search-execution arm
+- `~/.claude/skills/verification-loop/SKILL.md` — main-agent
+  context management; complementary
+- `~/.claude/rules/common/no-silent-failures.md` — subagent
+  failure-surfacing contract
+- `~/.claude/rules/common/error-handling-with-context.md` —
+  subagent error envelope
+- Anthropic docs on Agent / sub-agent orchestration
+
+## Why this skill exists
+
+The main agent's context window is finite + valuable.
+Reading every file in a 1000-file repo to answer "where is
+X used?" costs the main agent its context budget, which it
+then can't spend on judgment. Subagents (Explore /
+general-purpose) take the file traversal off the main agent's
+context, summarise the answer, and return only the synthesis.
+Result: main agent stays sharp for the decisions; subagents
+handle the breadth. Cost: one extra tool call. Benefit:
+multi-hour research compressed into minutes, with the main
+agent retaining full context for the actual problem.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Subagent dispatched with overly-broad query (entire codebase) where targeted glob would suffice (context window waste)
+- Subagent results not synthesised before next dispatch (linear chain instead of iterative refinement)
+- Same subagent spawned in parallel with overlapping scope (duplicate work, redundant token cost)
+- Subagent returns ambiguous result + main agent proceeds without follow-up dispatch (premature consolidation)
+- Subagent description / prompt assumes context the subagent doesn't have (cold-start brief inadequate)
+- Synthesis step delegated to subagent instead of done by main agent (main loses ground truth of the work)
+- Iterative-retrieval pattern used where a single Read / Grep would have answered the question (over-engineering)
+- Subagent loop count > 5 without convergence (the question is mis-framed; restate before continuing)
+
+**Refinement candidates**:
+- New dispatch pattern when a recurring class of question (e.g., "find all consumers of X function") surfaces
+- Convergence-criterion update when subagent loops fail to terminate (add explicit "I've found enough" predicate)
+- Brief-template improvement when subagents repeatedly ask for clarification (main agent's brief is under-specified)
+- Synthesis-back-to-main pattern when subagent outputs need structured aggregation

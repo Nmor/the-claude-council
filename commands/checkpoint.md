@@ -1,3 +1,9 @@
+---
+name: checkpoint
+description: Create or verify a checkpoint in your workflow.
+command: true
+---
+
 # Checkpoint Command
 
 Create or verify a checkpoint in your workflow.

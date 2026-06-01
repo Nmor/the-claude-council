@@ -6,6 +6,8 @@ paths:
 # SonarLint / SonarQube Checks (Global Default)
 
 > This rule fires on every file. Whenever Claude touches code in any project — new or legacy, with or without a project-level Sonar setup — it must verify the file against the rules below and fix every violation in the touched file (Rule 5: Zero Tolerance).
+>
+> **Threshold-tightening note**: `extreme-lint-policy.md` overrides the Sonar default thresholds globally. Specifically: cognitive complexity (S3776) cap is **10** (not 15), function lines (S138) cap is **80** (not 200), function parameters (S107) cap is **5** (not 7), file lines (S104) cap is **500** (not 1000), nested control-flow depth (S134) cap is **3** (not 4), boolean expression operators (S1067) cap is **2** (not 3), magic-number tolerance (S109) allows only `0, 1, -1, 2`. This file lists the Sonar rule IDs + canonical defaults; the strict overrides in `extreme-lint-policy.md` are what the project enforces.
 
 ## Why this is global
 
@@ -610,3 +612,23 @@ Each entry: rule code · ESLint rule name · short purpose. The `recState` colum
 | **S7790** | sonarjs/dynamically-constructed-templates | Templates should not be constructed dynamically | error |
 | **S8441** | sonarjs/no-session-cookies-on-static-assets | Static Assets should not serve session cookies | error |
 | **S8479** | sonarjs/dompurify-unsafe-config | DOMPurify configuration should not be bypassable | error |
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- New TS/JS repo opened without `eslint-plugin-sonarjs` wired (mandatory-step weakening)
+- SonarLint IDE warnings ignored / dismissed across multiple sessions on the same project
+- Per-line `// eslint-disable` / `// @ts-ignore` introduced to silence a Sonar rule (rule-violation shortcut)
+- File-level grep sweep skipped on touched-file audit (sweep procedure step 2 weakening)
+- Recurring rule fires in the same file (e.g., S1192 fires 3× per quarter on `apiClient.ts`) — the underlying pattern needs structural fix
+- Threshold-tightening note out of sync with `extreme-lint-policy.md` (canonical thresholds drift)
+- Cross-language equivalents missing on touched files (Go / Python / Java / C# / Swift / Rust per-language equivalents skipped)
+- Stylistic disable-list grows with rules that produce real bugs (over-disabling — recurrence audit needed)
+
+**Refinement candidates**:
+- New rule row when a new SonarJS rule ships (the catalog regularly grows; add columns + fix recipes)
+- Tightening of the disabled-rules list when a previously-stylistic rule starts catching real bugs
+- New cross-language entry when a recurring shape gains a Sonar equivalent in another language (e.g., SonarRust ships)
+- Promotion of a per-file Sonar exception to a project-wide allowlist with documented rationale (e.g., SSRF validator file exempt from S1313 by design)

@@ -720,3 +720,99 @@ Before marking C++ work complete:
 - [ ] Exceptions are custom types, thrown by value, caught by reference (E.14, E.15)
 - [ ] `'\n'` instead of `std::endl` (SL.io.50)
 - [ ] No magic numbers (ES.45)
+
+## Purpose
+
+Principal-level C++ coding standards (C++20 / C++23): RAII for every resource, smart pointers over raw new/delete, concepts-constrained templates, deterministic destruction, value semantics over pointer semantics, modern alternatives to legacy idioms, undefined-behaviour avoidance.
+
+**Negative scope** (NOT what this skill covers):
+- C++ test methodology — see `cpp-testing`
+- CMake build configuration — see `deployment-patterns`
+- Generic code-quality + naming — see `coding-standards`
+- C-only codebases (use MISRA C / CERT C rules instead — different idioms)
+- Embedded systems with no-RTTI / no-exceptions constraints — defer to project-specific
+
+## When NOT to use
+
+- Game engine ECS code (data-oriented design overrides OO patterns)
+- Realtime audio / DSP (allocator constraints; no exceptions in audio thread)
+- Kernel-level / driver code (no STL; different rules)
+
+## Standards Cited
+
+- **ISO/IEC 14882:2023** — C++ Language Specification (C++23)
+- **C++ Core Guidelines** (`isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines`) — Stroustrup + Sutter; the canonical reference
+- **MISRA C++ 2023** — safety-critical subset (ISO 26262 / IEC 61508)
+- **CERT C++ Coding Standard** — security-focused subset
+- **Effective Modern C++ (Scott Meyers, 2014)** + **Effective C++ 3e (Meyers, 2005)** — pre-C++20 reference
+- **The C++ Programming Language 4e (Stroustrup, 2013)** — language reference
+- **CWE Top 25 (2026)** — CWE-787 (out-of-bounds write), CWE-416 (use-after-free), CWE-119 (buffer overflow)
+- **OWASP C/C++ Top 10**
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Raw `new` / `delete` | Manual lifetime → use-after-free, double-free, leaks | `std::unique_ptr<T>` / `std::make_unique<T>()` |
+| Owning raw pointer in field | Ownership unclear; RAII broken | `unique_ptr` (sole owner) / `shared_ptr` (shared) |
+| `delete` on derived through base pointer without virtual destructor | UB; partial destruction | Mark base destructor `virtual` OR design hierarchy `protected` non-virtual |
+| `using namespace std;` in header | Pollutes every translation unit | Fully-qualify in headers; `using` only in `.cpp` |
+| C-style cast `(T)x` | Silent narrowing / reinterpret | `static_cast<T>(x)` / `dynamic_cast` / `const_cast` / `reinterpret_cast` — explicit |
+| `std::endl` in loops | Flushes stream every call → IO syscall | `'\n'` (no flush) |
+| C-array as function parameter (decays to pointer) | Loses size information; OOB writes | `std::span<T>` (C++20) / `std::array<T, N>&` |
+| `strcpy` / `sprintf` | Buffer overflow if dest too small | `std::string` / `std::format` (C++20) / `snprintf` |
+| Catching `(...)` and ignoring | Silent failure; UB on rethrow | Catch specific types; rethrow with context |
+| Multiple threads sharing `int counter` without atomic | Data race → UB | `std::atomic<int>` OR `std::mutex` + `scoped_lock` |
+| Magic numbers / strings inline | Brittle, untestable, undocumented | `constexpr` constants at scope |
+| `auto* p = ...` then dereference without null check | UB if function can return nullptr | `if (auto* p = ...; p != nullptr)` OR throw |
+
+## Verification Checklist
+
+- [ ] Every owned resource via RAII (smart pointer / lock_guard / scoped_lock)
+- [ ] No raw `new` / `delete` (use `make_unique` / `make_shared`)
+- [ ] Base classes have virtual destructor OR protected non-virtual
+- [ ] No C-style casts; explicit cast kind chosen
+- [ ] Templates constrained with `concept` (C++20)
+- [ ] Headers self-contained with `#pragma once` or include guards
+- [ ] No `using namespace` in headers
+- [ ] Sanitisers enabled: AddressSanitizer + UndefinedBehaviorSanitizer + ThreadSanitizer in CI
+- [ ] clang-tidy runs with C++ Core Guidelines checks enabled
+- [ ] Cyclomatic complexity ≤ 10 per function (per `extreme-lint-policy.md`)
+
+## Cross-References
+
+- `~/.claude/skills/cpp-testing/SKILL.md` — GoogleTest + sanitisers
+- `~/.claude/skills/coding-standards/SKILL.md` — cross-language baseline
+- `~/.claude/skills/security-review/SKILL.md` — memory-safety review
+- `~/.claude/rules/common/extreme-lint-policy.md` — strict thresholds
+- `~/.claude/rules/cpp/no-discards.md` — banned C++ patterns
+- `~/.claude/rules/cpp/security.md` — memory safety
+- `~/.claude/agents/security-reviewer.md` — Council Division 4 (memory safety)
+- `~/.claude/agents/code-reviewer.md`
+
+## Why this skill exists
+
+C++ rewards discipline and punishes its absence — use-after-free, buffer overflows, and data races are silent in development and catastrophic in production. The C++ Core Guidelines (Stroustrup + Sutter) codify a modern, safe subset; this skill applies the principal-level subset to every C++ file Claude touches, with sanitisers + clang-tidy + concepts enforced. The cost is using `unique_ptr` instead of `new`; the benefit is C++ code that doesn't appear in the next CVE.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Raw `new` / `delete` in code (RAII / smart-pointer weakening)
+- Pointer where reference would suffice (Core Guidelines F.7)
+- C-style cast `(T)x` instead of `static_cast<T>(x)` / `dynamic_cast<T>(x)` / `reinterpret_cast<T>(x)`
+- `std::endl` in hot loop (forced flush — perf cost; use `'\n'`)
+- Uninitialised member in constructor (use of garbage memory)
+- Missing `noexcept` on move ops (perf regression — STL containers fall back to copy)
+- Header without include guard / `#pragma once`
+- Implicit narrowing (e.g., `int x = some_long;` without `static_cast`)
+- Manual lock (mutex.lock / unlock) instead of `std::scoped_lock`
+- Exception thrown by pointer (slicing risk)
+- `using namespace std;` in a header (namespace pollution)
+
+**Refinement candidates**:
+- New rule row when a new C++ standard ships (C++23 `std::expected`, C++26 reflection)
+- New cross-reference when a sister skill (cpp-testing, security-review) adds a C++ gate
+- Tightening of the magic-number rule when domain-specific constant patterns recur
+- New row in concurrency checklist when a new sync primitive becomes idiomatic

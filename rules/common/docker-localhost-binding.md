@@ -140,26 +140,31 @@ problem this rule prevents.
 Every project's local pre-flight script (or PR checklist) runs the
 detection grep. If it returns non-empty, the PR/commit is blocked.
 
-For projects with a `verify-local.sh` (Reback, StewardBot, BFREE),
-add this gate inline.
+For projects with a local pre-flight script (e.g.
+`infra/verify-local.sh`, `scripts/preflight.sh`), add this gate
+inline so it fires on every commit and in CI.
 
 ## Why this rule exists
 
-A May 2026 device-wide audit on a personal Mac surfaced:
+Device-wide audits routinely surface dozens of compose services
+bound to `0.0.0.0` on developer machines:
 
-- Postgres dev container on `0.0.0.0:5432`
-- Ollama on `0.0.0.0:11434`
-- LocalStack on `0.0.0.0:4566`
-- Redis, Kafka, MinIO, Typesense all on `0.0.0.0`
-- MediaMTX streaming ports on `0.0.0.0`
-- ~120 unbound port mappings across 27 compose files
+- Postgres / MySQL / MongoDB dev containers on `:5432`, `:3306`,
+  `:27017`
+- LLM inference servers (Ollama, vLLM, llama.cpp) on `:11434`
+- LocalStack / Minio / Typesense / Elasticsearch / Kafka /
+  Redis on their default ports
+- Streaming endpoints (RTSP, RTMP, WebRTC signalling) on `:1935`,
+  `:8554`, etc.
+- Total: 100+ unbound port mappings across 20-30 compose files
 
-On any shared Wi-Fi, every one of those services was discoverable
-+ reachable. Postgres in particular still had default credentials
-because "it's local-only" — but it wasn't.
+On any shared Wi-Fi (coffee shop, coworking, hotel), every one of
+those services is discoverable + reachable. Many still have
+default credentials because "it's local-only" — but it isn't.
 
-After the sweep, every container on the machine is on `127.0.0.1`
-and the dev surface is invisible to the LAN.
+The fix is mechanical: `127.0.0.1:` prefix on every host port
+mapping. The dev surface becomes invisible to the LAN, no
+container behaviour changes, and the gate is one grep wide.
 
 ## Cross-references
 
@@ -171,3 +176,22 @@ and the dev surface is invisible to the LAN.
   posture gap becomes a mechanical gate.
 - `~/.claude/rules/common/auto-skills.md` — already maps Dockerfile
   + compose files to this rule via the `**/*` path.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- New compose file shipped with bare `"5432:5432"` / `"6379:6379"` port mapping (Hard rule 1 violation)
+- Existing `127.0.0.1:` prefix removed in a refactor (binding-scope regression)
+- `0.0.0.0:` explicit binding on a developer-machine compose (forbidden shape #3-4)
+- Unspecified-host env-interpolated mapping `"${HOST_PORT}:8080"` introduced (forbidden shape #2)
+- Exception (streaming, reverse proxy, ngrok) lacks the inline rationale comment (rule 6 weakening)
+- Detection grep absent from local pre-flight script (sister `deploy-failures-become-checks.md` weakening)
+- Port conflict resolved by switching back to `0.0.0.0:` instead of picking an unused loopback port (rule-violation shortcut)
+
+**Refinement candidates**:
+- New entry in the allowed-exception list when a recurring legitimate cross-host need surfaces (e.g., new media-streaming protocol, new IoT-device pairing flow)
+- Tightening of the detection grep when YAML formatting variants slip past (e.g., new compose v3.x syntax, Docker Bake)
+- New cross-reference when a sister rule (no-local-fs, secrets-management) provides the broader "developer machine isn't a trusted boundary" baseline
+- Promotion to enforced lint when a project's local-pre-flight gate has caught zero false-positives over 90 days

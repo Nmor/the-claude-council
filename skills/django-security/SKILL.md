@@ -590,3 +590,97 @@ LOGGING = {
 | Updates | Keep Django and dependencies updated |
 
 Remember: Security is a process, not a product. Regularly review and update your security practices.
+
+## Purpose
+
+Principal-level Django security: SECRET_KEY rotation, auth (django.contrib.auth + django-allauth + OAuth2), CSRF posture, SQL injection prevention via ORM, XSS prevention in templates, file-upload safety, rate limiting (django-ratelimit), security headers, secrets management.
+
+**Negative scope** (NOT what this skill covers):
+- Django architecture / app structure — see `django-patterns`
+- Test methodology (including security tests) — see `django-tdd`
+- Deployment / dependency CVE gates — see `django-verification`
+- Cryptographic primitives at large — see `owasp-asvs`
+- Frontend XSS / CSP — see `frontend-patterns`
+
+## When NOT to use
+
+- Non-Django Python stacks (use FastAPI security patterns)
+- Pure REST services (DRF token / OAuth — overlap but DRF-specific)
+
+## Standards Cited
+
+- **OWASP ASVS 4.0.3** — §2 (Auth), §3 (Session), §4 (Access), §5 (Validation), §7 (Errors), §13 (API)
+- **OWASP Top 10 2021** — A01-A10
+- **Django Security Reference** (`docs.djangoproject.com/en/5.1/topics/security/`) — built-in protections
+- **RFC 6749 (OAuth 2.0)** + **RFC 7519 (JWT)** + **RFC 8725 (JWT BCP)** + **OpenID Connect Core 1.0**
+- **NIST SP 800-63B** — password + MFA
+- **OWASP CSRF Cheat Sheet** + **OWASP XSS Cheat Sheet**
+- **CWE Top 25 (2026)** — CWE-79, CWE-89, CWE-287, CWE-352, CWE-862
+- **django-allauth / django-axes / django-ratelimit** — community-canonical packages
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| `SECRET_KEY` in `settings.py` | Source-code disclosure = session forgery | `os.environ["SECRET_KEY"]`; rotate via `django.core.signing.TimestampSigner` for in-flight sessions |
+| `DEBUG = True` in prod | Stacktraces + settings leak | `DEBUG = False` + `ALLOWED_HOSTS`; checked in deploy gate |
+| Raw SQL with string formatting | SQL injection | `Model.objects.raw("SELECT ... WHERE x = %s", [val])` parameterised; OR ORM |
+| `safe` / `mark_safe` template filter on user input | XSS | Never `mark_safe(user_data)`; rely on Django's auto-escape |
+| `csrf_exempt` on state-changing view | CSRF attack succeeds | Keep CSRF; for stateless API use DRF + token auth + `csrf_exempt` only on JSON endpoints validated by token |
+| `User.objects.get(email=...)` without normalisation | Case-sensitive duplicate accounts | Custom UserManager with `email.lower()` + unique constraint |
+| Storing password hashes via `make_password` without cost tuning | Default Argon2 OK; verify version + parallelism for hardware | Use latest `PASSWORD_HASHERS = ["django.contrib.auth.hashers.Argon2PasswordHasher"]` with reviewed cost |
+| Direct file save from `request.FILES` | Path traversal + malicious file | Validate `FileExtensionValidator`, sanitise filename, use S3 + signed URLs |
+| Sessions in DB without timeout | Session fixation | `SESSION_COOKIE_AGE` set; `SESSION_EXPIRE_AT_BROWSER_CLOSE = True` where applicable |
+
+## Verification Checklist
+
+- [ ] `SECRET_KEY` from env; rotation procedure documented
+- [ ] `DEBUG = False` in production; verified in deploy gate
+- [ ] CSRF middleware enabled (default); disabled only with documented rationale
+- [ ] All queries use ORM or parameterised raw queries
+- [ ] All templates rely on auto-escape; no `mark_safe(user_data)`
+- [ ] Password hasher = Argon2 (django.contrib.auth.hashers.Argon2PasswordHasher)
+- [ ] Rate limiting via `django-ratelimit` on auth + sensitive endpoints
+- [ ] Security headers via `django.middleware.security.SecurityMiddleware` + CSP middleware
+- [ ] HSTS preload-eligible: `SECURE_HSTS_SECONDS >= 31536000`, `SECURE_HSTS_PRELOAD = True`
+- [ ] Dependency CVE scan green (`safety check` / `pip-audit`)
+- [ ] django-axes installed for login throttling / lockout
+- [ ] File uploads validated + stored on object store (S3) with signed URLs
+
+## Cross-References
+
+- `~/.claude/skills/django-patterns/SKILL.md` — architecture context
+- `~/.claude/skills/owasp-asvs/SKILL.md` — full control catalogue
+- `~/.claude/skills/gdpr-ccpa-compliance/SKILL.md` — privacy + consent
+- `~/.claude/rules/common/secrets-management.md` — vault, not settings.py
+- `~/.claude/rules/common/audit-logging.md` — security event log
+- `~/.claude/rules/common/rate-limiting.md` — multi-layer rate limits
+- `~/.claude/agents/security-reviewer.md` — Council Division 4
+- `~/.claude/agents/compliance-reviewer.md` — Council Division 6
+
+## Why this skill exists
+
+Django ships with sensible defaults (auto-escape, CSRF middleware, Argon2 hasher) — but the deploy step is where security regresses: `DEBUG = True` left on in staging-promoted-to-prod, `SECRET_KEY` checked into version control, `csrf_exempt` added "temporarily" and never removed, file-upload validators skipped. The verification checklist gates each of these mechanically so Django apps pass an OWASP ASVS L2 review on first audit.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- View without `@login_required` / `LoginRequiredMixin` (broken access control — A01)
+- Raw SQL via `cursor.execute` with string interpolation (SQL injection — A03)
+- `mark_safe` / `|safe` on user-controlled HTML (XSS — A03)
+- `CSRF_COOKIE_SECURE = False` or `SESSION_COOKIE_SECURE = False` in prod settings
+- `DEBUG = True` reaching production (info disclosure)
+- `SECRET_KEY` hardcoded in settings (Sonar S2068)
+- `ALLOWED_HOSTS = ['*']` in production
+- File upload via `FileField` without size + content-type validation
+- Authentication endpoint without `django-ratelimit` / equivalent (A07)
+- `urlopen` / `requests.get` on user-controlled URL without allowlist (SSRF — A10)
+- Custom auth backend that doesn't extend Django's password hashers (weak crypto — A02)
+
+**Refinement candidates**:
+- New OWASP A01-A10 row when a recurring Django anti-pattern emerges
+- New cross-reference when a sister skill (security-review, owasp-asvs, gdpr-ccpa-compliance) adds a Django-specific gate
+- New `django-csp` / security middleware row when a new Django security library ships
+- Tightening of the settings.py hardening checklist when a new vulnerability class surfaces

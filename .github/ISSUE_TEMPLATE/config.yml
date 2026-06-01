@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question / discussion
+    url: https://github.com/Nmor/the-claude-council/discussions
+    about: General questions, ideas, or open-ended discussions. Use the
+      issue templates for bugs, features, or skill / agent / rule proposals.
+  - name: Security vulnerability
+    url: https://github.com/Nmor/the-claude-council/security/advisories/new
+    about: Report a security issue privately via GitHub Security Advisories
+      (per SECURITY.md). Do NOT open a public issue for secrets, vulns,
+      or supply-chain risks.

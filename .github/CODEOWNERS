@@ -1,0 +1,75 @@
+# CODEOWNERS — The Claude Council
+#
+# Routing rules for review attention. The repo is single-maintainer
+# today; this file is the seam for adding domain co-owners later
+# (security, compliance, accessibility, infra) without a structural
+# rewrite. Each section names the file globs + the owners who must
+# approve the PR.
+#
+# Order matters: the LAST matching rule wins. Place narrower globs
+# below broader ones.
+#
+# Reference: https://docs.github.com/en/repositories/managing-your-
+# repositories-settings-and-features/customizing-your-repository/
+# about-code-owners
+
+# ── Default — everything routes to the maintainer ───────────────
+*                                                           @nmor
+
+# ── Council protocol + Core rules ───────────────────────────────
+# Changes here ripple through every consumer; review at the rules
+# Division level (Architecture + Compliance + Security).
+/CLAUDE.md                                                  @nmor
+/rules/common/council-default.md                            @nmor
+/rules/common/council-triggers.md                           @nmor
+/rules/common/principal-level-mandate.md                    @nmor
+/rules/common/task-intake-due-diligence.md                  @nmor
+/rules/common/verify-before-claim.md                        @nmor
+/rules/common/no-overclaim.md                               @nmor
+
+# ── Security-sensitive rules ────────────────────────────────────
+# Security division territory. Bumping these forwards lands in
+# every consumer repo's auto-load set.
+/rules/common/security.md                                   @nmor
+/rules/common/secrets-management.md                         @nmor
+/rules/common/security-controls-org-wide.md                 @nmor
+/rules/common/install-allowlist.md                          @nmor
+/rules/common/dependency-vulnerabilities.md                 @nmor
+/rules/common/dependency-overrides-not-exceptions.md        @nmor
+/rules/common/license-allowlist-gate.md                     @nmor
+/rules/common/docker-localhost-binding.md                   @nmor
+/rules/common/no-local-fs.md                                @nmor
+
+# ── Compliance + privacy ────────────────────────────────────────
+/rules/common/gdpr-ccpa.md                                  @nmor
+/rules/common/data-retention.md                             @nmor
+/rules/common/audit-logging.md                              @nmor
+/rules/common/code-of-conduct.md                            @nmor
+
+# ── Verifiers + CI gates ────────────────────────────────────────
+# These are the source of truth for "is the repo healthy?". Any
+# change to verifier logic needs an extra-careful read.
+/bootstrap/                                                 @nmor
+/tests/                                                     @nmor
+/.github/workflows/                                         @nmor
+
+# ── Install + cross-platform surface ────────────────────────────
+# Consumers run these as their FIRST command. Bugs here block
+# adoption. Review with cross-platform discipline (bash 3.2 on
+# macOS + bash 5.x on Ubuntu + PowerShell on Windows).
+/bootstrap/install.sh                                       @nmor
+/bootstrap/install.ps1                                      @nmor
+/bootstrap/verify.sh                                        @nmor
+/ide-integrations/                                          @nmor
+
+# ── Repo governance + supply-chain ──────────────────────────────
+# Tag-protection + branch-protection settings outside this file
+# also gate these (configured at repo-settings level). Listed
+# here so any change to the governance surface gets review.
+/.github/CODEOWNERS                                         @nmor
+/.github/dependabot.yml                                     @nmor
+/.github/PULL_REQUEST_TEMPLATE.md                           @nmor
+/.github/ISSUE_TEMPLATE/                                    @nmor
+/SECURITY.md                                                @nmor
+/LICENSE                                                    @nmor
+/CHANGELOG.md                                               @nmor

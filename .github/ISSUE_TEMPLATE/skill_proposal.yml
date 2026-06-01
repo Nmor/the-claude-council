@@ -1,0 +1,209 @@
+name: Skill / agent / rule proposal
+description: Propose a new skill, agent, or rule (or a major rewrite of
+  one). Carries the standards-citation and Council-trigger fields
+  that proposal warrants.
+title: "[proposal] "
+labels: ["proposal", "needs-triage", "needs-standards-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Bar: principal-level.** Every shipped skill / agent / rule
+        is held to the depth requirements in
+        `rules/common/principal-level-mandate.md`:
+        - Skills: ≥ 500 words, ≥ 3 standards citations, ≥ 5 anti-
+          patterns, verification checklist, cross-references.
+        - Agents: required frontmatter (`name`, `description`,
+          `tools`, `model`) + body sections (Global rules,
+          Auto-fire triggers, Decision authority, Workflow / review
+          checklist, Standards, Output shape, Anti-patterns,
+          Pairing model, Escalation).
+        - Rules: classified global vs project per
+          `rule-authoring-global-vs-project.md`; "Why this rule
+          exists" + "Learning hooks" sections mandatory.
+
+        **Before filing:**
+        - Sweep for prior art per `reuse-first.md` (Rule of Three).
+          If a sister artifact already covers this, propose an
+          *extension* via a feature_request issue instead.
+        - Run the 29-question intake from
+          `rules/common/task-intake-due-diligence.md` and paste the
+          compact-table answer below.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Artifact kind
+      options:
+        - New skill (`skills/<name>/SKILL.md`)
+        - Major skill rewrite (existing skill at `skills/<name>/`)
+        - New agent (`agents/<name>.md`)
+        - Major agent rewrite (existing agent at `agents/<name>.md`)
+        - New global rule (`rules/common/<name>.md`)
+        - New per-language rule (`rules/<lang>/<name>.md`)
+        - Major rule rewrite
+    validations:
+      required: true
+
+  - type: input
+    id: slug
+    attributes:
+      label: Proposed slug
+      description: kebab-case. Examples — skill `openapi-design`, agent
+        `cloud-cost-reviewer`, rule `feature-flags-graduation.md`.
+      placeholder: my-new-thing
+    validations:
+      required: true
+
+  - type: textarea
+    id: purpose
+    attributes:
+      label: Purpose (one paragraph)
+      description: What problem class does this solve? What does it
+        explicitly NOT solve? (Negative scope is part of the contract
+        per the principal-level template.)
+    validations:
+      required: true
+
+  - type: textarea
+    id: prior-art
+    attributes:
+      label: Prior art (codebase + OSS + commercial)
+      description: |
+        Per `reuse-first.md` and `task-intake-due-diligence.md` Q1-Q4:
+        - Did you sweep `rules/`, `skills/`, `agents/` for existing
+          coverage? Paste paths + a 1-line diff.
+        - Is there a maintained, permissively-licensed OSS option
+          that already does this? (USE / EXTEND / CUSTOM.)
+        - Is there a commercial / vendor option in scope?
+    validations:
+      required: true
+
+  - type: textarea
+    id: standards
+    attributes:
+      label: Standards / primary sources (≥ 3 for skills, version +
+        section)
+      description: |
+        Per `principal-level-mandate.md`. RFC / ISO/IEC / NIST / OWASP
+        / W3C / IFRS / PEP / vendor docs. URL + section. The
+        `verify-standards-citations.sh` gate runs on the merged
+        artifact; the citation regex is enforced.
+      placeholder: |
+        - RFC 9110 §9.2.2 — HTTP method idempotency
+        - OWASP ASVS 4.0.3 §11.1 — Rate limiting
+        - NIST SP 800-53 Rev 5 AC-2 — Account management
+    validations:
+      required: true
+
+  - type: textarea
+    id: triggers
+    attributes:
+      label: When this fires / auto-activates
+      description: |
+        - File globs (e.g., `**/*.proto`, `serverless.yml`)
+        - Keywords (Council trigger model — see
+          `rules/common/council-triggers.md`)
+        - Plan-tier impact
+        - Change scope
+      placeholder: |
+        Files: **/*.tf, k8s/**, helm/**
+        Keywords: IAM policy, bucket policy, network ACL
+        Scope: any IaC change that creates / modifies cloud IAM
+    validations:
+      required: true
+
+  - type: textarea
+    id: divisions
+    attributes:
+      label: Council divisions + decision authority
+      description: |
+        For agents: which Division is the agent part of? Veto /
+        casting / advisory authority?
+        For skills + rules: which Divisions auto-engage when this
+        fires (per `council-triggers.md`)?
+      placeholder: |
+        Agent — Division 6 (Compliance) + Division 4 (Security)
+        overlap. VETO authority on PCI-DSS BLOCKER findings.
+    validations:
+      required: true
+
+  - type: textarea
+    id: anti-patterns
+    attributes:
+      label: Anti-patterns rejected by this artifact (≥ 5)
+      description: |
+        Concrete patterns with named alternatives. Each row should
+        be one banned shape that the artifact would surface as a
+        finding.
+      placeholder: |
+        - Empty catch swallowing the error → log + wrap with `cause`
+        - Hardcoded credential prefix (sk_live_, AKIA, ghp_) → vault
+        - `// @ts-ignore` to silence a real type error → fix the type
+        - …
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification checklist (concrete green / red predicates)
+      description: |
+        Per `principal-level-mandate.md` — every skill / rule ships
+        with checks that have explicit green/red answers, not
+        aspirational language.
+      placeholder: |
+        - [ ] `golangci-lint run` returns 0 findings
+        - [ ] `errcheck ./...` returns 0 unchecked errors
+        - [ ] No `_` in value position outside rune-iteration
+        - [ ] Coverage on touched files ≥ 90%
+    validations:
+      required: true
+
+  - type: textarea
+    id: cross-refs
+    attributes:
+      label: Cross-references (sister rules / skills / agents)
+      description: Which existing artifacts does this pair with?
+        Which does it explicitly NOT overlap?
+    validations:
+      required: true
+
+  - type: textarea
+    id: learning-hooks
+    attributes:
+      label: Learning hooks
+      description: |
+        Per `continuous-learning-mandate.md`, every artifact ships
+        with:
+        - Signals to watch (what observations refine this artifact)
+        - Refinement candidates (what kinds of edits accept later)
+      placeholder: |
+        Signals: rule fires 3+ sessions on same file class →
+        threshold review.
+        Refinements: new banned pattern when a recurring shape
+        recurs across 2+ projects.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Global vs project scope
+      description: Per `rule-authoring-global-vs-project.md`. Global
+        artifacts carry pure guidance — no workspace / vendor
+        names, no session-specific dates. Project specifics live
+        in `<workspace>/.claude/`.
+      options:
+        - Global (pure guidance, no project specifics)
+        - Project-scoped (belongs in `<workspace>/.claude/`)
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Drafts, prior-art links, related incidents.
+    validations:
+      required: false

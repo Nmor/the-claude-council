@@ -466,3 +466,93 @@ jobs:
 | Diff stats | `git diff --stat` |
 
 Remember: Automated verification catches common issues but doesn't replace manual code review and testing in staging environment.
+
+## Purpose
+
+Principal-level Django verification: migration safety, `manage.py check --deploy`, dependency CVE scan, license gate, coverage thresholds, `collectstatic` validation, static analysis (ruff + mypy + bandit), Docker image hardening, deploy gates.
+
+**Negative scope** (NOT what this skill covers):
+- Code-level patterns — see `django-patterns`
+- Security config — see `django-security`
+- Test methodology — see `django-tdd`
+- Generic Python verification — see `python-testing`
+- Generic dependency pinning — see `dependency-pinning.md`
+
+## When NOT to use
+
+- Non-Django Python projects (use language-level verification skills)
+- Native binary deploys (skip Django-specific gates)
+
+## Standards Cited
+
+- **Django Deployment Checklist** (`docs.djangoproject.com/en/5.1/howto/deployment/checklist/`) — canonical pre-deploy gates
+- **PEP 517 / 518 / 621 / 660** — Python packaging standards
+- **ruff 0.7+ Documentation** — fast Python linter / formatter
+- **mypy 1.13+ Strict Mode** — type checking
+- **bandit 1.7+** — Python security linter
+- **pip-audit / safety** — dependency CVE
+- **OSV-Scanner** — cross-ecosystem CVE
+- **CycloneDX 1.6 / SPDX 2.3** — SBOM
+- **SLSA Framework 1.0** — build provenance
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| `python manage.py check` without `--deploy` | Skips production-only checks (SSL redirect, HSTS, etc.) | `python manage.py check --deploy --fail-level WARNING` in CI |
+| Skipping migrations validation | Migration drift between branches → merge conflicts in prod | `python manage.py makemigrations --check --dry-run` |
+| `pip install -r requirements.txt` without hashes | Reproducibility theatre | `pip install --require-hashes -r requirements.txt`; pin via `pip-compile --generate-hashes` |
+| `requirements.txt` only (no `requirements-dev.txt`) | Test deps in prod image | Separate files; multi-stage Docker drops dev deps in final stage |
+| `collectstatic` failure ignored | Missing assets in prod 404 | Run in CI; fail build on missing static files |
+| Coverage threshold 50% | No safety net | 90% touched-file / 80% project |
+| Floating Docker tag `python:latest` | CVE accumulation | `FROM python:3.12.7-slim-bookworm@sha256:...` |
+| Suppressing `bandit` findings without expiry | Permanent exception | `# nosec` with expiry comment OR config file with `until` date |
+
+## Verification Checklist
+
+- [ ] `python manage.py check --deploy` returns 0 warnings
+- [ ] `python manage.py makemigrations --check --dry-run` clean
+- [ ] `ruff check + ruff format --check` clean
+- [ ] `mypy --strict` (or `pyright --strict`) clean
+- [ ] `bandit -r .` no MEDIUM+ findings
+- [ ] `pip-audit` / `safety check` no MODERATE+ CVEs
+- [ ] Coverage ≥ 90% on touched files
+- [ ] `collectstatic --noinput --dry-run` succeeds
+- [ ] Docker image digest-pinned + multi-stage + non-root user
+- [ ] SBOM (CycloneDX) generated + uploaded to artifact
+
+## Cross-References
+
+- `~/.claude/skills/django-patterns/SKILL.md`
+- `~/.claude/skills/django-security/SKILL.md`
+- `~/.claude/skills/django-tdd/SKILL.md`
+- `~/.claude/skills/python-testing/SKILL.md`
+- `~/.claude/rules/common/dependency-vulnerabilities.md`
+- `~/.claude/rules/common/license-allowlist-gate.md`
+- `~/.claude/rules/common/extreme-lint-policy.md`
+- `~/.claude/rules/common/done-criteria.md`
+
+## Why this skill exists
+
+Django apps regress most often at the deploy boundary: `DEBUG = True` left on, missed migrations, missing `collectstatic`, CVE-laden transitive dependency. Each is a documented Django check or pip-audit invocation away from being caught. The verification pipeline mechanically gates all of them so the Django app passes both the framework's own deployment checklist AND OWASP ASVS L2.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- `python manage.py check --deploy` warnings ignored (security misconfig — A05)
+- Migrations folder missing for an app that has model changes (migration drift)
+- Pre-deploy gate not running `makemigrations --check --dry-run` (silent schema divergence)
+- `collectstatic` not run in deploy pipeline (broken static assets in prod)
+- Settings.py changes without re-running deploy check
+- Coverage gate not enforced in CI for changed Django files
+- Bandit / safety not wired in pre-push (per `~/.claude/rules/common/dependency-vulnerabilities.md`)
+- New management command added without corresponding test
+- Async view added without verifying ASGI server is in use
+
+**Refinement candidates**:
+- New verification step when a new Django release ships (e.g., async ORM checks)
+- New cross-reference when a sister rule (deploy-failures-become-checks, done-criteria) adds a Django gate
+- Tightening of the deploy-check warnings list when a recurring misconfig emerges
+- New row in the verification matrix when a new Django ecosystem tool becomes standard (e.g., django-stubs strict mode)

@@ -35,8 +35,8 @@ gate lives in `security-controls-org-wide.md` (5-layer enforcement).
 2. **The SPDX allowlist is centralized at the org level**, not per
    consumer. Rationale: per-consumer allowlists let an attacker with
    write access to *any* consumer repo grant arbitrary license
-   bypasses. The allowlist lives in the org's `.github` repository
-   (e.g., `bfree-africa/.github/.github/workflows/security-baseline.yml`)
+   bypasses. The allowlist lives in the org's central `.github`
+   repository (e.g. `<org>/.github/.github/workflows/security-baseline.yml`)
    and is referenced by every consumer via a required-workflow ruleset
    SHA pin. See `security-controls-org-wide.md`.
 
@@ -68,8 +68,10 @@ gate lives in `security-controls-org-wide.md` (5-layer enforcement).
      with the canonical SPDX in the source-tree LICENSE file
 
    The cross-check itself is documented + scripted, not human
-   judgement at scan time. Reference implementation:
-   `bfree-africa/stewardbot/infra/verify-licenses.sh`.
+   judgement at scan time. Reference implementation lives in the
+   project's local pre-flight directory (e.g. `infra/verify-licenses.sh`),
+   and the org-wide cross-check script is shipped alongside the
+   security-baseline workflow in the org's central `.github` repo.
 
 6. **Replace, don't except.** When a transitive dep ships an
    unknown / non-allowlisted license, the first response is to
@@ -170,3 +172,22 @@ osv-scanner scan source \
   rather than adding exceptions.
 - `dependency-overrides-not-exceptions.md` — `pnpm.overrides` as the
   canonical tool for force-upgrading transitive deps.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Non-allowlisted SPDX shipped (gate weakening — exception added instead of dep replaced)
+- "UNKNOWN" / "non-standard" license carve-out without Trove / GitHub License API cross-check (rule 5 weakening)
+- Per-consumer license-exceptions file found (rule 2 violation — must live in org repo)
+- Exception without expiry (rule 7 weakening — permanent exception drift)
+- New SPDX value emerging in deps that's not yet on allowlist or deny-list (allowlist needs review)
+- GPL / AGPL / SSPL / BUSL dep added without legal sign-off (default-deny weakened)
+- Cross-check script not run in CI (rule 5 — manual judgement re-emerged)
+
+**Refinement candidates**:
+- New SPDX row when a new permissive license gains adoption
+- New deny-list entry when a viral / restrictive license emerges
+- Tightening of the cross-check when "UNKNOWN" carve-outs prove load-bearing more often than expected
+- New cross-reference when a sister rule (dependency-vulnerabilities, install-allowlist) overlaps the gate's scope

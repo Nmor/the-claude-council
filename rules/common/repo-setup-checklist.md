@@ -110,7 +110,7 @@ edits is hours of git-history surgery and credential rotation.
 15. **`docs/secrets.md`** (or equivalent) documents where each
     real secret comes from in production AND in dev:
     - "STRIPE_SECRET_KEY: prod = AWS Secrets Manager `prod/stripe`;
-       local = `aws-vault exec moses -- pnpm dev`"
+       local = `aws-vault exec <profile> -- pnpm dev`"
 
 16. **No long-term AWS key on disk.** `cat ~/.aws/credentials` shows
     no `aws_access_key_id = AKIA...` lines. The IAM key lives in
@@ -223,3 +223,26 @@ side of that trade.
   checklist is the "ready to start" complement
 - `no-overclaim.md` — never claim "repo is ready" until all 20
   items are green
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- New repo opened without the 20-point checklist run on first touch (rule "When this rule fires" weakening)
+- `.env` found tracked in git on first-touch (item 2 violation)
+- Private key (`*.pem`, `*.key`, `id_rsa*`) found tracked (item 3 violation)
+- Postman / Insomnia collection with real response bodies committed (item 4 violation)
+- `Secret` manifest with raw base64 found (item 5 violation)
+- Lockfile missing on first-touch (item 9 violation)
+- Compose ports on `0.0.0.0` discovered on a developer machine (item 10 violation — sister rule `docker-localhost-binding.md`)
+- Container running as root in production stage (item 11 violation)
+- `.env.example` missing or stale relative to `application.yml` / `config.go` (item 14 weakening)
+- CI gates diverge from local pre-flight (item 17 weakening)
+- Branch protection missing on default branch (item 20 violation)
+
+**Refinement candidates**:
+- New checklist row when a recurring posture gap surfaces (e.g., `dependabot.yml` missing, `CODEOWNERS` missing, secret-scan CI step missing)
+- Tightening of the 30-day re-check cadence when posture drift is observed sooner
+- New cross-reference when a sister rule (secrets-management, install-allowlist, docker-localhost-binding) adds a new mechanical check
+- Per-language addendum when a stack-specific item (e.g., `pnpm-lock.yaml` vs `package-lock.json`, `go.sum` integrity) recurs

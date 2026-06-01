@@ -1,0 +1,42 @@
+<!--
+  JetBrains Go (GoLand) code-style scheme.
+
+  Import via: Settings → Editor → Code Style → Go → Scheme
+  gear icon → Import Scheme → IntelliJ IDEA code style XML.
+
+  Aligned with:
+  - ~/.claude/rules/golang/coding-style.md
+  - gofmt + goimports defaults (TAB indentation; no line-length
+    cap — gofmt does not wrap)
+  - ~/.claude/rules/common/extreme-lint-policy.md (function lines
+    ≤ 80, params ≤ 5 enforced by golangci-lint / SonarGo, not here)
+
+  Go-specific note: line length is NOT enforced by gofmt. We
+  publish a soft visual guide at 120 chars (the conventional Go
+  guidance) — the linter (revive line-length-limit, lll) is what
+  fails CI.
+-->
+<code_scheme name="Claude Council — Go" version="173">
+  <option name="RIGHT_MARGIN" value="120"/>
+  <option name="LINE_SEPARATOR" value="&#10;"/>
+
+  <GoCodeStyleSettings>
+    <option name="USE_GOIMPORTS" value="true"/>
+    <option name="LOCAL_PACKAGE_PREFIX" value=""/>
+    <option name="ADD_PARENTHESES_FOR_SINGLE_IMPORT" value="true"/>
+    <option name="RUN_GO_FMT_ON_REFORMAT" value="true"/>
+    <option name="USE_BACK_QUOTES_FOR_IMPORTS" value="false"/>
+  </GoCodeStyleSettings>
+
+  <codeStyleSettings language="go">
+    <option name="RIGHT_MARGIN" value="120"/>
+    <option name="WRAP_ON_TYPING" value="0"/>
+    <option name="KEEP_LINE_BREAKS" value="true"/>
+    <indentOptions>
+      <option name="INDENT_SIZE" value="4"/>
+      <option name="CONTINUATION_INDENT_SIZE" value="4"/>
+      <option name="TAB_SIZE" value="4"/>
+      <option name="USE_TAB_CHARACTER" value="true"/>
+    </indentOptions>
+  </codeStyleSettings>
+</code_scheme>

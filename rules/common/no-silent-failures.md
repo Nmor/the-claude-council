@@ -1,385 +1,311 @@
 # No-Silent-Failures Rule (Always-On, Global)
 
-> Auto-fires on every file. Sister to `no-silent-drops.md` (don't bury work) and `sonarlint-checks.md` (linter rules).
+> Auto-fires on every file. Sister to `no-discards.md` (the
+> hook-enforced canonical), `error-handling-with-context.md`
+> (every error wraps with operation + ids), `no-silent-drops.md`
+> (don't bury work), `verify-before-claim.md` (no claim of
+> success without proof).
+>
+> **De-duplication note**: the discard / empty-catch / silent
+> `.catch` / `console.log` / `as`-cast bans live in `no-discards.md`
+> (hook-enforced). This rule focuses on the UNIQUE patterns that
+> sister rules don't cover: false-positive success reporting,
+> async state-transition completeness, optimistic-rollback, and
+> partial-success surfacing in webhook / queue handlers.
 
 ## Core Principle
 
-**Every error is a status. Every status is reported.**
+**Every error is a status. Every status the user is waiting on
+must visibly resolve. Operations whose user-visible outcome
+doesn't match what actually happened are false-positive
+successes — bugs in slow motion. The user can't act on what
+they can't see; on-call can't debug what wasn't surfaced.**
 
-Code that swallows an exception, logs nothing on a failed network call, or shows the user a green checkmark for an operation whose sub-step actually failed — all of these are bugs, not subjective style. The user can't act on what they can't see, and on-call can't debug what wasn't logged.
+## Unique rules (not covered by sister rules)
 
-This rule is enforced by lint config (see "Enforcement" below) so it is tool-agnostic — Claude, Cursor, ChatGPT, or a human committing manually all see the same failures.
+### 1. No false-positive success
 
-## Specific Rules
-
-### 1. No raw `console.*` in product code
-
-Production source files do not call `console.log`, `console.warn`, `console.error`, `console.info`, or `console.debug` directly.
-
-**Use the project's logger:**
-
-```ts
-// Frontend (Vue / React / vanilla TS):
-import { log } from "@/lib/logger";
-log.error("Roadmap export failed", err, { roadmap_id });
-
-// Backend (Node):
-import { logError, logInfo, logWarn } from "../lib/logger.js";
-logError("DDB write failed", { table, key, error: err });
-```
-
-**Allowlisted exceptions** (and only these):
-
-- The logger module itself.
-- One-shot CLI scripts where the console *is* the output channel (`scripts/*.ts`).
-- EMF metric emitters that write structured JSON for CloudWatch ingest.
-
-Any new file that needs to log goes through the logger, not the console.
-
-### 2. No empty `catch` blocks
+The user-visible outcome must reflect what actually happened —
+across cascading operations, batch operations, optional
+sub-steps, retries, and partial-success boundaries.
 
 ```ts
-// WRONG
-try { await thing(); } catch {}
-
-// WRONG (comment doesn't make it not silent)
-try { await thing(); } catch { /* fall back */ }
-
-// RIGHT
-try { await thing(); } catch (err) {
-  log.warn("thing failed; falling back", { error: String(err) });
-}
-```
-
-If the failure is genuinely expected and recoverable (browser feature detection, optional best-effort cache write), still log at `debug` so we can see it during incident response.
-
-### 3. No silent fire-and-forget `.catch()`
-
-The following patterns are linted as errors:
-
-```ts
-// All forbidden:
-foo().catch(() => {})
-foo().catch(() => undefined)
-foo().catch(() => null)
-foo().catch(() => false)
-foo().catch(() => "")
-```
-
-Replace with:
-
-```ts
-foo().catch((err) => {
-  log.warn("foo failed", { error: String(err) });
-});
-```
-
-If user-visible (toast, banner, redirect to error page), surface to the user too.
-
-### 4. No false-positive success
-
-The user-visible outcome must reflect what actually happened.
-
-```ts
-// WRONG — success toast fires even when clipboard write failed
+// WRONG — success toast fires even when the optional sub-step
+// (clipboard write) failed
 await store.share(id);
 await navigator.clipboard.writeText(url).catch(() => null);
 toast.success("Share link copied");
 
-// RIGHT
+// RIGHT — separate the outcomes
 await store.share(id);
 let copied = true;
-try { await navigator.clipboard.writeText(url); } catch { copied = false; }
+try { await navigator.clipboard.writeText(url); }
+catch { copied = false; }
 if (copied) toast.success("Share link copied", { description: url });
 else toast.info("Share link ready (clipboard blocked)", { description: url });
 ```
 
-This applies to:
+Applies to:
 
-- Cascading deletes / batch operations: if some children failed, say so.
-- Partial sync results: report `synced N of M` instead of "Sync complete".
-- Idempotent retries: report `already done` distinctly from `did it now`.
-- Optional sub-steps: if the optional step failed, the toast says so.
+- **Cascading deletes / batch operations**: if some children
+  failed, the response says so ("deleted 7 of 10").
+- **Partial sync results**: "synced N of M items" not "Sync
+  complete."
+- **Idempotent retries**: "already done" distinct from "did it
+  now."
+- **Optional sub-steps**: if the optional step failed, the
+  toast names that explicitly.
+- **Multi-tenant fan-out**: per-tenant success vs failure
+  reported.
 
-### 5. Every async op has a known status
+### 2. Every async op has a known status
 
-When the user is actively waiting on an async operation, the UI must visibly transition through:
+When the user is actively waiting on an async operation, the
+UI MUST visibly transition through:
 
-- **idle → pending** (button disabled, spinner, optimistic state)
+- **idle → pending** (button disabled, spinner, optimistic
+  state)
 - **pending → success** (toast / state update / navigation)
-- **pending → error** (toast.error with actionable copy, plus rollback of any optimistic state)
+- **pending → error** (toast.error + actionable copy + rollback
+  of any optimistic state)
 
-A status transition must happen on every code path, including thrown exceptions, network timeouts, and AbortController cancellations.
+The transition fires on EVERY code path:
 
-### 6. Optimistic updates roll back on failure
+- Thrown exceptions
+- Network timeouts
+- AbortController cancellations
+- Browser tab-close / navigation away
+- Server-sent retry-after responses
+
+The state machine has NO terminal "unknown" — every leaf is
+success or error, never "pending forever."
+
+### 3. Optimistic updates roll back on failure
+
+When the client updates state BEFORE the server confirms, the
+update reverses if the server returns an error:
 
 ```ts
-// WRONG — leaves the UI showing read=true when the API call failed
+// WRONG — leaves the UI showing read=true when the API call
+// failed
 notification.read_at = new Date().toISOString();
 unreadCount--;
 await apiPost("/notifications/mark-read", ...).catch(() => {});
 
-// RIGHT
+// RIGHT — snapshot, update, rollback on failure
+const snapshot = { read_at: notification.read_at, unreadCount };
 notification.read_at = new Date().toISOString();
 unreadCount--;
 try {
-  await apiPost("/notifications/mark-read", ...);
+  await apiPost("/notifications/mark-read", { id });
 } catch (err) {
-  notification.read_at = undefined;
-  unreadCount++;
+  notification.read_at = snapshot.read_at;
+  unreadCount = snapshot.unreadCount;
   log.warn("mark-read failed; rolled back", { error: String(err) });
   toast.error("Couldn't mark as read — try again");
 }
 ```
 
-### 7. No `as` casts that hide a failed operation
+Pattern by pattern:
 
-```ts
-// WRONG — caller never finds out the parse failed
-return JSON.parse(maybeBad) as MyType;
+- **List add**: rollback removes the optimistic item; toast
+  the failure.
+- **List remove**: rollback re-inserts at the original index;
+  toast.
+- **Counter increment / decrement**: rollback restores the
+  prior count.
+- **Form-field update**: rollback restores the prior value;
+  re-focuses the field.
+- **Status transition** (draft → published): rollback restores
+  draft.
 
-// RIGHT
-const parsed = parseJson<MyType>(maybeBad);
-if (!parsed.ok) {
-  log.warn("payload parse failed", { error: parsed.error });
-  return null;
-}
-return parsed.value;
-```
+### 4. Webhook / queue handlers report partial success
 
-Type assertions are not error handling.
+A webhook handler that processes 10 events where 3 fail MUST:
 
-### 8. Webhook / queue handlers report partial success
+1. **Acknowledge** the original webhook (200 to the platform)
+   so the platform doesn't retry the whole batch.
+2. **DLQ-route** the 3 failures with full context (event id,
+   payload, failure reason, retry-count).
+3. **Emit a metric** for the partial-failure count
+   (`webhook_event_partial_failures{provider="stripe",
+   reason="..."}`).
+4. **Log** each failure individually with structured fields
+   (per `error-handling-with-context.md`).
 
-A webhook handler that processes 10 events and 3 fail must:
+A 200 OK from a handler that silently dropped 3 of 10 is a
+false-positive success — the platform thinks delivery
+succeeded; downstream consumers never see the 3 events.
 
-- Acknowledge the original webhook (so the platform doesn't retry the whole batch).
-- Push the 3 failures to a DLQ or retry queue with logged context.
-- Emit a metric for the partial-failure count.
+### 5. Confirmation-required mutations cannot fail silently
 
-A 200 OK from a handler that silently dropped 3 of 10 is a false-positive success.
+When a mutation requires explicit user confirmation
+(delete account, transfer funds, publish post), the
+confirmation flow ensures:
 
-## Enforcement
+- **Pre-flight check**: server validates the user is in the
+  expected state BEFORE asking confirmation.
+- **Confirmation token**: server issues a short-lived token
+  the client passes back; prevents replay.
+- **Post-mutation verification**: server-side check that the
+  mutation actually applied; client re-reads to confirm.
 
-The lint config in every TS / JS project must include:
+A confirmation that "succeeded" but didn't actually mutate
+the state is a false-positive success.
 
-```js
-// eslint.config.js
-const SILENT_FAILURE_GUARDRAILS = {
-  "no-console": "error",
-  "no-empty": ["error", { allowEmptyCatch: false }],
-  "no-restricted-syntax": [
-    "error",
-    {
-      selector:
-        "CallExpression[callee.property.name='catch'][arguments.0.type='ArrowFunctionExpression'][arguments.0.body.type='BlockStatement'][arguments.0.body.body.length=0]",
-      message: "Empty .catch() swallows errors silently. Use .catch((err) => log.warn(...)).",
-    },
-    {
-      selector:
-        "CallExpression[callee.property.name='catch'][arguments.0.type='ArrowFunctionExpression'][arguments.0.body.type='Literal']",
-      message: "Returning a literal from .catch() is a silent fallback. Log the error or convert to an explicit Result type.",
-    },
-    {
-      selector:
-        "CallExpression[callee.property.name='catch'][arguments.0.type='ArrowFunctionExpression'][arguments.0.body.type='Identifier'][arguments.0.body.name='undefined']",
-      message: "Returning undefined from .catch() is a silent fallback. Log the error.",
-    },
-  ],
-};
-```
+### 6. Polling loops report timeout as failure, not "no data"
 
-Allowlist `src/lib/logger.ts` (or equivalent) for `no-console`. Do not add per-line `eslint-disable` directives — fix the underlying call instead.
+When a polling loop waits for an external state to converge
+(e.g., webhook to arrive, job to finish):
 
-## Logger contract
+- **Bounded retry** — every polling loop has a max attempt
+  count + a timeout.
+- **Timeout** is a distinct status from "still pending."
+- **Timeout escalates** — the user sees an explicit timeout
+  message + the suggested recovery (refresh, retry, contact
+  support); not a perpetual spinner.
 
-Every project's logger module exposes at minimum:
+### 7. Every throw surfaces a user-visible signal (sync + async)
 
-```ts
-log.debug(message: string, meta?: object): void  // dev-only by default
-log.info (message: string, meta?: object): void
-log.warn (message: string, meta?: object): void
-log.error(message: string, error?: unknown, meta?: object): void
-```
+The strongest form of the rule, generalising rule 2 from
+async-only to ANY code path the user is waiting on:
 
-`log.error` accepts the original `error` so the logger can extract `{name, message, stack}` for downstream RUM (Sentry, Datadog Browser, CloudWatch). The error never gets stringified and lost.
+**Every `throw`, every `reject(err)`, every `raise`, every
+async failure that reaches a code path the user is waiting on
+MUST emit a user-visible surface in the same code path that
+handles it.** Throwing into a generic error boundary,
+`window.onerror`, or framework-level catch-all is the LAST
+resort, never the first.
+
+Acceptable user-visible surfaces (pick one that matches the
+context):
+
+| Surface | When |
+| --- | --- |
+| `toast.error` / `toast.warning` / `toast.info` | Transient feedback after an explicit action (submit / save / send) |
+| Inline validation error anchored to the offending field | Form input that failed validation; ARIA-wired (`aria-describedby`, `aria-invalid`); focus moves to first invalid field |
+| Banner at top of route / section | Cross-cutting failure (network down, auth expired, plan-tier gate, geo-blocked) |
+| Empty / error state swap | List / grid / panel where the failure obviates the content |
+| Status indicator transitioning to "error" | Long-running operations (upload, transcode, polling); paired with actionable copy + retry affordance |
+| Modal / dialog | Destructive or confirmation-bound failure that the user MUST acknowledge before continuing |
+
+Banned shapes (each is a rule violation, even when the error
+is logged correctly):
+
+- Silent catch + early return — no UX surface ever fires
+- Returning `null` / `undefined` / `false` / empty-result to
+  the caller without the caller surfacing the failure
+- `console.error` / `log.warn` as the ONLY signal — those are
+  developer signals, not user signals
+- Generic ErrorBoundary catch-all WITHOUT a per-action UX
+  before the boundary fires
+- A spinner that never resolves
+- A success toast fired before the failure-path branch runs
+  (per rule 1 false-positive success ban)
+- A "Something went wrong" generic message when the server
+  returned a real `error_code` + `message` (per
+  `error-codes.md` — codes map to specific UX copy + i18n key)
+- A `throw` inside a Promise chain WITHOUT a downstream
+  `.catch` that routes to UX
+- A `raise` inside a Rails controller / FastAPI handler /
+  Spring controller WITHOUT a centralised exception handler
+  that maps to a typed response envelope the client renders
+- Returning a 4xx / 5xx with body `null` or `""` — the body
+  MUST carry the typed envelope per
+  `error-handling-with-context.md` rule 4
+
+**Sync paths count too.** A form-submit handler's `throw new
+ValidationError(...)` MUST be caught and surfaced inline; a
+service-object's `raise InsufficientFunds` MUST flow up to the
+controller / view where it becomes a banner or toast. The
+throw itself is fine — the unsurfaced throw is not.
+
+**Mobile + Swift + Dart apply the same rule**: snackbar /
+alert / inline error + log + rollback. The platform's idioms
+differ; the contract is identical.
+
+**Server-side handlers count too.** A handler that throws
+without a centralised exception-mapping middleware turns into
+a generic 500 with no `error_code`; the client renders
+"Something went wrong"; the user is stuck. Per
+`error-handling-with-context.md` rule 4, the server's response
+envelope is the bridge between thrown error and rendered UX —
+both ends MUST be wired.
+
+**Why this rule exists** (in addition to rule 1's
+"false-positive success" framing): the most-damaging incident
+class is "the user thought it succeeded; the system thinks it
+failed." Logs reveal the truth weeks later — usually via
+support tickets, sometimes via legal complaints in regulated
+contexts (failed payment, failed signup, failed consent
+capture, failed deletion). The cost of pairing every throw
+with a UX surface is one toast / one `aria-describedby` per
+handler. The cost of NOT pairing is silent data loss the user
+can't act on.
+
+User directive (verbatim, 2026-06-01): **"Throwing errors
+without surfacing a user facing toast or validation error. Is
+not acceptable."**
+
+## Cross-references for ancillary discard / silence patterns
+
+These patterns are NOT in this rule (to avoid duplication).
+See:
+
+| Pattern | Canonical rule |
+| --- | --- |
+| `_` discards (`_, err :=`, `let _ = ...`) | `no-discards.md` (hook-enforced) |
+| Empty `catch` / `catch (_)` | `no-discards.md` rule 4 + `error-handling-with-context.md` rule 1 |
+| Silent fire-and-forget `.catch(() => null)` etc. | `no-discards.md` rule 5 |
+| Raw `console.*` in product source | `no-discards.md` rule 12 (hook-enforced) |
+| `as` casts hiding parse failures | `no-discards.md` rule 26 (S6571) |
+| Empty function body | `no-discards.md` rule 38 (S108) |
+| Useless rethrow | `no-discards.md` rule 39 (S2737) |
+| Wrapping errors with context (`%w`, `from err`, `cause`) | `error-handling-with-context.md` rules 1-7 |
+| Structured logging fields | `error-handling-with-context.md` rule 2 |
+| Lint enforcement (eslint, gosec, bandit, etc.) | `extreme-lint-policy.md` |
+| Commented-out code / TODO removal | `no-silent-drops.md` |
 
 ## Why this rule exists
 
-A handful of recurring bugs in production all traced back to the same shape — an exception was caught, no one logged it, the user saw a success state, and the broken state only surfaced hours later when a downstream consumer noticed. The cost of one extra logged warning is zero; the cost of an undebuggable failure is hours of incident response.
+A handful of recurring bugs in production traced back to the
+same shape: an exception was caught, no one logged it, the
+user saw a success state, and the broken state only surfaced
+hours later when a downstream consumer noticed. Sister rules
+(`no-discards.md`, `error-handling-with-context.md`) cover the
+mechanical patterns. This rule covers the SEMANTIC shape: the
+user's experience matches what actually happened, end-to-end,
+across cascades + batches + optional sub-steps + retries +
+async state machines.
 
-## When the rule needs an exception
+The cost of one extra logged warning + one accurate toast is
+zero; the cost of an undebuggable false-positive success is
+hours of incident response.
 
-If a specific catch is genuinely best-effort and the failure is uninteresting (e.g., reading an HTTP error body for context, where missing body is fine), wrap the call so the error is captured at `debug` level — never let it disappear. The rule of thumb: if you'd want to see the error count in a metric over a year, log it. If the answer is "no", you're probably wrong about it being uninteresting.
+User directive (verbatim): **"Always verify before claims"** /
+**"no half-finishes"** — this rule enforces those at the
+user-experience layer.
 
-## Cross-language equivalents
+## Learning hooks
 
-The same rule applies to every language. The mechanics differ; the
-intent does not.
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
-### Go
+**Signals to watch**:
+- False-positive success toast where the optional sub-step actually failed (rule 1 violation pattern)
+- Async op left in "pending forever" terminal state (rule 2 violation)
+- Optimistic UI update without rollback on failure (rule 3 weakening)
+- Webhook handler returning 200 OK while DLQ-routing failures silently (rule 4 weakening)
+- Polling loop with no timeout escalation surfacing as "stuck spinner" UX (rule 6)
+- Confirmation flow mutation that didn't actually apply but reported success (rule 5)
+- Same partial-success pattern recurring across handlers (taxonomy needs new code class)
+- `throw` / `reject` / `raise` shipped in a user-facing path without an accompanying toast / inline validation / banner / state transition (rule 7 violation — the strongest form)
+- Generic ErrorBoundary catch-all relied on as the FIRST UX surface instead of per-action UX (rule 7 weakening)
+- Server returns a typed `error_code` + `message` but the client renders generic "Something went wrong" (rule 7 banned-shape — the `useApiError` composable / hook isn't mapping the code)
+- Sync handler `throw new ValidationError(...)` not caught + surfaced inline on a form (rule 7 sync-path violation)
+- Server controller `throw` without centralised exception-mapping middleware turning into a generic 500 (rule 7 server-side weakening)
 
-```go
-// WRONG
-result, err := doThing()
-_ = err
-
-// WRONG
-defer func() { _ = file.Close() }()
-
-// RIGHT
-result, err := doThing()
-if err != nil {
-  log.Warn().Err(err).Msg("doThing failed")
-  return nil, fmt.Errorf("doThing: %w", err)
-}
-
-// RIGHT (deferred close where the error matters)
-defer func() {
-  if err := file.Close(); err != nil {
-    log.Warn().Err(err).Str("path", path).Msg("file close failed")
-  }
-}()
-```
-
-Lint: `errcheck`, `staticcheck`, `golangci-lint` (with `errcheck`,
-`errorlint`, `revive` enabled). Disallow `_ = err` in production code.
-
-### Python
-
-```python
-# WRONG
-try:
-    do_thing()
-except Exception:
-    pass
-
-# WRONG
-try:
-    do_thing()
-except Exception:  # noqa
-    return None
-
-# RIGHT
-try:
-    do_thing()
-except Exception:
-    logger.warning("do_thing failed", exc_info=True)
-    raise
-```
-
-Lint: `ruff` rules `BLE001` (blind-except), `S110` (silent except-pass),
-`TRY002`, `TRY400`. Forbid `except: pass` and `except Exception: pass`
-except in vetted finalizers.
-
-### Java / Spring
-
-```java
-// WRONG
-try { thing(); } catch (Exception e) {}
-
-// RIGHT
-try {
-    thing();
-} catch (IOException e) {
-    log.warn("thing failed", e);
-    throw new ServiceException("thing failed", e);
-}
-```
-
-Lint: SonarJava `S108` (empty catch block), `S2147`, `S1166`
-(re-throw). Disallow `e.printStackTrace()` in production.
-
-### C#
-
-```csharp
-// WRONG
-try { Thing(); } catch { }
-
-// RIGHT
-try {
-    Thing();
-} catch (Exception ex) {
-    _logger.LogWarning(ex, "Thing failed");
-    throw;
-}
-```
-
-Lint: SonarC# `S2486` (empty catch), `S108`. Disallow `catch { }`
-without binding the exception.
-
-### Swift
-
-```swift
-// WRONG
-do { try thing() } catch { }
-
-// RIGHT
-do {
-    try thing()
-} catch {
-    logger.warning("thing failed: \(error.localizedDescription)")
-    throw error
-}
-```
-
-Lint: SwiftLint `empty_catch` (warn → error), `discarded_notification_center_observer`.
-
-### Rust
-
-```rust
-// WRONG
-let _ = thing();
-
-// WRONG
-match thing() { Ok(v) => v, Err(_) => default }
-
-// RIGHT
-thing().unwrap_or_else(|err| {
-    tracing::warn!(?err, "thing failed");
-    default
-})
-```
-
-Lint: clippy `let_underscore_must_use`, `let_underscore_drop`.
-
-### Dart / Flutter
-
-```dart
-// WRONG
-try { thing(); } catch (_) {}
-
-// RIGHT
-try {
-  thing();
-} catch (err, st) {
-  log.warning('thing failed', err, st);
-  rethrow;
-}
-```
-
-Lint: `unawaited_futures`, `empty_catches`, `avoid_catches_without_on_clauses`.
-
-### C / C++
-
-```cpp
-// WRONG
-auto rc = doThing();
-(void)rc;
-
-// RIGHT
-if (auto rc = doThing(); rc != Status::Ok) {
-  spdlog::warn("doThing failed: rc={}", rc);
-  return rc;
-}
-```
-
-For exception code, the C# / Java rules apply; for return-code C, every
-non-`Ok` return must be logged or propagated.
-
-## Reference
-
-- `no-silent-drops.md` — sister rule on not silently deleting work.
-- `sonarlint-checks.md` — broader linter coverage.
-- `done-criteria.md` — service-migration done checklist.
-- `~/.claude/scripts/hooks/post-edit-no-discards.js` — PostToolUse hook that already blocks `console.log` in production source on save.
+**Refinement candidates**:
+- New rule when a new false-positive success shape appears in 2+ incidents
+- New cross-reference when a sister rule (no-discards, error-handling-with-context) covers a pattern previously thought unique to this rule
+- Tightening of the "every async op has a known status" rule when a new state-machine gap is observed
+- New entry in the optimistic-rollback pattern table when a new domain case surfaces

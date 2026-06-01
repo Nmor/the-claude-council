@@ -1,71 +1,128 @@
 #!/usr/bin/env python3
 """
 Claude Code Prompt Improver Hook
-Evaluates prompts for clarity and invokes the prompt-improver skill for vague cases.
+
+Evaluates every incoming user prompt and routes it through the
+prompt-improver skill when it needs clarification OR when it is
+clear-but-non-trivial and requires the full task-intake due-
+diligence questionnaire.
+
+Sister:
+- ~/.claude/skills/prompt-improver/SKILL.md (the workflow)
+- ~/.claude/rules/common/task-intake-due-diligence.md (the
+  29-question questionnaire)
+- ~/.claude/rules/common/reuse-first.md (Q1 sweep)
+- ~/.claude/rules/common/official-docs-first.md (Q3 + Q29)
+- ~/.claude/CLAUDE.md Council Protocol Phase 0
+
+Bypass prefixes (unchanged):
+- '*' explicit user opt-out from skill (strip and pass through)
+- '/' slash command (pass through unchanged)
+- '#' memorize feature (pass through unchanged)
 """
 import json
 import sys
 
-# Load input from stdin
-try:
-    input_data = json.load(sys.stdin)
-except json.JSONDecodeError as e:
-    print(f"Error: Invalid JSON input: {e}", file=sys.stderr)
-    sys.exit(1)
 
-prompt = input_data.get("prompt", "")
-
-# Escape quotes in prompt for safe embedding
-escaped_prompt = prompt.replace("\\", "\\\\").replace('"', '\\"')
-
-def output_json(text):
-    """Output text in UserPromptSubmit JSON format"""
-    output = {
+def output_json(text: str) -> None:
+    """Emit UserPromptSubmit JSON to stdout."""
+    print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": "UserPromptSubmit",
-            "additionalContext": text
+            "additionalContext": text,
         }
-    }
-    print(json.dumps(output))
+    }))
 
-# Check for bypass conditions
-# 1. Explicit bypass with * prefix
-# 2. Slash commands (built-in or custom)
-# 3. Memorize feature (# prefix)
-if prompt.startswith("*"):
-    # User explicitly bypassed improvement - remove * prefix
-    clean_prompt = prompt[1:].strip()
-    output_json(clean_prompt)
-    sys.exit(0)
 
-if prompt.startswith("/"):
-    # Slash command - pass through unchanged
-    output_json(prompt)
-    sys.exit(0)
+def main() -> int:
+    try:
+        input_data = json.load(sys.stdin)
+    except json.JSONDecodeError as exc:
+        print(f"Error: Invalid JSON input: {exc}", file=sys.stderr)
+        return 1
 
-if prompt.startswith("#"):
-    # Memorize feature - pass through unchanged
-    output_json(prompt)
-    sys.exit(0)
+    prompt = input_data.get("prompt", "")
 
-# Build the evaluation wrapper
-wrapped_prompt = f"""PROMPT EVALUATION
+    # Bypass conditions
+    if prompt.startswith("*"):
+        # User explicit opt-out — strip * prefix and pass through.
+        # Skips clarification AND intake. The user knows what
+        # they want and accepts responsibility for skipping
+        # research.
+        output_json(prompt[1:].strip())
+        return 0
 
-Original user request: "{escaped_prompt}"
+    if prompt.startswith("/"):
+        # Slash command — pass through unchanged.
+        output_json(prompt)
+        return 0
 
-EVALUATE: Is this prompt clear enough to execute, or does it need enrichment?
+    if prompt.startswith("#"):
+        # Memorize feature — pass through unchanged.
+        output_json(prompt)
+        return 0
 
-PROCEED IMMEDIATELY if:
-- Detailed/specific OR you have sufficient context OR can infer intent
+    # Escape quotes for safe embedding in the wrapping prompt.
+    escaped_prompt = prompt.replace("\\", "\\\\").replace('"', '\\"')
 
-ONLY USE SKILL if genuinely vague (e.g., "fix the bug" with no context):
-- If vague:
-  1. First, preface with brief note: "Hey! The Prompt Improver Hook flagged your prompt as a bit vague because [specific reason: ambiguous scope/missing context/unclear target/etc]."
-  2. Then use the prompt-improver skill to research and generate clarifying questions
-- The skill will guide you through research, question generation, and execution
-- Trust user intent by default. Check conversation history before using the skill.
+    wrapped_prompt = f"""PROMPT EVALUATION
 
-If clear, proceed with the original request. If vague, invoke the skill."""
+Original user request: \"{escaped_prompt}\"
 
-output_json(wrapped_prompt)
-sys.exit(0)
+Route this prompt through the correct mode:
+
+== CLARIFICATION MODE ==
+If the prompt is VAGUE (any of: missing target, missing action,
+missing success criteria; or generic phrases like \"fix the bug\",
+\"make it faster\", \"add tests\" without context):
+
+1. Briefly note: \"Hey! The Prompt Improver Hook flagged your
+   prompt as a bit vague because [specific reason: ambiguous
+   scope / missing context / unclear target / etc].\"
+2. Invoke the `prompt-improver` skill — it runs codebase +
+   workspace + ecosystem research first, then asks 1-6
+   grounded questions via AskUserQuestion.
+
+== INTAKE MODE ==
+If the prompt is CLEAR but NON-TRIVIAL (any feature, refactor,
+integration, multi-file change, new endpoint, new dependency,
+performance work, security work, schema change, design change):
+
+Before any implementation discussion, run the full
+`~/.claude/rules/common/task-intake-due-diligence.md` 29-question
+questionnaire. The intake output populates Council Protocol
+Phase 0. Surface it FIRST, then proceed.
+
+Either invoke the `prompt-improver` skill (which automates the
+intake) OR produce the intake block inline as your first response.
+
+== TRIVIAL MODE ==
+If the prompt is CLEAR and TRIVIAL (typo fix, single-line edit,
+config tweak, comment update):
+
+Run only the abbreviated intake (Q1 prior-art sweep + Q2
+provenance + Q27 action plan, 1-2 sentences each). Proceed
+immediately afterwards. Trust user intent.
+
+== DECISION HEURISTICS ==
+- Default: trust user intent; check conversation history first
+- Conversation history already has the relevant context? Skip
+  re-asking; surface the intake answers from history.
+- The task touches user-visible behaviour, security, data
+  shape, scalability, or external integration? → INTAKE.
+- The task is a single-line correction or a stated typo fix?
+  → TRIVIAL.
+- The task description is missing target / action / success?
+  → CLARIFICATION.
+
+Per the Council Protocol, intake output goes into Phase 0
+before Phase 1 (division discussion). Per
+`~/.claude/rules/common/plan-execution-progress.md`, the intake
+is the first progress update of any non-trivial plan."""
+
+    output_json(wrapped_prompt)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

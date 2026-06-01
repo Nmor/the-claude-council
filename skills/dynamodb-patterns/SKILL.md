@@ -216,3 +216,100 @@ If unsure, start multi-table. It's easier to migrate towards single-table when a
 2. **backend-patterns** — handler / repository shape
 3. **security-review** — multi-tenant isolation, defense in depth
 4. **aws-serverless-patterns** — Lambda integration, stream handlers
+
+## Purpose
+
+Principal-level DynamoDB design: single-table modelling with composite PK + GSI overload, conditional writes for idempotency, BatchWriteItem chunking, item-collection size limits, TTL for retention, Streams for change capture, tenant isolation, on-demand vs provisioned capacity choice, transactional writes.
+
+**Negative scope** (NOT what this skill covers):
+- Relational schema (Postgres / MySQL) — see `postgres-patterns`
+- Analytical query patterns — see `clickhouse-io`
+- AWS Lambda + DDB triggers — see `aws-serverless-patterns`
+- Generic backend service-layer wiring — see `backend-patterns`
+
+## When NOT to use
+
+- Workloads needing complex JOIN / aggregation queries (use Postgres or Athena)
+- Strong-consistency multi-row transactions exceeding 100 items per TX (DDB transaction limit)
+- Workloads with unpredictable / spiky access patterns where provisioned capacity model wastes budget (use on-demand only)
+- Data with strong relational integrity needs (FKs, RLS-style policies)
+
+## Standards Cited
+
+- **Amazon DynamoDB Developer Guide** (`docs.aws.amazon.com/amazondynamodb/`) — canonical
+- **AWS Well-Architected Framework — Data pillar** — design principles
+- **The DynamoDB Book (Alex DeBrie)** — community-canonical single-table reference
+- **CAP Theorem** + **PACELC** — consistency / availability trade-offs
+- **OWASP ASVS 4.0.3 §4 (Access Control)** — tenant isolation
+- **OWASP ASVS 4.0.3 §13.1 (Generic Web Service Security)** — input validation on item attributes
+- **NIST SP 800-53 Rev 5 AC-3 (Access Enforcement)** — IAM `LeadingKeys` for tenant isolation
+- **NIST SP 800-53 Rev 5 AC-6 (Least Privilege)** — per-table / per-index IAM scoping
+- **CWE-22 (Path Traversal)** — applies to composite-key construction with user input
+- **CWE-639 (Authorization Bypass via User-Controlled Key)** — tenant-id in PK
+- **RFC 7232 (HTTP Conditional Requests)** — ETag + DDB version attribute for optimistic concurrency
+- **AWS IAM Best Practices** — least privilege on DDB resources
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| One table per entity ("table-per-class") | Loses single-table benefits; fan-out queries | Single table with overloaded PK / SK; GSI per access pattern |
+| `Scan` operations on hot path | O(n) cost + RCU exhaustion | Use Query with PK; design GSI for the access pattern |
+| `BatchWriteItem` of > 25 items | Silent partial failure | Chunk into batches of 25; retry `UnprocessedItems` |
+| Conditional writes without idempotency key | Duplicate writes on retry | `ConditionExpression: attribute_not_exists(pk)` for upsert OR explicit idempotency key per `idempotency.md` |
+| Streams + Lambda without batchSize tuning | Throttling + cold-start overhead | `batchSize=10`, `maximumBatchingWindowInSeconds=5`, `parallelizationFactor=10` |
+| Hot partition key (e.g., shared timestamp prefix) | Single physical partition saturates | Add random suffix OR use composite that distributes |
+| TTL set but cleanup-dependent logic in app | TTL deletion is async (up to 48h delay) | Treat TTL as eventual; verify state via item attribute, not "exists" |
+| Provisioned capacity without auto-scaling | Throttling under load OR waste | On-demand for variable; provisioned + auto-scaling for stable |
+| Cross-tenant access via shared PK | Data leakage on bug | Include `tenant_id` in PK; verify in IAM policy via `dynamodb:LeadingKeys` condition |
+| `UpdateExpression` without `ExpressionAttributeNames` for reserved words | Cryptic errors | Always use `#name` + `:value` placeholders |
+
+## Verification Checklist
+
+- [ ] Access patterns documented + GSI designed per pattern (not "just in case")
+- [ ] No Scan in hot-path code; Query everywhere
+- [ ] BatchWrite chunks to 25; retries `UnprocessedItems`
+- [ ] Conditional writes for idempotency on POST-style endpoints
+- [ ] Streams enabled with appropriate `StreamViewType` (NEW_AND_OLD_IMAGES for audit)
+- [ ] TTL configured; tested with `aws dynamodb update-time-to-live`
+- [ ] Tenant isolation via PK prefix + IAM `LeadingKeys` condition
+- [ ] Item size monitored (DDB 400KB limit; design for < 16KB typical)
+- [ ] Backup strategy: PITR enabled OR scheduled export to S3
+- [ ] CloudWatch alarms on `ConsumedReadCapacityUnits` + `ThrottledRequests`
+
+## Cross-References
+
+- `~/.claude/skills/aws-serverless-patterns/SKILL.md` — Lambda + DDB triggers
+- `~/.claude/skills/backend-patterns/SKILL.md` — repository shape
+- `~/.claude/skills/postgres-patterns/SKILL.md` — relational alternative
+- `~/.claude/skills/clickhouse-io/SKILL.md` — OLAP alternative
+- `~/.claude/rules/common/idempotency.md` — conditional-write pattern
+- `~/.claude/rules/common/observability.md` — DDB metrics + alarms
+- `~/.claude/agents/database-reviewer.md` — Council Division 9
+- `~/.claude/agents/security-reviewer.md` — IAM + tenant isolation
+
+## Why this skill exists
+
+DynamoDB rewards single-table design and punishes relational reflexes: developers coming from RDBMS create table-per-entity, run Scan on the hot path, and discover at scale that the system charges per RCU and throttles under load. The patterns above codify the principal-level posture: single-table + overloaded GSI + Query-everywhere + idempotency-via-conditional-write + tenant-isolated-via-IAM. Apps following these defaults scale to millions of requests-per-second at predictable cost.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Cross-tenant scan / query without `tenant_id` PK prefix (multi-tenant isolation weakening)
+- BatchWrite > 25 items in one call without chunking (DDB hard limit)
+- Conditional write missing on idempotency-sensitive write (double-execute risk)
+- Hot partition pattern emerges (single PK absorbs > 1000 RCU/s or 1000 WCU/s) — composite-key redesign needed
+- GSI projected attributes set to ALL when only specific attrs are read (cost inflation)
+- Stream consumer not handling `OLD_IMAGE` for tombstone-style deletes
+- TTL attribute set in code but `TimeToLiveSpecification` not in IaC (DDB silently ignores)
+- ScanIndexForward used to reverse query order (cheap; flag good usage)
+- `Scan` operation in production code path (cost + latency anti-pattern; use Query)
+- BatchGet returning UnprocessedKeys without retry-with-backoff
+
+**Refinement candidates**:
+- New access-pattern row when a new query shape appears (e.g., reverse-chronological by org)
+- New conditional-write template when idempotency is required on a new operation class
+- New GSI design rule when a cost overrun is traced to overprojection
+- New cross-reference when a sister skill (aws-serverless-patterns, postgres-patterns, dynamodb-patterns) adds a related pattern

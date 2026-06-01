@@ -148,3 +148,110 @@ spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 - Assert SQL efficiency using logs: set `logging.level.org.hibernate.SQL=DEBUG` and `logging.level.org.hibernate.orm.jdbc.bind=TRACE` for parameter values
 
 **Remember**: Keep entities lean, queries intentional, and transactions short. Prevent N+1 with fetch strategies and projections, and index for your read/write paths.
+
+## Purpose
+
+Principal-level JPA / Hibernate patterns: entity modelling, association fetching strategies (N+1 prevention), Criteria + JPQL query design, projections, second-level cache, transaction scoping, schema migration discipline.
+
+**Negative scope** (NOT what this skill covers):
+- Spring Boot wiring around the persistence layer — see `springboot-patterns`
+- Raw SQL optimisation outside JPA — see `postgres-patterns`
+- Schema migration safety (squawk, expand-contract) — see `schema-evolution.md` + `database-migrations`
+- Test methodology for repositories — see `springboot-tdd`
+- DynamoDB / NoSQL patterns — see `dynamodb-patterns`
+
+## When NOT to use
+
+- High-write event-stream workloads (consider direct JDBC / R2DBC or specialised ORMs)
+- Single-table DynamoDB design (use `dynamodb-patterns`)
+- Reporting / OLAP queries (use ClickHouse / Snowflake via JDBC, not JPA)
+- Bulk imports (use `INSERT ... SELECT` or `COPY`; JPA's flush overhead kills throughput)
+
+## Standards Cited
+
+- **JSR 338 — Jakarta Persistence 3.1** (`jakarta.ee/specifications/persistence/3.1`) — core specification
+- **Hibernate ORM 6.6 User Guide** (`docs.jboss.org/hibernate/orm/6.6/userguide/`) — implementation reference
+- **Spring Data JPA 3.4 Reference** (`docs.spring.io/spring-data/jpa/reference`) — repository abstractions
+- **SQL:2023 (ISO/IEC 9075)** — query semantics
+- **Effective Java 3e — Item 50, Item 17** — defensive copies, immutability for entities
+- **Vlad Mihalcea's High-Performance Java Persistence** (canonical reference; matches Hibernate 6.x)
+- **OWASP ASVS 4.0.3 §5.3 (Output Encoding) + §13.3 (SOAP/Webservice/SQL)** — query parameterisation
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| `@OneToMany(fetch = EAGER)` | Loads the entire collection on every parent load; N+1 cascade | Default `LAZY`; use `@EntityGraph` or `JOIN FETCH` for known access |
+| `@OneToMany` without `mappedBy` | Hibernate creates join table even with FK column present | Always `mappedBy = "parentField"` on the owning side |
+| Repository method returning entity for read-only display | Hibernate dirty-checks every loaded entity = unnecessary work | Use DTO projection: `interface OrderSummary { Long getId(); String getStatus(); }` |
+| `entity.equals(other)` without overriding `equals/hashCode` | Default Object identity; breaks `Set<Entity>` semantics | Override `equals/hashCode` on natural key OR business-key; never on `@Id` (changes after persist) |
+| `@Transactional` on read methods | Acquires write-lock connection from pool | `@Transactional(readOnly = true)` — Hibernate skips dirty-check, uses read replica if configured |
+| `CascadeType.ALL` on `@ManyToMany` | Cascade DELETE blows away shared entities | `CascadeType.PERSIST + MERGE` only; never CASCADE on shared associations |
+| `findAll()` for paginated UI | Loads entire table | `Pageable` with `Page<T>` OR cursor-based pagination |
+| Hibernate auto-DDL (`hbm2ddl.auto=update`) in prod | Silent schema drift; production-only columns | Flyway / Liquibase / Atlas; auto-DDL is dev-only |
+
+## Verification Checklist
+
+- [ ] All `@OneToMany` / `@ManyToMany` are LAZY (default) unless eager use documented
+- [ ] N+1 queries detected via `hibernate-statistics` or Hypersistence Optimizer
+- [ ] DTO projections used for read-only views
+- [ ] `equals/hashCode` overridden on natural / business key (NOT `@Id`)
+- [ ] `@Transactional(readOnly = true)` on query-only services
+- [ ] No `CascadeType.ALL` on shared associations
+- [ ] Pagination via `Pageable` or cursor; no unbounded `findAll()`
+- [ ] Schema migrations via Flyway / Liquibase; `hbm2ddl.auto=validate` in prod
+- [ ] Slow-query log enabled (`spring.jpa.properties.hibernate.session.events.log.LOG_QUERIES_SLOWER_THAN_MS=200`)
+
+## Cross-References
+
+- `~/.claude/skills/springboot-patterns/SKILL.md` — service / transaction wiring
+- `~/.claude/skills/springboot-tdd/SKILL.md` — `@DataJpaTest` with Testcontainers
+- `~/.claude/skills/database-migrations/SKILL.md` — Flyway / Liquibase patterns
+- `~/.claude/skills/postgres-patterns/SKILL.md` — index design + EXPLAIN
+- `~/.claude/skills/java-coding-standards/SKILL.md` — record / Optional / immutability
+- `~/.claude/rules/common/schema-evolution.md` — expand-contract migration
+- `~/.claude/rules/common/observability.md` — slow-query metrics
+- `~/.claude/agents/database-reviewer.md` — Council Division 9 delegate
+
+## Why this skill exists
+
+JPA's "object-relational mapping" abstraction is leaky in two directions: developers who treat entities as plain Java objects encounter N+1 queries, accidental EAGER cascades, and `LazyInitializationException`; developers who treat it as raw SQL miss out on caching, dirty-checking, and identity-map benefits. The patterns above strike the principal-level balance: lean entities, intentional fetches, DTO projections for reads, transactional discipline, migrations in version control. Apps following these defaults survive 10× load without rewriting the persistence layer.
+
+## Compliance & Standards Mapping
+
+- **ISO/IEC 25010:2011 §6** — Product quality model (Functional
+  Suitability, Reliability, Performance Efficiency, Usability,
+  Security, Maintainability, Portability, Compatibility)
+- **ISO/IEC/IEEE 12207:2017 §6.4** — Software construction +
+  verification + validation processes
+- **NIST SP 800-218 SSDF §PW** — Produce Well-Secured Software
+  (applies to every code-authoring skill)
+- **NIST SP 800-53 Rev 5 §SA-11** — Developer testing +
+  evaluation
+- **OWASP ASVS 4.0.3 §V1.1** — Secure SDLC requirements
+- **OWASP ASVS 4.0.3 §V14.2** — Dependency lifecycle
+- **CWE Top 25 (2026)** — Weakness classes the patterns in this
+  skill prevent
+- **SLSA Framework v1.0 Build L2+** — Provenance + integrity
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- N+1 query pattern (`@OneToMany` accessed in loop without `JOIN FETCH`)
+- `FetchType.EAGER` on `@OneToMany` / `@ManyToMany` (default-eager weakening)
+- Entity returned from controller (entity-vs-DTO leakage; serialization triggers lazy-load LazyInitializationException)
+- `@Transactional` not on service / handler but on repository (TX boundary anti-pattern)
+- `@Modifying` query without `clearAutomatically = true` (stale persistence context)
+- Native query with string-concat parameter (per `~/.claude/rules/sql/no-discards.md`)
+- Long-running transaction (TX span > 5s — DB connection held; pool exhaustion)
+- Generated SQL not reviewed via Hibernate SQL logging in dev
+- Missing index on FK column (Postgres doesn't auto-index FKs — cascade-delete becomes Seq Scan)
+- Optimistic locking (`@Version`) not used on concurrent-edit entities
+
+**Refinement candidates**:
+- New entity-relation pattern row when a new modeling shape recurs
+- New cross-reference when a sister skill (postgres-patterns, database-migrations, springboot-patterns) adds a JPA gate
+- Tightening of the fetch-strategy default when N+1 incidents recur
+- New row in the indexing checklist per workload class (read-heavy vs write-heavy)

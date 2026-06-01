@@ -1,5 +1,15 @@
 # `~/.claude/` Comprehensive Rebuild — Peppy Painting Parrot
 
+> **commit-policy: single** — per user directive, ALL 17 phases land
+> in ONE final commit at the end of the rebuild. No intermediate
+> commits. The Phase-0 baseline commit (`8a07d9c`) is the rollback
+> point; the final commit closes the rebuild. Every per-phase
+> "Atomicity: one commit" note below is superseded by this top-level
+> declaration — those notes are kept for documentation of the
+> intended logical boundary but DO NOT trigger a `git commit` step.
+> The user reviews the final commit candidate (full diff + complete
+> verification block) before it lands.
+
 ## Context
 
 The `~/.claude/` directory is the user's global configuration surface for Claude Code: 34 rules, 57 skills, 13 agents, 33 commands, 10 plans, and the Council protocol that orchestrates them. The scope of this rebuild extends beyond `~/.claude/` to ALL relevant global config locations (see "Scope" section). After 6+ months of accretion, four Explore-agent audits identified accumulated debt:
@@ -194,6 +204,71 @@ Pre-deletion link-check: `grep -r "SECURITY-AUDIT\|changelog.md\|stats-cache\|se
 
 **Atomicity**: One commit. **Verification**: `du -sh ~/.claude/` drops ~270 MB.
 
+**Phase 1A task list** (per `plan-task-breakdown.md`):
+
+| # | Task | Verification |
+| --- | --- | --- |
+| 1A.1 | Confirm `~/.claude/` is NOT a git repo; inventory disk usage | `du -sh ~/.claude/` reports baseline |
+| 1A.2 | Write `.gitignore` excluding heavy auto-managed runtime dirs | `git status --short` shows only config surface |
+| 1A.3 | `git init` + create baseline commit `8a07d9c` | `git log --oneline -1` shows snapshot |
+| 1A.4 | Verify `.git/` size < 500 MB | `du -sh ~/.claude/.git/` = 1.9 M |
+| 1A.5 | Branch `rebuild/phase-1-orphans` | `git branch` shows current branch |
+| 1A.6 | Pre-deletion link-check across rules/skills/agents/CLAUDE.md | Zero inbound refs to orphan filenames |
+| 1A.7 | Update `.gitignore` to track `audits/archive/` | History preserved on SECURITY-AUDIT moves |
+| 1A.8 | `git mv SECURITY-AUDIT-2026-05-23.md` to `audits/archive/2026-05-23/` | Staged rename in `git status` |
+| 1A.9 | `git mv SECURITY-AUDIT-2026-05-23-EXTENDED.md` to archive | Same |
+| 1A.10 | `git mv SECURITY-AUDIT-2026-05-23-PHASE3-DEPS.md` to archive | Same |
+| 1A.11 | Delete root orphans (`.DS_Store`, `.last-cleanup`, `stats-cache.json`, `mcp-needs-auth-cache.json`, `history.jsonl`) | `ls` confirms removed |
+| 1A.12 | Delete `debug/latest` dangling symlink + `cache/changelog.md` | `ls` confirms removed |
+| 1A.13 | Delete untracked empty `plans/tasks/phases-1-2-3-5-6-7-8-9-10-tasks.md` | `ls` confirms removed |
+| 1A.14 | Prune 257 empty `session-env/*/` subdirs | `find … -type d -empty \| wc -l` = 0 |
+| 1A.15 | Prune 64 stale `ide/*.lock` files (>7 days) | ide files 72 → 8 |
+| 1A.16 | Prune `sessions/*.tmp` older than 30 days | `find sessions -name '*.tmp' \| wc -l` = 0 |
+| 1A.17 | Identify file-history orphan UUIDs not paired with any session | 107 orphans found |
+| 1A.18 | Confirm current session UUID is NOT in orphan set | grep returns "safe" |
+| 1A.19 | Prune 107 orphan file-history UUIDs | 117 → 10 dirs, 38378 → 9850 files |
+| 1A.20 | Author new global rule `plan-execution-progress.md` | File exists; pure guidance |
+| 1A.21 | Author new global rule `plan-task-breakdown.md` | File exists; pure guidance |
+| 1A.22 | Author new global rule `plan-completion-before-push.md` | File exists; pure guidance |
+| 1A.23 | Sweep three new rules; strip plan-specific content | Grep for tokens returns clean |
+| 1A.24 | `git add -A` + commit (atomic with Phase 1.5) | `git log -1` shows the commit |
+
+Status: 1A.1–1A.23 complete; 1A.24 pending (waits for Phase 1.5).
+
+#### Phase 1.5 — Global-Rule Purity Sweep (NEW, ~1 hour)
+
+**Why this phase exists**: Per user directive (verbatim):
+*"Global is global guide and not project specific"*. The existing global rules under
+`rules/common/` and skills under `skills/` contain project-specific
+names, session dates, and incident-specific examples that should
+live in workspace `.claude/` files, not global. This phase strips
+every project-specific reference from global, relocating
+project-specific rules out of global into their respective workspace
+`.claude/` dirs.
+
+**Task list**:
+
+| # | Task | Verification |
+| --- | --- | --- |
+| 1.5.1 | Broad grep across `rules/common/`, `skills/`, `agents/`, `commands/`, `CLAUDE.md`, `docs/`, `contexts/` for project tokens + session-specific dates | Complete offender list compiled |
+| 1.5.2 | Strip project refs from `rules/common/proper-fixes-first.md` | Grep returns clean |
+| 1.5.3 | Strip "workspace cross-reference" section from `rules/common/no-local-fs.md` | Grep returns clean |
+| 1.5.4 | Strip project list from `rules/common/docker-localhost-binding.md` | Grep returns clean |
+| 1.5.5 | Strip project example from `rules/common/dependency-vulnerabilities.md` | Grep returns clean |
+| 1.5.6 | Strip "workspace cross-references" section from `rules/common/updated-frameworks.md` | Grep returns clean |
+| 1.5.7 | Strip project paths from `rules/common/deploy-failures-become-checks.md` | Grep returns clean |
+| 1.5.8 | Strip project paths from `rules/common/license-allowlist-gate.md` | Grep returns clean |
+| 1.5.9 | Relocate `rules/common/bfree-africa-git-identity.md` to BFREE workspace `.claude/rules/` | `git rm` from global; file lives in workspace |
+| 1.5.10 | Strip project paths from root `CLAUDE.md` (lines 26, 31) | Generic `<workspace>` placeholder used |
+| 1.5.11 | Strip project refs from `skills/error-shape-contract-testing/SKILL.md` | Grep returns clean |
+| 1.5.12 | Strip project refs from `skills/calendar-provider/SKILL.md` | Grep returns clean |
+| 1.5.13 | Strip project refs from `skills/provider-research/SKILL.md` | Grep returns clean |
+| 1.5.14 | Strip project refs from `skills/web-push-notifications/SKILL.md` | Grep returns clean |
+| 1.5.15 | Re-grep across `~/.claude/` for project tokens | Zero matches in rules/skills/agents/CLAUDE.md/docs/contexts |
+| 1.5.16 | `git add -A` + commit (atomic with 1A) | `git log -1` shows the commit |
+
+**Atomicity**: Phase 1A and Phase 1.5 land in a single commit since they share the same underlying directive (clean foundation before relocation).
+
 #### Phase 1B — Project-File Relocation (judgment, ~1 hour)
 
 Confirmed project-specific contamination in `~/.claude/` (no project-bound content allowed per C5):
@@ -230,7 +305,15 @@ For each moved file:
 
 **Filename preservation** strategy: keep canonical names alive; replace removed siblings with one-line redirect stubs (1 phase) before final deletion in Phase 10.
 
-**Sub-step 2a**: Merge `no-silent-failures.md` + `no-silent-drops.md` content into `no-discards.md` (the most-cited, hook-enforced canonical name). Leave the other two as single-line redirect stubs: `> Consolidated into [no-discards.md](no-discards.md). Migrate references.` Eight files reference the deprecated names — they all continue working via stub. Workspace ripple (Phase 8) updates those references.
+**Sub-step 2a**: Merge `no-silent-failures.md` + `no-silent-drops.md` content into
+`no-discards.md` (the most-cited, hook-enforced canonical name). Leave the other two
+as single-line redirect stubs of the form shown below. Eight files reference the
+deprecated names — they all continue working via stub. Workspace ripple (Phase 8)
+updates those references.
+
+```markdown
+> Consolidated into [no-discards.md](no-discards.md). Migrate references.
+```
 
 **Sub-step 2b**: Promote `security.md` (currently 48 LOC umbrella shell) to a real OWASP Top 10 + ASVS-mapped umbrella. Strip overlapping security content from `api-design.md`. `secrets-management.md` and `security-controls-org-wide.md` stay as deep-dive sister files referenced by the new umbrella.
 
@@ -409,7 +492,9 @@ After workspace ripple confirmed (Phase 8):
 2. Delete `continuous-learning` v1 dir (entry removed from auto-skills.md in Phase 4).
 3. Final link-check pass across all surfaces.
 4. Merge all phase branches to main.
-5. Tag: `git tag v2.0-rebuild-complete`.
+5. Tag: `git tag v1.0.0` (first public release per semver — this is
+   the initial stable public surface, not a rebuild over an earlier
+   published v1).
 6. Write final state report to `~/.claude/audits/rebuild-2026-05-26-final-report.md`.
 
 ### Phase 11 — Project-Bound Artifact Generation Principle (NEW, ~3 hours)

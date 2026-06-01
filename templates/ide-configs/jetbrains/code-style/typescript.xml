@@ -1,0 +1,75 @@
+<!--
+  JetBrains TypeScript code-style scheme.
+
+  Import via: Settings → Editor → Code Style → TypeScript → Scheme
+  gear icon → Import Scheme → IntelliJ IDEA code style XML.
+
+  Aligned with:
+  - ~/.claude/rules/typescript/coding-style.md
+  - ~/.claude/rules/common/extreme-lint-policy.md (line length 100,
+    indent 2)
+  - Prettier defaults (matches the formatter the repo uses)
+
+  Note: this file sets layout + wrapping. Function length (≤ 80) +
+  parameter count (≤ 5) + cognitive complexity (≤ 10) are enforced
+  by Inspection profiles (SonarLint + eslint-plugin-sonarjs), not
+  here.
+-->
+<code_scheme name="Claude Council — TypeScript" version="173">
+  <option name="RIGHT_MARGIN" value="100"/>
+  <option name="LINE_SEPARATOR" value="&#10;"/>
+
+  <TypeScriptCodeStyleSettings version="0">
+    <option name="USE_DOUBLE_QUOTES" value="false"/>
+    <option name="FORCE_QUOTE_STYlE" value="true"/>
+    <option name="USE_SEMICOLON_AFTER_STATEMENT" value="true"/>
+    <option name="FORCE_SEMICOLON_STYLE" value="true"/>
+    <option name="SPACES_WITHIN_IMPORTS" value="true"/>
+    <option name="USE_PUBLIC_MODIFIER" value="false"/>
+    <option name="USE_EXPLICIT_JS_EXTENSION" value="AUTO"/>
+    <option name="USE_PATH_MAPPING" value="ALWAYS"/>
+    <option name="IMPORT_SORT_MEMBERS" value="true"/>
+    <option name="IMPORT_SORT_MODULE_NAME" value="true"/>
+    <option name="ENFORCE_TRAILING_COMMA" value="WhenMultiline"/>
+    <option name="OBJECT_LITERAL_WRAP" value="2"/>
+    <option name="UNION_TYPES_WRAP" value="2"/>
+    <option name="INTERSECTION_TYPES_WRAP" value="2"/>
+  </TypeScriptCodeStyleSettings>
+
+  <JSCodeStyleSettings version="0">
+    <option name="USE_DOUBLE_QUOTES" value="false"/>
+    <option name="FORCE_QUOTE_STYlE" value="true"/>
+    <option name="ENFORCE_TRAILING_COMMA" value="WhenMultiline"/>
+    <option name="SPACES_WITHIN_OBJECT_LITERAL_BRACES" value="true"/>
+    <option name="SPACES_WITHIN_IMPORTS" value="true"/>
+    <option name="USE_PUBLIC_MODIFIER" value="false"/>
+    <option name="IMPORT_SORT_MEMBERS" value="true"/>
+    <option name="IMPORT_SORT_MODULE_NAME" value="true"/>
+  </JSCodeStyleSettings>
+
+  <codeStyleSettings language="TypeScript">
+    <option name="RIGHT_MARGIN" value="100"/>
+    <option name="WRAP_ON_TYPING" value="0"/>
+    <option name="KEEP_LINE_BREAKS" value="true"/>
+    <option name="KEEP_FIRST_COLUMN_COMMENT" value="false"/>
+    <option name="WRAP_LONG_LINES" value="true"/>
+    <indentOptions>
+      <option name="INDENT_SIZE" value="2"/>
+      <option name="CONTINUATION_INDENT_SIZE" value="2"/>
+      <option name="TAB_SIZE" value="2"/>
+      <option name="USE_TAB_CHARACTER" value="false"/>
+    </indentOptions>
+  </codeStyleSettings>
+
+  <codeStyleSettings language="JavaScript">
+    <option name="RIGHT_MARGIN" value="100"/>
+    <option name="KEEP_LINE_BREAKS" value="true"/>
+    <option name="WRAP_LONG_LINES" value="true"/>
+    <indentOptions>
+      <option name="INDENT_SIZE" value="2"/>
+      <option name="CONTINUATION_INDENT_SIZE" value="2"/>
+      <option name="TAB_SIZE" value="2"/>
+      <option name="USE_TAB_CHARACTER" value="false"/>
+    </indentOptions>
+  </codeStyleSettings>
+</code_scheme>

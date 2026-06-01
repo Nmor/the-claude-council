@@ -1,4 +1,5 @@
 ---
+name: vibe
 description: "Vibe coding mode — skip formal Council protocol, build iteratively with quick quality checks. Fast, creative, flow-state coding."
 user-invocable: true
 ---

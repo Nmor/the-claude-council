@@ -1,3 +1,9 @@
+---
+name: multi-execute
+description: Multi-model collaborative execution: prototype from plan, refactor, multi-model audit, delivery.
+command: true
+---
+
 # Execute - Multi-Model Collaborative Execution
 
 Multi-model collaborative execution - Get prototype from plan → Claude refactors and implements → Multi-model audit and delivery.

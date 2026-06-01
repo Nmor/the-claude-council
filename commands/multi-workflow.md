@@ -1,3 +1,9 @@
+---
+name: multi-workflow
+description: Multi-model collaborative dev workflow with intelligent routing (frontend, backend).
+command: true
+---
+
 # Workflow - Multi-Model Collaborative Development
 
 Multi-model collaborative development workflow (Research → Ideation → Plan → Execute → Optimize → Review), with intelligent routing: Frontend → Gemini, Backend → Codex.

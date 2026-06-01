@@ -5,6 +5,15 @@ description: Django architecture patterns, REST API design with DRF, ORM best pr
 
 # Django Development Patterns
 
+> **Reuse-first** (per `~/.claude/rules/common/reuse-first.md`):
+> One source of truth per Django concept — one base
+> `ModelSerializer` per shared shape, one custom permission
+> class per access rule, one mixin per cross-cutting view
+> behaviour, one signal handler per event. Sweep `apps/<app>/`
+> for existing primitives before adding new ones. Extend via
+> subclass / mixin / Meta inheritance — never fork a serializer
+> or view into a parallel near-duplicate.
+
 Production-grade Django architecture patterns for scalable, maintainable applications.
 
 ## When to Activate
@@ -731,3 +740,93 @@ Product.objects.filter(stock=0).delete()
 | Middleware | Request/response processing |
 
 Remember: Django provides many shortcuts, but for production applications, structure and organization matter more than concise code. Build for maintainability.
+
+## Purpose
+
+Principal-level Django architecture: app structure, settings split by environment, fat-model / thin-view layering, ORM optimisation (`select_related` / `prefetch_related`), DRF view + serializer patterns, middleware order, signals over inheritance, async views (Django 4+).
+
+**Negative scope** (NOT what this skill covers):
+- Django security configuration — see `django-security`
+- Django test methodology — see `django-tdd`
+- Build / coverage / deployment gates — see `django-verification`
+- Generic Python idioms — see `python-patterns`
+- Generic Python testing — see `python-testing`
+
+## When NOT to use
+
+- FastAPI / Starlette / Flask (different middleware + ASGI model)
+- Pure REST API services (consider Django Ninja or FastAPI for less ORM coupling)
+- High-throughput async event processors (Celery + FastAPI is leaner)
+
+## Standards Cited
+
+- **Django 5.1 Documentation** (`docs.djangoproject.com/en/5.1/`) — canonical reference
+- **Django REST Framework 3.15** (`www.django-rest-framework.org/`) — DRF generic views, serializers
+- **PEP 8 / PEP 257 / PEP 484 / PEP 695** — Python style + types
+- **OWASP Top 10 2021** — A01-A10 mapping
+- **OWASP ASVS 4.0.3 §1, §5, §13** — architecture + validation + API
+- **Twelve-Factor App** — config via env, dependencies declared
+- **RFC 7807 / RFC 9457 (Problem Details for HTTP APIs)** — DRF custom exception handlers
+- **Two Scoops of Django 3.x (Greenfeld + Roy)** — community-canonical patterns
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Business logic in views | Couples HTTP to domain; impossible to reuse from CLI / management command / Celery task | Service layer functions (or methods on model managers); views thin |
+| Fat `Model.objects` chains in templates | N+1 queries on render | `select_related` for FK forward; `prefetch_related` for M2M / reverse FK |
+| `Model.objects.filter(...).exists()` followed by `.get(...)` | Two queries; race window | Use `.first()` or `try/except DoesNotExist` |
+| Inheriting from `models.Model` deep hierarchies | Multi-table inheritance generates JOINs on every query | Composition via OneToOne or `abstract = True` base |
+| `signals` for cross-app side effects | Hidden coupling; hard to test | Explicit method calls in service functions; signals only for framework events |
+| Settings without env split | Secrets in git; dev / prod drift | `settings/base.py` + `local.py` + `production.py`; secrets via env / `django-environ` |
+| Custom middleware that doesn't call `get_response(request)` | Breaks chain silently | Always call `self.get_response(request)` and return its result |
+| Sync DB calls in async view | Django warns + serialises through thread | `sync_to_async` wrapper OR fully async ORM (Django 5.1+ partial) |
+
+## Verification Checklist
+
+- [ ] Views < 30 lines (business logic moved to services / managers)
+- [ ] All FK / M2M accesses use `select_related` / `prefetch_related`
+- [ ] Settings split per environment (`base`, `local`, `staging`, `production`)
+- [ ] Secrets via env vars (django-environ); never in `settings.py`
+- [ ] `DEBUG = False` in production with `ALLOWED_HOSTS` set
+- [ ] CSRF middleware enabled (default); disabled only with documented stateless rationale
+- [ ] Migrations atomic + reversible (per `schema-evolution.md`)
+- [ ] Custom exception handler maps DRF exceptions to RFC 9457 envelope
+- [ ] Async views use `sync_to_async` for ORM calls (Django 4-5.0) or native async ORM (5.1+)
+- [ ] Logging configured with structured JSON output
+
+## Cross-References
+
+- `~/.claude/skills/django-security/SKILL.md` — auth + CSRF + SQL injection
+- `~/.claude/skills/django-tdd/SKILL.md` — pytest-django + factory_boy
+- `~/.claude/skills/django-verification/SKILL.md` — migrations + coverage + deploy
+- `~/.claude/skills/python-patterns/SKILL.md` — language idioms
+- `~/.claude/skills/api-design/SKILL.md` — REST contract design
+- `~/.claude/skills/observability-patterns/SKILL.md` — structured logs
+- `~/.claude/rules/common/no-ambient-globals.md` — DI patterns in Django
+- `~/.claude/agents/python-reviewer.md` — Django code review delegate
+
+## Why this skill exists
+
+Django's batteries-included approach makes prototypes fast but production-grade Django requires explicit discipline: settings split, service layers, ORM optimisation, async-DB-call awareness, env-driven config. The defaults are good for hello-world but break under load (N+1 queries, settings.py with secrets, untested signals). The patterns above codify the production-ready posture so Django apps survive load testing without rewriting the data access layer.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- ORM N+1 pattern (query in template / loop) — `select_related` / `prefetch_related` weakening
+- Fat view: business logic in view handler instead of service / model method (skinny-views weakening)
+- Signal handler doing heavy lifting (move to Celery task or service layer)
+- DRF serializer reading model instance with all fields when only a few are needed (over-fetch)
+- `get_or_create` race condition (no unique constraint to back it up)
+- Generic CBV used when explicit FBV would be clearer / more testable
+- New app added without migrations / admin / tests scaffolding
+- Settings.py with environment-specific values hardcoded (per `~/.claude/rules/common/no-ambient-globals.md`)
+- Mixed sync/async views (calling sync ORM from async view causes thread-pool exhaustion)
+
+**Refinement candidates**:
+- New pattern row when a Django version ships new built-ins (e.g., async ORM, GeneratedField)
+- New cross-reference when a sister skill (django-security, django-tdd, jpa-patterns, postgres-patterns) adds a related pattern
+- Tightening of the skinny-views rule when fat-view recurrence is observed
+- New caching template when a new cache layer (Redis / per-view / per-fragment) becomes appropriate

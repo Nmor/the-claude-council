@@ -1,4 +1,5 @@
 ---
+name: tdd
 description: Enforce test-driven development workflow. Scaffold interfaces, generate tests FIRST, then implement minimal code to pass. Ensure 80%+ coverage.
 ---
 

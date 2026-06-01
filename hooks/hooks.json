@@ -36,10 +36,20 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/suggest-compact.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/suggest-compact.js\""
           }
         ],
         "description": "Suggest manual compaction at logical intervals"
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/pre-write-governance-sweep.js\""
+          }
+        ],
+        "description": "Pre-write sweep — two families: (1) governance-filename collision (reuse-first rule 1 — blocks duplicate README/CONTRIBUTING/CODE_OF_CONDUCT/SECURITY/CHANGELOG/LICENSE/CODEOWNERS at different paths); (2) resource hygiene (secrets-management tracked .env/*.pem/*.key, docker-localhost-binding compose unbound ports, no-local-fs banned FS-write APIs in production source, dependency-pinning Dockerfile FROM without digest + package.json '*'/'latest', github-actions-gotchas #12 actions/* not SHA-pinned). Bypass per-family via CLAUDE_GOVERNANCE_SWEEP=off / CLAUDE_RESOURCE_HYGIENE=off."
       }
     ],
     "PreCompact": [
@@ -48,7 +58,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/pre-compact.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/pre-compact.js\""
           }
         ],
         "description": "Save state before context compaction"
@@ -60,7 +70,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/session-start.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/session-start.js\""
           }
         ],
         "description": "Load previous context and detect package manager on new session"
@@ -94,7 +104,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/post-edit-format.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-format.js\""
           }
         ],
         "description": "Auto-format JS/TS files with Prettier after edits"
@@ -104,7 +114,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/post-edit-typecheck.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-typecheck.js\""
           }
         ],
         "description": "TypeScript check after editing .ts/.tsx files"
@@ -114,7 +124,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/post-edit-console-warn.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-console-warn.js\""
           }
         ],
         "description": "Warn about console.log statements after edits"
@@ -124,7 +134,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/post-edit-no-discards.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-no-discards.js\""
           }
         ],
         "description": "Block edits that introduce underscore discards, suppression comments, placeholder markers, task-pointer comments, raw color literals, console.log, hardcoded secrets, or merge-conflict markers"
@@ -136,7 +146,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/check-console-log.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/check-console-log.js\""
           }
         ],
         "description": "Check for console.log in modified files after each response"
@@ -148,7 +158,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/session-end.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/session-end.js\""
           }
         ],
         "description": "Persist session state on end"
@@ -158,7 +168,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/evaluate-session.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/evaluate-session.js\""
           }
         ],
         "description": "Evaluate session for extractable patterns"

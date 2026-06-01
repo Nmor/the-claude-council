@@ -5,6 +5,14 @@ description: Spring Boot architecture patterns, REST API design, layered service
 
 # Spring Boot Development Patterns
 
+> **Reuse-first** (per `~/.claude/rules/common/reuse-first.md`):
+> One source of truth per Spring concept — one `@ControllerAdvice`
+> exception handler, one custom `Validator`, one common base
+> entity, one shared `JpaRepository` interface per aggregate.
+> Sweep `*Service`, `*Repository`, `dto/`, `mapper/` directories
+> before adding new classes. Extend via interface / abstract base
+> / `@Configuration` — never fork.
+
 Spring Boot architecture and API patterns for scalable, production-grade services.
 
 ## When to Activate
@@ -311,3 +319,95 @@ Use Spring’s `@Scheduled` or integrate with queues (e.g., Kafka, SQS, RabbitMQ
 - Enforce null-safety via `@NonNull` and `Optional` where appropriate
 
 **Remember**: Keep controllers thin, services focused, repositories simple, and errors handled centrally. Optimize for maintainability and testability.
+
+## Purpose
+
+Principal-level Spring Boot architecture: layered separation (controller / service / repository), constructor injection, transactional boundaries, centralised exception handling, observability, caching, and async boundaries.
+
+**Negative scope** (NOT what this skill covers):
+- Spring Boot AUTH / security flows — see `springboot-security`
+- Spring Boot TEST methodology — see `springboot-tdd`
+- JPA entity modelling + queries — see `jpa-patterns`
+- Java language idioms (Optional, records, streams) — see `java-coding-standards`
+- Build / CI / coverage gates — see `springboot-verification`
+
+## When NOT to use
+
+- Non-Spring JVM frameworks (Quarkus, Micronaut, Helidon — different DI / startup model)
+- Kotlin coroutines-first servers (see Ktor patterns)
+- Reactive WebFlux at high scale (defer to project-specific reactive guidance — back-pressure semantics differ from MVC)
+
+## Standards Cited
+
+- **Spring Framework 6.2 Reference** (`docs.spring.io/spring-framework/reference`) — DI, transactions, AOP, MVC
+- **Spring Boot 3.4 Reference** (`docs.spring.io/spring-boot/reference`) — auto-config, actuator, observability
+- **JSR 380 (Jakarta Bean Validation 3.0)** — `@Valid`, `@NotNull`, `@Email` semantics
+- **RFC 7807 (Problem Details for HTTP APIs)** — Spring 6 `ProblemDetail` API
+- **RFC 9457 (Problem Details — successor)** — current standard
+- **OpenAPI 3.1** — `springdoc-openapi` integration
+- **OWASP ASVS 4.0.3 §1, §4, §13** — architecture + access-control + API surface
+- **Effective Java 3e (Bloch)** — Item 17 (immutability), Item 18 (composition), Item 50 (defensive copies)
+
+## Anti-Patterns
+
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| `@Autowired` field injection | Hidden deps, untestable without reflection, mutable | Constructor injection (Spring 4.3+ auto-wires single-constructor) |
+| Business logic in `@RestController` | Couples HTTP to domain; can't reuse from CLI / scheduled job / queue consumer | Move to `@Service`; controller only does parse → call → respond |
+| `@Transactional` on controller methods | Transaction spans the HTTP serialisation phase — connection pool starvation | Place on `@Service` methods; controller is transaction-free |
+| `@Transactional(propagation = REQUIRES_NEW)` everywhere | Loses outer-tx semantics; creates orphan saves on partial failure | Default `REQUIRED`; `REQUIRES_NEW` only for audit-log / outbox patterns |
+| Catching `Exception` in handler and returning 500 | Hides real errors; client sees "Internal error" for validation failures | `@ControllerAdvice` with typed `@ExceptionHandler` per domain exception → `ProblemDetail` per RFC 9457 |
+| `new RestTemplate()` per request | Connection pool exhaustion + DNS thrash | Inject `RestClient` (Spring 6.1+) or `WebClient` configured once at startup |
+| `Optional<T>` as `@Entity` field or method parameter | Optional designed for return types only; serialisation breaks | Use nullable field; return `Optional<T>` from repository |
+| `@Async` without explicit `Executor` bean | Spring uses `SimpleAsyncTaskExecutor` (unbounded threads) | Define `ThreadPoolTaskExecutor` bean with bounded queue + rejection policy |
+
+## Verification Checklist
+
+- [ ] All `@Service`/`@Repository`/`@Controller` use constructor injection (no `@Autowired` fields)
+- [ ] Controllers do NO business logic (parse → service → respond only)
+- [ ] `@Transactional` on service layer only, never controllers
+- [ ] `@ControllerAdvice` handles ALL domain exceptions with `ProblemDetail` (RFC 9457)
+- [ ] `RestClient` / `WebClient` beans configured at startup, not constructed per request
+- [ ] `@Async` methods use an explicit bounded `Executor`
+- [ ] HikariCP pool size + connection timeout tuned for load
+- [ ] Actuator endpoints (`/actuator/health`, `/actuator/metrics`) secured behind admin auth
+- [ ] OpenAPI spec generated via `springdoc-openapi` and served at `/v3/api-docs`
+
+## Cross-References
+
+- `~/.claude/skills/springboot-security/SKILL.md` — Spring Security 6 + OAuth2 + CSRF
+- `~/.claude/skills/springboot-tdd/SKILL.md` — JUnit 5 + Mockito + Testcontainers
+- `~/.claude/skills/springboot-verification/SKILL.md` — Maven / Gradle build gates
+- `~/.claude/skills/jpa-patterns/SKILL.md` — Hibernate query optimisation
+- `~/.claude/skills/java-coding-standards/SKILL.md` — language idioms
+- `~/.claude/skills/api-design/SKILL.md` — REST contract design
+- `~/.claude/skills/observability-patterns/SKILL.md` — Micrometer + OTel
+- `~/.claude/rules/common/no-ambient-globals.md` — DI is the substrate
+- `~/.claude/rules/common/error-handling-with-context.md` — RFC 9457 mapping
+- `~/.claude/agents/code-reviewer.md` — Java code-review delegate
+
+## Why this skill exists
+
+Spring Boot's "convention over configuration" + auto-config saves time at the cost of subtle defaults: `SimpleAsyncTaskExecutor` is unbounded, default `RestTemplate` shares no pool, `@Transactional` placement determines connection-pool exhaustion under load, `@ControllerAdvice` placement determines whether validation errors leak stacktraces. The patterns above codify the production-ready defaults so Spring Boot apps survive the second deploy.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Field injection via `@Autowired` on private field (constructor injection weakening — testability cost)
+- Fat controller (business logic in `@RestController` instead of `@Service`)
+- `@Transactional` on public method called via `this.method()` (proxy bypass — TX not applied)
+- HikariCP defaults left in place when QPS profile suggests tuning needed
+- `@ControllerAdvice` missing for exception translation (per `~/.claude/rules/common/error-handling-with-context.md`)
+- Bean cycle / circular `@Autowired` — startup-time signal of architectural smell
+- DTO returned from repository (entity-vs-DTO leakage)
+- Application properties hardcoded instead of using `@ConfigurationProperties` + validation
+- Async method called within same class (proxy-bypass — `@Async` not applied)
+- Reactive (`Mono`/`Flux`) mixed with blocking JDBC in same chain (thread-pool starvation)
+
+**Refinement candidates**:
+- New pattern row when Spring Boot ships a new feature (e.g., Spring Boot 4 GraalVM AOT)
+- New cross-reference when a sister skill (springboot-security, springboot-tdd, jpa-patterns) adds a related pattern
+- Tightening of the `@Transactional` guidance when a recurring TX-bypass incident emerges
+- New testability gate when constructor-injection regression recurs

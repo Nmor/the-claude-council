@@ -1,13 +1,10 @@
 {
   "env": {
-    "MAX_THINKING_TOKENS": "20000",
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+    "MAX_THINKING_TOKENS": "31999",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
   },
   "permissions": {
-    "allow": [
-      "mcp__pencil"
-    ]
+    "allow": []
   },
   "hooks": {
     "PreToolUse": [
@@ -34,7 +31,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const i=JSON.parse(d);const cmd=i.tool_input?.command||'';if(/git push/.test(cmd)){console.error('[Hook] Review changes before push...');console.error('[Hook] Continuing with push (remove this hook to add interactive review)')}}catch{}console.log(d)})\""
+            "command": "node \"$HOME/.claude/scripts/hooks/pre-push-gate.js\""
           }
         ]
       },
@@ -43,7 +40,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/suggest-compact.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/suggest-compact.js\""
           }
         ]
       }
@@ -54,7 +51,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/pre-compact.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/pre-compact.js\""
           }
         ]
       }
@@ -65,7 +62,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/session-start.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/session-start.js\""
           }
         ]
       }
@@ -85,7 +82,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/post-edit-format.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-format.js\""
           }
         ]
       },
@@ -94,7 +91,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/post-edit-typecheck.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-typecheck.js\""
           }
         ]
       },
@@ -103,7 +100,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/post-edit-console-warn.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-console-warn.js\""
           }
         ]
       }
@@ -114,7 +111,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/check-console-log.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/check-console-log.js\""
           }
         ]
       }
@@ -136,7 +133,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/session-end.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/session-end.js\""
           }
         ]
       },
@@ -145,7 +142,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/Users/APPLE/.claude/scripts/hooks/evaluate-session.js\""
+            "command": "node \"$HOME/.claude/scripts/hooks/evaluate-session.js\""
           }
         ]
       }

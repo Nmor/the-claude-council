@@ -1,3 +1,9 @@
+---
+name: multi-plan
+description: Multi-model collaborative planning: context retrieval, dual-model analysis, step-by-step plan.
+command: true
+---
+
 # Plan - Multi-Model Collaborative Planning
 
 Multi-model collaborative planning - Context retrieval + Dual-model analysis → Generate step-by-step implementation plan.

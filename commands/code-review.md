@@ -1,3 +1,9 @@
+---
+name: code-review
+description: Comprehensive security and quality review of uncommitted changes.
+command: true
+---
+
 # Code Review
 
 Comprehensive security and quality review of uncommitted changes:

@@ -224,8 +224,15 @@ fi
 section "auto-skills.md mapping → skill + agent existence"
 
 AUTO_SKILLS="${PREFIX}/rules/common/auto-skills.md"
+# Per lazy-rules-loading v1.1.0, auto-skills.md moved to the
+# rules-library/ Lazy-load surface (it's referenced by skills, not
+# auto-walked from rules/common/).  Fall back to the library
+# location when the Floor copy doesn't exist.
 if [ ! -f "${AUTO_SKILLS}" ]; then
-  fail "auto-skills.md not found"
+  AUTO_SKILLS="${PREFIX}/rules-library/common/auto-skills.md"
+fi
+if [ ! -f "${AUTO_SKILLS}" ]; then
+  fail "auto-skills.md not found (checked rules/common/ and rules-library/common/)"
 else
   # Extract bolded skill names: **skill-name**
   MAPPED_SKILLS=$(grep -oE '\*\*[a-z][a-z0-9-]+\*\*' "${AUTO_SKILLS}" | tr -d '*' | sort -u)

@@ -304,7 +304,7 @@ YAML sweep (this turn):
   - helm template | kubeconform: clean
 ```
 
-Per [`common/verify-before-claim.md`](../common/verify-before-claim.md).
+Per [`common/verify-before-claim.md`](../../rules/common/verify-before-claim.md).
 
 ## Cross-references
 
@@ -321,7 +321,7 @@ Per [`common/verify-before-claim.md`](../common/verify-before-claim.md).
   — SHA-pinned third-party actions; 5-layer enforcement
 - [`common/local-dev-setup.md`](../common/local-dev-setup.md)
   — local-CI parity via shared verify script
-- [`common/verify-before-claim.md`](../common/verify-before-claim.md)
+- [`common/verify-before-claim.md`](../../rules/common/verify-before-claim.md)
   — same-turn verification block
 - [`common/deploy-failures-become-checks.md`](../common/deploy-failures-become-checks.md)
   — every YAML-side deploy failure becomes a documented gate
@@ -345,7 +345,7 @@ shrink it.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 

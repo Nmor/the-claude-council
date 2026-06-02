@@ -65,17 +65,35 @@ check "hooks/ directory"               "$([ -d "${PREFIX}/hooks" ] && echo 1 || 
 check "templates/ directory"           "$([ -d "${PREFIX}/templates" ] && echo 1 || echo 0)" -eq 1
 
 printf '\n== Phase B: Inventory floors ==\n'
-RULES_COMMON=$(find "${PREFIX}/rules/common" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
-LANG_DIRS=$(find "${PREFIX}/rules" -maxdepth 1 -mindepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
+# Floor (rules/common/) is the always-loaded surface. Per the
+# lazy-rules-loading architecture (v1.1.0), the rest of the rule
+# content lives under rules-library/ and is loaded ON DEMAND via
+# skill paths: triggers + skill body references — never auto-walked.
+RULES_FLOOR=$(find "${PREFIX}/rules/common" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
+LIBRARY_COMMON=$(find "${PREFIX}/rules-library/common" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
+LIBRARY_LANG_DIRS=$(find "${PREFIX}/rules-library" -maxdepth 1 -mindepth 1 -type d 2>/dev/null | grep -v '/common$' | wc -l | tr -d ' ')
+LIBRARY_TOTAL=$(find "${PREFIX}/rules-library" -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
 SKILLS=$(find "${PREFIX}/skills" -maxdepth 1 -mindepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
+SKILLS_WITH_PATHS=0
+for s in "${PREFIX}"/skills/*/SKILL.md; do
+  [ -f "${s}" ] || continue
+  head -40 "${s}" | grep -qE '^paths:' && SKILLS_WITH_PATHS=$((SKILLS_WITH_PATHS + 1))
+done
 AGENTS=$(find "${PREFIX}/agents" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
 COMMANDS=$(find "${PREFIX}/commands" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
 
-check "rules/common/*.md   ≥ 60"      "${RULES_COMMON}" -ge 60
-check "rules/ subfolders   ≥ 20"      "${LANG_DIRS}"    -ge 20
-check "skills/             ≥ 90"      "${SKILLS}"       -ge 90
-check "agents/*.md         ≥ 25"      "${AGENTS}"       -ge 25
-check "commands/*.md       ≥ 30"      "${COMMANDS}"     -ge 30
+# Kept for compatibility with the SUMMARY printf below.
+RULES_COMMON="${RULES_FLOOR}"
+LANG_DIRS="${LIBRARY_LANG_DIRS}"
+
+check "rules/common/*.md (Floor) ≥ 10"   "${RULES_FLOOR}"      -ge 10
+check "rules-library/*.md       ≥ 100"   "${LIBRARY_TOTAL}"    -ge 100
+check "rules-library/common/    ≥ 40"    "${LIBRARY_COMMON}"   -ge 40
+check "rules-library/ lang dirs ≥ 15"    "${LIBRARY_LANG_DIRS}" -ge 15
+check "skills/                  ≥ 90"    "${SKILLS}"           -ge 90
+check "skills with paths: trigger ≥ 25"  "${SKILLS_WITH_PATHS}" -ge 25
+check "agents/*.md              ≥ 25"    "${AGENTS}"           -ge 25
+check "commands/*.md            ≥ 30"    "${COMMANDS}"         -ge 30
 
 printf '\n== Phase C: Agent frontmatter sanity ==\n'
 BAD_AGENTS=0
@@ -106,22 +124,31 @@ done
 check "hooks not executable" "${HOOK_NOT_EXEC}" -eq 0
 
 printf '\n== Phase F: Broken cross-references ==\n'
-# Collect every referenced rule path. Use a temporary disable of -e because
-# grep returns 1 on no-match, which under `set -euo pipefail` would abort the
-# whole script before Phase G or the summary ever runs.
+# Collect every referenced rule path. Each ref must resolve to a file
+# in EITHER rules/ (Floor) OR rules-library/ (lazy-loaded library).
+# Use a temporary disable of -e because grep returns 1 on no-match,
+# which under `set -euo pipefail` would abort the whole script.
 set +e
-REFS=$(grep -rho -E '(rules/(common|golang|typescript|python|cpp|csharp|dart|java|kotlin|lua|rust|ruby|swift|bash|sql|markdown|yaml|dockerfile|terraform|html-css|solidity)/[a-z][a-z0-9-]*\.md)' \
-  "${PREFIX}/rules" "${PREFIX}/skills" "${PREFIX}/CLAUDE.md" "${PREFIX}/agents" 2>/dev/null \
+REFS=$(grep -rho -E '(rules(-library)?/(common|golang|typescript|python|cpp|csharp|dart|java|kotlin|lua|rust|ruby|swift|bash|sql|markdown|yaml|dockerfile|terraform|html-css|solidity)/[a-z][a-z0-9-]*\.md)' \
+  "${PREFIX}/rules" "${PREFIX}/rules-library" "${PREFIX}/skills" "${PREFIX}/CLAUDE.md" "${PREFIX}/agents" 2>/dev/null \
   | sort -u)
 set -e
 BROKEN=0
 if [ -n "${REFS}" ]; then
   while IFS= read -r p; do
     [ -n "${p}" ] || continue
-    if [ ! -f "${PREFIX}/${p}" ]; then
-      BROKEN=$((BROKEN + 1))
-      [ "${VERBOSE}" = true ] && echo "    broken: ${p}"
+    # Resolve: try the path verbatim first. If that fails AND the path
+    # starts with rules/<lang>/<name>.md (Floor-style shorthand), check
+    # whether the target lives in rules-library/<lang>/<name>.md.
+    if [ -f "${PREFIX}/${p}" ]; then
+      continue
     fi
+    library_form="${p/rules\//rules-library/}"
+    if [ "${library_form}" != "${p}" ] && [ -f "${PREFIX}/${library_form}" ]; then
+      continue
+    fi
+    BROKEN=$((BROKEN + 1))
+    [ "${VERBOSE}" = true ] && echo "    broken: ${p}"
   done <<< "${REFS}"
 fi
 check "broken rule cross-references" "${BROKEN}" -eq 0

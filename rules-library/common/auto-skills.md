@@ -512,7 +512,7 @@ touched. They are the "first contact with a repo" gate.
   credential rotations, removing features to suppress startup
   errors, half-finished migrations. Audit runs before every "done"
   claim.
-- [`task-intake-due-diligence.md`](task-intake-due-diligence.md) —
+- [`task-intake-due-diligence.md`](../../rules/common/task-intake-due-diligence.md) —
   every task / plan begins with the 29-question intake (prior art,
   OSS option, scalability, FMEA, STRIDE, data lifecycle, compliance,
   a11y, i18n, test strategy, observability, cost, rollback,
@@ -527,14 +527,14 @@ touched. They are the "first contact with a repo" gate.
   every failure wraps cause with operation + ids; server log
   structured; client receives `{error_code, message, details}`;
   tests assert on `error_code` not `message`.
-- [`plan-execution-progress.md`](plan-execution-progress.md) —
+- [`plan-execution-progress.md`](../../rules/common/plan-execution-progress.md) —
   structured per-phase progress updates: phase-header announcement,
   numbered before / after on bulk changes, verification block,
   explicit next-step line.
-- [`plan-task-breakdown.md`](plan-task-breakdown.md) — plans are
+- [`plan-task-breakdown.md`](../../rules/common/plan-task-breakdown.md) — plans are
   long lists of small atomic tasks (Phase → Sub-step → Task
   hierarchy). Mandatory bloat-removal phase at end of every plan.
-- [`plan-completion-before-push.md`](plan-completion-before-push.md) —
+- [`plan-completion-before-push.md`](../../rules/common/plan-completion-before-push.md) —
   active plan declares its commit-policy in Context; no `git push`
   until the plan is complete + verified (narrow bug-fix exception
   requires explicit user override).
@@ -542,13 +542,13 @@ touched. They are the "first contact with a repo" gate.
   language runs strictest available linters with thresholds
   tightened beyond defaults; zero per-line suppression directives;
   fix the config or the code, never the rule.
-- [`rule-authoring-global-vs-project.md`](rule-authoring-global-vs-project.md) —
+- [`rule-authoring-global-vs-project.md`](../../rules/common/rule-authoring-global-vs-project.md) —
   every new rule classified as global (pure guidance) or project
   (specifics in `<workspace>/.claude/rules/`) before writing.
-- [`council-default.md`](council-default.md) — Council is the
+- [`council-default.md`](../../rules/common/council-default.md) — Council is the
   default for every interaction. Core Five always speak; Extended
   Eleven auto-fire per `council-triggers.md`. No bypass surfaces.
-- [`council-triggers.md`](council-triggers.md) — per-division
+- [`council-triggers.md`](../../rules/common/council-triggers.md) — per-division
   engagement signals (file patterns, keywords, change scope) for
   the 11 Extended Council Divisions.
 - [`error-codes.md`](error-codes.md) — stable `error_code` strings,
@@ -619,7 +619,7 @@ touched. They are the "first contact with a repo" gate.
 - [`code-of-conduct.md`](code-of-conduct.md) — Contributor Covenant
   v2.1; documented enforcement team + reporting paths +
   retaliation protection.
-- [`verify-before-claim.md`](verify-before-claim.md) — every
+- [`verify-before-claim.md`](../../rules/common/verify-before-claim.md) — every
   completion claim preceded by same-turn verification.
 - [`local-testability.md`](local-testability.md) — code must be
   locally testable BEFORE writing; missing prereqs surface env-
@@ -640,7 +640,7 @@ touched. They are the "first contact with a repo" gate.
   fixed (wired, defined, or removed with user confirmation) —
   never silently deleted, never bandaged with `// TODO: wire
   later` markers.
-- [`project-scoped-artifacts.md`](project-scoped-artifacts.md) —
+- [`project-scoped-artifacts.md`](../../rules/common/project-scoped-artifacts.md) —
   every project's `.claude/` is workspace-scoped + auto-bootstrapped
   on first significant work. Plans + audits are ALWAYS
   gitignored (per rule 11) and NEVER referenced as repo paths in

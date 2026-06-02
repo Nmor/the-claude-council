@@ -15,6 +15,16 @@ paths:
 
 # dart-flutter-patterns
 
+## Standards Cited
+
+- **Dart Language Specification 3.x** (dart.dev/guides/language/spec) — null safety, sealed classes, records
+- **Effective Dart** (dart.dev/effective-dart) — style + usage + design + documentation
+- **Flutter Material Design 3** (m3.material.io) — token system + adaptive theming
+- **WCAG 2.2 §1.4.11** (W3C Recommendation, October 2023) — non-text contrast 3:1 for UI components
+- **WCAG 2.2 §2.5.8** (W3C Recommendation, October 2023) — target size minimum 24×24 CSS pixels (Flutter: 48dp)
+- **OWASP Mobile Top 10 2024 M1** (owasp.org/www-project-mobile-top-10) — improper credential usage (Dart secure storage discipline)
+- **CWE-798** — Use of Hard-coded Credentials (no API keys in source)
+- **ECMAScript Internationalization API** — `intl` package follows the same locale model
 
 <!-- ============================================================
      Section: dart/coding-style.md

@@ -562,7 +562,7 @@ Recurring incidents averted:
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 

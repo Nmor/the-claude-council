@@ -9,6 +9,93 @@ and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.
 
 Nothing pending.
 
+## [1.1.0] — 2026-06-02
+
+The lazy-rules-loading release. Reduces cold-load context from ~1.7 MB
+to ~140 KB (~92% drop) while preserving every rule + skill + agent's
+full content. Closes the `auto-skills.md` catch-all glob that was
+defeating the skill-system's lazy-load mechanism.
+
+### Added — dual-surface architecture
+
+- `rules-library/` — 160 lazy-loaded files (60 common + 100
+  language-specific across 20 language subdirs). NOT auto-walked;
+  loaded ON DEMAND via skill `paths:` triggers + skill body
+  references.
+- `skills/` — 13 new pattern skills (csharp-patterns,
+  dart-flutter-patterns, dockerfile-patterns, kotlin-patterns,
+  lua-patterns, ruby-rails-patterns, rust-patterns, sql-patterns,
+  yaml-patterns, ci-rules, dependency-rules, i18n-rules,
+  resilience-rules) each declaring `paths:` triggers.
+- `scripts/hooks/pre-compact-council-brief.js` — PreCompact hook
+  that each Core Five Council Division contributes preservation
+  items to before context compaction. Written to active session
+  `.tmp` so the summariser sees the structured "preserve verbatim"
+  block.
+- `docs/lazy-loading-classification.md` — taxonomy of what's Floor
+  vs Library vs Skill-routed.
+
+### Changed
+
+- `rules/common/` reduced from 74 files to 15 Floor rules
+  (always-loaded). The other 59 moved to `rules-library/common/`.
+- `rules/<lang>/` (20 language subdirs, 100 files) moved to
+  `rules-library/<lang>/`.
+- `CLAUDE.md` (14 KB Floor pointer) replaces the prior ~70 KB
+  monolith. Per-language verification, full Council Protocol
+  templates, and Division Personas now lazy-load via skill paths.
+- `coding-standards` skill demoted from 19 KB body to 2.6 KB
+  redirect stub pointing at `coding-quality-rules` (which carries
+  the canonical content).
+- `bootstrap/verify.sh` Phase B + F rewritten to match the
+  dual-surface architecture. Reports Floor + Library counts
+  separately; `paths:` trigger sweep added.
+- Workspace `CLAUDE.md` files (Reback, Unvamp, stewardbot,
+  4 small) updated to point at the new `rules-library/`
+  layout (67 broken refs fixed).
+- IDE config templates (cursor, jetbrains, vscode, windsurf)
+  updated to reference `rules-library/`.
+
+### Hooks (wired in `settings.json`)
+
+- `PostToolUse → Edit|Write → post-edit-no-discards.js` — was
+  orphaned (script existed but not referenced).
+- `PreToolUse → Write → pre-write-governance-sweep.js` — same.
+- `PreCompact → pre-compact-council-brief.js` — runs BEFORE the
+  existing state-snapshot hook.
+- `PreToolUse → Bash → pre-push-gate.js` — fixed to accept the
+  documented `CLAUDE_PUSH_AUTHORIZED=yes <cmd>` inline bypass
+  shape (was only reading harness env).
+
+### Fixed
+
+- 331 broken cross-references across the repo (docs, agents,
+  skills, IDE templates) all rewritten to point at the correct
+  Floor / Library location.
+- Illustrative Stripe documentation key (Stripe's own widely-published
+  `sk_live_4eC39Hq...` example) in YAML "CATASTROPHIC" examples
+  replaced with `REPLACE_WITH_VAULT_REF` so the teaching surface
+  doesn't trip GitHub Secret Scanning.
+
+### Removed
+
+- ~95 KB of bloat: stale `settings.json` backup, duplicate
+  `CLAUDE.md.pre-phase-h.*` (the `.local/backups/` copy is
+  canonical), `scripts/.DS_Store`, `hooks/__pycache__/`, orphan
+  `hooks/hooks.json` (Claude Code reads only `settings.json`).
+
+### Verification (release-time)
+
+- Floor + Library: 15 + 160 files; 116 unique skill-to-library
+  refs all resolve.
+- `bootstrap/verify.sh` Phases A-H: all green.
+- `tests/verify-link-integrity.sh`: 1076 / 1076 links resolve
+  across 394 files.
+- `tests/verify-no-orphans.sh`: 0 orphans across 239 candidates.
+- `tests/verify-standards-citations.sh`: 113 pass / 28 skip / 0
+  flagged.
+- `settings.json`: 14 hook script paths, all resolve.
+
 ## [1.0.0] — 2026-05-31
 
 The peppy-painting-parrot rebuild. Single commit covering all 17 phases.

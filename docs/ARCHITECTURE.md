@@ -211,7 +211,7 @@ keymaps), and the rules + skills + agents provide the logic.
 | Windsurf | VS Code-engine compatible settings + extensions |
 
 The publisher allowlist comes from
-[`install-allowlist.md`](../rules/common/install-allowlist.md).
+[`install-allowlist.md`](../rules-library/common/install-allowlist.md).
 
 ## Cross-OS support
 

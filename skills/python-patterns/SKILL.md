@@ -857,7 +857,7 @@ paths:
 ---
 # Python Coding Style
 
-> This file extends [common/coding-style.md](../common/coding-style.md) with Python specific content.
+> This file extends [common/coding-style.md](../../rules-library/common/coding-style.md) with Python specific content.
 
 ## Standards
 
@@ -906,7 +906,7 @@ paths:
 ---
 # Python Hooks
 
-> This file extends [common/hooks.md](../common/hooks.md) with Python specific content.
+> This file extends [common/hooks.md](../../rules-library/common/hooks.md) with Python specific content.
 
 ## PostToolUse Hooks
 
@@ -1411,7 +1411,7 @@ paths:
 ---
 # Python Patterns
 
-> This file extends [common/patterns.md](../common/patterns.md) with Python specific content.
+> This file extends [common/patterns.md](../../rules-library/common/patterns.md) with Python specific content.
 
 ## Protocol (Duck Typing)
 
@@ -1457,7 +1457,7 @@ paths:
 ---
 # Python Security
 
-> This file extends [common/security.md](../common/security.md) with Python specific content.
+> This file extends [common/security.md](../../rules-library/common/security.md) with Python specific content.
 
 ## Secret Management
 
@@ -1494,7 +1494,7 @@ paths:
 ---
 # Python Testing
 
-> This file extends [common/testing.md](../common/testing.md) with Python specific content.
+> This file extends [common/testing.md](../../rules-library/common/testing.md) with Python specific content.
 
 ## Framework
 

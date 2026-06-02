@@ -146,7 +146,7 @@ narrows that for the memory class specifically:
 ### 6. PreCompact hook persists in-flight state
 
 The agent's PreCompact hook (registered in
-`~/.claude/settings.json` per `~/.claude/rules/common/hooks.md`)
+`~/.claude/settings.json` per `~/.claude/rules-library/common/hooks.md`)
 runs BEFORE compaction. The hook MUST:
 
 1. Read the active TodoWrite list and the active plan file
@@ -356,10 +356,10 @@ explicit manual interface to the memory loop.
 - [`common/plan-execution-progress.md`](./plan-execution-progress.md) — phase-boundary writes
 - [`common/plan-task-breakdown.md`](./plan-task-breakdown.md) — plans referenced by memory
 - [`common/continuous-learning-mandate.md`](./continuous-learning-mandate.md) — learning loop feeds memory
-- [`common/hooks.md`](./hooks.md) — SessionStart + PreCompact + SessionEnd hooks
+- [`common/hooks.md`](../../rules-library/common/hooks.md) — SessionStart + PreCompact + SessionEnd hooks
 - [`common/rule-authoring-global-vs-project.md`](./rule-authoring-global-vs-project.md) — global vs project classification
-- [`common/secrets-management.md`](./secrets-management.md) — secrets never in memory
-- [`common/adr-template.md`](./adr-template.md) — architectural decisions live in ADRs, not memory
+- [`common/secrets-management.md`](../../rules-library/common/secrets-management.md) — secrets never in memory
+- [`common/adr-template.md`](../../rules-library/common/adr-template.md) — architectural decisions live in ADRs, not memory
 - `~/.claude/CLAUDE.md` — global memory format + auto-memory
 
 ## Why this rule exists

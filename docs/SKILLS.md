@@ -4,7 +4,7 @@
 > reusable patterns and methodologies — where a rule says "do not
 > write X," a skill says "here is how to design Y." Skills auto-fire
 > based on file type per
-> [`auto-skills.md`](../rules/common/auto-skills.md). Total: 99
+> [`auto-skills.md`](../rules-library/common/auto-skills.md). Total: 99
 > skills across 13 domain clusters.
 
 ## Each skill follows the principal-level template
@@ -37,6 +37,8 @@ every `SKILL.md` carries:
 | [`security-review`](../skills/security-review/) | OWASP Top 10 + ASVS + STRIDE pass per language |
 | [`prompt-improver`](../skills/prompt-improver/) | Research-grounded clarifying questions for vague prompts |
 | [`continuous-learning-v2`](../skills/continuous-learning-v2/) | Instinct-based learning; confidence scoring; pattern evolution |
+| [`i18n-rules`](../skills/i18n-rules/) | Internationalisation — ICU MessageFormat, RTL layout mirroring, locale-aware sort + collation, Unicode normalisation |
+| [`resilience-rules`](../skills/resilience-rules/) | Resilience patterns — circuit breakers, graceful degradation, idempotency, retry-with-jitter, rate limiting, deploy-failures-become-checks |
 
 ### Backend + systems
 
@@ -217,7 +219,7 @@ every `SKILL.md` carries:
 
 ## How skills are auto-fired
 
-Per [`auto-skills.md`](../rules/common/auto-skills.md), the
+Per [`auto-skills.md`](../rules-library/common/auto-skills.md), the
 file-to-skill mapping triggers on file type. When you touch a file,
 the matching skills auto-fire silently — no slash command, no
 explicit invocation.
@@ -250,7 +252,7 @@ Touching a payments-related file (any of `payments/`, `billing/`,
 - [ARCHITECTURE.md](ARCHITECTURE.md) — how skills compose with
   rules + agents
 - [CONTRIBUTING.md](CONTRIBUTING.md) — how to add a skill
-- [`../rules/common/auto-skills.md`](../rules/common/auto-skills.md)
+- [`../rules-library/common/auto-skills.md`](../rules-library/common/auto-skills.md)
   — file-to-skill mapping
 - [`../rules/common/principal-level-mandate.md`](../rules/common/principal-level-mandate.md)
   — depth bar every skill meets

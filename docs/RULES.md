@@ -22,11 +22,11 @@
 | ---- | ------- |
 | [`council-default.md`](../rules/common/council-default.md) | Council is the default mode; no bypass surface |
 | [`council-triggers.md`](../rules/common/council-triggers.md) | Per-division engagement signals for the Extended Eleven |
-| [`agents.md`](../rules/common/agents.md) | Agent orchestration + parallel-task execution |
-| [`auto-skills.md`](../rules/common/auto-skills.md) | File-to-skill-and-agent mapping (auto-fire on file type) |
-| [`hooks.md`](../rules/common/hooks.md) | Hook lifecycle — Session/Prompt/PreTool/PostTool/PreCompact/Stop/SessionEnd |
+| [`agents.md`](../rules-library/common/agents.md) | Agent orchestration + parallel-task execution |
+| [`auto-skills.md`](../rules-library/common/auto-skills.md) | File-to-skill-and-agent mapping (auto-fire on file type) |
+| [`hooks.md`](../rules-library/common/hooks.md) | Hook lifecycle — Session/Prompt/PreTool/PostTool/PreCompact/Stop/SessionEnd |
 | [`principal-level-mandate.md`](../rules/common/principal-level-mandate.md) | Every agent + skill + rule operates at principal level |
-| [`performance.md`](../rules/common/performance.md) | Model selection policy (opus default for coding / reviewing / planning) |
+| [`performance.md`](../rules-library/common/performance.md) | Model selection policy (opus default for coding / reviewing / planning) |
 
 ### Planning + verification
 
@@ -38,101 +38,101 @@
 | [`plan-completion-before-push.md`](../rules/common/plan-completion-before-push.md) | Active plan declares commit-policy; no push until plan complete |
 | [`verify-before-claim.md`](../rules/common/verify-before-claim.md) | Every completion claim preceded by same-turn verification |
 | [`no-overclaim.md`](../rules/common/no-overclaim.md) | Reserve "done" / "shipped" / "complete" for verified states |
-| [`local-testability.md`](../rules/common/local-testability.md) | Every change locally testable BEFORE writing |
+| [`local-testability.md`](../rules-library/common/local-testability.md) | Every change locally testable BEFORE writing |
 | [`done-criteria.md`](../rules/common/done-criteria.md) | Service-migration done checklist |
-| [`proper-fixes-first.md`](../rules/common/proper-fixes-first.md) | Root-cause fixes; no shortcuts |
+| [`proper-fixes-first.md`](../rules-library/common/proper-fixes-first.md) | Root-cause fixes; no shortcuts |
 
 ### Code quality + style
 
 | Rule | Purpose |
 | ---- | ------- |
-| [`coding-style.md`](../rules/common/coding-style.md) | Universal code style baseline |
-| [`patterns.md`](../rules/common/patterns.md) | Architectural patterns (repository, response envelope, etc.) |
-| [`reuse-first.md`](../rules/common/reuse-first.md) | Sweep before write; rule of three; extend never fork |
-| [`extreme-lint-policy.md`](../rules/common/extreme-lint-policy.md) | Strictest linters; thresholds tightened beyond defaults |
-| [`sonarlint-checks.md`](../rules/common/sonarlint-checks.md) | Every SonarJS rule (~270) + cross-language equivalents |
-| [`no-discards.md`](../rules/common/no-discards.md) | Bind every value; hook-enforced; pre-delivery 40-pattern audit |
-| [`no-silent-failures.md`](../rules/common/no-silent-failures.md) | Failures produce log + metric + typed response |
-| [`no-silent-drops.md`](../rules/common/no-silent-drops.md) | Never silently delete; complete or surface |
-| [`no-ambient-globals.md`](../rules/common/no-ambient-globals.md) | DI everywhere; no module-level mutable state |
-| [`no-local-fs.md`](../rules/common/no-local-fs.md) | No FS state on ephemeral containers; object store + buffers |
-| [`error-handling-with-context.md`](../rules/common/error-handling-with-context.md) | Wrap with operation + ids; structured logs; client envelope |
-| [`error-codes.md`](../rules/common/error-codes.md) | Stable codes; flat namespace; HTTP-status + UX + i18n + runbook |
-| [`log-levels.md`](../rules/common/log-levels.md) | FATAL / ERROR / WARN / INFO / DEBUG / TRACE — ERROR reserved for alerts |
+| [`coding-style.md`](../rules-library/common/coding-style.md) | Universal code style baseline |
+| [`patterns.md`](../rules-library/common/patterns.md) | Architectural patterns (repository, response envelope, etc.) |
+| [`reuse-first.md`](../rules-library/common/reuse-first.md) | Sweep before write; rule of three; extend never fork |
+| [`extreme-lint-policy.md`](../rules-library/common/extreme-lint-policy.md) | Strictest linters; thresholds tightened beyond defaults |
+| [`sonarlint-checks.md`](../rules-library/common/sonarlint-checks.md) | Every SonarJS rule (~270) + cross-language equivalents |
+| [`no-discards.md`](../rules-library/common/no-discards.md) | Bind every value; hook-enforced; pre-delivery 40-pattern audit |
+| [`no-silent-failures.md`](../rules-library/common/no-silent-failures.md) | Failures produce log + metric + typed response |
+| [`no-silent-drops.md`](../rules-library/common/no-silent-drops.md) | Never silently delete; complete or surface |
+| [`no-ambient-globals.md`](../rules-library/common/no-ambient-globals.md) | DI everywhere; no module-level mutable state |
+| [`no-local-fs.md`](../rules-library/common/no-local-fs.md) | No FS state on ephemeral containers; object store + buffers |
+| [`error-handling-with-context.md`](../rules-library/common/error-handling-with-context.md) | Wrap with operation + ids; structured logs; client envelope |
+| [`error-codes.md`](../rules-library/common/error-codes.md) | Stable codes; flat namespace; HTTP-status + UX + i18n + runbook |
+| [`log-levels.md`](../rules-library/common/log-levels.md) | FATAL / ERROR / WARN / INFO / DEBUG / TRACE — ERROR reserved for alerts |
 
 ### Security
 
 | Rule | Purpose |
 | ---- | ------- |
-| [`security.md`](../rules/common/security.md) | OWASP Top 10 umbrella; STRIDE; CVSS severity |
-| [`security-controls-org-wide.md`](../rules/common/security-controls-org-wide.md) | 5-layer non-bypassable enforcement |
-| [`secrets-management.md`](../rules/common/secrets-management.md) | Vault-first; no disk plaintext; atomic rotation |
-| [`install-allowlist.md`](../rules/common/install-allowlist.md) | Publisher allowlist for npm / VS Code / MCP / Homebrew |
-| [`dependency-vulnerabilities.md`](../rules/common/dependency-vulnerabilities.md) | CVE gate (MODERATE+ blocks) |
-| [`dependency-overrides-not-exceptions.md`](../rules/common/dependency-overrides-not-exceptions.md) | Fix the tree via overrides; exceptions are last resort |
-| [`dependency-pinning.md`](../rules/common/dependency-pinning.md) | Lockfiles + digest pinning + SHA-pinned actions |
-| [`license-allowlist-gate.md`](../rules/common/license-allowlist-gate.md) | SPDX allowlist + Trove cross-check |
-| [`updated-frameworks.md`](../rules/common/updated-frameworks.md) | Latest stable; no EOL; no abandoned deps |
-| [`docker-localhost-binding.md`](../rules/common/docker-localhost-binding.md) | `127.0.0.1:` prefix on every dev port |
-| [`docker-deployment.md`](../rules/common/docker-deployment.md) | Container security + multi-stage build patterns |
-| [`repo-setup-checklist.md`](../rules/common/repo-setup-checklist.md) | 20-point first-touch security checklist |
+| [`security.md`](../rules-library/common/security.md) | OWASP Top 10 umbrella; STRIDE; CVSS severity |
+| [`security-controls-org-wide.md`](../rules-library/common/security-controls-org-wide.md) | 5-layer non-bypassable enforcement |
+| [`secrets-management.md`](../rules-library/common/secrets-management.md) | Vault-first; no disk plaintext; atomic rotation |
+| [`install-allowlist.md`](../rules-library/common/install-allowlist.md) | Publisher allowlist for npm / VS Code / MCP / Homebrew |
+| [`dependency-vulnerabilities.md`](../rules-library/common/dependency-vulnerabilities.md) | CVE gate (MODERATE+ blocks) |
+| [`dependency-overrides-not-exceptions.md`](../rules-library/common/dependency-overrides-not-exceptions.md) | Fix the tree via overrides; exceptions are last resort |
+| [`dependency-pinning.md`](../rules-library/common/dependency-pinning.md) | Lockfiles + digest pinning + SHA-pinned actions |
+| [`license-allowlist-gate.md`](../rules-library/common/license-allowlist-gate.md) | SPDX allowlist + Trove cross-check |
+| [`updated-frameworks.md`](../rules-library/common/updated-frameworks.md) | Latest stable; no EOL; no abandoned deps |
+| [`docker-localhost-binding.md`](../rules-library/common/docker-localhost-binding.md) | `127.0.0.1:` prefix on every dev port |
+| [`docker-deployment.md`](../rules-library/common/docker-deployment.md) | Container security + multi-stage build patterns |
+| [`repo-setup-checklist.md`](../rules-library/common/repo-setup-checklist.md) | 20-point first-touch security checklist |
 
 ### Resilience + ops
 
 | Rule | Purpose |
 | ---- | ------- |
-| [`idempotency.md`](../rules/common/idempotency.md) | Retry-safe operations; Stripe-pattern keys |
-| [`rate-limiting.md`](../rules/common/rate-limiting.md) | Multi-layer; per-endpoint defaults; RFC 6585 |
-| [`circuit-breaker.md`](../rules/common/circuit-breaker.md) | Per-dependency breaker; timeout-bounded; observable |
-| [`graceful-degradation.md`](../rules/common/graceful-degradation.md) | Criticality tiers; explicit degraded UX |
-| [`feature-flags.md`](../rules/common/feature-flags.md) | Owner + expiry + decision criteria + removal task |
-| [`observability.md`](../rules/common/observability.md) | 3 pillars + Four Golden Signals + W3C trace context |
-| [`audit-logging.md`](../rules/common/audit-logging.md) | Append-only; hash-chain integrity; regulation-driven retention |
-| [`runbook-template.md`](../rules/common/runbook-template.md) | Canonical incident-response structure |
-| [`ci-test-memory-tuning.md`](../rules/common/ci-test-memory-tuning.md) | Jest / Vitest worker memory tuning for CI |
-| [`github-actions-gotchas.md`](../rules/common/github-actions-gotchas.md) | 13 recurring CI platform surprises + recognition signatures |
-| [`deploy-failures-become-checks.md`](../rules/common/deploy-failures-become-checks.md) | Every deploy failure becomes a pre-deploy check |
+| [`idempotency.md`](../rules-library/common/idempotency.md) | Retry-safe operations; Stripe-pattern keys |
+| [`rate-limiting.md`](../rules-library/common/rate-limiting.md) | Multi-layer; per-endpoint defaults; RFC 6585 |
+| [`circuit-breaker.md`](../rules-library/common/circuit-breaker.md) | Per-dependency breaker; timeout-bounded; observable |
+| [`graceful-degradation.md`](../rules-library/common/graceful-degradation.md) | Criticality tiers; explicit degraded UX |
+| [`feature-flags.md`](../rules-library/common/feature-flags.md) | Owner + expiry + decision criteria + removal task |
+| [`observability.md`](../rules-library/common/observability.md) | 3 pillars + Four Golden Signals + W3C trace context |
+| [`audit-logging.md`](../rules-library/common/audit-logging.md) | Append-only; hash-chain integrity; regulation-driven retention |
+| [`runbook-template.md`](../rules-library/common/runbook-template.md) | Canonical incident-response structure |
+| [`ci-test-memory-tuning.md`](../rules-library/common/ci-test-memory-tuning.md) | Jest / Vitest worker memory tuning for CI |
+| [`github-actions-gotchas.md`](../rules-library/common/github-actions-gotchas.md) | 13 recurring CI platform surprises + recognition signatures |
+| [`deploy-failures-become-checks.md`](../rules-library/common/deploy-failures-become-checks.md) | Every deploy failure becomes a pre-deploy check |
 
 ### API + data evolution
 
 | Rule | Purpose |
 | ---- | ------- |
-| [`api-design.md`](../rules/common/api-design.md) | API surface design; response envelope; pagination |
-| [`api-versioning.md`](../rules/common/api-versioning.md) | Tolerant reader / strict writer; parallel versions during deprecation |
-| [`schema-evolution.md`](../rules/common/schema-evolution.md) | Additive, reversible, idempotent, zero-downtime migrations |
-| [`contract-testing.md`](../rules/common/contract-testing.md) | CDC (Pact) + schema-based; producer's deploy gated |
-| [`deprecation-lifecycle.md`](../rules/common/deprecation-lifecycle.md) | 4-stage calendar-anchored; RFC 8594 Sunset header |
-| [`semver.md`](../rules/common/semver.md) | SemVer 2.0.0 + Conventional Commits 1.0.0 + Keep a Changelog 1.1.0 |
+| [`api-design.md`](../rules-library/common/api-design.md) | API surface design; response envelope; pagination |
+| [`api-versioning.md`](../rules-library/common/api-versioning.md) | Tolerant reader / strict writer; parallel versions during deprecation |
+| [`schema-evolution.md`](../rules-library/common/schema-evolution.md) | Additive, reversible, idempotent, zero-downtime migrations |
+| [`contract-testing.md`](../rules-library/common/contract-testing.md) | CDC (Pact) + schema-based; producer's deploy gated |
+| [`deprecation-lifecycle.md`](../rules-library/common/deprecation-lifecycle.md) | 4-stage calendar-anchored; RFC 8594 Sunset header |
+| [`semver.md`](../rules-library/common/semver.md) | SemVer 2.0.0 + Conventional Commits 1.0.0 + Keep a Changelog 1.1.0 |
 
 ### Compliance + a11y + i18n
 
 | Rule | Purpose |
 | ---- | ------- |
-| [`gdpr-ccpa.md`](../rules/common/gdpr-ccpa.md) | RoPA + lawful basis + 7 DSR rights + 72h breach notification |
-| [`data-retention.md`](../rules/common/data-retention.md) | TTL + deletion path; automation-enforced; per-regulation minimums |
-| [`a11y.md`](../rules/common/a11y.md) | WCAG 2.2 AA minimum; AAA for critical paths |
-| [`i18n.md`](../rules/common/i18n.md) | ICU MessageFormat; Intl APIs; BCP 47 locales; RTL mirroring |
-| [`code-of-conduct.md`](../rules/common/code-of-conduct.md) | Contributor Covenant v2.1; enforcement team + reporting |
+| [`gdpr-ccpa.md`](../rules-library/common/gdpr-ccpa.md) | RoPA + lawful basis + 7 DSR rights + 72h breach notification |
+| [`data-retention.md`](../rules-library/common/data-retention.md) | TTL + deletion path; automation-enforced; per-regulation minimums |
+| [`a11y.md`](../rules-library/common/a11y.md) | WCAG 2.2 AA minimum; AAA for critical paths |
+| [`i18n.md`](../rules-library/common/i18n.md) | ICU MessageFormat; Intl APIs; BCP 47 locales; RTL mirroring |
+| [`code-of-conduct.md`](../rules-library/common/code-of-conduct.md) | Contributor Covenant v2.1; enforcement team + reporting |
 
 ### Documentation
 
 | Rule | Purpose |
 | ---- | ------- |
-| [`documentation-requirements.md`](../rules/common/documentation-requirements.md) | Diátaxis four-quadrant model; docs as code |
-| [`docs-sync-with-code.md`](../rules/common/docs-sync-with-code.md) | Docs update in the same PR as the code |
-| [`adr-template.md`](../rules/common/adr-template.md) | Architecture Decision Records (MADR / Nygard) |
+| [`documentation-requirements.md`](../rules-library/common/documentation-requirements.md) | Diátaxis four-quadrant model; docs as code |
+| [`docs-sync-with-code.md`](../rules-library/common/docs-sync-with-code.md) | Docs update in the same PR as the code |
+| [`adr-template.md`](../rules-library/common/adr-template.md) | Architecture Decision Records (MADR / Nygard) |
 | [`official-docs-first.md`](../rules/common/official-docs-first.md) | Primary-source citations before any integration code |
 
 ### Workspace + dev experience
 
 | Rule | Purpose |
 | ---- | ------- |
-| [`local-dev-setup.md`](../rules/common/local-dev-setup.md) | One bootstrap command; 30-minute first-run target |
+| [`local-dev-setup.md`](../rules-library/common/local-dev-setup.md) | One bootstrap command; 30-minute first-run target |
 | [`project-scoped-artifacts.md`](../rules/common/project-scoped-artifacts.md) | Workspace `.claude/` scaffold on first significant work |
 | [`rule-authoring-global-vs-project.md`](../rules/common/rule-authoring-global-vs-project.md) | Classify global vs project before writing |
 | [`continuous-learning-mandate.md`](../rules/common/continuous-learning-mandate.md) | Every artifact has a learning loop |
-| [`git-workflow.md`](../rules/common/git-workflow.md) | Per-org git identity; conventional commits; PR workflow |
-| [`testing.md`](../rules/common/testing.md) | Coverage targets; test types; TDD mandate |
+| [`git-workflow.md`](../rules-library/common/git-workflow.md) | Per-org git identity; conventional commits; PR workflow |
+| [`testing.md`](../rules-library/common/testing.md) | Coverage targets; test types; TDD mandate |
 
 ## Language-specific rules
 
@@ -143,49 +143,49 @@ rule with language-specific banned patterns and linter configs.
 
 ### Backend + systems languages
 
-- [`golang/`](../rules/golang/) — Effective Go + Uber Style Guide;
+- [`golang/`](../rules-library/golang/) — Effective Go + Uber Style Guide;
   `errcheck`, `errorlint`, `staticcheck`, `golangci-lint`, `gosec`,
   `govulncheck`
-- [`python/`](../rules/python/) — PEP 8 + PEP 484 + PEP 561; `ruff`,
+- [`python/`](../rules-library/python/) — PEP 8 + PEP 484 + PEP 561; `ruff`,
   `mypy --strict`, `pyright --strict`, `bandit`
-- [`java/`](../rules/java/) — Effective Java 3e; Checkstyle, PMD,
+- [`java/`](../rules-library/java/) — Effective Java 3e; Checkstyle, PMD,
   SpotBugs, ErrorProne; Spring Boot patterns
-- [`kotlin/`](../rules/kotlin/) — Effective Kotlin; ktlint, detekt;
+- [`kotlin/`](../rules-library/kotlin/) — Effective Kotlin; ktlint, detekt;
   coroutines + Sendable
-- [`csharp/`](../rules/csharp/) — Framework Design Guidelines;
+- [`csharp/`](../rules-library/csharp/) — Framework Design Guidelines;
   Roslyn analyzers, StyleCop, SonarAnalyzer; ASP.NET Core
-- [`ruby/`](../rules/ruby/) — Ruby Style Guide + Sandi Metz Rules;
+- [`ruby/`](../rules-library/ruby/) — Ruby Style Guide + Sandi Metz Rules;
   RuboCop, Brakeman, bundler-audit; Rails patterns
-- [`rust/`](../rules/rust/) — Rust API Guidelines + Effective Rust;
+- [`rust/`](../rules-library/rust/) — Rust API Guidelines + Effective Rust;
   `cargo clippy -- -D warnings -W clippy::pedantic`, `cargo audit`,
   `cargo deny`
-- [`cpp/`](../rules/cpp/) — C++ Core Guidelines + Effective Modern
+- [`cpp/`](../rules-library/cpp/) — C++ Core Guidelines + Effective Modern
   C++; clang-tidy + cppcheck + sanitizers
-- [`swift/`](../rules/swift/) — Swift API Design Guidelines;
+- [`swift/`](../rules-library/swift/) — Swift API Design Guidelines;
   SwiftLint + SwiftFormat; `Sendable` + `actor` for concurrency
-- [`dart/`](../rules/dart/) — Effective Dart + Flutter Architecture
+- [`dart/`](../rules-library/dart/) — Effective Dart + Flutter Architecture
   Guide; analyzer at max strictness
-- [`lua/`](../rules/lua/) — Programming in Lua + OpenResty practices;
+- [`lua/`](../rules-library/lua/) — Programming in Lua + OpenResty practices;
   luacheck
 
 ### Web frontend languages
 
-- [`typescript/`](../rules/typescript/) — TS strict mode +
+- [`typescript/`](../rules-library/typescript/) — TS strict mode +
   @typescript-eslint/strict-type-checked + sonarjs/recommended;
   React 19 + Vue 3 patterns
 
 ### Data + infra languages
 
-- [`sql/`](../rules/sql/) — SQL:2023 + PostgreSQL Style Guide;
+- [`sql/`](../rules-library/sql/) — SQL:2023 + PostgreSQL Style Guide;
   sqlfluff strict; squawk for Postgres migration safety
-- [`markdown/`](../rules/markdown/) — CommonMark spec + markdownlint
-- [`bash/`](../rules/bash/) — Bash Reference Manual + Google Shell
+- [`markdown/`](../rules-library/markdown/) — CommonMark spec + markdownlint
+- [`bash/`](../rules-library/bash/) — Bash Reference Manual + Google Shell
   Style Guide; `set -euo pipefail`; ShellCheck `-S style`
 
 ## How rules are applied
 
 1. **Always-on global rules** load on every file touch. The
-   [`auto-skills.md`](../rules/common/auto-skills.md) rule lists
+   [`auto-skills.md`](../rules-library/common/auto-skills.md) rule lists
    the "global rules that auto-load on EVERY repo touch" section
    explicitly.
 2. **File-type-mapped rules** load per the file-to-rule mapping in
@@ -206,7 +206,7 @@ Rules are enforced through three mechanisms:
    the edit and return the violation to the agent.
 2. **Linters** at extreme strictness — every language's strictest
    available linters with thresholds tightened beyond defaults per
-   [`extreme-lint-policy.md`](../rules/common/extreme-lint-policy.md).
+   [`extreme-lint-policy.md`](../rules-library/common/extreme-lint-policy.md).
 3. **Council review** — every Council-mediated task verifies the
    rules that match its scope. The agents enforce the rules via
    their decision authority and veto powers.

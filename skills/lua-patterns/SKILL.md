@@ -13,6 +13,16 @@ paths:
 
 # lua-patterns
 
+## Standards Cited
+
+- **Lua 5.4 Reference Manual** (lua.org/manual/5.4) — lexical scope, metatables, coroutines, `pcall`/`xpcall` protected calls
+- **Lua 5.4 §3.4.1** — operators + precedence (no operator overload outside metamethods)
+- **Lua 5.4 §3.4.4** — `load` / `loadstring` with mode flag (`'t'` text-only, never `'b'` bytecode from untrusted)
+- **LuaRocks 3.x** (luarocks.org/manual) — rockspec format + lockfile discipline
+- **OWASP Top 10 A03:2021** — injection (the `loadstring` family is the Lua-side surface for the same class as RCE)
+- **CWE-94** — Improper Control of Generation of Code (`load` on attacker-controlled string)
+- **CWE-95** — Eval Injection (the `setfenv` + `load` combination is the Lua-side eval-injection shape)
+- **ISO/IEC 19514** — UML conceptual reference for the module pattern (M-table-and-return shape)
 
 <!-- ============================================================
      Section: lua/coding-style.md

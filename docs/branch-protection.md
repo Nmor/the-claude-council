@@ -79,7 +79,7 @@ flavors are supported. If you adopt a Ruleset:
 
 Rulesets can be SHA-pinned via the `.github` org repo for fleet-wide
 enforcement (per
-[`../rules/common/security-controls-org-wide.md`](../rules/common/security-controls-org-wide.md));
+[`../rules-library/common/security-controls-org-wide.md`](../rules-library/common/security-controls-org-wide.md));
 for this single repo, configuring the Ruleset at the repo level is
 sufficient.
 

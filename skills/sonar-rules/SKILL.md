@@ -40,6 +40,20 @@ paths:
 
 # SonarLint / SonarQube Checks (Global Default)
 
+## Standards Cited
+
+- **SonarSource Rule Specifications** (rules.sonarsource.com) — canonical authority for every `S<number>` rule in this catalog (S100, S107, S125, S138, S1192, S3776, S6571, S6594, S6606, etc.)
+- **CWE-94** — Improper Control of Generation of Code (S2076 / S6587 + family)
+- **CWE-89** — SQL Injection (S2077 / S3649)
+- **CWE-79** — Cross-Site Scripting (S5247 / S6299)
+- **CWE-798** — Hard-coded Credentials (S2068)
+- **CWE Top 25** Most Dangerous Software Weaknesses (mitre.org/cwe) — Sonar rule severity ladder maps to CWE
+- **OWASP Top 10 A03:2021** Injection — S2076 / S2077 / S5247 cluster
+- **OWASP Top 10 A07:2021** Identification + Authentication Failures — S2068 / S5547 cluster
+- **OWASP ASVS 4.0.3 §5** Validation — S2755 (XXE) / S4502 (CSRF disabled)
+- **ISO/IEC 25010:2011** Quality Model — Sonar maintainability / reliability / security ratings derive from this
+- **NIST SP 800-53** SI-10 Information Input Validation — Sonar's injection-class rules align
+
 > This rule fires on every file. Whenever Claude touches code in any project — new or legacy, with or without a project-level Sonar setup — it must verify the file against the rules below and fix every violation in the touched file (Rule 5: Zero Tolerance).
 >
 > **Threshold-tightening note**: `extreme-lint-policy.md` overrides the Sonar default thresholds globally. Specifically: cognitive complexity (S3776) cap is **10** (not 15), function lines (S138) cap is **80** (not 200), function parameters (S107) cap is **5** (not 7), file lines (S104) cap is **500** (not 1000), nested control-flow depth (S134) cap is **3** (not 4), boolean expression operators (S1067) cap is **2** (not 3), magic-number tolerance (S109) allows only `0, 1, -1, 2`. This file lists the Sonar rule IDs + canonical defaults; the strict overrides in `extreme-lint-policy.md` are what the project enforces.

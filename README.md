@@ -22,8 +22,8 @@
 
 *Drop-in `~/.claude/` config — runs on any machine, any project, every IDE.*
 
-[![Skills](https://img.shields.io/badge/skills-99%20%2F%2099%20pass-2ea043?style=for-the-badge)](docs/SKILLS.md)
-[![Rules](https://img.shields.io/badge/rules-74%20common%20%2B%2021%20lang-1f6feb?style=for-the-badge)](docs/RULES.md)
+[![Skills](https://img.shields.io/badge/skills-121-2ea043?style=for-the-badge)](docs/SKILLS.md)
+[![Rules](https://img.shields.io/badge/rules-15%20Floor%20%2B%20160%20Library-1f6feb?style=for-the-badge)](docs/RULES.md)
 [![Agents](https://img.shields.io/badge/agents-32-8957e5?style=for-the-badge)](docs/AGENTS.md)
 [![Council](https://img.shields.io/badge/divisions-5%20core%20%2B%2011%20extended-dc7800?style=for-the-badge)](docs/COUNCIL.md)
 [![License](https://img.shields.io/badge/license-MIT-238636?style=for-the-badge)](LICENSE)
@@ -55,11 +55,17 @@ architecture, security, compliance, ops, data, finance, risk,
 strategy, people, ESG, ethics, comms, plus the five core technical
 divisions.
 
-This repo is the *complete* config surface — 74 global rules, 99
-principal-level skills, 32 specialist agents, 33 commands, a strict
-Council protocol, hook-enforced quality gates, and project-scoped
-artifact bootstrap. **For anyone, on any project.** No
-org-dependency, no SaaS, no telemetry.
+This repo is the *complete* config surface — **15 Floor rules**
+(always-loaded, ~224 KB) + **160 Library rules** (lazy-loaded via
+skill triggers, ~1.6 MB), **121 principal-level skills**, **32
+specialist agents**, **33 commands**, a strict Council protocol,
+**14 hook-enforced quality gates**, and project-scoped artifact
+bootstrap. The dual-surface design keeps every session's cold-load
+budget around **~140 KB** (down from ~1.7 MB) while preserving every
+rule's full content for on-demand reference.
+
+**For anyone, on any project.** No org-dependency, no SaaS, no
+telemetry.
 
 What you get after install:
 
@@ -201,16 +207,16 @@ system improves itself with every interaction.
 
 | Surface | Path | Count | What it does |
 | --- | --- | --- | --- |
-| **Doctrine** | `CLAUDE.md` | 1 | The Council protocol — loaded into every session |
-| **Common rules** | `rules/common/` | 74 | Cross-language standards (OWASP / NIST / ISO / WCAG / GDPR) |
-| **Language packs** | `rules/<lang>/` | 21 | Go, TS, Python, Java, Kotlin, Rust, Ruby, Swift, Dart, C#, C/C++, SQL, Lua, Bash, Markdown, YAML, Dockerfile, Terraform, HTML/CSS, Solidity |
-| **Skills** | `skills/` | 99 | Principal-level skills with standards-cited patterns, anti-patterns, verification |
+| **Doctrine** | `CLAUDE.md` | 1 | The Council protocol pointer (~14 KB) — loaded every session |
+| **Floor rules** | `rules/common/` | 15 | Always-loaded; defines Council protocol, intake, verification, plan structure, project memory |
+| **Library rules** | `rules-library/` | 160 | Lazy-loaded via skill `paths:` triggers; 60 common + 100 language-specific across 20 language subdirs |
+| **Skills** | `skills/` | 121 | Principal-level skills (36 with `paths:` triggers for auto-fire on file globs; rest invoked by slash command or by name) |
 | **Agents** | `agents/` | 32 | Specialist agents organised into the 16 Council divisions |
-| **Commands** | `commands/` | 33 | Slash commands — `/learn`, `/evolve`, `/instinct-status`, and more |
-| **Hooks** | `hooks/` + `scripts/hooks/` | — | PreToolUse + PostToolUse + UserPromptSubmit — mechanical enforcement |
-| **Templates** | `templates/` | — | Project-scaffold template plus per-IDE config templates |
+| **Commands** | `commands/` | 33 | Slash commands — `/learn`, `/evolve`, `/instinct-status`, `/verify`, and more |
+| **Hooks** | `scripts/hooks/` | 14 | PreToolUse + PostToolUse + UserPromptSubmit + PreCompact + SessionStart/End — mechanical enforcement (no-discards, governance-sweep, pre-push gate, Council pre-compact brief) |
+| **Templates** | `templates/` | — | Project-scaffold template + IDE config templates for VS Code, Cursor, Windsurf, JetBrains |
 | **Bootstrap** | `bootstrap/` | 6 | install.sh, install.ps1, verify.sh, verify.ps1, uninstall.sh, uninstall.ps1 |
-| **Docs** | `docs/` | 7 | Architecture, Council, Rules, Skills, Agents, Project-bootstrap, Contributing |
+| **Docs** | `docs/` | 10 | Architecture, Council, Rules, Skills, Agents, Project-bootstrap, Contributing, lazy-loading classification, no-discards reference, branch-protection guide |
 | **Tests** | `tests/` | 3 | Repo-side gates — link integrity, no orphans, standards citations |
 | **CI** | `.github/workflows/` | — | Runs all three tests on every push and PR |
 
@@ -292,20 +298,23 @@ Per-IDE walkthroughs live in [INSTALL.md](INSTALL.md).
 
 ```text
 ═══════════════════════════════════════════════════════════════
-       THE CLAUDE COUNCIL  ·  v1.0.0  ·  VERIFICATION BLOCK
+       THE CLAUDE COUNCIL  ·  v1.1.0  ·  VERIFICATION BLOCK
 ═══════════════════════════════════════════════════════════════
 
-  Common rules .............................. 73 / 73    PASS
-  Language-specific rule subfolders ......... 20 + common PASS
-  Skills passing principal-level audit ...... 99 / 99    PASS
+  Floor rules ............................... 15 / 15    PASS
+  Library rules (lazy-loaded) ............... 160 / 160  PASS
+  Skills with paths: triggers ............... 36 / 121   ROUTED
+  Skills (slash-command / by-name) .......... 85         PASS
+  Skill -> rules-library cross-refs ......... 116 / 116  PASS
   Agents with complete frontmatter .......... 32 / 32    PASS
   Slash commands ............................ 33         PASS
+  Hook scripts wired in settings.json ....... 14 / 14    PASS
   Broken cross-references ................... 0          PASS
   Workspace contamination in global ......... 0          PASS
   Council divisions ......................... 5 core + 11 extended
 
-  Phase 9 synthetic Council task ............ PASS
-  (multi-tenant rate-limiting end-to-end through Phase 0-1-2)
+  Cold-load budget (Floor + CLAUDE.md) ...... ~140 KB    (was ~1.7 MB)
+  Lazy-load surface (Library + Skills) ...... ~5.4 MB    on demand
 
 ═══════════════════════════════════════════════════════════════
 ```
@@ -356,7 +365,7 @@ redistribute or modify any standard.
 
 <div align="center">
 
-**The Claude Council** · *v1.0.0* · *<a href="LICENSE">MIT</a>*
+**The Claude Council** · *v1.1.0* · *<a href="LICENSE">MIT</a>*
 
 [Architecture](docs/ARCHITECTURE.md) ·
 [Council](docs/COUNCIL.md) ·

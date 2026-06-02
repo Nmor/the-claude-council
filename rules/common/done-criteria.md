@@ -58,7 +58,7 @@ If your tooling lives at `/Users/APPLE/go/bin/`, prepend that path. SonarLint
 warnings shown by the IDE count as real findings — fix every one.
 
 For language-agnostic Sonar / SonarLint patterns, run the sweep documented in
-[`sonarlint-checks.md`](./sonarlint-checks.md) on every touched file. That
+[`sonarlint-checks.md`](../../rules-library/common/sonarlint-checks.md) on every touched file. That
 rule auto-fires on `**/*` already; this entry exists to make the requirement
 explicit at done-time. Report sweep results in the verification block.
 

@@ -103,6 +103,11 @@ should_skip() {
     skills/eval-harness/*|skills/learned/*|skills/search-first/*|skills/security-scan/*|\
     skills/nutrient-document-processing/*)
       return 0 ;;
+    # Redirect stubs — body delegates to another skill that carries
+    # the citations. Per lazy-rules-loading Phase J:
+    #  - coding-standards/SKILL.md is a redirect into coding-quality-rules
+    skills/coding-standards/*)
+      return 0 ;;
     # Internal Council operating rules — out of scope for this gate
     # (see header comment for rationale).
     rules/common/*)

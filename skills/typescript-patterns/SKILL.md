@@ -380,7 +380,7 @@ paths:
 ---
 # TypeScript/JavaScript Coding Style
 
-> This file extends [common/coding-style.md](../common/coding-style.md) with TypeScript/JavaScript specific content.
+> This file extends [common/coding-style.md](../../rules-library/common/coding-style.md) with TypeScript/JavaScript specific content.
 
 ## Immutability
 
@@ -504,7 +504,7 @@ paths:
 ---
 # TypeScript/JavaScript Hooks
 
-> This file extends [common/hooks.md](../common/hooks.md) with TypeScript/JavaScript specific content.
+> This file extends [common/hooks.md](../../rules-library/common/hooks.md) with TypeScript/JavaScript specific content.
 
 ## PostToolUse Hooks
 
@@ -973,7 +973,7 @@ paths:
 ---
 # TypeScript/JavaScript Patterns
 
-> This file extends [common/patterns.md](../common/patterns.md) with TypeScript/JavaScript specific content.
+> This file extends [common/patterns.md](../../rules-library/common/patterns.md) with TypeScript/JavaScript specific content.
 
 ## API Response Format
 
@@ -1032,7 +1032,7 @@ paths:
 ---
 # TypeScript/JavaScript Security
 
-> This file extends [common/security.md](../common/security.md) with TypeScript/JavaScript specific content.
+> This file extends [common/security.md](../../rules-library/common/security.md) with TypeScript/JavaScript specific content.
 
 ## Secret Management
 
@@ -1067,7 +1067,7 @@ paths:
 ---
 # TypeScript/JavaScript Testing
 
-> This file extends [common/testing.md](../common/testing.md) with TypeScript/JavaScript specific content.
+> This file extends [common/testing.md](../../rules-library/common/testing.md) with TypeScript/JavaScript specific content.
 
 ## E2E Testing
 

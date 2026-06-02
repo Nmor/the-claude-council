@@ -117,7 +117,7 @@ reused even when earlier stages change.
 
 ### 2. Pin base images to tag + digest
 
-Per [`common/dependency-pinning.md`](../common/dependency-pinning.md):
+Per [`common/dependency-pinning.md`](../../rules-library/common/dependency-pinning.md):
 
 ```dockerfile
 # WRONG — tag floats
@@ -297,7 +297,7 @@ EXPOSE 9090/tcp   # metrics
 
 The actual port-publishing happens at `docker run -p` / `compose
 ports:` / Kubernetes `Service` (per [`common/docker-localhost-
-binding.md`](../common/docker-localhost-binding.md)).
+binding.md`](../../rules-library/common/docker-localhost-binding.md)).
 
 ### 10. `HEALTHCHECK` is mandatory for long-running services
 
@@ -391,7 +391,7 @@ The `.dockerignore` reduces the build context, speeds up
 - One concept per `RUN` instruction; chain related concepts in
   one layer
 - Comments above each `RUN` block explaining intent (only when
-  non-obvious — per [`common/coding-style.md`](../common/coding-style.md))
+  non-obvious — per [`common/coding-style.md`](../../rules-library/common/coding-style.md))
 
 ```dockerfile
 # Install build tools (removed in the final stage)
@@ -483,15 +483,15 @@ with the fix recipe.
 
 ## Cross-references
 
-- [`common/docker-localhost-binding.md`](../common/docker-localhost-binding.md) — port binding to loopback
-- [`common/dependency-pinning.md`](../common/dependency-pinning.md) — tag + digest pinning
-- [`common/secrets-management.md`](../common/secrets-management.md) — BuildKit secrets
-- [`common/coding-style.md`](../common/coding-style.md) — universal style baseline
-- [`common/extreme-lint-policy.md`](../common/extreme-lint-policy.md) — strict-by-default thresholds
-- [`dockerfile/security.md`](./security.md) — supply chain, capabilities, secrets
-- [`dockerfile/patterns.md`](./patterns.md) — multi-stage, distroless, build cache
-- [`dockerfile/hooks.md`](./hooks.md) — pre-commit, CI, registry workflow
-- [`dockerfile/testing.md`](./testing.md) — container-structure tests, smoke, integration
+- [`common/docker-localhost-binding.md`](../../rules-library/common/docker-localhost-binding.md) — port binding to loopback
+- [`common/dependency-pinning.md`](../../rules-library/common/dependency-pinning.md) — tag + digest pinning
+- [`common/secrets-management.md`](../../rules-library/common/secrets-management.md) — BuildKit secrets
+- [`common/coding-style.md`](../../rules-library/common/coding-style.md) — universal style baseline
+- [`common/extreme-lint-policy.md`](../../rules-library/common/extreme-lint-policy.md) — strict-by-default thresholds
+- [`dockerfile/security.md`](../../rules-library/dockerfile/security.md) — supply chain, capabilities, secrets
+- [`dockerfile/patterns.md`](../../rules-library/dockerfile/patterns.md) — multi-stage, distroless, build cache
+- [`dockerfile/hooks.md`](../../rules-library/dockerfile/hooks.md) — pre-commit, CI, registry workflow
+- [`dockerfile/testing.md`](../../rules-library/dockerfile/testing.md) — container-structure tests, smoke, integration
 
 ## Why this rule exists
 
@@ -513,7 +513,7 @@ the above, on repeat.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 
@@ -1276,7 +1276,7 @@ docker build \
 The secret is mounted as a file at `target=` for the duration of
 the `RUN`, then unmounted. It is NOT included in any layer, NOT
 visible in `docker history`, NOT extractable from the final
-image. Per [`common/secrets-management.md`](../common/secrets-management.md).
+image. Per [`common/secrets-management.md`](../../rules-library/common/secrets-management.md).
 
 For CI: `--secret id=stripe_api_key,env=STRIPE_API_KEY` reads from
 the runner's environment without writing the value to disk.
@@ -1299,7 +1299,7 @@ The SBOM ships alongside the image (OCI referrer pattern); CVE
 scanners (Trivy, Grype, Snyk, Docker Scout) read it directly
 without re-scanning. SLSA Level 3 attestation requires:
 
-- Reproducible builds (rule 15 in [`coding-style.md`](./coding-style.md))
+- Reproducible builds (rule 15 in [`coding-style.md`](../../rules-library/dockerfile/coding-style.md))
 - Provenance attestation (mode=max)
 - Builder isolation (GitHub Actions, dedicated runners)
 
@@ -1535,7 +1535,7 @@ Attack surface: every dev tool. Fix: pattern 1 (multi-stage).
 
 `FROM node:latest` retargets every rebuild. A working image
 today may fail tomorrow when `latest` points at a new major.
-Fix: pin tag + digest (rule 2 in [`coding-style.md`](./coding-style.md)).
+Fix: pin tag + digest (rule 2 in [`coding-style.md`](../../rules-library/dockerfile/coding-style.md)).
 
 ### Anti-pattern 3: Embedding secrets in ENV
 
@@ -1586,12 +1586,12 @@ with a comment.
 RUN curl -fsSL https://example.com/install.sh | sh
 ```
 
-Fetch, verify checksum, then execute (rule 4 in [`coding-style.md`](./coding-style.md)).
+Fetch, verify checksum, then execute (rule 4 in [`coding-style.md`](../../rules-library/dockerfile/coding-style.md)).
 Better: install via the package manager with a pinned version.
 
 ## Reuse-first
 
-Per [`common/reuse-first.md`](../common/reuse-first.md):
+Per [`common/reuse-first.md`](../../rules-library/common/reuse-first.md):
 
 - **Docker Official Images** (`node`, `python`, `golang`,
   `postgres`, `redis`) — maintained by upstream + Docker
@@ -1617,13 +1617,13 @@ Don't roll a custom base image without a documented reason.
 
 ## Cross-references
 
-- [`dockerfile/coding-style.md`](./coding-style.md) — style and layout
-- [`dockerfile/security.md`](./security.md) — supply chain, CVE scan, capabilities
-- [`dockerfile/hooks.md`](./hooks.md) — pre-commit, CI, registry workflow
-- [`dockerfile/testing.md`](./testing.md) — container-structure tests, smoke
-- [`common/docker-localhost-binding.md`](../common/docker-localhost-binding.md) — loopback binding
-- [`common/dependency-pinning.md`](../common/dependency-pinning.md) — tag + digest discipline
-- [`common/secrets-management.md`](../common/secrets-management.md) — BuildKit secrets
+- [`dockerfile/coding-style.md`](../../rules-library/dockerfile/coding-style.md) — style and layout
+- [`dockerfile/security.md`](../../rules-library/dockerfile/security.md) — supply chain, CVE scan, capabilities
+- [`dockerfile/hooks.md`](../../rules-library/dockerfile/hooks.md) — pre-commit, CI, registry workflow
+- [`dockerfile/testing.md`](../../rules-library/dockerfile/testing.md) — container-structure tests, smoke
+- [`common/docker-localhost-binding.md`](../../rules-library/common/docker-localhost-binding.md) — loopback binding
+- [`common/dependency-pinning.md`](../../rules-library/common/dependency-pinning.md) — tag + digest discipline
+- [`common/secrets-management.md`](../../rules-library/common/secrets-management.md) — BuildKit secrets
 
 ## Why this rule exists
 
@@ -1649,7 +1649,7 @@ new project.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 
@@ -1707,7 +1707,7 @@ The container security model has four layers:
 4. **Orchestration** — Kubernetes RBAC, PodSecurityStandards, NetworkPolicies
 
 This rule covers layers 1 and 2 (the Dockerfile's responsibility);
-[`common/security.md`](../common/security.md) covers application
+[`common/security.md`](../../rules-library/common/security.md) covers application
 security; project-level Kubernetes / orchestrator rules cover
 layers 3-4.
 
@@ -1715,7 +1715,7 @@ layers 3-4.
 
 | # | Vulnerability | Dockerfile mitigation |
 | --- | --- | --- |
-| D01 | Insecure user mapping | `USER <non-root>` (rule 3 in [`coding-style.md`](./coding-style.md)) |
+| D01 | Insecure user mapping | `USER <non-root>` (rule 3 in [`coding-style.md`](../../rules-library/dockerfile/coding-style.md)) |
 | D02 | Patch management strategy | Pinned base image + Renovate auto-bumps + CVE scan |
 | D03 | Network segmentation | Loopback binding (sister `docker-localhost-binding.md`) |
 | D04 | Secure default settings | Multi-stage, distroless, dropped capabilities |
@@ -1724,13 +1724,13 @@ layers 3-4.
 | D07 | Communications security | TLS 1.2+ between containers; mTLS in service mesh |
 | D08 | Resource protection | CPU + memory limits in orchestrator |
 | D09 | Image integrity | Digest pinning + Sigstore Cosign |
-| D10 | Audit + traceability | OCI labels (rule 11 in [`coding-style.md`](./coding-style.md)) + SBOM |
+| D10 | Audit + traceability | OCI labels (rule 11 in [`coding-style.md`](../../rules-library/dockerfile/coding-style.md)) + SBOM |
 
 ## Mandatory rules
 
 ### 1. Non-root user (no exceptions in production)
 
-Per [`coding-style.md`](./coding-style.md) rule 3. The Dockerfile
+Per [`coding-style.md`](../../rules-library/dockerfile/coding-style.md) rule 3. The Dockerfile
 ends with `USER <non-root>`. Kubernetes `securityContext`
 enforces a redundant check:
 
@@ -1753,8 +1753,8 @@ audit.
 
 ### 2. Pinned base image with digest
 
-Per [`coding-style.md`](./coding-style.md) rule 2 and
-[`common/dependency-pinning.md`](../common/dependency-pinning.md):
+Per [`coding-style.md`](../../rules-library/dockerfile/coding-style.md) rule 2 and
+[`common/dependency-pinning.md`](../../rules-library/common/dependency-pinning.md):
 
 ```dockerfile
 # WRONG — tag floats
@@ -1796,13 +1796,13 @@ RUN --mount=type=secret,id=npm_token,target=/root/.npmrc \
     pnpm install --frozen-lockfile
 ```
 
-Per [`common/secrets-management.md`](../common/secrets-management.md).
+Per [`common/secrets-management.md`](../../rules-library/common/secrets-management.md).
 Pre-commit hooks (gitleaks, trufflehog) catch secrets before they
 enter git history.
 
 ### 4. CVE scanning in CI is mandatory
 
-Per [`common/dependency-vulnerabilities.md`](../common/dependency-vulnerabilities.md):
+Per [`common/dependency-vulnerabilities.md`](../../rules-library/common/dependency-vulnerabilities.md):
 
 ```yaml
 - name: Trivy image scan
@@ -1819,7 +1819,7 @@ Per [`common/dependency-vulnerabilities.md`](../common/dependency-vulnerabilitie
 Tools: **Trivy** (Aqua), **Grype** (Anchore), **Docker Scout**,
 **Snyk Container**. Multi-scanner is acceptable; single-scanner
 is the floor. Findings of CRITICAL / HIGH / MEDIUM block the
-build per [`common/security-controls-org-wide.md`](../common/security-controls-org-wide.md).
+build per [`common/security-controls-org-wide.md`](../../rules-library/common/security-controls-org-wide.md).
 
 ### 5. SBOM on every build
 
@@ -1839,7 +1839,7 @@ makes it trivial to identify every image needing rebuild.
 
 ### 6. Image signing (Sigstore Cosign)
 
-Per [`common/security-controls-org-wide.md`](../common/security-controls-org-wide.md):
+Per [`common/security-controls-org-wide.md`](../../rules-library/common/security-controls-org-wide.md):
 
 ```bash
 # Sign (CI uses OIDC keyless signing — no long-lived keys)
@@ -1858,7 +1858,7 @@ transparency log makes signing-key compromise detectable.
 
 ### 7. Distroless or minimal-base for production
 
-Per [`patterns.md`](./patterns.md) pattern 2. Distroless images:
+Per [`patterns.md`](../../rules-library/dockerfile/patterns.md) pattern 2. Distroless images:
 
 - **No shell** → can't `docker exec sh` for live RCE
 - **No package manager** → can't `apk add` malicious deps post-deploy
@@ -1957,7 +1957,7 @@ custom CI middleware.
 ### 13. Layer minimisation
 
 Fewer layers = fewer attack surfaces + faster pulls + better
-caching. Chain related operations (rule 5 in [`coding-style.md`](./coding-style.md)).
+caching. Chain related operations (rule 5 in [`coding-style.md`](../../rules-library/dockerfile/coding-style.md)).
 Recommended: ≤ 20 layers per stage.
 
 ```bash
@@ -2072,15 +2072,15 @@ ENTRYPOINT ["java", \
 
 ## Cross-references
 
-- [`dockerfile/coding-style.md`](./coding-style.md) — style baseline
-- [`dockerfile/patterns.md`](./patterns.md) — multi-stage, distroless
-- [`dockerfile/hooks.md`](./hooks.md) — CI gates, signing workflow
-- [`dockerfile/testing.md`](./testing.md) — container-structure tests
-- [`common/security.md`](../common/security.md) — OWASP umbrella
-- [`common/secrets-management.md`](../common/secrets-management.md) — BuildKit secrets
-- [`common/dependency-vulnerabilities.md`](../common/dependency-vulnerabilities.md) — CVE gate
-- [`common/security-controls-org-wide.md`](../common/security-controls-org-wide.md) — 5-layer enforcement
-- [`common/docker-localhost-binding.md`](../common/docker-localhost-binding.md) — port binding
+- [`dockerfile/coding-style.md`](../../rules-library/dockerfile/coding-style.md) — style baseline
+- [`dockerfile/patterns.md`](../../rules-library/dockerfile/patterns.md) — multi-stage, distroless
+- [`dockerfile/hooks.md`](../../rules-library/dockerfile/hooks.md) — CI gates, signing workflow
+- [`dockerfile/testing.md`](../../rules-library/dockerfile/testing.md) — container-structure tests
+- [`common/security.md`](../../rules-library/common/security.md) — OWASP umbrella
+- [`common/secrets-management.md`](../../rules-library/common/secrets-management.md) — BuildKit secrets
+- [`common/dependency-vulnerabilities.md`](../../rules-library/common/dependency-vulnerabilities.md) — CVE gate
+- [`common/security-controls-org-wide.md`](../../rules-library/common/security-controls-org-wide.md) — 5-layer enforcement
+- [`common/docker-localhost-binding.md`](../../rules-library/common/docker-localhost-binding.md) — port binding
 
 ## Why this rule exists
 
@@ -2096,7 +2096,7 @@ in container-native organisations. Real-world incidents:
 - 2022 container escape (CVE-2022-0185) — exploitable because
   the container ran as root (rule 1)
 - 2021 Codecov bash uploader breach — the build script ran
-  `curl | bash` (anti-pattern 7 in [`patterns.md`](./patterns.md))
+  `curl | bash` (anti-pattern 7 in [`patterns.md`](../../rules-library/dockerfile/patterns.md))
 - 2020 Kubernetes secret leakage via `ENV` (rule 3 — BuildKit
   secrets prevent)
 
@@ -2107,7 +2107,7 @@ the above on repeat.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 
@@ -2339,7 +2339,7 @@ production — no "works in dev, fails in prod" cliff.
 
 ## Layer 4: Vulnerability + supply-chain scanning
 
-Per [`dockerfile/security.md`](./security.md) rule 4:
+Per [`dockerfile/security.md`](../../rules-library/dockerfile/security.md) rule 4:
 
 ```bash
 # CVE scan
@@ -2493,14 +2493,14 @@ Dockerfile.
 
 ### 4. CVE scan blocks the merge
 
-MODERATE+ findings block the PR. Per [`common/dependency-vulnerabilities.md`](../common/dependency-vulnerabilities.md).
+MODERATE+ findings block the PR. Per [`common/dependency-vulnerabilities.md`](../../rules-library/common/dependency-vulnerabilities.md).
 
 ### 5. Dive's "wasted space" must be < 10%
 
 Wasted space is files added in one layer and deleted in another
 (common with `apt-get update && rm -rf /var/lib/apt/lists/*` in
 separate `RUN` instructions). The threshold catches anti-pattern
-5 in [`coding-style.md`](./coding-style.md).
+5 in [`coding-style.md`](../../rules-library/dockerfile/coding-style.md).
 
 ### 6. Container-structure tests run on every PR
 
@@ -2518,7 +2518,7 @@ production.
 
 The smoke test sends `docker stop` (SIGTERM) and asserts the
 container exits cleanly within the grace period. Catches PID-1
-signal-forwarding bugs (pattern 9 in [`patterns.md`](./patterns.md)).
+signal-forwarding bugs (pattern 9 in [`patterns.md`](../../rules-library/dockerfile/patterns.md)).
 
 ### 9. Layer-1 tests cover 100% of production-critical properties
 
@@ -2558,12 +2558,12 @@ pnpm test:integration
 
 ## Cross-references
 
-- [`dockerfile/coding-style.md`](./coding-style.md) — style enforced by hadolint
-- [`dockerfile/patterns.md`](./patterns.md) — multi-stage, distroless
-- [`dockerfile/security.md`](./security.md) — security gates this validates
-- [`dockerfile/hooks.md`](./hooks.md) — CI integration
-- [`common/testing.md`](../common/testing.md) — universal test taxonomy
-- [`common/dependency-vulnerabilities.md`](../common/dependency-vulnerabilities.md) — CVE policy
+- [`dockerfile/coding-style.md`](../../rules-library/dockerfile/coding-style.md) — style enforced by hadolint
+- [`dockerfile/patterns.md`](../../rules-library/dockerfile/patterns.md) — multi-stage, distroless
+- [`dockerfile/security.md`](../../rules-library/dockerfile/security.md) — security gates this validates
+- [`dockerfile/hooks.md`](../../rules-library/dockerfile/hooks.md) — CI integration
+- [`common/testing.md`](../../rules-library/common/testing.md) — universal test taxonomy
+- [`common/dependency-vulnerabilities.md`](../../rules-library/common/dependency-vulnerabilities.md) — CVE policy
 
 ## Why this rule exists
 
@@ -2587,7 +2587,7 @@ of skipping them is each incident replayed on every release.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 

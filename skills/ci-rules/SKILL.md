@@ -24,6 +24,19 @@ paths:
 
 # ci-rules
 
+## Standards Cited
+
+- **GitHub Actions Workflow syntax** (docs.github.com/actions/using-workflows) — canonical spec for `on:` triggers, job graph, expressions
+- **OWASP Top 10 CI/CD Security Risks** (owasp.org/www-project-top-10-ci-cd-security-risks) — CICD-SEC-01 through CICD-SEC-10
+- **SLSA v1.0** (slsa.dev/spec/v1.0) — supply-chain levels; SHA-pinned actions satisfy Build L3
+- **CWE-829** Inclusion of Functionality from Untrusted Control Sphere (action-by-tag = vulnerable)
+- **CWE-1357** Reliance on Insufficiently Trustworthy Component (unpinned third-party action)
+- **NIST SP 800-204D** Strategies for the Integration of Software Supply Chain Security in DevSecOps
+- **OWASP Top 10 A05:2021** Security Misconfiguration — `pull_request_target` + checkout-of-PR-code is the canonical misconfiguration shape
+- **Conventional Commits 1.0** (conventionalcommits.org) — commit-message contract for downstream changelog / semver automation
+- **Semantic Versioning 2.0** (semver.org) — version-bump rules the CI release pipeline encodes
+
+
 ## Source files migrated
 
 - `rules-library/common/ci-test-memory-tuning.md`

@@ -1133,7 +1133,7 @@ controls).
 
 ### 8. Logical properties (RTL-ready)
 
-Per [`common/i18n.md`](../common/i18n.md) — RTL languages
+Per [`common/i18n.md`](../../rules-library/common/i18n.md) — RTL languages
 mirror layout. Use CSS logical properties to support mirror
 automatically:
 
@@ -1239,7 +1239,7 @@ Design recommendation.
 }
 ```
 
-Per [`common/a11y.md`](../common/a11y.md) — vestibular disorders
+Per [`common/a11y.md`](../../rules-library/common/a11y.md) — vestibular disorders
 are common; `prefers-reduced-motion` honored or animations
 optional.
 
@@ -1317,7 +1317,7 @@ layers always win, regardless of specificity. This kills "I need
 
 ### 15. No `!important` outside utility layer
 
-Per [`common/coding-style.md`](../common/coding-style.md) — the
+Per [`common/coding-style.md`](../../rules-library/common/coding-style.md) — the
 no-discards post-edit hook warns on `!important` in CSS. Allowed
 ONLY in a utility-class layer where overrides are intentional.
 
@@ -1438,20 +1438,20 @@ not Safari < 14
 
 ## Cross-references
 
-- [`html-css/patterns.md`](./patterns.md) — component patterns
-- [`html-css/security.md`](./security.md) — CSP, XSS, sanitisation
-- [`html-css/testing.md`](./testing.md) — visual regression, axe
-- [`html-css/hooks.md`](./hooks.md) — lint + format gates
-- [`common/a11y.md`](../common/a11y.md) — WCAG 2.2 mandates
-- [`common/i18n.md`](../common/i18n.md) — RTL + locale-aware
+- [`html-css/patterns.md`](../../rules-library/html-css/patterns.md) — component patterns
+- [`html-css/security.md`](../../rules-library/html-css/security.md) — CSP, XSS, sanitisation
+- [`html-css/testing.md`](../../rules-library/html-css/testing.md) — visual regression, axe
+- [`html-css/hooks.md`](../../rules-library/html-css/hooks.md) — lint + format gates
+- [`common/a11y.md`](../../rules-library/common/a11y.md) — WCAG 2.2 mandates
+- [`common/i18n.md`](../../rules-library/common/i18n.md) — RTL + locale-aware
   number / date formatting
-- [`common/coding-style.md`](../common/coding-style.md) — no
+- [`common/coding-style.md`](../../rules-library/common/coding-style.md) — no
   raw colour literals; no `!important` outside utility layer
-- [`common/no-discards.md`](../common/no-discards.md) — hook
+- [`common/no-discards.md`](../../rules-library/common/no-discards.md) — hook
   rejects raw colour literals in component CSS
-- [`typescript/coding-style.md`](../typescript/coding-style.md)
+- [`typescript/coding-style.md`](../../rules-library/typescript/coding-style.md)
   — React / Vue / Svelte component conventions
-- [`common/documentation-requirements.md`](../common/documentation-requirements.md)
+- [`common/documentation-requirements.md`](../../rules-library/common/documentation-requirements.md)
   — design-system documentation
 
 ## Why this rule exists
@@ -1477,7 +1477,7 @@ Recurring incidents averted by this rule:
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 
@@ -1519,7 +1519,7 @@ Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mand
 > `*.sass`, `*.less`, `*.styl`, `*.module.css`, `*.postcssrc`,
 > `*.stylelintrc*`, `*.htmlhintrc`, `tailwind.config.*`,
 > `postcss.config.*`, `vite.config.*` file. Sister to
-> [`common/hooks.md`](../common/hooks.md). Tooling:
+> [`common/hooks.md`](../../rules-library/common/hooks.md). Tooling:
 > **stylelint 17.11.0** + **stylelint-config-standard 40.0.0**,
 > **HTMLHint** (current), **Prettier 3.x**, **@axe-core/playwright**,
 > **Lighthouse CI**, **pa11y-ci**, **size-limit** /
@@ -1614,7 +1614,7 @@ pnpm exec lhci autorun                      # Lighthouse + a11y / perf budgets
 pnpm exec size-limit                        # bundle budgets
 ```
 
-Same script runs in CI per [`common/local-dev-setup.md`](../common/local-dev-setup.md).
+Same script runs in CI per [`common/local-dev-setup.md`](../../rules-library/common/local-dev-setup.md).
 
 ## CI workflow (GitHub Actions)
 
@@ -1789,7 +1789,7 @@ duplicate.
 | `webhint.vscode-webhint` | webhint | WCAG + perf hints |
 | `formulahendry.auto-rename-tag` | Auto Rename Tag | HTML tag rename pairs |
 
-Per [`common/install-allowlist.md`](../common/install-allowlist.md)
+Per [`common/install-allowlist.md`](../../rules-library/common/install-allowlist.md)
 — stick to verified publishers; `htmlhint.*` is the official
 htmlhint VS Code extension (confirmed publisher).
 
@@ -1859,29 +1859,29 @@ Frontend sweep (this turn):
   - size-limit: main bundle 142 KB (under 150 KB budget)
 ```
 
-Per [`common/verify-before-claim.md`](../common/verify-before-claim.md).
+Per [`common/verify-before-claim.md`](../../rules/common/verify-before-claim.md).
 
 ## Cross-references
 
-- [`html-css/coding-style.md`](./coding-style.md) — semantic
+- [`html-css/coding-style.md`](../../rules-library/html-css/coding-style.md) — semantic
   HTML + token-driven CSS
-- [`html-css/patterns.md`](./patterns.md) — component
+- [`html-css/patterns.md`](../../rules-library/html-css/patterns.md) — component
   composition + APG patterns
-- [`html-css/security.md`](./security.md) — CSP, Trusted Types,
+- [`html-css/security.md`](../../rules-library/html-css/security.md) — CSP, Trusted Types,
   sanitisation gates
-- [`html-css/testing.md`](./testing.md) — unit + a11y + visual +
+- [`html-css/testing.md`](../../rules-library/html-css/testing.md) — unit + a11y + visual +
   E2E + perf layers
-- [`common/hooks.md`](../common/hooks.md) — hook lifecycle
-- [`common/extreme-lint-policy.md`](../common/extreme-lint-policy.md)
+- [`common/hooks.md`](../../rules-library/common/hooks.md) — hook lifecycle
+- [`common/extreme-lint-policy.md`](../../rules-library/common/extreme-lint-policy.md)
   — strict lint posture
-- [`common/security-controls-org-wide.md`](../common/security-controls-org-wide.md)
+- [`common/security-controls-org-wide.md`](../../rules-library/common/security-controls-org-wide.md)
   — SHA-pinned actions
-- [`common/local-dev-setup.md`](../common/local-dev-setup.md)
+- [`common/local-dev-setup.md`](../../rules-library/common/local-dev-setup.md)
   — verify-local.sh + CI parity
-- [`common/verify-before-claim.md`](../common/verify-before-claim.md)
+- [`common/verify-before-claim.md`](../../rules/common/verify-before-claim.md)
   — same-turn verification block
-- [`common/a11y.md`](../common/a11y.md) — WCAG 2.2 AA gate
-- [`typescript/hooks.md`](../typescript/hooks.md) — JS / TS
+- [`common/a11y.md`](../../rules-library/common/a11y.md) — WCAG 2.2 AA gate
+- [`typescript/hooks.md`](../../rules-library/typescript/hooks.md) — JS / TS
   side of the same workflow
 - `frontend-patterns` skill (auto-activates on UI files) —
   visual design quality bar
@@ -1907,7 +1907,7 @@ incident response avoided.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 
@@ -2122,7 +2122,7 @@ Tab interaction pattern requires:
 - Home/End jump to first/last tab
 - Tab key moves into the panel content
 
-Per [`common/a11y.md`](../common/a11y.md) — keyboard model must
+Per [`common/a11y.md`](../../rules-library/common/a11y.md) — keyboard model must
 match the APG-specified interaction.
 
 ### Pattern 4: Container queries for component-aware design
@@ -2348,7 +2348,7 @@ within a file is the anti-pattern.
 <div class="error-message">Error</div>
 ```
 
-Inline styles break CSP (per [`html-css/security.md`](./security.md)),
+Inline styles break CSP (per [`html-css/security.md`](../../rules-library/html-css/security.md)),
 defeat caching, defeat dark mode, defeat theming.
 
 ### Anti-pattern 4: Tab indices > 0
@@ -2460,25 +2460,25 @@ spellcheck behaviour intact.
 | Markdown rendering | MDX (React/JS), unified/remark + rehype |
 | Date/time picker | react-aria-components, react-day-picker, Cally web component |
 
-Per [`common/reuse-first.md`](../common/reuse-first.md) — sweep
+Per [`common/reuse-first.md`](../../rules-library/common/reuse-first.md) — sweep
 before building.
 
 ## Cross-references
 
-- [`html-css/coding-style.md`](./coding-style.md) — naming +
+- [`html-css/coding-style.md`](../../rules-library/html-css/coding-style.md) — naming +
   semantic HTML + tokens
-- [`html-css/security.md`](./security.md) — CSP + XSS + form
+- [`html-css/security.md`](../../rules-library/html-css/security.md) — CSP + XSS + form
   hardening
-- [`html-css/testing.md`](./testing.md) — visual regression +
+- [`html-css/testing.md`](../../rules-library/html-css/testing.md) — visual regression +
   axe-core + Playwright
-- [`html-css/hooks.md`](./hooks.md) — stylelint + htmlhint + CI
-- [`common/a11y.md`](../common/a11y.md) — WCAG 2.2 mandates
-- [`common/i18n.md`](../common/i18n.md) — RTL + locale-aware
-- [`common/patterns.md`](../common/patterns.md) — broader
+- [`html-css/hooks.md`](../../rules-library/html-css/hooks.md) — stylelint + htmlhint + CI
+- [`common/a11y.md`](../../rules-library/common/a11y.md) — WCAG 2.2 mandates
+- [`common/i18n.md`](../../rules-library/common/i18n.md) — RTL + locale-aware
+- [`common/patterns.md`](../../rules-library/common/patterns.md) — broader
   architectural patterns (response envelope, etc.)
-- [`common/reuse-first.md`](../common/reuse-first.md) — extract
+- [`common/reuse-first.md`](../../rules-library/common/reuse-first.md) — extract
   on second occurrence; never fork primitives
-- [`typescript/coding-style.md`](../typescript/coding-style.md)
+- [`typescript/coding-style.md`](../../rules-library/typescript/coding-style.md)
   — React 19 + Vue 3 idioms
 - frontend-patterns skill (auto-activates for `.vue` / `.tsx` /
   `.jsx`) — visual design quality
@@ -2507,7 +2507,7 @@ Recurring incidents averted:
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 
@@ -2710,7 +2710,7 @@ shasum -b -a 384 lib.js | awk '{print $1}' | xxd -r -p | base64
 ```
 
 CI verifies the SRI hash matches the bundled file (per
-[`common/dependency-pinning.md`](../common/dependency-pinning.md)).
+[`common/dependency-pinning.md`](../../rules-library/common/dependency-pinning.md)).
 
 #### Modern security headers
 
@@ -2814,7 +2814,7 @@ imply this for `target="_blank"`, but explicit is defensive.
 
 User-supplied URLs that the server fetches (image proxy, link
 previewer, OG-tag generator) need server-side allowlist + IP
-range validation. Per [`common/security.md`](../common/security.md)
+range validation. Per [`common/security.md`](../../rules-library/common/security.md)
 A10.
 
 ## CSS-specific security
@@ -2895,7 +2895,7 @@ SRI over `@import`.
       for bot mitigation OR proper bot management (Turnstile,
       hCaptcha, reCAPTCHA)
 - [ ] Rate limit on form-submission endpoint (per
-      [`common/rate-limiting.md`](../common/rate-limiting.md))
+      [`common/rate-limiting.md`](../../rules-library/common/rate-limiting.md))
 
 ## File upload security
 
@@ -2964,23 +2964,23 @@ openssl dgst -sha384 -binary lib.js | openssl base64 -A
 
 ## Cross-references
 
-- [`html-css/coding-style.md`](./coding-style.md) — semantic
+- [`html-css/coding-style.md`](../../rules-library/html-css/coding-style.md) — semantic
   HTML + no inline styles
-- [`html-css/patterns.md`](./patterns.md) — accessible component
+- [`html-css/patterns.md`](../../rules-library/html-css/patterns.md) — accessible component
   patterns + `<dialog>` + Trusted Types
-- [`html-css/testing.md`](./testing.md) — axe + security tests
-- [`html-css/hooks.md`](./hooks.md) — stylelint + htmlhint + CI
-- [`common/security.md`](../common/security.md) — OWASP Top 10
+- [`html-css/testing.md`](../../rules-library/html-css/testing.md) — axe + security tests
+- [`html-css/hooks.md`](../../rules-library/html-css/hooks.md) — stylelint + htmlhint + CI
+- [`common/security.md`](../../rules-library/common/security.md) — OWASP Top 10
   umbrella
-- [`common/secrets-management.md`](../common/secrets-management.md)
+- [`common/secrets-management.md`](../../rules-library/common/secrets-management.md)
   — no inlined secrets
-- [`common/dependency-pinning.md`](../common/dependency-pinning.md)
+- [`common/dependency-pinning.md`](../../rules-library/common/dependency-pinning.md)
   — SRI on external resources
-- [`common/rate-limiting.md`](../common/rate-limiting.md) — form
+- [`common/rate-limiting.md`](../../rules-library/common/rate-limiting.md) — form
   submission limits
-- [`common/audit-logging.md`](../common/audit-logging.md) —
+- [`common/audit-logging.md`](../../rules-library/common/audit-logging.md) —
   security events (login, CSP violations)
-- [`typescript/security.md`](../typescript/security.md) —
+- [`typescript/security.md`](../../rules-library/typescript/security.md) —
   framework-side XSS prevention (React, Vue, Svelte)
 
 ## Why this rule exists
@@ -2997,12 +2997,12 @@ allowlist).
 
 The browser-side controls in this file are the floor. The
 server-side authentication / authorisation controls live in
-[`common/security.md`](../common/security.md) + framework-
+[`common/security.md`](../../rules-library/common/security.md) + framework-
 specific files. Both are required.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 
@@ -3075,7 +3075,7 @@ the error path, the empty state, and the reduced-motion path?"**
 | **Cross-browser matrix** | Playwright with multiple `projects` | Chromium / Firefox / WebKit |
 | **Real-device** | BrowserStack / SauceLabs / Lambda Test | Critical paths on iOS Safari / Android Chrome |
 
-Per [`common/testing.md`](../common/testing.md) — the unit
+Per [`common/testing.md`](../../rules-library/common/testing.md) — the unit
 floor is 90% touched / 80% project. The other layers are
 journey-scoped, not coverage-scoped.
 
@@ -3151,7 +3151,7 @@ test('disclosure expands on Enter + Space; closes on Escape', async () => {
 });
 ```
 
-Per [`common/a11y.md`](../common/a11y.md) — every interactive
+Per [`common/a11y.md`](../../rules-library/common/a11y.md) — every interactive
 component has a keyboard test.
 
 ### 3. Test the error + empty + loading state
@@ -3188,7 +3188,7 @@ describe('OrderList', () => {
 });
 ```
 
-Per [`common/error-codes.md`](../common/error-codes.md) — the
+Per [`common/error-codes.md`](../../rules-library/common/error-codes.md) — the
 test asserts on the `error_code` mapping, not the copy.
 
 ### 4. axe-core in unit + E2E
@@ -3330,7 +3330,7 @@ export default defineConfig({
 ```
 
 CI runs all 5 projects; failures attach video + trace artefacts
-per [`common/local-dev-setup.md`](../common/local-dev-setup.md).
+per [`common/local-dev-setup.md`](../../rules-library/common/local-dev-setup.md).
 
 ### 8. Performance budget gates
 
@@ -3558,22 +3558,22 @@ jobs:
 
 ## Cross-references
 
-- [`html-css/coding-style.md`](./coding-style.md) — semantic
+- [`html-css/coding-style.md`](../../rules-library/html-css/coding-style.md) — semantic
   HTML is testable
-- [`html-css/patterns.md`](./patterns.md) — accessible
+- [`html-css/patterns.md`](../../rules-library/html-css/patterns.md) — accessible
   components are testable
-- [`html-css/security.md`](./security.md) — XSS-resistant
+- [`html-css/security.md`](../../rules-library/html-css/security.md) — XSS-resistant
   rendering is testable (snapshot of escaped output)
-- [`html-css/hooks.md`](./hooks.md) — lint + format + axe gates
-- [`common/testing.md`](../common/testing.md) — broader test
+- [`html-css/hooks.md`](../../rules-library/html-css/hooks.md) — lint + format + axe gates
+- [`common/testing.md`](../../rules-library/common/testing.md) — broader test
   strategy
-- [`common/a11y.md`](../common/a11y.md) — WCAG 2.2 AA = test
+- [`common/a11y.md`](../../rules-library/common/a11y.md) — WCAG 2.2 AA = test
   gate
-- [`common/error-codes.md`](../common/error-codes.md) — assert
+- [`common/error-codes.md`](../../rules-library/common/error-codes.md) — assert
   on codes, not copy
-- [`common/extreme-lint-policy.md`](../common/extreme-lint-policy.md)
+- [`common/extreme-lint-policy.md`](../../rules-library/common/extreme-lint-policy.md)
   — coverage floor 90% touched / 80% project
-- [`common/local-dev-setup.md`](../common/local-dev-setup.md)
+- [`common/local-dev-setup.md`](../../rules-library/common/local-dev-setup.md)
   — same script runs locally + CI
 
 ## Why this rule exists
@@ -3585,7 +3585,7 @@ catch a class:
 
 - **Unit + Testing Library** — catches logic regressions
 - **axe-core** — catches accessibility regressions (which are
-  also legal exposure per [`common/a11y.md`](../common/a11y.md))
+  also legal exposure per [`common/a11y.md`](../../rules-library/common/a11y.md))
 - **Visual regression** — catches CSS / design-system drift
   (the "we changed a token, what broke?" question)
 - **E2E** — catches the journey-level break (everything works
@@ -3600,7 +3600,7 @@ No single layer is sufficient; together they form the gate.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 

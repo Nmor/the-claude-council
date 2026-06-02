@@ -325,11 +325,11 @@ Match the ecosystem. Never mix casing in one file.
 - `apiVersion` + `kind` + `metadata` + `spec` always present
 - `metadata.name` ≤ 63 characters (DNS-1123 subdomain rule)
 - Container images SHA-pinned (per
-  [`dependency-pinning.md`](../common/dependency-pinning.md))
+  [`dependency-pinning.md`](../../rules-library/common/dependency-pinning.md))
 - `resources.requests` + `resources.limits` set on every
   container (FinOps + scheduling)
 - `securityContext.runAsNonRoot: true` (per
-  [`docker-deployment.md`](../common/docker-deployment.md))
+  [`docker-deployment.md`](../../rules-library/common/docker-deployment.md))
 - `readinessProbe` + `livenessProbe` declared
 - `imagePullPolicy: IfNotPresent` (avoid `Always` in prod)
 
@@ -337,7 +337,7 @@ Match the ecosystem. Never mix casing in one file.
 
 - `services.<svc>.ports` follow `127.0.0.1:HOST:CONTAINER` for
   local dev (per
-  [`docker-localhost-binding.md`](../common/docker-localhost-binding.md))
+  [`docker-localhost-binding.md`](../../rules-library/common/docker-localhost-binding.md))
 - `services.<svc>.image` SHA-pinned for prod-shape composes
 - `services.<svc>.healthcheck` declared on every long-running
   service
@@ -347,7 +347,7 @@ Match the ecosystem. Never mix casing in one file.
 ### GitHub Actions workflows
 
 - `uses:` entries SHA-pinned with version comment (per
-  [`security-controls-org-wide.md`](../common/security-controls-org-wide.md))
+  [`security-controls-org-wide.md`](../../rules-library/common/security-controls-org-wide.md))
 - `permissions:` declared at workflow root with least privilege
 - `timeout-minutes:` set on every job
 - `concurrency.group:` set to avoid duplicate runs on quick
@@ -359,7 +359,7 @@ Match the ecosystem. Never mix casing in one file.
 - `openapi: "3.1.0"` (or AsyncAPI `asyncapi: "3.0.0"`) pinned
   string
 - `info.version` follows
-  [`semver.md`](../common/semver.md)
+  [`semver.md`](../../rules-library/common/semver.md)
 - Every operation has `operationId`, `summary`, `tags`,
   `responses.4xx`, `responses.5xx`, `security`
 - Per-resource schemas live in `components.schemas`, never
@@ -424,29 +424,29 @@ The `truthy` rule forbids unquoted `yes` / `no` / `on` / `off`
 
 ## Cross-references
 
-- [`common/coding-style.md`](../common/coding-style.md) — broader
+- [`common/coding-style.md`](../../rules-library/common/coding-style.md) — broader
   global comment + immutability rules apply to YAML's
   templating layer (Helm Go templates, Kustomize patches)
-- [`common/extreme-lint-policy.md`](../common/extreme-lint-policy.md)
+- [`common/extreme-lint-policy.md`](../../rules-library/common/extreme-lint-policy.md)
   — yamllint at strict ruleset is mandatory in CI
-- [`common/dependency-pinning.md`](../common/dependency-pinning.md)
+- [`common/dependency-pinning.md`](../../rules-library/common/dependency-pinning.md)
   — version pinning applies to every image / module / action
   reference inside YAML
-- [`common/docker-localhost-binding.md`](../common/docker-localhost-binding.md)
+- [`common/docker-localhost-binding.md`](../../rules-library/common/docker-localhost-binding.md)
   — `127.0.0.1:` prefix on every dev port
-- [`common/docker-deployment.md`](../common/docker-deployment.md)
+- [`common/docker-deployment.md`](../../rules-library/common/docker-deployment.md)
   — `securityContext.runAsNonRoot` + multi-stage build refs
-- [`common/security-controls-org-wide.md`](../common/security-controls-org-wide.md)
+- [`common/security-controls-org-wide.md`](../../rules-library/common/security-controls-org-wide.md)
   — SHA-pin every `uses:` in GitHub Actions
-- [`common/secrets-management.md`](../common/secrets-management.md)
+- [`common/secrets-management.md`](../../rules-library/common/secrets-management.md)
   — never inline real secret values; reference vault / env vars
-- [`common/schema-evolution.md`](../common/schema-evolution.md)
+- [`common/schema-evolution.md`](../../rules-library/common/schema-evolution.md)
   — OpenAPI / AsyncAPI evolution rules
-- [`yaml/security.md`](./security.md) — security-specific YAML
+- [`yaml/security.md`](../../rules-library/yaml/security.md) — security-specific YAML
   patterns + anti-patterns
-- [`yaml/patterns.md`](./patterns.md) — architectural patterns
+- [`yaml/patterns.md`](../../rules-library/yaml/patterns.md) — architectural patterns
   (anchors, overlays, templating boundaries)
-- [`yaml/hooks.md`](./hooks.md) — pre-commit + CI gates
+- [`yaml/hooks.md`](../../rules-library/yaml/hooks.md) — pre-commit + CI gates
 
 ## Why this rule exists
 
@@ -466,7 +466,7 @@ per-ecosystem checklists above codify those operational learnings.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 
@@ -508,7 +508,7 @@ Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mand
 > Auto-fires on every `*.yml`, `*.yaml`, `.yamllint.yaml`,
 > `.yamllint.yml`, `.yamllint`, `.spectral.yaml`,
 > `kustomization.yaml`, `values.yaml`, `Chart.yaml` file.
-> Sister to [`common/hooks.md`](../common/hooks.md). Tooling:
+> Sister to [`common/hooks.md`](../../rules-library/common/hooks.md). Tooling:
 > **yamllint 1.38.0**, **kubeconform**, **helm lint**,
 > **spectral**, **actionlint**, **conftest** (OPA / Rego),
 > **trivy config**, **gitleaks**.
@@ -599,7 +599,7 @@ bash infra/verify-local.sh
 
 `infra/verify-local.sh` carries the yamllint + schema + secret
 scan + policy gates. Per
-[`common/local-dev-setup.md`](../common/local-dev-setup.md), the
+[`common/local-dev-setup.md`](../../rules-library/common/local-dev-setup.md), the
 same script runs in CI — local-CI parity prevents "passes
 locally, fails in CI" surprises.
 
@@ -704,7 +704,7 @@ jobs:
 ```
 
 All third-party actions are SHA-pinned per
-[`common/security-controls-org-wide.md`](../common/security-controls-org-wide.md).
+[`common/security-controls-org-wide.md`](../../rules-library/common/security-controls-org-wide.md).
 
 ## IDE integration
 
@@ -809,26 +809,26 @@ YAML sweep (this turn):
   - helm template | kubeconform: clean
 ```
 
-Per [`common/verify-before-claim.md`](../common/verify-before-claim.md).
+Per [`common/verify-before-claim.md`](../../rules/common/verify-before-claim.md).
 
 ## Cross-references
 
-- [`yaml/coding-style.md`](./coding-style.md) — formatting +
+- [`yaml/coding-style.md`](../../rules-library/yaml/coding-style.md) — formatting +
   schema-reference directives
-- [`yaml/patterns.md`](./patterns.md) — composition + overlay
+- [`yaml/patterns.md`](../../rules-library/yaml/patterns.md) — composition + overlay
   patterns
-- [`yaml/security.md`](./security.md) — security-specific gates
-- [`common/hooks.md`](../common/hooks.md) — broader hook
+- [`yaml/security.md`](../../rules-library/yaml/security.md) — security-specific gates
+- [`common/hooks.md`](../../rules-library/common/hooks.md) — broader hook
   lifecycle
-- [`common/extreme-lint-policy.md`](../common/extreme-lint-policy.md)
+- [`common/extreme-lint-policy.md`](../../rules-library/common/extreme-lint-policy.md)
   — strict linter posture
-- [`common/security-controls-org-wide.md`](../common/security-controls-org-wide.md)
+- [`common/security-controls-org-wide.md`](../../rules-library/common/security-controls-org-wide.md)
   — SHA-pinned third-party actions; 5-layer enforcement
-- [`common/local-dev-setup.md`](../common/local-dev-setup.md)
+- [`common/local-dev-setup.md`](../../rules-library/common/local-dev-setup.md)
   — local-CI parity via shared verify script
-- [`common/verify-before-claim.md`](../common/verify-before-claim.md)
+- [`common/verify-before-claim.md`](../../rules/common/verify-before-claim.md)
   — same-turn verification block
-- [`common/deploy-failures-become-checks.md`](../common/deploy-failures-become-checks.md)
+- [`common/deploy-failures-become-checks.md`](../../rules-library/common/deploy-failures-become-checks.md)
   — every YAML-side deploy failure becomes a documented gate
 
 ## Why this rule exists
@@ -850,7 +850,7 @@ shrink it.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 
@@ -1316,7 +1316,7 @@ versioned YAML file.
 
 ## Reuse-first
 
-Per [`common/reuse-first.md`](../common/reuse-first.md). Common
+Per [`common/reuse-first.md`](../../rules-library/common/reuse-first.md). Common
 libraries:
 
 - [yq](https://github.com/mikefarah/yq) — jq-like YAML processor
@@ -1343,19 +1343,19 @@ libraries:
 
 ## Cross-references
 
-- [`yaml/coding-style.md`](./coding-style.md) — naming + format
-- [`yaml/security.md`](./security.md) — secret handling +
+- [`yaml/coding-style.md`](../../rules-library/yaml/coding-style.md) — naming + format
+- [`yaml/security.md`](../../rules-library/yaml/security.md) — secret handling +
   schema validation gates
-- [`yaml/hooks.md`](./hooks.md) — pre-commit + CI integration
-- [`common/patterns.md`](../common/patterns.md) — repository +
+- [`yaml/hooks.md`](../../rules-library/yaml/hooks.md) — pre-commit + CI integration
+- [`common/patterns.md`](../../rules-library/common/patterns.md) — repository +
   envelope patterns inform schema design
-- [`common/schema-evolution.md`](../common/schema-evolution.md)
+- [`common/schema-evolution.md`](../../rules-library/common/schema-evolution.md)
   — OpenAPI / AsyncAPI versioning
-- [`common/secrets-management.md`](../common/secrets-management.md)
+- [`common/secrets-management.md`](../../rules-library/common/secrets-management.md)
   — vault-bound secrets, never inlined
-- [`common/dependency-pinning.md`](../common/dependency-pinning.md)
+- [`common/dependency-pinning.md`](../../rules-library/common/dependency-pinning.md)
   — SHA-pinned image refs inside Compose / K8s
-- [`common/extreme-lint-policy.md`](../common/extreme-lint-policy.md)
+- [`common/extreme-lint-policy.md`](../../rules-library/common/extreme-lint-policy.md)
   — yamllint mandatory; Spectral / kubeconform when applicable
 
 ## Why this rule exists
@@ -1372,7 +1372,7 @@ hand-rolled renderers.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 
@@ -1480,7 +1480,7 @@ services:
 ```
 
 Every secret comes from a vault or from a runtime injection
-(per [`common/secrets-management.md`](../common/secrets-management.md)).
+(per [`common/secrets-management.md`](../../rules-library/common/secrets-management.md)).
 Acceptable shapes:
 
 ```yaml
@@ -1534,8 +1534,8 @@ materialisation.
 
 ### 3. SHA-pin every external reference
 
-Per [`common/dependency-pinning.md`](../common/dependency-pinning.md) and
-[`common/security-controls-org-wide.md`](../common/security-controls-org-wide.md),
+Per [`common/dependency-pinning.md`](../../rules-library/common/dependency-pinning.md) and
+[`common/security-controls-org-wide.md`](../../rules-library/common/security-controls-org-wide.md),
 every image / action / module reference inside a YAML file is
 pinned to an immutable identifier:
 
@@ -1723,7 +1723,7 @@ helm lint ./charts/payments
 helm template ./charts/payments | kubeconform -strict -
 ```
 
-Per [`common/extreme-lint-policy.md`](../common/extreme-lint-policy.md),
+Per [`common/extreme-lint-policy.md`](../../rules-library/common/extreme-lint-policy.md),
 every project carries these gates in CI and pre-commit.
 
 ### 9. No YAML billion-laughs amplification
@@ -1825,7 +1825,7 @@ Cosign + reject unsigned manifests when configured.
       (allowlist explicitly)
 - [ ] `4xx` + `5xx` responses defined for every operation
 - [ ] Rate-limit semantics documented (per
-      [`common/rate-limiting.md`](../common/rate-limiting.md))
+      [`common/rate-limiting.md`](../../rules-library/common/rate-limiting.md))
 
 ## Required tooling
 
@@ -1861,28 +1861,28 @@ trivy config k8s/
 
 ## Cross-references
 
-- [`yaml/coding-style.md`](./coding-style.md) — formatting +
+- [`yaml/coding-style.md`](../../rules-library/yaml/coding-style.md) — formatting +
   quoting + key naming
-- [`yaml/patterns.md`](./patterns.md) — composition + overlay
+- [`yaml/patterns.md`](../../rules-library/yaml/patterns.md) — composition + overlay
   patterns
-- [`yaml/hooks.md`](./hooks.md) — pre-commit + CI gates
-- [`common/security.md`](../common/security.md) — OWASP Top 10
+- [`yaml/hooks.md`](../../rules-library/yaml/hooks.md) — pre-commit + CI gates
+- [`common/security.md`](../../rules-library/common/security.md) — OWASP Top 10
   umbrella
-- [`common/secrets-management.md`](../common/secrets-management.md)
+- [`common/secrets-management.md`](../../rules-library/common/secrets-management.md)
   — vault-first; no inlined secrets
-- [`common/security-controls-org-wide.md`](../common/security-controls-org-wide.md)
+- [`common/security-controls-org-wide.md`](../../rules-library/common/security-controls-org-wide.md)
   — 5-layer non-bypassable enforcement
-- [`common/dependency-pinning.md`](../common/dependency-pinning.md)
+- [`common/dependency-pinning.md`](../../rules-library/common/dependency-pinning.md)
   — SHA-pin everything
-- [`common/dependency-vulnerabilities.md`](../common/dependency-vulnerabilities.md)
+- [`common/dependency-vulnerabilities.md`](../../rules-library/common/dependency-vulnerabilities.md)
   — CVE gate (Trivy / OSV)
-- [`common/install-allowlist.md`](../common/install-allowlist.md)
+- [`common/install-allowlist.md`](../../rules-library/common/install-allowlist.md)
   — publisher allowlist applies to image registries
-- [`common/docker-deployment.md`](../common/docker-deployment.md)
+- [`common/docker-deployment.md`](../../rules-library/common/docker-deployment.md)
   — container security patterns
-- [`common/docker-localhost-binding.md`](../common/docker-localhost-binding.md)
+- [`common/docker-localhost-binding.md`](../../rules-library/common/docker-localhost-binding.md)
   — `127.0.0.1:` for dev ports
-- [`dockerfile/security.md`](../dockerfile/security.md) —
+- [`dockerfile/security.md`](../../rules-library/dockerfile/security.md) —
   Dockerfile-side hardening (consumer of compose YAML)
 
 ## Why this rule exists
@@ -1915,7 +1915,7 @@ incidents that don't happen.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 

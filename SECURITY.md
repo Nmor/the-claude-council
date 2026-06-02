@@ -130,9 +130,9 @@ This policy is modelled on
 
 ## Related repo policies
 
-- `rules/common/secrets-management.md` — what counts as a
+- `rules-library/common/secrets-management.md` — what counts as a
   secret + how the config treats them.
-- `rules/common/security-controls-org-wide.md` — 5-layer
+- `rules-library/common/security-controls-org-wide.md` — 5-layer
   enforcement pattern this repo follows internally.
 - `CODE_OF_CONDUCT.md` — reporter conduct + maintainer
   response expectations.

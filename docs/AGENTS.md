@@ -26,7 +26,7 @@ every agent file carries:
 
 ## Model selection
 
-Per [`performance.md`](../rules/common/performance.md):
+Per [`performance.md`](../rules-library/common/performance.md):
 
 - **opus** — coding / reviewing / planning / security / compliance /
   ethics work where quality and broad coverage matter
@@ -190,7 +190,7 @@ subagents:
 ## Auto-delegation via auto-skills.md
 
 The
-[`auto-skills.md`](../rules/common/auto-skills.md) rule maps file
+[`auto-skills.md`](../rules-library/common/auto-skills.md) rule maps file
 types to both skills AND agents. When you touch a file, the
 matching agents auto-engage silently — no slash command, no
 explicit delegation needed.
@@ -220,9 +220,9 @@ other's output (e.g., `code-reviewer` reviews the result of
 - [ARCHITECTURE.md](ARCHITECTURE.md) — how agents compose with
   rules + skills
 - [CONTRIBUTING.md](CONTRIBUTING.md) — how to add an agent
-- [`../rules/common/auto-skills.md`](../rules/common/auto-skills.md)
+- [`../rules-library/common/auto-skills.md`](../rules-library/common/auto-skills.md)
   — file-to-skill-and-agent mapping
 - [`../rules/common/principal-level-mandate.md`](../rules/common/principal-level-mandate.md)
   — depth bar every agent meets
-- [`../rules/common/performance.md`](../rules/common/performance.md)
+- [`../rules-library/common/performance.md`](../rules-library/common/performance.md)
   — model selection policy

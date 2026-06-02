@@ -43,6 +43,7 @@ ENTRY_POINTS=(
   "CLAUDE.md"
   "MEMORY.md"
   "docs/no-discards.md"
+  "docs/lazy-loading-classification.md"
 )
 
 is_entry_point() {

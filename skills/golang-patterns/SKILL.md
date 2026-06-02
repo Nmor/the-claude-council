@@ -823,7 +823,7 @@ paths:
 ---
 # Go Coding Style
 
-> This file extends [common/coding-style.md](../common/coding-style.md) with Go specific content.
+> This file extends [common/coding-style.md](../../rules-library/common/coding-style.md) with Go specific content.
 
 ## Formatting
 
@@ -862,7 +862,7 @@ paths:
 ---
 # Go Hooks
 
-> This file extends [common/hooks.md](../common/hooks.md) with Go specific content.
+> This file extends [common/hooks.md](../../rules-library/common/hooks.md) with Go specific content.
 
 ## PostToolUse Hooks
 
@@ -1290,7 +1290,7 @@ paths:
 ---
 # Go Patterns
 
-> This file extends [common/patterns.md](../common/patterns.md) with Go specific content.
+> This file extends [common/patterns.md](../../rules-library/common/patterns.md) with Go specific content.
 
 ## Functional Options
 
@@ -1342,7 +1342,7 @@ paths:
 ---
 # Go Security
 
-> This file extends [common/security.md](../common/security.md) with Go specific content.
+> This file extends [common/security.md](../../rules-library/common/security.md) with Go specific content.
 
 ## Secret Management
 
@@ -1383,7 +1383,7 @@ paths:
 ---
 # Go Testing
 
-> This file extends [common/testing.md](../common/testing.md) with Go specific content.
+> This file extends [common/testing.md](../../rules-library/common/testing.md) with Go specific content.
 
 ## Framework
 

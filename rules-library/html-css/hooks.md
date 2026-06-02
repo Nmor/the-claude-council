@@ -344,7 +344,7 @@ Frontend sweep (this turn):
   - size-limit: main bundle 142 KB (under 150 KB budget)
 ```
 
-Per [`common/verify-before-claim.md`](../common/verify-before-claim.md).
+Per [`common/verify-before-claim.md`](../../rules/common/verify-before-claim.md).
 
 ## Cross-references
 
@@ -363,7 +363,7 @@ Per [`common/verify-before-claim.md`](../common/verify-before-claim.md).
   — SHA-pinned actions
 - [`common/local-dev-setup.md`](../common/local-dev-setup.md)
   — verify-local.sh + CI parity
-- [`common/verify-before-claim.md`](../common/verify-before-claim.md)
+- [`common/verify-before-claim.md`](../../rules/common/verify-before-claim.md)
   — same-turn verification block
 - [`common/a11y.md`](../common/a11y.md) — WCAG 2.2 AA gate
 - [`typescript/hooks.md`](../typescript/hooks.md) — JS / TS
@@ -392,7 +392,7 @@ incident response avoided.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](../common/continuous-learning-mandate.md):
+Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-learning-mandate.md):
 
 **Signals to watch**:
 

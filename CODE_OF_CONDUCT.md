@@ -7,7 +7,7 @@ The Claude Council adopts the **Contributor Covenant**, version
 - **Enforcement Guidelines** (four-tier escalation):
   <https://www.contributor-covenant.org/version/2/1/code_of_conduct/#enforcement-guidelines>
 - **Translations**: <https://www.contributor-covenant.org/translations>
-- **Adoption rationale**: per `rules/common/code-of-conduct.md`
+- **Adoption rationale**: per `rules-library/common/code-of-conduct.md`
   rule 1 — reuse the standard, do not roll a custom version.
 
 ## Scope
@@ -167,7 +167,7 @@ ships) covering:
 No identifying details about reporters or alleged violators
 appear in the public report. Internal records are retained for
 two years from the date of the report, then minimised per
-`rules/common/data-retention.md`.
+`rules-library/common/data-retention.md`.
 
 ## Acknowledgements
 

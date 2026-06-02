@@ -165,7 +165,7 @@ sole reference. Per
 
 If your rule should auto-load on first-touch of every repo (vs only
 on matching file types), add it to
-[`auto-skills.md`](../rules/common/auto-skills.md) under "Global
+[`auto-skills.md`](../rules-library/common/auto-skills.md) under "Global
 rules that auto-load on EVERY repo touch."
 
 If it's language-specific, add it to the file-to-skill-and-agent
@@ -256,7 +256,7 @@ wrong vs the cost of the rigor.
 ### Step 4: Add the file-type mapping
 
 If your skill should auto-fire on specific file types, add a row to
-[`auto-skills.md`](../rules/common/auto-skills.md) under the
+[`auto-skills.md`](../rules-library/common/auto-skills.md) under the
 relevant file-type section.
 
 ## Adding an agent
@@ -272,7 +272,7 @@ model: opus | sonnet | haiku
 ---
 ```
 
-Model selection per [`performance.md`](../rules/common/performance.md):
+Model selection per [`performance.md`](../rules-library/common/performance.md):
 
 - **opus** — default for coding / reviewing / planning
 - **sonnet** — narrow-scope reviewers, verification-loop
@@ -306,7 +306,7 @@ Every agent's body MUST contain:
 ### Step 3: Add the file-type mapping
 
 If your agent should auto-engage on specific file types, add a row
-to [`auto-skills.md`](../rules/common/auto-skills.md) under the
+to [`auto-skills.md`](../rules-library/common/auto-skills.md) under the
 relevant file-type section's "Agents:" subsection.
 
 ### Step 4: Register with the Council Division
@@ -327,7 +327,7 @@ See [PROJECT-BOOTSTRAP.md](PROJECT-BOOTSTRAP.md) for the full flow.
 ## Code style for contributions
 
 - Markdown follows
-  [`markdown/coding-style.md`](../rules/markdown/coding-style.md):
+  [`markdown/coding-style.md`](../rules-library/markdown/coding-style.md):
   MD040 fenced code language, MD031 blanks around code, MD032
   blanks around lists, MD022 blanks around headings, MD013 line-
   length only tolerated on unbreakable table rows.
@@ -352,7 +352,7 @@ Expected output: 17/17 checks pass.
 
 If any check fails, the contribution is NOT ready. Fix the failure
 first (per
-[`proper-fixes-first.md`](../rules/common/proper-fixes-first.md)
+[`proper-fixes-first.md`](../rules-library/common/proper-fixes-first.md)
 — root cause, not workaround), re-run, confirm green.
 
 ## Verification block in your PR
@@ -438,7 +438,7 @@ PR with a clear `blocked on: <gate-name>` comment — never to bypass.
 
 ## Conventional Commits
 
-Per [`semver.md`](../rules/common/semver.md), commit messages
+Per [`semver.md`](../rules-library/common/semver.md), commit messages
 follow Conventional Commits 1.0.0:
 
 - `feat: <description>` — MINOR bump (new rule / skill / agent)
@@ -514,7 +514,7 @@ response timeline (72h acknowledgement / 7d triage / 30d outcome),
 the four-tier enforcement ladder, and the cross-link to the
 pull-request review gate above.
 
-The companion rule [`code-of-conduct.md`](../rules/common/code-of-conduct.md)
+The companion rule [`code-of-conduct.md`](../rules-library/common/code-of-conduct.md)
 under `rules/common/` carries the engineering-side guidance for
 authoring conduct policies (template structure + reuse-first
 adoption pattern + audit-logging integration).

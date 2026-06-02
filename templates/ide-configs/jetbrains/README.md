@@ -67,7 +67,7 @@ Files in this directory:
   4-space indent; 120-char margin; ordered imports
 
 Function length / parameter count / cognitive complexity caps from
-[`../../../rules/common/extreme-lint-policy.md`](../../../rules/common/extreme-lint-policy.md)
+[`../../../rules-library/common/extreme-lint-policy.md`](../../../rules-library/common/extreme-lint-policy.md)
 are enforced by **Inspection profiles** (SonarLint + language
 linters), not by code-style schemes. Both ship together.
 

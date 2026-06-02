@@ -234,7 +234,7 @@ done
 ```
 
 Failures from either sweep block the "rebuild done" claim. Each
-failure gets a remediation PR before the v2.0 tag.
+failure gets a remediation PR before the v1.0.0 tag.
 
 ## When the bar is intentionally relaxed
 

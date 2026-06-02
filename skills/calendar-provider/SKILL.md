@@ -167,7 +167,7 @@ For every provider-touching change:
 - `~/.claude/rules/common/official-docs-first.md` — primary-source
   citations required.
 - `provider-research` skill — workflow for the citations.
-- `~/.claude/rules/common/no-discards.md` — refresh-token rotation
+- `~/.claude/rules-library/common/no-discards.md` — refresh-token rotation
   must be bound + persisted, never dropped.
 - The consuming project's `docs/<calendar-feature>.md` — feature
   page describing user-visible behaviour.
@@ -267,9 +267,9 @@ invite + reply flows.
   patterns
 - `~/.claude/rules/common/official-docs-first.md` — provider docs
   research mandate
-- `~/.claude/rules/common/secrets-management.md` — refresh-token
+- `~/.claude/rules-library/common/secrets-management.md` — refresh-token
   storage
-- `~/.claude/rules/common/audit-logging.md` — write audit
+- `~/.claude/rules-library/common/audit-logging.md` — write audit
 - `~/.claude/agents/security-reviewer.md` — Council Division 4
 - `~/.claude/agents/architect.md` — Council Division 1
 

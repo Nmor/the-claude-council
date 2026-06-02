@@ -201,13 +201,13 @@ adoption gate (license + CVE + maintenance + tests).
   compatibility check before adoption
 - **CWE-1357** — Reliance on Insufficiently Trustworthy
   Component (search-first's adoption gate prevents this)
-- **`~/.claude/rules/common/reuse-first.md`** — the policy
+- **`~/.claude/rules-library/common/reuse-first.md`** — the policy
   this skill executes
-- **`~/.claude/rules/common/install-allowlist.md`** —
+- **`~/.claude/rules-library/common/install-allowlist.md`** —
   publisher allowlist gate on adoption
-- **`~/.claude/rules/common/dependency-vulnerabilities.md`**
+- **`~/.claude/rules-library/common/dependency-vulnerabilities.md`**
   — CVE gate on adoption
-- **`~/.claude/rules/common/license-allowlist-gate.md`** —
+- **`~/.claude/rules-library/common/license-allowlist-gate.md`** —
   SPDX gate on adoption
 
 ## Anti-Patterns
@@ -232,7 +232,7 @@ adoption gate (license + CVE + maintenance + tests).
       clean, maintained < 12mo, tests present, docs
       sufficient
 - [ ] Publisher allowlist check per
-      `~/.claude/rules/common/install-allowlist.md`
+      `~/.claude/rules-library/common/install-allowlist.md`
 - [ ] If extending existing primitive: rule of three honored
       (extract on 2nd occurrence; never fork on 3rd)
 - [ ] Rationale documented (reuse / extend / custom — and
@@ -240,16 +240,16 @@ adoption gate (license + CVE + maintenance + tests).
 
 ## Cross-References
 
-- `~/.claude/rules/common/reuse-first.md` — the policy
-- `~/.claude/rules/common/install-allowlist.md` — adoption
+- `~/.claude/rules-library/common/reuse-first.md` — the policy
+- `~/.claude/rules-library/common/install-allowlist.md` — adoption
   publisher gate
-- `~/.claude/rules/common/dependency-vulnerabilities.md` —
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md` —
   adoption CVE gate
-- `~/.claude/rules/common/license-allowlist-gate.md` —
+- `~/.claude/rules-library/common/license-allowlist-gate.md` —
   adoption license gate
-- `~/.claude/rules/common/dependency-pinning.md` — pin
+- `~/.claude/rules-library/common/dependency-pinning.md` — pin
   what's adopted
-- `~/.claude/rules/common/updated-frameworks.md` — adopt
+- `~/.claude/rules-library/common/updated-frameworks.md` — adopt
   current stable, not abandoned
 - `~/.claude/rules/common/task-intake-due-diligence.md` Q1,
   Q3, Q4 — search-first is the intake's prior-art arm

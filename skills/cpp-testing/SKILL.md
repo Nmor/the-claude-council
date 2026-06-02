@@ -378,9 +378,9 @@ Principal-level C++ test methodology: GoogleTest fixtures + parameterised tests,
 - `~/.claude/skills/cpp-coding-standards/SKILL.md` — code idioms under test
 - `~/.claude/skills/security-review/SKILL.md` — memory-safety review
 - `~/.claude/skills/tdd-workflow/SKILL.md` — RED-GREEN-REFACTOR
-- `~/.claude/rules/common/testing.md` — coverage thresholds
-- `~/.claude/rules/common/no-ambient-globals.md` — DI for testability
-- `~/.claude/rules/cpp/testing.md` — C++-specific
+- `~/.claude/rules-library/common/testing.md` — coverage thresholds
+- `~/.claude/rules-library/common/no-ambient-globals.md` — DI for testability
+- `~/.claude/rules-library/cpp/testing.md` — C++-specific
 - `~/.claude/agents/code-reviewer.md`
 - `~/.claude/agents/security-reviewer.md`
 
@@ -415,7 +415,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - ThreadSanitizer skipped on concurrent code (data race undetected)
 - Test linking against production binary instead of test target (link-cycle issue)
 - Mock framework abuse (over-mocking — testing the mock, not the code)
-- Flaky test attributed to "timing" instead of root-cause fix (per `~/.claude/rules/common/proper-fixes-first.md`)
+- Flaky test attributed to "timing" instead of root-cause fix (per `~/.claude/rules-library/common/proper-fixes-first.md`)
 - Coverage gate not enforcing per-module minimum
 - Death-test absent on assert-fail / abort-able paths
 - `ASSERT_EQ` used where `EXPECT_EQ` would let later assertions run (test-stop weakening)

@@ -466,14 +466,14 @@ of bureaucratic.
 - **PEP 8** + **JEP 158** — Style + JUnit/JVM-side TDD ergonomics
 - **W3C Web Platform Tests (wpt.fyi)** — Reference TDD harness for
   browser-side contracts
-- **`~/.claude/rules/common/testing.md`** — global testing rule
-- **`~/.claude/rules/common/extreme-lint-policy.md`** — coverage
+- **`~/.claude/rules-library/common/testing.md`** — global testing rule
+- **`~/.claude/rules-library/common/extreme-lint-policy.md`** — coverage
   threshold (≥90% touched / ≥80% project)
-- **`~/.claude/rules/common/contract-testing.md`** — consumer-driven
+- **`~/.claude/rules-library/common/contract-testing.md`** — consumer-driven
   contract tests
-- **`~/.claude/rules/common/no-ambient-globals.md`** — DI for
+- **`~/.claude/rules-library/common/no-ambient-globals.md`** — DI for
   test isolation
-- **`~/.claude/rules/common/local-testability.md`** — testable-before-
+- **`~/.claude/rules-library/common/local-testability.md`** — testable-before-
   write mandate
 
 ## Anti-Patterns
@@ -522,10 +522,10 @@ of bureaucratic.
 - `~/.claude/skills/django-tdd/SKILL.md` — Django
 - `~/.claude/skills/swift-protocol-di-testing/SKILL.md` — Swift
 - `~/.claude/skills/cpp-testing/SKILL.md` — C++
-- `~/.claude/rules/common/testing.md` — global testing rule
-- `~/.claude/rules/common/contract-testing.md` — CDC + schema
-- `~/.claude/rules/common/local-testability.md` — testable-before-write
-- `~/.claude/rules/common/no-ambient-globals.md` — DI patterns
+- `~/.claude/rules-library/common/testing.md` — global testing rule
+- `~/.claude/rules-library/common/contract-testing.md` — CDC + schema
+- `~/.claude/rules-library/common/local-testability.md` — testable-before-write
+- `~/.claude/rules-library/common/no-ambient-globals.md` — DI patterns
 - `~/.claude/agents/tdd-guide.md` — Council Division 5
 
 ## Why this skill exists

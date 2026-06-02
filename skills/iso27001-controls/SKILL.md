@@ -376,10 +376,10 @@ A.5.24-5.28 cover incident management. The plan must be tested — typically tab
 - `~/.claude/skills/gdpr-ccpa-compliance/SKILL.md` — ISO 27701 extension covers PIMS
 - `~/.claude/skills/pci-dss-patterns/SKILL.md` — overlap on A.5.15, A.5.18, A.8.2, A.8.5, A.8.15
 - `~/.claude/skills/soc2-readiness/SKILL.md` — significant control overlap; many organisations carry both
-- `~/.claude/rules/common/audit-logging.md` — A.8.15 + A.8.16 implementation
-- `~/.claude/rules/common/secrets-management.md` — A.5.17 + A.8.24
-- `~/.claude/rules/common/dependency-vulnerabilities.md` — A.8.8
-- `~/.claude/rules/common/security.md` — overall security baseline
+- `~/.claude/rules-library/common/audit-logging.md` — A.8.15 + A.8.16 implementation
+- `~/.claude/rules-library/common/secrets-management.md` — A.5.17 + A.8.24
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md` — A.8.8
+- `~/.claude/rules-library/common/security.md` — overall security baseline
 - Council Division 6 (Compliance & Legal) — auto-engages on ISMS-affecting changes
 - ISO/IEC 27001:2022 + 27002:2022 standards (BSI / DIN / ANSI / national stocks)
 

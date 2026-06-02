@@ -298,7 +298,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Transformer / deep model chosen without comparing against linear / tree baseline (over-engineering)
 - Cross-validation done with leaky splits (test data leaked into training — false-positive accuracy)
 - Single metric reported (accuracy alone — class-imbalance hides false-positive cost)
-- Fairness metrics not measured across demographic axes (per `~/.claude/rules/common/security.md` AI ethics)
+- Fairness metrics not measured across demographic axes (per `~/.claude/rules-library/common/security.md` AI ethics)
 - Inference latency / cost not benchmarked against SLO (model picked on accuracy only)
 - Interpretability not considered when the use case is regulated (e.g., credit scoring)
 - Model card / datasheet absent (per `~/.claude/rules/common/task-intake-due-diligence.md` Q24)

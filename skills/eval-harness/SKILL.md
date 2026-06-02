@@ -277,7 +277,7 @@ better" is the only signal; with it, ship/no-ship is a number.
 - **Anthropic Eval Best Practices** — pass@k methodology
 - **OpenAI Evals Framework** — open-source reference
   implementation
-- **`~/.claude/rules/common/contract-testing.md`** — evals as
+- **`~/.claude/rules-library/common/contract-testing.md`** — evals as
   the contract between intent + behaviour
 
 ## Anti-Patterns
@@ -317,9 +317,9 @@ better" is the only signal; with it, ship/no-ship is a number.
   eval-run cost bounded
 - `~/.claude/skills/iterative-retrieval/SKILL.md` — paired with
   evals for retrieval-quality measurement
-- `~/.claude/rules/common/contract-testing.md` — capability +
+- `~/.claude/rules-library/common/contract-testing.md` — capability +
   regression are LLM contracts
-- `~/.claude/rules/common/feature-flags.md` — guardrail
+- `~/.claude/rules-library/common/feature-flags.md` — guardrail
   metrics + eval thresholds
 - Anthropic Cookbook eval examples + OpenAI Evals repo for
   reference

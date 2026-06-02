@@ -350,10 +350,10 @@ The 6-digit OTP UI with 6 separate inputs that auto-advance breaks copy-paste fr
 ## Cross-References
 
 - `wcag-accessibility` skill — broader WCAG patterns
-- `~/.claude/rules/common/a11y.md` — always-on rule
-- `~/.claude/rules/common/i18n.md` — form field localisation (labels, errors, formats)
-- `~/.claude/rules/common/error-codes.md` — error codes drive error messages
-- `~/.claude/rules/common/error-handling-with-context.md` — server-side errors map to client-rendered messages
+- `~/.claude/rules-library/common/a11y.md` — always-on rule
+- `~/.claude/rules-library/common/i18n.md` — form field localisation (labels, errors, formats)
+- `~/.claude/rules-library/common/error-codes.md` — error codes drive error messages
+- `~/.claude/rules-library/common/error-handling-with-context.md` — server-side errors map to client-rendered messages
 - `~/.claude/skills/frontend-patterns/SKILL.md` — broader component patterns
 - `accessibility-reviewer` agent — opus-model audit
 

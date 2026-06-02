@@ -52,7 +52,7 @@ This skill maps the controls to implementation patterns + verification gates so 
 - **V1.5.1** — Centralised input/output handling (not scattered per-handler)
 - **V1.14.1** — Components segregated (admin vs user vs public)
 
-**Implementation:** ADR for every architectural decision (per `~/.claude/rules/common/adr-template.md`); STRIDE pass per `task-intake-due-diligence.md` Q9.
+**Implementation:** ADR for every architectural decision (per `~/.claude/rules-library/common/adr-template.md`); STRIDE pass per `task-intake-due-diligence.md` Q9.
 
 ### V2 — Authentication
 
@@ -134,7 +134,7 @@ grep -rn "rateLimit\|throttle" src/auth/
 
 ### V8 — Data Protection
 
-- **V8.1.1** — Sensitive data classified (PII, PHI, financial, etc.) — see `~/.claude/rules/common/data-retention.md`
+- **V8.1.1** — Sensitive data classified (PII, PHI, financial, etc.) — see `~/.claude/rules-library/common/data-retention.md`
 - **V8.2.2** — Browser-side caching disabled for sensitive responses (`Cache-Control: no-store`)
 - **V8.3.1** — Sensitive form data has `autocomplete="off"` ONLY when truly necessary (mostly password managers should work)
 - **V8.3.4** — Sensitive data is removed from memory ASAP after use
@@ -148,13 +148,13 @@ grep -rn "rateLimit\|throttle" src/auth/
 ### V10 — Malicious Code
 
 - **V10.2.1** — Application source code reviewed for malicious code (signed commits, branch protection)
-- **V10.3.1** — Dependencies obtained from verified sources, signature verified (per `~/.claude/rules/common/install-allowlist.md`)
+- **V10.3.1** — Dependencies obtained from verified sources, signature verified (per `~/.claude/rules-library/common/install-allowlist.md`)
 - **V10.3.2** — Application has integrity checks at runtime (subresource integrity for CDN scripts)
 
 ### V11 — Business Logic
 
 - **V11.1.1** — Business logic flows process steps in order; race conditions handled
-- **V11.1.2** — Business logic limits anomalous high volumes (rate-limited per `~/.claude/rules/common/rate-limiting.md`)
+- **V11.1.2** — Business logic limits anomalous high volumes (rate-limited per `~/.claude/rules-library/common/rate-limiting.md`)
 - **V11.1.4** — Anti-automation on business-critical flows (signup, checkout)
 
 ### V12 — Files and Resources
@@ -228,14 +228,14 @@ gitleaks detect                                  # secret scan
 
 ## Cross-References
 
-- `~/.claude/rules/common/security.md` — OWASP Top 10 mapping
+- `~/.claude/rules-library/common/security.md` — OWASP Top 10 mapping
 - `~/.claude/skills/security-review/SKILL.md` — checklist version
 - `~/.claude/skills/observability-patterns/SKILL.md` — V7 logging
 - `~/.claude/skills/postgres-patterns/SKILL.md` — V4 RLS
-- `~/.claude/rules/common/secrets-management.md` — V6.4
-- `~/.claude/rules/common/dependency-vulnerabilities.md` — V10.3
-- `~/.claude/rules/common/install-allowlist.md` — V10.3
-- `~/.claude/rules/common/rate-limiting.md` — V2.2, V11.1
+- `~/.claude/rules-library/common/secrets-management.md` — V6.4
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md` — V10.3
+- `~/.claude/rules-library/common/install-allowlist.md` — V10.3
+- `~/.claude/rules-library/common/rate-limiting.md` — V2.2, V11.1
 - `gdpr-ccpa-compliance` skill — overlaps with V8 (data protection)
 - `pci-dss-patterns` skill — overlaps with V2 (auth), V6 (crypto), V8 (data)
 - `iso27001-controls` skill — ASVS controls map to ISO 27001 Annex A

@@ -5,14 +5,14 @@
 //   Windows: %APPDATA%\Code\User\settings.json
 //   WSL2:    ~/.vscode-server/data/Machine/settings.json (remote profile)
 //
-// Security-hardened per ~/.claude/rules/common/install-allowlist.md and
-// ~/.claude/rules/common/secrets-management.md.
+// Security-hardened per ~/.claude/rules-library/common/install-allowlist.md and
+// ~/.claude/rules-library/common/secrets-management.md.
 //
 // References:
-// - ~/.claude/rules/common/extreme-lint-policy.md (format-on-save mandatory)
-// - ~/.claude/rules/common/install-allowlist.md (no autoUpdate; allowlist publishers)
-// - ~/.claude/rules/common/no-discards.md (lint diagnostics surface on hover)
-// - ~/.claude/rules/common/secrets-management.md (workspace trust mandatory)
+// - ~/.claude/rules-library/common/extreme-lint-policy.md (format-on-save mandatory)
+// - ~/.claude/rules-library/common/install-allowlist.md (no autoUpdate; allowlist publishers)
+// - ~/.claude/rules-library/common/no-discards.md (lint diagnostics surface on hover)
+// - ~/.claude/rules-library/common/secrets-management.md (workspace trust mandatory)
 {
   // ============================================================
   // Security & workspace trust (per install-allowlist.md)

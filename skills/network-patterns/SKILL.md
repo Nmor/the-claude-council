@@ -449,9 +449,9 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - TLS termination at the wrong boundary (e.g., terminated at ALB but backend speaks HTTP across VPC peer)
 - New service deployed without flow logs enabled (compliance + forensic gap)
 - Load balancer health check checking only `/` (200 = healthy) without dependency check (false-positive healthy)
-- Service mesh sidecar added without circuit breaker / timeout / retry config (per `~/.claude/rules/common/circuit-breaker.md`)
+- Service mesh sidecar added without circuit breaker / timeout / retry config (per `~/.claude/rules-library/common/circuit-breaker.md`)
 - CDN cache key collision causing cross-tenant content leak
-- WAF rule disabled "temporarily" without expiry date (per `~/.claude/rules/common/feature-flags.md` lifecycle)
+- WAF rule disabled "temporarily" without expiry date (per `~/.claude/rules-library/common/feature-flags.md` lifecycle)
 - Cross-region traffic without explicit cost forecast (data-transfer cost amplification)
 - Zero-trust posture relaxed for "internal" service (lateral movement risk)
 

@@ -1,6 +1,37 @@
 ---
 name: security-review
-description: Use this skill when adding authentication, handling user input, working with secrets, creating API endpoints, or implementing payment/sensitive features. Provides comprehensive security checklist and patterns.
+description: Use this skill when adding authentication, handling user input, working with secrets, creating API endpoints, or implementing payment/sensitive features. Provides comprehensive security checklist and patterns. Also lazy-loads the security.md / security-controls-org-wide.md / secrets-management.md content migrated from rules/common/ on 2026-06-02.
+paths:
+  - "**/auth/**"
+  - "**/login*"
+  - "**/signup*"
+  - "**/sso*"
+  - "**/oauth*"
+  - "**/saml*"
+  - "**/jwt*"
+  - "**/session*"
+  - "**/security/**"
+  - "**/secrets/**"
+  - "**/.env*"
+  - "**/vault*"
+  - "**/keychain*"
+  - "**/routes/**"
+  - "**/handlers/**"
+  - "**/controllers/**"
+  - "**/middleware/**"
+  - "**/api/**"
+  - "**/webhook*"
+  - "**/payment*"
+  - "**/billing*"
+  - "**/checkout*"
+  - "**/stripe*"
+  - "**/encryption*"
+  - "**/crypto*"
+  - "**/csrf*"
+  - "**/cors*"
+  - "**/cookies*"
+  - "**/permissions*"
+  - "**/authorization*"
 ---
 
 # Security Review Skill
@@ -487,7 +518,7 @@ double-spending or refund abuse. Watch for:
 - 409 collision spike (concurrent submission burst)
 
 Emit metrics + alert: rate threshold + per-actor anomaly
-detection. Tie to `~/.claude/rules/common/rate-limiting.md`
+detection. Tie to `~/.claude/rules-library/common/rate-limiting.md`
 multi-layer (edge / gateway / app / DB).
 
 #### Tokenization-at-the-edge (never-store-PAN)
@@ -794,12 +825,12 @@ checks every reviewer applies before approving a merge.
 - `~/.claude/skills/iso27001-controls/SKILL.md` — ISMS Annex A
 - `~/.claude/skills/soc2-readiness/SKILL.md` — TSC mapping
 - `~/.claude/skills/pci-dss-patterns/SKILL.md` — payment data scope
-- `~/.claude/rules/common/security.md` — global umbrella
-- `~/.claude/rules/common/secrets-management.md` — secrets posture
-- `~/.claude/rules/common/dependency-vulnerabilities.md` — CVE gate
-- `~/.claude/rules/common/rate-limiting.md` — throttle defence
-- `~/.claude/rules/common/audit-logging.md` — auditable actions
-- `~/.claude/rules/common/error-handling-with-context.md` — error
+- `~/.claude/rules-library/common/security.md` — global umbrella
+- `~/.claude/rules-library/common/secrets-management.md` — secrets posture
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md` — CVE gate
+- `~/.claude/rules-library/common/rate-limiting.md` — throttle defence
+- `~/.claude/rules-library/common/audit-logging.md` — auditable actions
+- `~/.claude/rules-library/common/error-handling-with-context.md` — error
   envelope sanitisation
 - `~/.claude/agents/security-reviewer.md` — Council Division 4
 - `~/.claude/agents/compliance-reviewer.md` — Council Division 6
@@ -860,3 +891,1339 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 ---
 
 **Remember**: Security is not optional. One vulnerability can compromise the entire platform. When in doubt, err on the side of caution.
+
+<!-- ============================================================
+     Migration appendix: 2026-06-02 lazy-rules-loading
+     ============================================================ -->
+
+## Migrated rules (2026-06-02)
+
+The following rules were migrated from `~/.claude/rules/common/` into this skill as part of the lazy-rules-loading plan. Phase H will delete the source files.
+
+- `rules-library/common/security.md`
+- `rules-library/common/security-controls-org-wide.md`
+- `rules-library/common/secrets-management.md`
+- `rules-library/common/audit-logging.md`
+- `rules/common/official-docs-first.md`
+
+---
+
+<!-- ============================================================
+     Section: security.md (from rules/common/)
+     ============================================================ -->
+
+# Security Umbrella (Always-On, Global)
+
+> This is the canonical security baseline. It maps every relevant
+> security control to its specific standard and to the sister
+> rule that enforces it. Standards-cited references: **OWASP
+> Top 10 (2021)**, **OWASP ASVS 4.0.3**, **NIST SP 800-53 Rev 5**,
+> **ISO/IEC 27001:2022**, **CWE Top 25 (2026)**, **PCI-DSS v4.0**,
+> **GDPR (EU 2016/679)**, **CCPA (Cal. Civ. Code §1798.100+)**.
+>
+> Sister rules (each enforces a slice of this umbrella):
+> - `dependency-vulnerabilities.md` — CVE gate (MODERATE+ blocks)
+> - `license-allowlist-gate.md` — SPDX allowlist + cross-check
+> - `dependency-overrides-not-exceptions.md` — fix the tree, not
+>   the exception list
+> - `security-controls-org-wide.md` — 5-layer non-bypassable
+>   enforcement
+> - `secrets-management.md` — vault-first, never on disk in
+>   cleartext, atomic rotation, scrub-after-rotate
+> - `install-allowlist.md` — no silent global installs
+> - `repo-setup-checklist.md` — 20-point first-touch checklist
+> - `docker-localhost-binding.md` — every host port `127.0.0.1:`
+> - `no-local-fs.md` — no local FS state on ephemeral platforms
+> - `no-discards.md` (hook-enforced) — blocks hardcoded secrets
+>   + weak crypto patterns on save
+> - `extreme-lint-policy.md` — `gosec`, `bandit`, `eslint-
+>   plugin-security` mandatory
+
+## OWASP Top 10 mapping
+
+Every project's security review walks ALL ten categories. The
+table below names the standard, the specific check, and the
+sister rule that enforces it.
+
+| # | Category (OWASP Top 10 2021) | What to check | Enforced by |
+| --- | --- | --- | --- |
+| A01 | **Broken Access Control** | Authorization on every endpoint; deny-by-default; row-level (RLS) on multi-tenant tables; object-level checks before mutation. ASVS V4 (Access Control). | `extreme-lint-policy.md` (security plugin); per-handler reviews |
+| A02 | **Cryptographic Failures** | TLS 1.2+ everywhere; AES-256-GCM at rest; argon2id / bcrypt for passwords; no MD5 / SHA-1 / DES; HSTS preload; certificate pinning where applicable. ASVS V6 (Stored Cryptography), V9 (Communication). | `no-discards.md` (Sonar S5547 weak-hash); `secrets-management.md` |
+| A03 | **Injection** | Parameterised SQL (no string concat); ORM-validated input; `execFile` over `exec`; URL allowlists for SSRF. ASVS V5 (Validation, Sanitisation, Encoding). | `no-discards.md` (S2068, S2076 SSRF); `code-reviewer` agent |
+| A04 | **Insecure Design** | Threat-model before code (STRIDE for new features); deny-by-default architecture; least-privilege IAM. NIST SP 800-53 SA-3, SA-8. | `task-intake-due-diligence.md` (Q5 + Q7); `architect` agent |
+| A05 | **Security Misconfiguration** | Hardened defaults (no `debug=true` in prod); CSP / HSTS / SRI present; cookies `HttpOnly` + `Secure` + `SameSite`; minimal exposed ports; default-credentials check. ASVS V14 (Configuration). | `docker-localhost-binding.md`; `repo-setup-checklist.md` |
+| A06 | **Vulnerable Components** | CVE gate green (CRITICAL / HIGH / MODERATE all block); abandoned dep gate; SBOM generated. ASVS V10 (Malicious Code). | `dependency-vulnerabilities.md`; `updated-frameworks.md`; `dependency-overrides-not-exceptions.md` |
+| A07 | **Identification + Auth Failures** | Strong session mgmt; password length ≥12; rate-limited login; MFA for admin; refresh-token rotation w/ reuse detection; cell-bound JWTs in multi-region. ASVS V2 (Authentication), V3 (Session Mgmt). | `secrets-management.md`; `extreme-lint-policy.md` |
+| A08 | **Software + Data Integrity Failures** | Signed releases (Sigstore / GPG); CI artifact provenance (SLSA Level ≥2); webhook signature verification + replay protection; subresource integrity for CDN scripts. ASVS V14.2 (Dependency). | `dependency-vulnerabilities.md` + signed-commit branch protection (see `security-controls-org-wide.md`) |
+| A09 | **Security Logging + Monitoring Failures** | Security events logged with structured fields; no secrets in logs; RUM / APM wired; audit trail for sensitive ops; alerting on auth/authz anomalies. ASVS V8 (Data Protection), V7 (Error Handling + Logging). | `no-silent-failures.md`; `error-handling-with-context.md`; `observability-patterns` skill |
+| A10 | **Server-Side Request Forgery (SSRF)** | URL validators (no private IPs, no IMDS, no localhost from prod); allowlist outbound destinations; restrict cloud metadata. ASVS V12.1, V13.1. | `no-discards.md` (S1313 hardcoded-IP + S2076 SSRF); `code-reviewer` |
+
+## Mandatory pre-commit security checks
+
+Per `done-criteria.md`, every commit verifies (in order):
+
+| # | Check | Standard | Enforcement |
+| --- | --- | --- | --- |
+| 1 | No hardcoded secrets (API keys, passwords, tokens, JWT signing keys, private keys, cloud IAM long-term keys) | ASVS V2.10, CWE-798 | PostToolUse `no-discards` hook; gitleaks pre-commit; CI gitleaks job |
+| 2 | All user inputs validated (length, type, encoding, format, allowlist of acceptable chars) | ASVS V5.1, CWE-20 | Per-handler review; runtime schema validation (Zod / Pydantic / class-validator) |
+| 3 | SQL injection prevention (parameterised queries, ORM-mediated input, no string concat) | ASVS V5.3.4, CWE-89 | `no-discards.md` S2077; ORM enforcement |
+| 4 | XSS prevention (textContent over innerHTML, `Content-Security-Policy` + `nonce`-based scripts, sanitisation library for any user-rendered HTML) | ASVS V5.3.2, V14.4.3, CWE-79 | `no-discards.md` S6299 (Vue), S6481 (React); CSP header check |
+| 5 | CSRF protection (double-submit cookie OR `SameSite=Lax`+`Secure` + Origin/Referer check on state-changing requests) | ASVS V4.2.1, CWE-352 | Per-handler review |
+| 6 | Authentication / authorization verified on every endpoint (no "forgotten" middleware) | ASVS V4.1, CWE-862 | `code-reviewer` agent |
+| 7 | Rate limiting on every public endpoint + every auth endpoint | ASVS V11.1, CWE-770 | Rate-limit middleware; `no-discards.md` S5876 |
+| 8 | Error messages don't leak sensitive data (stack traces, file paths, DB error strings stripped before client response) | ASVS V7.4, CWE-209 | `error-handling-with-context.md` rule 8 |
+| 9 | Dependency CVE gate green (MODERATE+ blocks) | OWASP Dependency-Check; ASVS V10 | `dependency-vulnerabilities.md` |
+| 10 | License allowlist gate green (SPDX list + Trove cross-check) | Org legal policy | `license-allowlist-gate.md` |
+| 11 | Security exceptions live in org's central `.github` repo, NOT consumer | Org governance | `security-controls-org-wide.md` |
+
+## Secret management — the rules in one place
+
+Per `secrets-management.md`:
+
+1. **Vault, never disk** — AWS Secrets Manager / GCP Secret
+   Manager / HashiCorp Vault / 1Password Secrets Automation /
+   macOS Keychain via aws-vault. Never `~/.aws/credentials` in
+   plaintext.
+2. **`.env` files are LOCAL ONLY** — gitignored everywhere;
+   populated from the vault on first checkout; never committed.
+3. **`.env.example` exists** — placeholder values only;
+   committed for documentation.
+4. **`docs/secrets.md`** documents the SOURCE of each secret
+   in prod + dev.
+5. **Rotation is atomic** (per `proper-fixes-first.md`) — a
+   single script that updates vault + DB + consumers in the
+   right order; never step-by-step.
+6. **On suspected exposure**: rotate FIRST, scrub history
+   LATER. The window between "I think it leaked" and "the old
+   key still works" is the real risk.
+7. **No private keys in git EVER** — no `*.pem`, `*.key`,
+   `id_rsa*`, `id_ed25519*`. Test fixtures generate keys at
+   test-setup time.
+
+## Threat modeling — STRIDE applied to every new feature
+
+Per ISO/IEC 27001:2022 + NIST SP 800-30, every non-trivial
+feature gets a STRIDE pass during Council Phase 0:
+
+| Letter | Category | Question |
+| --- | --- | --- |
+| **S** | Spoofing | Can a user pretend to be another user / service? |
+| **T** | Tampering | Can data be modified in transit or at rest in a way the receiver can't detect? |
+| **R** | Repudiation | Can a user deny having performed an action we have no record of? |
+| **I** | Information disclosure | What sensitive data could leak (PII, secrets, internals)? |
+| **D** | Denial of service | What can an attacker do to exhaust resources or block legitimate users? |
+| **E** | Elevation of privilege | Can a low-privilege user gain higher privileges? |
+
+The STRIDE answers populate the task-intake's Q7 (Security)
+field. For features that touch user data, the answers also
+feed the GDPR / CCPA review.
+
+## Compliance (privacy + regulatory)
+
+When the project handles user data, the security review also
+covers:
+
+| Regulation | Scope | Mandatory checks |
+| --- | --- | --- |
+| **GDPR** (EU) | EU resident data | Lawful basis documented; data-subject rights (access, delete, port, rectify); DPO contact; cross-border transfer mechanism (SCC / adequacy); breach-notification within 72h; DPIA for high-risk processing |
+| **CCPA / CPRA** (California) | California resident data | Notice-at-collection; opt-out of sale + sharing; right-to-delete; right-to-know; data-broker registration if applicable |
+| **HIPAA** (US health) | Protected Health Information | BAA with every subprocessor; minimum-necessary access; audit logs immutable for 6y; encryption at rest + in transit |
+| **PCI-DSS v4.0** | Payment card data | SAQ at minimum; no card-data storage outside Stripe / Adyen / similar PSP; quarterly ASV scans; pen test annually |
+| **SOC 2 Type II** | Service org controls | Trust Service Criteria evidence; vendor-management policy; change-management process; access reviews quarterly |
+| **ISO/IEC 27001:2022** | ISMS | Statement of Applicability; risk treatment plan; Annex A controls (93 of them); internal audit + management review annually |
+| **POPIA** (South Africa) | South African resident data | Information officer registered; cross-border transfer notice; record of processing activities |
+
+The applicable subset is named in the task-intake (per
+`task-intake-due-diligence.md` Q7). Out-of-scope regulations
+are explicitly marked N/A with a one-line reason.
+
+## Security response protocol
+
+When a security issue is found at any layer (lint, hook, code
+review, post-merge, production incident, external report):
+
+1. **STOP** the work that uncovered it. Do not "fix and continue."
+2. **Triage severity** using CVSS v3.1:
+   - CRITICAL (9.0–10.0) → fix immediately, no batching
+   - HIGH (7.0–8.9) → fix within 24h
+   - MEDIUM (4.0–6.9) → fix within 7d
+   - LOW (0.1–3.9) → fix within 30d
+3. **Delegate to `security-reviewer`** agent for the technical
+   fix. The agent runs through OWASP Top 10 + ASVS to confirm no
+   sibling issues.
+4. **Rotate** any exposed secrets BEFORE scrubbing history (per
+   `secrets-management.md` §9).
+5. **Audit the entire codebase** for the same class of issue —
+   one missing CSRF check usually means others.
+6. **Document the incident** in `docs/security-incidents.md`
+   (project) with date, scope, evidence of misuse (or none),
+   remediation timeline, and lessons.
+7. **Add a pre-deploy check** (per `deploy-failures-become-
+   checks.md`) so the same class can't recur silently.
+
+## Cross-references
+
+- `dependency-vulnerabilities.md` — CVE gate (MODERATE+ blocks)
+- `license-allowlist-gate.md` — SPDX allowlist + cross-check
+- `dependency-overrides-not-exceptions.md` — fix the tree
+- `security-controls-org-wide.md` — 5-layer non-bypassable
+  enforcement
+- `secrets-management.md` — vault-first; atomic rotation
+- `install-allowlist.md` — no silent global installs
+- `repo-setup-checklist.md` — 20-point first-touch checklist
+- `docker-localhost-binding.md` — `127.0.0.1:` on every port
+- `no-local-fs.md` — no FS state on ephemeral platforms
+- `no-discards.md` (hook-enforced) — blocks hardcoded secrets
+  + weak-crypto patterns on save
+- `error-handling-with-context.md` — error responses sanitise
+  internal details before reaching client
+- `extreme-lint-policy.md` — `gosec`, `bandit`,
+  `eslint-plugin-security`, clippy security lints mandatory
+- `task-intake-due-diligence.md` Q7 — security is part of
+  every task's intake
+- `done-criteria.md` — security checks gate every "done"
+  claim
+- Council Protocol Phase 0 (`CLAUDE.md`) — `security-reviewer`
+  is Division 4
+
+## Why this rule exists
+
+Security defects ship to production because the security review
+is implicit and ad-hoc. Making the review structured (OWASP Top
+10 mapping + STRIDE + compliance table + pre-commit gates) means
+the review can't be skipped — every PR, every commit, every
+deploy walks the same checklist.
+
+The umbrella exists to point at the specific sister rule that
+enforces each control. The sister rules carry the actual
+machinery (hooks, lints, gates); this rule names the standards
+they implement against (OWASP, ASVS, NIST, ISO 27001, CWE
+Top 25, PCI-DSS, GDPR, CCPA, POPIA, HIPAA).
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- New OWASP Top 10 release that changes category names or rankings (taxonomy needs update)
+- New CVE class recurring across multiple repos (new sister rule candidate)
+- New regulation (e.g., DORA, NIS2, EU AI Act) in scope but no compliance section in the umbrella (regulation row needed)
+- STRIDE pass skipped on a non-trivial feature (rule weakening — Phase 0 discipline)
+- Security finding triaged below its CVSS class (severity-SLA drift)
+- Security review degraded into ad-hoc judgement vs structured checklist
+- Sister rule's machinery not invoked in a Council pass that should have triggered it
+- Compliance table row marked N/A without justification
+
+**Refinement candidates**:
+- New row in the compliance table when a regulation enters scope
+- New cross-reference when a new sister rule covers a control the umbrella names but doesn't enforce
+- Tightening of the pre-commit checklist when a new defence-in-depth gate emerges
+- New OWASP-Top-10 mapping update when the spec releases a new version
+
+---
+
+<!-- ============================================================
+     Section: security-controls-org-wide.md (from rules/common/)
+     ============================================================ -->
+
+# Org-Wide Security Controls (Global Default)
+
+> Auto-fires on every file. Sister to `dependency-vulnerabilities.md`,
+> `license-allowlist-gate.md`, `security.md`, `done-criteria.md`.
+
+## Core Principle
+
+**Security controls live at the org level and are non-bypassable from
+the consumer side. A control that can be disabled by editing a
+single file in a single consumer repo is not a control — it is a
+suggestion.**
+
+Every meaningful security gate (CVE allowlist, license allowlist,
+required-status-check, branch protection, deploy preflight) is
+implemented in five layers. Bypassing the gate requires bypassing
+ALL five — which by design requires org-admin action AND generates
+an audit trail.
+
+## The Five-Layer Enforcement Pattern
+
+For every security gate (CVE allowlist, license allowlist, secrets
+scan, dep audit, signed-commits requirement, branch protection):
+
+| Layer | Where it lives | What it catches |
+| --- | --- | --- |
+| **1. Local pre-push hook** | `.githooks/pre-push` enabled via `git config core.hooksPath .githooks` | Catches the violation BEFORE the push reaches the remote |
+| **2. Required CI status check** | `.github/workflows/<gate>.yml` (per repo) OR a required-workflow ruleset pinned to the org's `.github` repo | Catches the violation on every PR; GitHub branch-protection ruleset blocks the merge button at the UI level |
+| **3. Org-level required workflow** | `<org>/.github/.github/workflows/<gate>.yml` referenced by an org-level branch-protection ruleset SHA-pinned to a specific commit | Forces the gate on EVERY consumer repo; cannot be disabled in the consumer |
+| **4. Pre-deploy gate** | The same script the CI runs, re-invoked as a step in every deploy workflow (staging + prod) | Catches a violation that somehow merged anyway (e.g., via an emergency admin override) — the deploy still aborts |
+| **5. CODEOWNERS approval** | `.github/CODEOWNERS` requires security-team approval on every change to lockfiles, `package.json`, `.npmrc`, IaC files, gate scripts themselves | Prevents a single rogue PR from removing the gate |
+
+A violation that bypasses layer 1 hits layer 2. A merged-anyway
+violation that bypasses layers 1+2 hits layer 4. A change to the
+gate itself hits layer 5. Bypassing all five requires multiple
+org-admin actions, each audit-logged.
+
+## Centralize controls in the org's `.github` repo
+
+The canonical security gate (workflow + allowlists + cross-check
+scripts) lives at:
+
+```
+<org>/.github/
+├── .github/
+│   ├── workflows/
+│   │   └── security-baseline.yml      # the actual gate
+│   ├── CODEOWNERS                     # security-team owns gate edits
+│   └── branch-protection-rulesets.md  # docs the org ruleset
+└── docs/
+    └── security-templates/            # consumer-repo templates
+```
+
+**Never put security allowlists in consumer repos.** A `docs/security-
+exceptions.json` (or similar) in a consumer is a write-access bypass:
+any contributor with push to that consumer can grant themselves
+arbitrary exceptions. Allowlists + exceptions live in the org repo,
+under CODEOWNERS approval by the security team.
+
+This applies to:
+- License-allowlist exceptions
+- CVE-allowlist entries (LOW findings, unfixable advisories with
+  documented non-exploitability)
+- Secrets-scan allowlists (test fixtures, intentional public keys)
+- Signed-commit bypass actors (none, ideally)
+- Branch-protection bypass actors (none, ideally)
+
+The org ruleset SHA-pins to a specific commit of `<org>/.github/main`
+so a malicious push to `main` doesn't take effect until the SHA is
+explicitly bumped (which requires security-team CODEOWNERS approval
+on the ruleset config).
+
+## Required-workflow SHA-pin lifecycle
+
+1. New gate logic lands in `<org>/.github` via PR → security-team
+   review → merge.
+2. New `main` SHA on `<org>/.github` is calculated.
+3. Org ruleset (e.g., `require-security-baseline`) is updated to pin
+   the new SHA:
+   ```bash
+   gh api orgs/<org>/rulesets/<id> > /tmp/r.json
+   jq '.rules[].parameters.workflows[0].sha = "<new-sha>"' \
+     /tmp/r.json > /tmp/r-bumped.json
+   gh api orgs/<org>/rulesets/<id> -X PUT --input /tmp/r-bumped.json
+   ```
+4. The next CI run on every consumer PR picks up the new gate
+   logic. No consumer-side change needed.
+
+## Gate-output contract
+
+Every security gate produces a verification block the developer +
+reviewer reads:
+
+```
+Security baseline (this turn):
+  pnpm audit (backend):        0 HIGH, 0 CRITICAL, 0 MODERATE
+  pnpm audit (frontend):       0 HIGH, 0 CRITICAL, 0 MODERATE
+  osv-scanner CVE scan:        0 MODERATE+ (1 LOW tracked)
+  license-allowlist scan:      0 violations (4 carved out via cross-check)
+  secrets scan:                clean
+  signed commits:              all signed
+  branch protection ruleset:   active
+
+Status: PASS
+```
+
+A failing block names the specific blocker + the documented fix path:
+
+```
+Security baseline (this turn):
+  osv-scanner CVE scan:        1 MODERATE — qs@6.15.1 (CVSS 6.3)
+                               Fix: pnpm.overrides "qs": ">=6.15.2"
+
+Status: FAIL — blocking PR
+```
+
+## Documented exception flow
+
+Real exceptions exist (an unpatched upstream, a transitive dep with
+no exposure, a dev-only dep that never reaches production). The flow:
+
+1. **Document in the org's `docs/security-advisories.md`** with:
+   - The finding (CVE id, license value, secret pattern)
+   - The affected package + version
+   - The reachability analysis (why this isn't exploitable in our
+     usage — code path, network exposure, runtime context)
+   - The granting reviewer + date
+   - An expiry date (typically 90 days)
+2. **Add the corresponding allowlist entry** in the org workflow.
+3. **PR review** by security-team CODEOWNERS — without their approval
+   the exception cannot land (layer 5).
+4. **On expiry**, the gate fails again until either the upstream
+   patch lands or the exception is renewed with fresh justification.
+
+## Reachability matters
+
+Not every finding is a production risk. Document the reachability
+analysis when an exception is justified:
+
+- **Dev-only transitive** (e.g., a CLI tool's HTTP client): never
+  runs in Lambda / browser; uses local credentials, not IMDS;
+  documented as "dev tooling only."
+- **Code-path unreachable** (e.g., a function we don't call): verified
+  via CodeQL / staticcheck reachability; documented with the analysis.
+- **Mitigated at runtime** (e.g., a SQL-injection risk in a function
+  we always parameterize): documented + tested.
+
+The exception document must enumerate the reachability path. "We
+don't think it's exploitable" without analysis is not a documented
+exception — it's wishful thinking.
+
+## What the consumer repo carries
+
+Consumer repos under this regime carry:
+- A `.githooks/pre-push` symlink + the `git config core.hooksPath
+  .githooks` setup documented in the README
+- A `docs/security-advisories.md` listing the LOW findings tracked
+  (NOT the exceptions — those are org-side)
+- A `.github/CODEOWNERS` requiring security-team review on lockfile
+  + IaC changes
+- A `infra/verify-local.sh` (or equivalent) wiring the same gates CI
+  runs, so `git push` triggers them locally
+
+Consumers do NOT carry:
+- The security-baseline workflow source (org repo owns it)
+- Allowlist values (org repo owns them)
+- Exception lists (org repo owns them)
+- Ruleset SHA pins (org-level configuration)
+
+## Cross-references
+
+- `license-allowlist-gate.md` — license-check policy + Trove
+  cross-check pattern
+- `dependency-vulnerabilities.md` — CVE enforcement; 5-layer pattern
+  applies to this gate too
+- `security.md` — broader OWASP + secret-management baseline
+- `done-criteria.md` — every "done" claim runs all 5 layers
+- `deploy-failures-become-checks.md` — every deploy failure becomes
+  a pre-deploy check (same family)
+- `dependency-overrides-not-exceptions.md` — prefer fix-the-dep over
+  add-an-exception
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Per-consumer security-exceptions file found (rule 2 violation — exceptions live in org repo)
+- Layer skipped (e.g., pre-push hook bypassed via `--no-verify`) — defence-in-depth weakening
+- Required-workflow ruleset's SHA pin not bumped after gate logic change (org-side drift)
+- CODEOWNERS approval bypassed on a gate-script change (layer 5 weakening)
+- Exception without expiry date (anti-pattern — permanent exception)
+- New control class added but only enforced in 1-2 of 5 layers (rule needs broadening)
+- Deploy pipeline running gates that differ from PR-time gates (CI vs deploy drift)
+- Bypass actor allowlist non-empty for branch protection on `main` (configuration drift)
+
+**Refinement candidates**:
+- New row in the 5-layer table when a new enforcement surface emerges (e.g., MCP gateway, IDE plugin)
+- Tightening of the SHA-pin lifecycle when a malicious-tag retargeting incident is observed
+- New cross-reference when a sister rule (dependency-vulnerabilities, license-allowlist-gate) provides the gate this enforces
+- New exception-flow row when a new exception class (vendor-pending-fix, etc.) recurs
+
+---
+
+<!-- ============================================================
+     Section: secrets-management.md (from rules/common/)
+     ============================================================ -->
+
+# Secrets Management Rule (Global Default)
+
+> Auto-fires on every file. Sister to `no-discards.md` (which already
+> blocks hardcoded creds on save), `docker-localhost-binding.md`, and
+> `security-controls-org-wide.md`.
+
+## Core Principle
+
+**No secret ever lives on disk in cleartext in a developer machine or
+in any git history. Every secret is held in a secrets vault
+(macOS Keychain via aws-vault, AWS Secrets Manager, Vault, 1Password
+CLI, doppler, etc.) and surfaced to the process at runtime via env
+vars / credential_process / sidecar.**
+
+The four canonical failure modes this rule prevents:
+
+1. A secret in `~/.aws/credentials` (or equivalent) plaintext, mode 644,
+   readable by any process on the laptop.
+2. A secret in a tracked `.env` / `.env.production` file in git
+   history, fetchable by any past, present, or future contributor.
+3. A secret in an example payload (Postman collection, fixture file,
+   sample request) committed to a repo for convenience.
+4. A secret echoed in CI logs, Slack messages, or screenshots.
+
+Each is the leading cause of a real-world cloud breach over the past
+decade. The fix in every case is the same shape: vault the secret,
+reference it via env var at runtime, and gate the path with the
+checks in this rule.
+
+## Hard rules
+
+### 1. Cloud credentials: vault, never disk
+
+- AWS keys: `~/.aws/credentials` MUST NOT contain a long-term `AKIA…`
+  key. The canonical pattern is:
+  - The IAM key lives in macOS Keychain via `aws-vault add <profile>`.
+  - `~/.aws/config` carries `credential_process = aws-vault exec
+    --no-session --json <profile>` (or `--no-session` dropped when MFA
+    is set up).
+  - AWS CLI / SDK reads the key from Keychain transparently.
+- Google Cloud: `gcloud auth login` (interactive) or short-lived
+  workload-identity. Service-account JSON keys never on developer
+  laptops.
+- Azure: `az login` (interactive) or managed identity.
+- GitHub: `gh auth login` stores the token in macOS Keychain (which
+  `gh` uses by default since 2.x). Never paste a PAT into `.netrc`.
+
+### 2. App-level secrets: env vars + secrets manager
+
+For the application's own runtime secrets (Stripe, Twilio, OpenAI,
+JWT signing keys, DB passwords, OAuth client secrets):
+
+- **Production**: AWS Secrets Manager (preferred for AWS workloads),
+  GCP Secret Manager, Vault, Doppler, or 1Password Secrets Automation.
+  Service reads at startup via the cloud's IAM-bound credentials.
+- **Local dev**: `.env` file (gitignored), populated from the same
+  secrets manager via `aws secretsmanager get-secret-value` (or
+  equivalent) on first checkout. Never check the populated `.env`
+  into git.
+- **Local LocalStack mocks** (where applicable): seed the same secrets
+  into LocalStack Secrets Manager via the project's `init.sh` script.
+  The app then reads from `host.docker.internal:4566` in development
+  and from AWS in prod — same code path.
+
+### 3. Gitignore patterns (mandatory in every repo)
+
+Every project's root `.gitignore` MUST cover at least:
+
+```gitignore
+# Runtime secrets
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Cloud credentials
+.aws/credentials
+*.pem
+*.key
+*_rsa
+*_rsa.pub        # public keys are safer than private but still personal
+*_ed25519
+*_ed25519.pub
+id_rsa*
+id_ed25519*
+
+# Secrets managers
+.vault-token
+.netrc
+
+# IDE per-user config
+.idea/workspace.xml
+.vscode/settings.json   # only if it has been seen to hold tokens
+
+# Postman / Insomnia collections may carry per-environment responses
+*.postman_environment.json
+```
+
+A repo MUST also `git ls-files | grep -E "^\.env(\.|$)"` empty. Any
+`.env` tracked is a finding to fix.
+
+### 4. Pre-commit secret scanning
+
+Every repo runs `gitleaks` (or `trufflehog`) on `pre-commit` AND in
+CI. The minimum config:
+
+```yaml
+# .pre-commit-config.yaml
+- repo: https://github.com/gitleaks/gitleaks
+  rev: v8.21.4
+  hooks:
+    - id: gitleaks
+```
+
+CI step:
+
+```yaml
+- name: Secret scan
+  uses: gitleaks/gitleaks-action@v2.3.9
+  with:
+    config-path: .gitleaks.toml
+```
+
+Findings block the commit / PR. False positives go to `.gitleaksignore`
+with a one-line justification.
+
+### 5. Postman / Insomnia / Bruno / API client collections
+
+Two patterns are common pitfalls:
+
+- **Example response bodies** containing real AWS presigned URLs (which
+  include the AKIA key ID), real JWTs, real session cookies.
+- **Environment files** with real prod tokens "for convenience".
+
+Mandatory:
+
+- Strip example responses before commit (`Postman → Save → Save without
+  responses`). Or set the request to "Don't save responses".
+- Use Postman `{{variable}}` syntax for tokens. The actual values live
+  in an `*.postman_environment.json` that is **gitignored** by default.
+- `.gitignore` MUST cover `*.postman_environment.json` and the
+  `_history/` directories.
+
+### 6. RSA / ed25519 private keys
+
+NO private key ever enters git. Period.
+
+Test fixtures that need a key pair (e.g. JWT signing tests, mTLS tests,
+SSH host-key tests) MUST generate the key at test setup time:
+
+```go
+func TestJWTSigning(t *testing.T) {
+    priv, err := rsa.GenerateKey(rand.Reader, 2048)
+    require.NoError(t, err)
+    // use priv during the test, discard at exit
+}
+```
+
+The only key files allowed in a repo:
+
+- `.pub` files (public material, used to verify signatures or pin
+  hosts). These are not secret but they leak project shape — scrutinise
+  why they need to be checked in.
+- `.example` / `.template` placeholder PEMs with a 1-line "this is a
+  generated test fixture, regenerate with X" comment at top.
+
+### 7. Kubernetes secrets
+
+Never commit a `Secret` manifest with `data:` base64-encoded creds in
+plaintext. Patterns that ARE acceptable:
+
+- **Sealed Secrets** (`bitnami-labs/sealed-secrets`): the
+  `SealedSecret` CRD encrypts the value with the cluster's controller
+  public key. Anyone can read the manifest, only the cluster can decrypt.
+- **External Secrets Operator** (`external-secrets/external-secrets`):
+  the `ExternalSecret` CRD references AWS Secrets Manager / Vault /
+  GCP and the operator hydrates a `Secret` at runtime.
+- **HashiCorp Vault sidecar** / Vault Agent Injector: pod annotations
+  cause Vault to mount secrets into the container at boot.
+
+If you see a `Secret` manifest with raw `data:` in any repo, it's a
+finding.
+
+### 8. Secret rotation policy
+
+- AWS IAM long-term keys: rotated every 90 days at minimum. Audit via
+  `aws iam list-access-keys --user-name <u> --query 'AccessKeyMetadata[?CreateDate<=`2025-02-01`]'`.
+  Prefer IAM Identity Center (SSO) over long-term keys entirely.
+- JWT signing keys: rotated quarterly, with an in-flight overlap
+  window so existing tokens stay valid until expiry.
+- Stripe live keys: rotated only on incident or staff turnover (Stripe
+  doesn't recommend prophylactic rotation; their guidance is to rotate
+  on compromise signal).
+- OAuth client secrets: rotated when a team member with access leaves.
+- DB passwords: rotated via secrets-manager versioning, app rolls on
+  next deploy.
+
+### 9. When a secret is suspected exposed
+
+The recovery flow (in this exact order):
+
+1. **Rotate FIRST**, scrub LATER. Generate a new credential and
+   deactivate / delete the old one in the issuer's console. The window
+   between "I think it leaked" and "the old key still works" is the
+   real risk; cutting that window to minutes is the highest-leverage
+   move.
+2. **Audit access logs** for the exposed credential's use during the
+   exposure window. AWS CloudTrail, GitHub audit log, Stripe Dashboard
+   → Logs, etc.
+3. **Scrub the git history** with `git filter-repo --invert-paths
+   --path <file>` (or BFG Repo Cleaner). Force-push the rewritten
+   history (coordinate with team — everyone needs to re-clone).
+4. **Document** the incident in `docs/security-incidents.md` (or the
+   project equivalent) with date, scope, evidence of misuse (or none),
+   and remediation timeline.
+
+NEVER skip step 1. Scrubbing without rotating is theatre.
+
+## What this rule means for new repos
+
+Every new repo Claude creates (or first-touches) follows the checklist
+in `repo-setup-checklist.md` § "Secrets surface", which includes:
+
+- `.gitignore` covers .env, *.pem, *.key, etc.
+- Pre-commit hook with gitleaks
+- `.env.example` exists with placeholders (no real values)
+- `docs/secrets.md` documents where each secret comes from (AWS
+  Secrets Manager / aws-vault / etc.)
+- CI runs a secret-scan job
+
+## Cross-references
+
+- `repo-setup-checklist.md` — the "first contact with a repo" checklist
+- `no-discards.md` — the PostToolUse hook already rejects edits that
+  introduce hardcoded credentials with the canonical prefixes
+- `docker-localhost-binding.md` — ports-side counterpart to this rule
+- `security-controls-org-wide.md` — 5-layer enforcement pattern
+- `no-overclaim.md` — never claim "done" on a security task without
+  the rotation + history scrub steps both completed
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Long-term AWS access key (`AKIA...`) found in `~/.aws/credentials` (rule 1 violation — Keychain via aws-vault required)
+- `.env` tracked by git (rule 3 violation)
+- Private key (`*.pem`, `*.key`, `id_rsa*`) found in repo (rule 6 violation)
+- Postman / Insomnia collection committed with real response bodies (rule 5 violation)
+- Kubernetes `Secret` manifest with raw `data:` (rule 7 violation — Sealed/External Secrets required)
+- Rotation done step-by-step instead of via atomic script (per `proper-fixes-first.md`)
+- Suspected exposure: scrub attempted before rotation (rule 9 violation — rotate FIRST)
+- Pre-commit hook missing or not catching the leak in CI
+- Secret format-validation skipped on push to vault
+
+**Refinement candidates**:
+- New vault provider row when a new secrets manager gains adoption
+- Tightening of the rotation cadence table when a regulator (PCI / SOC2) updates frequency requirements
+- New banned-pattern entry when a new credential prefix shape recurs
+- New cross-reference when a sister rule (no-discards, install-allowlist) provides complementary hook enforcement
+
+---
+
+<!-- ============================================================
+     Section: audit-logging.md (from rules/common/)
+     ============================================================ -->
+
+# Audit Logging Rule (Always-On, Global)
+
+> Auto-fires on every file. Sister to `observability.md` (operational
+> logs ≠ audit logs), `log-levels.md` (audit is INFO+), `security.md`
+> A09 (security logging), `gdpr-ccpa.md` (subject-access requests
+> include audit history), `error-codes.md`, `runbook-template.md`.
+> Standards: **NIST SP 800-92** (log management), **ISO/IEC 27001
+> Annex A.8.15** (logging), **PCI-DSS 4.0 Requirement 10**,
+> **SOC 2 Trust Services Criteria CC7**, **HIPAA §164.312(b)**.
+
+## Core Principle
+
+**Every security-relevant, compliance-relevant, or
+state-changing event MUST be recorded in an immutable, tamper-
+evident audit log that answers: WHO did WHAT on WHICH RESOURCE
+WHEN FROM WHERE WITH WHAT OUTCOME. Audit logs are separate from
+operational logs, retained on a different schedule, and have
+stricter integrity controls.**
+
+Operational logs answer "what is the system doing right now?"
+Audit logs answer "what did this user / actor do, and can we
+prove it in a regulator's office?"
+
+## Operational logs vs audit logs
+
+| Dimension | Operational logs | Audit logs |
+| --- | --- | --- |
+| **Purpose** | Debug, monitor, alert | Compliance, forensics, accountability |
+| **Audience** | Engineers, on-call | Security team, auditors, courts |
+| **Retention** | 7-90 days typical | Years (regulated: 7+ years often) |
+| **Mutability** | Rotated, sometimes overwritten | Append-only, integrity-verified |
+| **Severity scope** | DEBUG → FATAL | INFO (audit events are normal lifecycle) |
+| **Schema** | Flexible, evolves | Fixed canonical structure |
+| **Storage** | CloudWatch, Loki, Datadog | Dedicated audit store (separate access policy) |
+| **Access** | Engineering team | Security/compliance team only |
+
+The two streams MAY share infrastructure but MUST be logically
+separated. Operational log retention policies cannot truncate
+audit data.
+
+## What MUST be audit-logged
+
+### Authentication events
+
+- Successful login (with auth method: password, OAuth, SAML, SSO)
+- Failed login (with reason: bad credential, account locked, MFA
+  failed, account disabled)
+- Logout (explicit + session expiry)
+- Password change / reset
+- MFA enrollment, MFA bypass attempts
+- API key / token issued, rotated, revoked
+- Session hijack indicator (sudden IP/device change)
+
+### Authorization events
+
+- Permission grant / revoke (role, group, ACL change)
+- Privilege elevation (sudo, admin assumption, impersonation
+  start/end)
+- Access denial (RBAC denial — actor tried but lacked permission)
+- Resource sharing change (made public, made private, link shared)
+
+### Data access — sensitive
+
+- Read of personal data (per `gdpr-ccpa.md` — required for DSAR
+  history)
+- Read of payment data (per PCI-DSS)
+- Read of health data (per HIPAA)
+- Bulk export / download
+- Search queries that return sensitive fields
+
+### Data mutation
+
+- Create / update / delete of business-critical entities
+  (accounts, orders, invoices, customer records)
+- Configuration changes (feature flags per `feature-flags.md`,
+  service settings, security rules)
+- Schema migrations
+- Mass updates (bulk operations affecting >N records)
+
+### Administrative actions
+
+- User account create / disable / delete
+- Role changes
+- Billing changes (subscription, plan tier, payment method)
+- System parameter changes
+- Compliance setting changes (data residency, retention policy)
+
+### Security-sensitive operations
+
+- Encryption key creation / rotation / destruction
+- Certificate provisioning / revocation
+- Secret access (vault read)
+- Cross-tenant data access (must be RARE + always-justified)
+- Webhook signing-key rotation
+- Anti-fraud rule changes
+
+### External integrations
+
+- OAuth grants (which app, which scopes)
+- Webhook subscriptions created / modified
+- API integrations linked
+- Data exports to third parties
+
+## Canonical audit event shape
+
+Every audit event is a structured record with these fields:
+
+```jsonc
+{
+  // Identity
+  "event_id": "01HXXXXX...",            // ULID; globally unique
+  "timestamp": "2026-05-26T14:32:18.342Z",  // RFC 3339, UTC, ms precision
+  "event_type": "user.login.success",   // dotted namespace; see catalog
+  "event_version": 1,                   // schema version of this event_type
+
+  // Actor — WHO did the thing
+  "actor": {
+    "type": "user",                     // user | service | system | api_key
+    "id": "usr_abc123",
+    "display": "alice@example.com",
+    "tenant_id": "org_xyz789",
+    "session_id": "sess_qrs456"         // null if applicable
+  },
+
+  // Subject — WHAT was acted upon
+  "subject": {
+    "type": "order",
+    "id": "ord_def456",
+    "tenant_id": "org_xyz789"
+  },
+
+  // Action — WHAT was done
+  "action": "update",                   // create | read | update | delete | invoke | grant | revoke
+  "outcome": "success",                 // success | failure | partial
+  "reason_code": null,                  // populated on failure — see error-codes.md
+
+  // Change details — before / after for mutations
+  "changes": {
+    "fields": ["status", "shipping_address"],
+    "before": {"status": "pending", "shipping_address": "..."},
+    "after":  {"status": "shipped",  "shipping_address": "..."}
+  },
+
+  // Context — FROM WHERE + HOW
+  "context": {
+    "request_id": "req_ghi789",          // correlates to operational logs
+    "trace_id": "abc123...",             // W3C trace context
+    "ip_address_hash": "sha256:...",     // hashed per `gdpr-ccpa.md`
+    "user_agent": "...",
+    "geo": {"country": "US", "region": "CA"},
+    "auth_method": "password+totp",
+    "api_version": "v2"
+  },
+
+  // Integrity
+  "prev_event_hash": "sha256:...",       // chain anchor — see Hash chaining below
+  "event_hash": "sha256:..."             // SHA-256 of canonical JSON of this event
+}
+```
+
+## Hard rules
+
+### 1. Audit events are emitted IN the same transaction as the change
+
+For database-backed mutations: insert the audit row in the same
+DB transaction as the business-data write. If the transaction
+rolls back, so does the audit row. Otherwise the audit log
+becomes a lie ("we recorded the action that didn't happen").
+
+For non-transactional systems: emit the audit event via
+**outbox pattern** — write to a local outbox in the same
+transaction, then a worker forwards to the audit store. Failure
+modes are limited to "audit delivery delayed" (caught by
+monitoring), not "audit lost."
+
+### 2. Append-only storage
+
+Audit records are NEVER updated or deleted. Append-only is enforced
+at the storage layer:
+
+- **PostgreSQL**: revoked UPDATE/DELETE grants on the audit table;
+  trigger blocks any update; partition by month + only INSERT
+  allowed
+- **Dedicated audit DB**: AWS CloudWatch Logs (write-once),
+  Datadog Audit Trail, Splunk Enterprise Security
+- **Blockchain-anchored** (extreme regulated environments): hash
+  daily summary to a public chain (Ethereum, Bitcoin) for
+  tamper-evidence
+
+### 3. Hash-chained integrity
+
+Each event references the hash of the previous event for the same
+tenant + event_type stream. Tampering with any event invalidates
+the chain for every later event in that stream:
+
+```
+event N:
+  prev_event_hash = sha256(canonical_json(event N-1))
+  event_hash = sha256(canonical_json(event N))
+```
+
+Daily / hourly Merkle-tree root commits provide bulk integrity
+verification. Storage compromised? The chain breaks; alerts fire.
+
+### 4. PII handling within audit logs
+
+Audit logs DO need to identify subjects + actors. But:
+
+- **Hash IP addresses** — `sha256(ip + per-tenant salt)` to allow
+  same-actor correlation without storing the raw IP (per
+  `gdpr-ccpa.md` EU restrictions)
+- **Pseudonymise email** in display fields — store the user_id,
+  resolve to email via the user table when generating reports
+- **Never log credentials** — passwords, tokens, API keys, even
+  hashed (forensics doesn't need them)
+- **Mask sensitive change diffs** — for fields like SSN, credit
+  card number, the diff records "field changed" but not the
+  before/after values; the values are queryable from the source
+  with separate access controls
+
+### 5. Failed actions audit-log too
+
+Successful operations are obvious; failures are arguably more
+important. Failed login attempts, denied access, blocked
+mutations — all logged. The `outcome: "failure"` + `reason_code`
+fields capture the WHY.
+
+### 6. Read access to sensitive data IS an event
+
+Reads of GDPR-personal-data, PCI-payment-data, HIPAA-health-data
+are audit events. The "I just searched for customers named
+Smith" query against the CRM IS logged with the search criteria,
+result count, and actor.
+
+For high-volume systems where logging every read is impractical:
+log at the access-path level (which endpoint was hit, with what
+filters) instead of every record. Combined with per-tenant /
+per-actor rate-limit metrics, this is acceptable.
+
+### 7. Retention is regulation-driven
+
+| Data class | Minimum retention |
+| --- | --- |
+| GDPR access logs (DSAR support) | 3 years |
+| PCI-DSS log records | 1 year, 3 months online + archive |
+| SOC 2 audit trail | 1 year |
+| HIPAA audit records | 6 years |
+| Financial records (SOX) | 7 years |
+| Tax / billing audit | 7-10 years |
+
+Retain at the LONGEST applicable. NEVER prune before the longest
+retention requirement.
+
+### 8. Access to audit logs is itself audit-logged
+
+The audit log read endpoint is a sensitive resource. Reads of the
+audit log emit `audit.access` events (in a separate
+meta-audit stream that catches tampering attempts).
+
+### 9. Standardised event type catalog
+
+Every event_type follows a documented schema:
+
+```yaml
+event_type: user.login.success
+schema_version: 1
+description: Successful user authentication.
+required_fields: [actor.id, context.auth_method, context.ip_address_hash]
+retention_years: 3
+compliance_tags: [gdpr, soc2]
+```
+
+The catalog lives at `docs/audit-events.md` (or equivalent) and
+is updated in the SAME PR as the code that emits a new event
+type.
+
+### 10. Time-sync is critical
+
+Audit logs MUST use UTC + millisecond precision + NTP-synced
+clocks (every host syncs to a trusted source — AWS Time Sync
+Service, Google Public NTP, internal NTP). Clock drift > 1
+second is an alert; chain-of-custody depends on timestamp
+ordering.
+
+## Cross-tenant isolation
+
+In a multi-tenant system:
+
+- Every audit event carries `tenant_id` on BOTH actor + subject
+- Cross-tenant access is rare + special — when it happens
+  (admin support, cross-tenant report), the event MUST include
+  both tenant IDs + a justification field (`reason: "support
+  ticket SUP-12345"`)
+- Tenants can query their own audit log (per `gdpr-ccpa.md`
+  access right) but not others'
+- Internal admins querying multi-tenant audit data MUST do so
+  through a logged tool, not raw DB access
+
+## Per-language implementation
+
+| Language | Audit library / pattern |
+| --- | --- |
+| Node.js | OpenTelemetry events + dedicated `audit` logger via pino with redact paths |
+| Go | `slog` with audit-specific handler + outbox writer |
+| Python | `audit-logger` library OR custom structlog wrapper |
+| Java | Spring Security `AuditEventRepository` + outbox |
+| Ruby | `audited` gem + outbox forward to dedicated store |
+| .NET | `Microsoft.Extensions.Logging` with an audit sink |
+
+Per `reuse-first.md` — pick ONE audit framework per service; don't
+emit ad-hoc events.
+
+## Anti-patterns
+
+### Anti-pattern 1: Operational log doubling as audit log
+
+Routing audit events through CloudWatch Logs with a 30-day
+retention defeats the point. Audit needs its own store, its own
+retention, its own access policy.
+
+### Anti-pattern 2: Logging only on success
+
+The failed-action audit is often the most important one. Login
+failures point at credential stuffing; access denials point at
+privilege confusion; mutation rejections point at validation
+bypass attempts.
+
+### Anti-pattern 3: Mutable audit log
+
+If anyone with DB access can `UPDATE audit_log SET ...`, the
+audit log isn't an audit log — it's a chronicle. Enforce
+append-only at the schema level.
+
+### Anti-pattern 4: PII in audit fields
+
+Storing raw IP, raw email, full DOB in audit records makes
+the audit log a privacy hazard. Hash, tokenize, or reference
+the canonical source.
+
+### Anti-pattern 5: One audit stream for everything
+
+When the audit log contains "user clicked a button" alongside
+"admin granted root", finding the security signal in the noise
+is impossible. Separate streams by event class:
+authentication, authorization, data access, admin actions.
+
+## Tooling
+
+| Tool | Use |
+| --- | --- |
+| **AWS CloudTrail** | AWS API audit; mandatory for any AWS workload |
+| **AWS Config** | Resource config history |
+| **Datadog Audit Trail** | Dedicated audit store |
+| **Splunk Enterprise Security** | Security + compliance audit |
+| **Elastic Audit Beat** | Self-hosted audit collection |
+| **OpenTelemetry Logs** | Standardised pipeline (vendor-neutral) |
+| **Auth0 / Okta Audit** | Identity-side audit |
+| **Sysdig / Falco** | Container + Kubernetes audit |
+
+## Cross-references
+
+- `observability.md` — operational vs audit log distinction
+- `log-levels.md` — audit events are INFO+
+- `security.md` A09 — security logging requirements
+- `gdpr-ccpa.md` — audit logs support DSAR + breach investigations
+- `error-codes.md` — `reason_code` field maps to stable error
+  codes on failure
+- `runbook-template.md` — incident response references audit log
+- `feature-flags.md` — flag changes are audit events
+- `task-intake-due-diligence.md` Q11 (compliance), Q15
+  (observability)
+
+## Standards cited
+
+- **NIST SP 800-92** — Guide to Computer Security Log Management
+- **ISO/IEC 27001:2022 Annex A.8.15** — Logging
+- **PCI-DSS 4.0 Requirement 10** — Log + monitor access
+- **SOC 2 Trust Services Criteria CC7** — Security incidents +
+  evidence
+- **HIPAA §164.312(b)** — Audit controls
+- **GDPR Article 30** — Records of processing activities
+- **SOX §404** — Internal controls (audit trail)
+- **RFC 3339** — Timestamp format
+- **W3C Trace Context** — `trace_id` propagation
+
+## Why this rule exists
+
+Audit logs are the difference between "we think this happened"
+and "we can prove this happened." In every compliance audit,
+breach investigation, and customer dispute, the audit log is the
+primary evidence. Without it:
+
+- Forensic teams cannot trace a breach back to its origin
+- Regulators issue fines for missing controls (GDPR Article 30,
+  SOX 404, PCI-DSS 10)
+- Customers cannot get answers about who accessed their data
+  (DSAR failure)
+- Insider threats are invisible until they cause customer harm
+- Legal disputes are decided on the other side's evidence
+
+The cost of audit logging at design time is one outbox table + a
+dedicated audit sink + retention policy. The cost of missing
+audit logs is incidents you cannot investigate and fines you
+cannot defend.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- Audit event emitted on success but not on failure (rule 5 weakening — failed actions are often the most important)
+- PII surfacing in audit fields (rule 4 PII-handling violation)
+- Audit event not in the same DB transaction as the business write (rule 1 weakening — audit becomes a lie when txn rolls back)
+- Mutable audit log discovered (append-only enforcement gap)
+- New event class shipped without a schema entry in `docs/audit-events.md` (catalog discipline weak)
+- Retention window too short for the applicable regulation (regulation-driven retention drift)
+- Cross-tenant access without `reason` field justification (cross-tenant isolation weak)
+- Clock drift > 1 second tolerated (chain-of-custody risk)
+
+**Refinement candidates**:
+- New event class in the catalog when a new security-relevant operation emerges
+- New required field when forensics consistently needs a dimension the canonical shape lacks
+- Tightening of retention minimums when a regulation update lengthens the floor
+- New cross-reference when a sister rule (gdpr-ccpa, security A09) prescribes audit semantics not yet captured
+
+---
+
+<!-- ============================================================
+     Section: official-docs-first.md (from rules/common/)
+     ============================================================ -->
+
+# Official-Docs-First Rule (Always-On, Global)
+
+> Auto-fires on every file. Sister to `done-criteria.md`, `no-discards.md`,
+> `no-silent-failures.md`, and `docs-sync-with-code.md`.
+
+## Core Principle
+
+**Before writing ANY integration code against an external provider, the
+agent MUST read and cite the provider's canonical developer
+documentation for the specific API surface being touched.**
+
+"External provider" means anything the codebase calls out to that isn't
+its own infrastructure: identity providers (OIDC, OAuth, SAML, LDAP),
+calendar / mail / messaging APIs (Google, Microsoft, Zoho, Slack,
+Twilio, SendGrid, SES), payment processors (Stripe, Adyen, Paystack,
+Flutterwave), push services (FCM, APNs, web push / VAPID), object
+stores (S3, GCS, Azure Blob, R2), ML / AI vendors (Bedrock, OpenAI,
+Anthropic, Replicate), observability (Datadog, Honeycomb, Sentry,
+Grafana Cloud), background-job platforms, mobile push platforms,
+analytics SDKs.
+
+The pattern this rule prevents: integration code that *looks* right
+because it follows the npm package's README example but breaks in
+production because the README and the provider's docs disagree, or
+because the README is silent on an edge case that the official docs
+spell out (token-rotation cadence, scope deprecations, tenant-policy
+rejection codes, retry semantics, content-encoding requirements).
+
+## Hard rules
+
+1. **Locate and read the provider's CANONICAL developer documentation
+   for the specific API surface.** Not Stack Overflow. Not a blog post.
+   Not the README of an npm package wrapping the provider. The
+   provider's own docs at the provider's own domain (e.g.
+   `developers.google.com`, `learn.microsoft.com`, `stripe.com/docs`,
+   `developer.apple.com`).
+
+2. **Confirm the auth model from the official docs:** OAuth 2.0 / OIDC
+   scopes (and which scopes are deprecated), app-specific passwords,
+   service accounts, IAM federation, mTLS, signed JWT
+   client-assertion. Token lifetime, refresh semantics, what
+   `invalid_grant` actually means for *that* provider.
+
+3. **Cite primary-source URLs in the implementation plan** before the
+   first handler / lib file is written. Plan files live at
+   `~/.claude/plans/` (or per-project equivalent) and must include an
+   "ONLINE RESEARCH" section with at least one canonical URL + section
+   per major integration point.
+
+4. **For business / commercial vs personal-tier products, research
+   BOTH and document which is supported.** Many providers split:
+   - Google Workspace vs personal Gmail
+   - Microsoft 365 commercial tenants vs personal Outlook.com / MSA
+   - iCloud+ custom-domain vs personal `@icloud.com`
+   - Zoho Workplace (business) vs `@zoho.com` (personal)
+   - Slack Enterprise Grid vs free workspace
+   - Fastmail Business vs personal Fastmail
+
+   The auth model, available scopes, tenant-policy options, and
+   billing differ. State explicitly which tier is in scope and how
+   the code rejects the other.
+
+5. **If primary-source docs are paywalled / restricted / unavailable,
+   surface the risk to the user BEFORE writing code.** Don't guess
+   from the npm package's example and ship.
+
+6. **Stub or example code from the library's GitHub README is NOT a
+   substitute for the official docs.** The provider's docs win on any
+   behaviour question. The library may be out of date, may handle a
+   scope the provider has since removed, may omit edge cases.
+
+## What "canonical" looks like per common providers
+
+The table below names the canonical doc surface — start here, then
+deep-link as needed.
+
+| Provider | Canonical entry point |
+| --- | --- |
+| Google Workspace APIs | `developers.google.com/workspace` (per-product subpages: Calendar, Drive, People, Admin SDK) |
+| Microsoft Graph | `learn.microsoft.com/en-us/graph/` (resources, permissions, change notifications) |
+| OpenID Connect | `openid.net/specs/openid-connect-core-1_0.html` (the spec itself; library docs second) |
+| OAuth 2.1 / 2.0 | `datatracker.ietf.org/doc/html/rfc6749`, `datatracker.ietf.org/doc/html/rfc7636` (PKCE) |
+| Apple ID + SSO | `developer.apple.com/documentation/signinwithapplerestapi` |
+| Slack APIs | `api.slack.com/docs` |
+| Stripe | `stripe.com/docs/api`, `stripe.com/docs/webhooks/signatures` |
+| AWS | `docs.aws.amazon.com/<service>/latest/<APIReference,DeveloperGuide>/` |
+| Web Push / VAPID | RFC 8030, RFC 8291, RFC 8292; W3C Push API spec |
+| Zoho | `zoho.com/<product>/help/api` (Workplace, Mail, CRM each separate) |
+| CalDAV | RFC 4791, RFC 6638 (scheduling); plus each server's deviation notes |
+| CardDAV | RFC 6352 |
+| iCal / iCalendar | RFC 5545, RFC 5546 (iTIP), RFC 6047 (iMIP) |
+| FCM | `firebase.google.com/docs/cloud-messaging` |
+| APNs | `developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server` |
+| Twilio | `twilio.com/docs/api` |
+
+When the provider names a specific RFC for an interoperable protocol
+(CalDAV → 4791, OAuth → 6749), the RFC is the authoritative reference
+even if the provider has its own quirks doc.
+
+## Plan-file contract
+
+Every plan that introduces a new integration must include a section:
+
+```markdown
+## ONLINE RESEARCH (per official-docs-first rule)
+
+### <Provider name>
+- **API surface**: Calendar Events, push notifications subscribe
+- **Auth model**: OAuth 2.0 + offline_access for refresh tokens; PKCE recommended
+- **Primary sources read**:
+  - https://developers.google.com/calendar/api/guides/push (push channel TTL = 7 days)
+  - https://developers.google.com/identity/protocols/oauth2/scopes#calendar (scope list)
+  - https://developers.google.com/calendar/api/v3/reference/events/watch (subscribe request shape)
+- **Risks identified**:
+  - Push channel auto-expires every 7 days; need re-subscribe cron
+  - Workspace admins can globally restrict the app via Marketplace policy
+  - Personal Gmail accounts present but out of scope per business-only policy
+```
+
+Plan-mode work that lacks this section MUST NOT proceed to implementation.
+The Architecture & Planning division refuses to sign Phase 0 without it.
+
+## What we read does not stay implicit
+
+The cited URLs go in:
+
+1. The plan file (as above).
+2. The `docs/provider-research/<provider>.md` file (one per provider) —
+   so the citations survive after the plan archive rolls.
+3. The PR description summary table.
+
+Code comments do NOT carry the URLs (they rot — see `coding-style.md`
+ban on tracker pointers in comments). The provider-research file is
+the durable home.
+
+## When to re-read the docs
+
+- A new feature on an already-integrated provider — re-read the
+  relevant subpage even if you wrote the integration last month.
+- Provider deprecation notice received — re-read the migration guide
+  before any change.
+- Provider returns an unexpected error code — read the docs for that
+  code before writing a retry / fallback.
+- More than 6 months since the integration was authored — re-read
+  before the next non-trivial change.
+
+## Why this rule exists
+
+A recent calendar / social-login feature was implemented against the
+npm packages' READMEs without reading Google Workspace's actual scope
+deprecation cadence, Microsoft Graph's commercial-vs-personal-tenant
+`tid` claim, or Zoho Workplace's Application-Specific Password format.
+The code looked right and passed local tests; production exposed
+multiple edge cases the README didn't cover. The fix path was:
+
+1. Stop the line.
+2. Backfill `docs/provider-research/<provider>.md` with primary-source
+   citations.
+3. Re-derive the integration shape from the citations.
+4. Re-write the code against the now-known contract.
+
+The cost of reading the docs once at plan time is one hour. The cost
+of debugging an integration built on guesses is days plus a P1
+incident.
+
+## Cross-references
+
+- `done-criteria.md` — "done" claims require the provider-research
+  file to exist and to be up to date.
+- `docs-sync-with-code.md` — provider-research files are part of the
+  docs-sync gate.
+- `no-overclaim.md` — "the integration works" isn't done until the
+  citations exist.
+- Council protocol Phase 0 (`~/.claude/CLAUDE.md`) — Architecture &
+  Planning division enforces this rule.
+
+## Learning hooks
+
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+- `docs/provider-research/<provider>.md` missing for an integration that shipped (rule violation pattern)
+- Provider-research note > 6 months stale and integration touched without refresh (cadence rule needs reinforcement)
+- Integration shaped from npm README / Stack Overflow instead of provider docs (Phase 0 discipline weak)
+- Personal-tier vs commercial-tier scope unclear — boundary missing (rule needs new section example)
+- Auth model assumed instead of cited (recurring shortcut pattern)
+- Deprecation notice from provider arrived but integration not re-read (cadence rule needs reinforcement)
+- Same provider integrated by multiple agents independently (candidate for shared provider-research template)
+
+**Refinement candidates**:
+- New canonical-doc-surface entry when a provider's docs need named anchor (table extension)
+- New anti-pattern entry when a shortcut recurs across 2+ integrations
+- Tightening of the 6-month refresh cadence when provider deprecations get missed
+- New pairing entry when sister rules consistently catch what this rule misses
+
+---

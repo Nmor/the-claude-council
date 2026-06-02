@@ -99,7 +99,7 @@ loop.
   actor + event-id required on every archived candidate)
 - **CWE-117** — Improper Output Neutralization for Logs
   (archive entries sanitised before write)
-- **`~/.claude/rules/common/audit-logging.md`** — applies to
+- **`~/.claude/rules-library/common/audit-logging.md`** — applies to
   learning-archive structure
 - **`~/.claude/rules/common/continuous-learning-mandate.md`**
   — the umbrella rule
@@ -136,7 +136,7 @@ loop.
   emission + review (this skill is the apply + archive arm)
 - `~/.claude/rules/common/continuous-learning-mandate.md` —
   the policy umbrella
-- `~/.claude/rules/common/audit-logging.md` —
+- `~/.claude/rules-library/common/audit-logging.md` —
   learning-archive obeys the audit-log shape
 - `~/.claude/rules/common/rule-authoring-global-vs-project.md`
   — applies before the `learned` apply step (classification)

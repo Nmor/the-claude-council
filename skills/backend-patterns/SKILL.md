@@ -7,7 +7,7 @@ description: Backend architecture patterns, API design, database optimization, a
 
 Backend architecture patterns and best practices for scalable server-side applications.
 
-> **Reuse-first** (per `~/.claude/rules/common/reuse-first.md`):
+> **Reuse-first** (per `~/.claude/rules-library/common/reuse-first.md`):
 > Before creating a new service / repository / middleware /
 > handler helper / validator / DTO, sweep the project's `lib/`,
 > `services/`, `repositories/`, `middleware/`, `validators/`,
@@ -856,7 +856,7 @@ Server-side architecture patterns for Node.js / TypeScript / Next.js backends: h
 | Fire-and-forget `void store.save()` or `.catch(() => null)` | Silent failure; error never surfaces; bug found by user, not on-call | `fireAndForget(name, promise)` helper that logs with operation + cause |
 | Caching without TTL + invalidation strategy | Cache becomes permanent stale state; user sees outdated data | Explicit TTL + invalidation hook on mutation |
 | Middleware order matters (auth after parsing JSON of any size) | DoS via 100MB body before auth fires | Auth + body-size limit FIRST in middleware chain |
-| Webhook handler that mutates state on every retry | Provider retries → double-charge / double-create | Idempotency key + dedupe table (see `~/.claude/rules/common/idempotency.md`) |
+| Webhook handler that mutates state on every retry | Provider retries → double-charge / double-create | Idempotency key + dedupe table (see `~/.claude/rules-library/common/idempotency.md`) |
 
 ## Verification Checklist
 
@@ -873,12 +873,12 @@ Server-side architecture patterns for Node.js / TypeScript / Next.js backends: h
 ## Cross-References
 
 - `~/.claude/skills/api-design/SKILL.md` — REST contract design (URL, status, envelope)
-- `~/.claude/rules/common/idempotency.md` — Idempotency-Key contract for mutating endpoints
-- `~/.claude/rules/common/no-silent-failures.md` — fire-and-forget canonical shape
-- `~/.claude/rules/common/error-handling-with-context.md` — wrap-with-context discipline
-- `~/.claude/rules/common/rate-limiting.md` — middleware ordering + RateLimit-* headers
-- `~/.claude/rules/common/no-ambient-globals.md` — connection pool injection vs module-level singleton
-- `~/.claude/rules/common/reuse-first.md` — sweep before adding a new middleware / repository / DTO
+- `~/.claude/rules-library/common/idempotency.md` — Idempotency-Key contract for mutating endpoints
+- `~/.claude/rules-library/common/no-silent-failures.md` — fire-and-forget canonical shape
+- `~/.claude/rules-library/common/error-handling-with-context.md` — wrap-with-context discipline
+- `~/.claude/rules-library/common/rate-limiting.md` — middleware ordering + RateLimit-* headers
+- `~/.claude/rules-library/common/no-ambient-globals.md` — connection pool injection vs module-level singleton
+- `~/.claude/rules-library/common/reuse-first.md` — sweep before adding a new middleware / repository / DTO
 - `~/.claude/skills/postgres-patterns/SKILL.md` — query optimisation
 - `~/.claude/skills/observability-patterns/SKILL.md` — structured logging + trace propagation
 

@@ -128,7 +128,7 @@ durable home for citations). Required sections:
 ## Cross-references
 
 - `~/.claude/rules/common/official-docs-first.md` — the rule.
-- `~/.claude/rules/common/docs-sync-with-code.md` — the docs-sync
+- `~/.claude/rules-library/common/docs-sync-with-code.md` — the docs-sync
   gate the provider-research file participates in.
 - `~/.claude/rules/common/done-criteria.md` — "done" requires the
   provider-research file to exist and to be fresh.
@@ -163,7 +163,7 @@ calendar; refresh every 6 months or on provider-deprecation notice.
 ## Standards Cited
 
 - **`~/.claude/rules/common/official-docs-first.md`** — the rule
-- **`~/.claude/rules/common/docs-sync-with-code.md`** — keeps the
+- **`~/.claude/rules-library/common/docs-sync-with-code.md`** — keeps the
   research file in sync with code
 - **`~/.claude/rules/common/done-criteria.md`** — completion gate
 - **RFC 6749 (OAuth 2.0)** — typical auth model
@@ -213,7 +213,7 @@ calendar; refresh every 6 months or on provider-deprecation notice.
   to web push (FCM / APNs / Web Push)
 - `~/.claude/skills/api-design/SKILL.md` — consumer-side patterns
 - `~/.claude/rules/common/official-docs-first.md` — the mandate
-- `~/.claude/rules/common/docs-sync-with-code.md` — sync gate
+- `~/.claude/rules-library/common/docs-sync-with-code.md` — sync gate
 - `~/.claude/rules/common/done-criteria.md` — completion gate
 - `~/.claude/agents/architect.md` — Council Division 1 enforces
   this in Phase 0

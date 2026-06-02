@@ -41,7 +41,7 @@ This agent operates within the global rule set under `~/.claude/rules/common/`. 
   `docs/provider-research/<provider>.md` note before any handler /
   lib file is written.
 - **For any user-visible behavior change**: enforce
-  `~/.claude/rules/common/docs-sync-with-code.md`. The plan MUST list
+  `~/.claude/rules-library/common/docs-sync-with-code.md`. The plan MUST list
   every doc surface that needs updating (docs/, README, CLAUDE.md,
   landing copy, runbook) and assign each to a phase — never a
   follow-up.

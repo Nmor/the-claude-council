@@ -6,7 +6,7 @@ description: Transforms vague or under-specified prompts into actionable, resear
 # Prompt Improver Skill
 
 > Sister to: `~/.claude/rules/common/task-intake-due-diligence.md`
-> (the 29-question intake), `~/.claude/rules/common/reuse-first.md`
+> (the 29-question intake), `~/.claude/rules-library/common/reuse-first.md`
 > (Q1 sweep), `~/.claude/rules/common/official-docs-first.md` (Q3
 > + Q29), the Council Protocol Phase 0 in `~/.claude/CLAUDE.md`,
 > `~/.claude/rules/common/plan-task-breakdown.md` (Q27 output),
@@ -289,7 +289,7 @@ user can override; the agent never silently skips.
 
 - `~/.claude/rules/common/task-intake-due-diligence.md` — the
   29-question questionnaire this skill drives
-- `~/.claude/rules/common/reuse-first.md` — Q1 sweep
+- `~/.claude/rules-library/common/reuse-first.md` — Q1 sweep
 - `~/.claude/rules/common/official-docs-first.md` — Q3 + Q29
   primary-source citations
 - `~/.claude/rules/common/plan-task-breakdown.md` — Q27 action

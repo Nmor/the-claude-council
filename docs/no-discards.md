@@ -30,7 +30,7 @@ blocking rule fires; exits 0 with stderr warning for soft rules.
 
 Source: `~/.claude/scripts/hooks/post-edit-no-discards.js` (runner) +
 `~/.claude/scripts/hooks/lib/no-discards-rules.js` (manifest).
-Wired in: `~/.claude/hooks/hooks.json` under `PostToolUse → Edit|Write`.
+Wired in: `~/.claude/settings.json` under `PostToolUse → Edit|Write`.
 Operator override: `export CLAUDE_NO_DISCARDS_HOOK=off`.
 
 ## Layer 2 — Existing PostToolUse hooks (already wired)

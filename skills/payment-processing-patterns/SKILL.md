@@ -131,7 +131,7 @@ const intent = await stripe.paymentIntents.create({
 }, { idempotencyKey });
 ```
 
-Per `~/.claude/rules/common/idempotency.md` + Stripe's
+Per `~/.claude/rules-library/common/idempotency.md` + Stripe's
 Idempotency-Key convention — every POST that moves money,
 issues a refund, transfers funds, creates a payout, or
 modifies a subscription carries an idempotency key. The
@@ -336,7 +336,7 @@ Dunning sequence: 3-day, 7-day, 14-day retries with Smart Retries
 (Stripe) or scheme-recommended cadence. Update payment method via
 **Account Updater** (Visa AU, Mastercard ABU, Amex Cardrefresher)
 to catch BIN changes + re-issuance silently. Failed-payment email
-sequence (in-app + email + push) per `~/.claude/rules/common/i18n.md`
+sequence (in-app + email + push) per `~/.claude/rules-library/common/i18n.md`
 (locale-aware copy) — never just "payment failed" with no
 recovery action.
 
@@ -601,7 +601,7 @@ DISPUTE WORKFLOW:
    dispute resolution platform)
 6. Final outcome triggers ledger settlement + notifications
 
-Per `~/.claude/rules/common/audit-logging.md` — every dispute
+Per `~/.claude/rules-library/common/audit-logging.md` — every dispute
 step is an immutable audit event; legal-hold blocks deletion
 during active disputes.
 

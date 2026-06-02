@@ -216,8 +216,8 @@ Principal-level Spring Boot test methodology: slice tests over full-context load
 - `~/.claude/skills/springboot-verification/SKILL.md` — build + coverage gates
 - `~/.claude/skills/jpa-patterns/SKILL.md` — repository testing
 - `~/.claude/skills/tdd-workflow/SKILL.md` — RED-GREEN-REFACTOR methodology
-- `~/.claude/rules/common/testing.md` — coverage thresholds
-- `~/.claude/rules/common/no-ambient-globals.md` — Clock / RNG injection for determinism
+- `~/.claude/rules-library/common/testing.md` — coverage thresholds
+- `~/.claude/rules-library/common/no-ambient-globals.md` — Clock / RNG injection for determinism
 - `~/.claude/agents/tdd-guide.md` — test-first delegate
 
 ## Why this skill exists

@@ -1,25 +1,25 @@
-# <Workspace Name>
+# `<workspace name>`
 
 > Workspace-level rules + vendor table. Layered on top of global
 > per `~/.claude/CLAUDE.md`. Strictest wins on conflict.
 
 ## Tech stack
 
-- **Language**: <Go | TypeScript | Python | Java | Ruby | Rust | etc.>
-- **Framework**: <Next.js | FastAPI | Rails | Spring Boot | etc.>
-- **Cloud**: <AWS | GCP | Azure | self-hosted>
-- **Database**: <Postgres | DynamoDB | MongoDB | etc.>
-- **CI**: <GitHub Actions | GitLab CI | CircleCI | etc.>
+- **Language**: `<Go | TypeScript | Python | Java | Ruby | Rust | etc.>`
+- **Framework**: `<Next.js | FastAPI | Rails | Spring Boot | etc.>`
+- **Cloud**: `<AWS | GCP | Azure | self-hosted>`
+- **Database**: `<Postgres | DynamoDB | MongoDB | etc.>`
+- **CI**: `<GitHub Actions | GitLab CI | CircleCI | etc.>`
 
 ## Vendor table
 
 | Category | Choice | Reason |
 | --- | --- | --- |
-| Payments | <vendor> | <one-line rationale> |
-| Email | <vendor> | <one-line rationale> |
-| Auth | <vendor> | <one-line rationale> |
-| Observability | <vendor> | <one-line rationale> |
-| Secrets | <vendor> | <one-line rationale> |
+| Payments | `<vendor>` | `<one-line rationale>` |
+| Email | `<vendor>` | `<one-line rationale>` |
+| Auth | `<vendor>` | `<one-line rationale>` |
+| Observability | `<vendor>` | `<one-line rationale>` |
+| Secrets | `<vendor>` | `<one-line rationale>` |
 
 ## Project-specific rules
 
@@ -30,7 +30,7 @@ NOT lower them.
 
 | Rule | Purpose |
 | --- | --- |
-| <rule.md> | <one-line summary> |
+| `<rule.md>` | `<one-line summary>` |
 
 ## Project-specific skills
 
@@ -46,10 +46,24 @@ global agents under `~/.claude/agents/`.
 
 See [`memory/MEMORY.md`](memory/MEMORY.md) for the index.
 
-## Audits
+## Runtime state — `plans/` + `audits/` are gitignored
 
-`audits/learning-events.jsonl` carries the continuous-learning
-candidate stream per
-`~/.claude/rules/common/continuous-learning-mandate.md`.
-`audits/bypass-log.jsonl` carries Council-bypass attempt log per
-`~/.claude/rules/common/council-default.md`.
+Per `~/.claude/rules/common/project-scoped-artifacts.md` rule 11,
+the `plans/` and `audits/` directories under this workspace's
+`.claude/` are ALWAYS gitignored and MUST NOT be referenced as
+repo paths in any checked-in code file.
+
+These directories carry per-session narrative + per-user state:
+
+- `plans/<slug>.md` — multi-phase plan files for in-flight work
+- `audits/learning-events.jsonl` — continuous-learning candidate
+  stream (per `~/.claude/rules/common/continuous-learning-mandate.md`)
+- `audits/bypass-log.jsonl` — Council-bypass attempt log (per
+  `~/.claude/rules/common/council-default.md`)
+- `audits/<date>/` — dated audit reports
+
+Both directories are EXCLUDED by `.gitignore` so they never
+enter git history. To archive institutional knowledge from a
+completed plan, rewrite it into an ADR (per
+`~/.claude/rules-library/common/adr-template.md`) — workspace-scrubbed —
+and commit it under `docs/adr/`.

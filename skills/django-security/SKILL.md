@@ -652,9 +652,9 @@ Principal-level Django security: SECRET_KEY rotation, auth (django.contrib.auth 
 - `~/.claude/skills/django-patterns/SKILL.md` — architecture context
 - `~/.claude/skills/owasp-asvs/SKILL.md` — full control catalogue
 - `~/.claude/skills/gdpr-ccpa-compliance/SKILL.md` — privacy + consent
-- `~/.claude/rules/common/secrets-management.md` — vault, not settings.py
-- `~/.claude/rules/common/audit-logging.md` — security event log
-- `~/.claude/rules/common/rate-limiting.md` — multi-layer rate limits
+- `~/.claude/rules-library/common/secrets-management.md` — vault, not settings.py
+- `~/.claude/rules-library/common/audit-logging.md` — security event log
+- `~/.claude/rules-library/common/rate-limiting.md` — multi-layer rate limits
 - `~/.claude/agents/security-reviewer.md` — Council Division 4
 - `~/.claude/agents/compliance-reviewer.md` — Council Division 6
 

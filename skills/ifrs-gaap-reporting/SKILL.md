@@ -512,8 +512,8 @@ Closing the period in 2 days might feel like an achievement, but if it requires 
 - `~/.claude/skills/fp-and-a/SKILL.md` — forecasting + variance against actuals
 - `~/.claude/skills/soc2-readiness/SKILL.md` — controls around financial reporting
 - `~/.claude/skills/iso27001-controls/SKILL.md` — A.5.34 (Privacy of accounting records)
-- `~/.claude/rules/common/data-retention.md` — financial records retention (typically 7-10 years)
-- `~/.claude/rules/common/audit-logging.md` — restatement audit trail
+- `~/.claude/rules-library/common/data-retention.md` — financial records retention (typically 7-10 years)
+- `~/.claude/rules-library/common/audit-logging.md` — restatement audit trail
 - Council Division 10 (Finance & FinOps) — engaged on every reporting change
 - IFRS Foundation: ifrs.org (free access to standards summaries; paid for full text)
 - FASB: fasb.org (codification access free; XBRL taxonomies)

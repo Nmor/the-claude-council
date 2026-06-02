@@ -788,8 +788,8 @@ Principal-level Django test methodology: pytest-django + factory_boy + freezegun
 - `~/.claude/skills/django-verification/SKILL.md` — coverage + CI gates
 - `~/.claude/skills/python-testing/SKILL.md` — pytest baseline
 - `~/.claude/skills/tdd-workflow/SKILL.md` — RED-GREEN-REFACTOR
-- `~/.claude/rules/common/testing.md` — coverage thresholds
-- `~/.claude/rules/common/no-ambient-globals.md` — Clock / RNG injection
+- `~/.claude/rules-library/common/testing.md` — coverage thresholds
+- `~/.claude/rules-library/common/no-ambient-globals.md` — Clock / RNG injection
 - `~/.claude/agents/tdd-guide.md` — test-first delegate
 
 ## Why this skill exists

@@ -40,9 +40,9 @@ What this skill does NOT cover:
 - **WCAG 2.2 §2.4.7 (Focus Visible)** + **§2.5.8 (Target Size Minimum)** — e2e tests for keyboard-only journeys + minimum-target-size verification on mobile viewports.
 - **W3C WebDriver BiDi** — the protocol Playwright extends; understanding helps when debugging network-event timing.
 - **CI/CD industry norms** — GitHub Actions / GitLab CI artifact retention (typically 30-90 days for test traces + videos + screenshots).
-- `~/.claude/rules/common/testing.md` § "Test pyramid" + § "Critical-path coverage ≥ 95%" — the broader testing rule this skill operationalises.
-- `~/.claude/rules/common/extreme-lint-policy.md` § "Coverage" — touched-file ≥ 90% applies to the test files themselves.
-- `~/.claude/rules/common/proper-fixes-first.md` § "Healthcheck loosening" — same anti-pattern in test form (bumping test timeout to mask a real slow code path is BANNED).
+- `~/.claude/rules-library/common/testing.md` § "Test pyramid" + § "Critical-path coverage ≥ 95%" — the broader testing rule this skill operationalises.
+- `~/.claude/rules-library/common/extreme-lint-policy.md` § "Coverage" — touched-file ≥ 90% applies to the test files themselves.
+- `~/.claude/rules-library/common/proper-fixes-first.md` § "Healthcheck loosening" — same anti-pattern in test form (bumping test timeout to mask a real slow code path is BANNED).
 
 ## Decision-time patterns (BEFORE writing a single test)
 
@@ -478,10 +478,10 @@ test('trade execution', async ({ page }) => {
 
 ## Cross-references
 
-- Sister rule: `~/.claude/rules/common/testing.md` — broader test pyramid, coverage thresholds (≥ 90% touched / ≥ 80% project / ≥ 95% critical-path).
-- Sister rule: `~/.claude/rules/common/proper-fixes-first.md` — bumping a test timeout to mask slow code is the same shape as bumping a healthcheck timeout in prod; both are BANNED.
-- Sister rule: `~/.claude/rules/common/extreme-lint-policy.md` — the test code itself must pass the same lint bar as product code.
-- Sister rule: `~/.claude/rules/common/idempotency.md` — when an e2e test exercises a mutation, the test must be safe to re-run (per `RFC 9110 §9.2.2`).
+- Sister rule: `~/.claude/rules-library/common/testing.md` — broader test pyramid, coverage thresholds (≥ 90% touched / ≥ 80% project / ≥ 95% critical-path).
+- Sister rule: `~/.claude/rules-library/common/proper-fixes-first.md` — bumping a test timeout to mask slow code is the same shape as bumping a healthcheck timeout in prod; both are BANNED.
+- Sister rule: `~/.claude/rules-library/common/extreme-lint-policy.md` — the test code itself must pass the same lint bar as product code.
+- Sister rule: `~/.claude/rules-library/common/idempotency.md` — when an e2e test exercises a mutation, the test must be safe to re-run (per `RFC 9110 §9.2.2`).
 - Sister skill: `~/.claude/skills/frontend-patterns/SKILL.md` — component-level testing patterns that sit one layer below e2e.
 - Sister skill: `~/.claude/skills/vue3-patterns/SKILL.md` / `~/.claude/skills/typescript-patterns/SKILL.md` — framework-specific test idioms.
 - Sister skill: `~/.claude/skills/wcag-accessibility/SKILL.md` — accessibility tests (axe-core) belong in a separate CI step.
@@ -522,9 +522,9 @@ This skill captures the decision-time patterns (the static-first decision tree, 
   conformance criteria E2E flows must verify
 - **CWE-1059** — Insufficient technical documentation (E2E flows
   ARE living docs of expected behaviour)
-- **`~/.claude/rules/common/testing.md`** — Coverage thresholds
+- **`~/.claude/rules-library/common/testing.md`** — Coverage thresholds
   (≥ 90% touched / ≥ 80% project; critical paths ≥ 95%)
-- **`~/.claude/rules/common/local-testability.md`** — E2E must be
+- **`~/.claude/rules-library/common/local-testability.md`** — E2E must be
   runnable locally before declared green
 
 ## Cross-References
@@ -532,7 +532,7 @@ This skill captures the decision-time patterns (the static-first decision tree, 
 - `tdd-workflow` skill — unit-test counterpart; E2E is integration
   level
 - `frontend-patterns` skill — component patterns E2E exercises
-- `~/.claude/rules/common/testing.md` — coverage gates
+- `~/.claude/rules-library/common/testing.md` — coverage gates
 - `~/.claude/rules/common/verify-before-claim.md` — E2E result IS
   the proof
 - `~/.claude/agents/e2e-runner.md` — Playwright orchestration agent

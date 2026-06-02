@@ -1,6 +1,6 @@
 ---
 name: skill-create
-description: Author a new Claude skill end-to-end — from git-history pattern extraction (local mode) through principal-level SKILL.md authoring (Progressive Disclosure + bundled-resources layout + description-optimisation + eval-harness). Sister to `~/.claude/rules/common/principal-level-mandate.md`, `~/.claude/rules/common/reuse-first.md`, `~/.claude/rules/common/extreme-lint-policy.md`.
+description: Author a new Claude skill end-to-end — from git-history pattern extraction (local mode) through principal-level SKILL.md authoring (Progressive Disclosure + bundled-resources layout + description-optimisation + eval-harness). Sister to `~/.claude/rules/common/principal-level-mandate.md`, `~/.claude/rules-library/common/reuse-first.md`, `~/.claude/rules-library/common/extreme-lint-policy.md`.
 allowed_tools: ["Bash", "Read", "Write", "Grep", "Glob", "WebFetch"]
 ---
 
@@ -36,10 +36,10 @@ Both modes ship a skill that passes the depth audit (≥ 500 words substantive c
 - **JSON Schema Draft 2020-12** — frontmatter schema validation
 - **Diátaxis framework** (Procida) — `references/` content is reference + how-to, not tutorial
 - `~/.claude/rules/common/principal-level-mandate.md` §"Every skill file" — the depth contract
-- `~/.claude/rules/common/reuse-first.md` rule of three — extraction trigger
+- `~/.claude/rules-library/common/reuse-first.md` rule of three — extraction trigger
 - `~/.claude/rules/common/continuous-learning-mandate.md` rule 6 — every artifact carries `Learning hooks`
 - `~/.claude/rules/common/rule-authoring-global-vs-project.md` — global-vs-project classification
-- `~/.claude/rules/common/no-discards.md` — no suppressions, no banned vocabulary in the new skill
+- `~/.claude/rules-library/common/no-discards.md` — no suppressions, no banned vocabulary in the new skill
 
 ## Mode selection
 
@@ -120,7 +120,7 @@ Before writing anything, gather the inputs the depth contract requires:
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | Skill name (kebab-case)            | User                                                                                                                          |
 | One-line description (frontmatter) | User → refined via the description-optimisation workflow below                                                                |
-| Trigger conditions                 | User + sweep of `~/.claude/rules/common/auto-skills.md` for adjacent triggers                                                 |
+| Trigger conditions                 | User + sweep of `~/.claude/rules-library/common/auto-skills.md` for adjacent triggers                                                 |
 | Standards citations                | Online research (mandatory per `official-docs-first.md`) — RFCs, ISO, OWASP, NIST, vendor primary docs with version + section |
 | Anti-patterns                      | User + sweep of related Council retrospectives in `~/.claude/audits/learning-events.jsonl`                                    |
 | Cross-references                   | Sister rules / skills / agents already loaded — at least 3                                                                    |
@@ -393,14 +393,14 @@ A `FAIL` in any check blocks the "skill authored" claim. Fix and re-run.
 ## Cross-references
 
 - `~/.claude/rules/common/principal-level-mandate.md` — the depth contract this command enforces
-- `~/.claude/rules/common/reuse-first.md` — the rule-of-three extraction trigger
+- `~/.claude/rules-library/common/reuse-first.md` — the rule-of-three extraction trigger
 - `~/.claude/rules/common/continuous-learning-mandate.md` — Learning hooks section is mandatory
 - `~/.claude/rules/common/rule-authoring-global-vs-project.md` — global-vs-project classification
 - `~/.claude/rules/common/project-scoped-artifacts.md` — workspace-side skill storage
-- `~/.claude/rules/common/auto-skills.md` — file-to-skill mapping the new skill must register with
-- `~/.claude/rules/common/extreme-lint-policy.md` — markdownlint thresholds the SKILL.md must pass
-- `~/.claude/rules/common/no-discards.md` — banned vocabulary the SKILL.md cannot contain
-- `~/.claude/rules/common/documentation-requirements.md` — Diátaxis distinction (skill vs doc page)
+- `~/.claude/rules-library/common/auto-skills.md` — file-to-skill mapping the new skill must register with
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — markdownlint thresholds the SKILL.md must pass
+- `~/.claude/rules-library/common/no-discards.md` — banned vocabulary the SKILL.md cannot contain
+- `~/.claude/rules-library/common/documentation-requirements.md` — Diátaxis distinction (skill vs doc page)
 - `~/.claude/rules/common/official-docs-first.md` — primary-source research before authoring
 - `~/.claude/skills/mcp-builder/SKILL.md` — sister skill for building MCP servers (skill-level adjacency)
 - `~/.claude/skills/continuous-learning-v2/SKILL.md` — sister skill that consumes the optional `--instincts` output

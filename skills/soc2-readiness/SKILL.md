@@ -386,9 +386,9 @@ A control deficiency (especially a "material weakness") in the report is visible
 - `~/.claude/skills/owasp-asvs/SKILL.md` — application-layer evidence for CC6 + CC7
 - `~/.claude/skills/gdpr-ccpa-compliance/SKILL.md` — overlaps with TSC Privacy category
 - `~/.claude/skills/pci-dss-patterns/SKILL.md` — overlapping access + logging controls
-- `~/.claude/rules/common/audit-logging.md` — evidence-store integrity patterns
-- `~/.claude/rules/common/dependency-vulnerabilities.md` — CC7.1 implementation
-- `~/.claude/rules/common/security.md` — security baseline
+- `~/.claude/rules-library/common/audit-logging.md` — evidence-store integrity patterns
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md` — CC7.1 implementation
+- `~/.claude/rules-library/common/security.md` — security baseline
 - Council Division 6 (Compliance & Legal) — auto-engages on SOC 2-scope changes
 - AICPA Resources: aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2
 

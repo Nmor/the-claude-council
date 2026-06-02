@@ -328,9 +328,9 @@ Principal-level Spring Security 6 architecture: deny-by-default authorisation ch
 - `~/.claude/skills/springboot-patterns/SKILL.md` — broader Spring Boot architecture
 - `~/.claude/skills/owasp-asvs/SKILL.md` — full ASVS control catalogue
 - `~/.claude/skills/api-design/SKILL.md` — REST contract / error envelope
-- `~/.claude/rules/common/secrets-management.md` — vault, never properties
-- `~/.claude/rules/common/audit-logging.md` — security-event audit log
-- `~/.claude/rules/common/dependency-vulnerabilities.md` — CVE gate
+- `~/.claude/rules-library/common/secrets-management.md` — vault, never properties
+- `~/.claude/rules-library/common/audit-logging.md` — security-event audit log
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md` — CVE gate
 - `~/.claude/agents/security-reviewer.md` — Council Division 4
 - `~/.claude/agents/compliance-reviewer.md` — Council Division 6 (regulatory)
 

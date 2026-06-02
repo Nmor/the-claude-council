@@ -449,9 +449,9 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 - Workload deployed to a single AZ when the Reliability tier requires multi-AZ (Well-Architected Reliability pillar weakening)
-- New service ships without an ADR documenting the architectural choice (per `~/.claude/rules/common/adr-template.md`)
+- New service ships without an ADR documenting the architectural choice (per `~/.claude/rules-library/common/adr-template.md`)
 - Region selection ignoring carbon-intensity heatmap when ESG tier requires it (Sustainability pillar weakening)
-- Cost-allocation tags missing on new resources (FinOps weakening — per `~/.claude/rules/common/dependency-pinning.md` cost section)
+- Cost-allocation tags missing on new resources (FinOps weakening — per `~/.claude/rules-library/common/dependency-pinning.md` cost section)
 - Cross-region replication not configured for a workload with multi-region RPO/RTO target
 - New cloud-native managed service introduced without comparing OSS alternative (per `~/.claude/CLAUDE.md` technology selection policy)
 - SPOF (single point of failure) introduced in a critical path

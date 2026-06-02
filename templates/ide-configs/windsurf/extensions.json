@@ -5,7 +5,7 @@
 //
 // Windsurf is a VS Code fork (Codeium) and supports both the
 // Microsoft Marketplace and Open-VSX. Every publisher in this list
-// is on the allowlist in ~/.claude/rules/common/install-allowlist.md.
+// is on the allowlist in ~/.claude/rules-library/common/install-allowlist.md.
 // Adding a new extension whose publisher is NOT on that allowlist
 // requires explicit user approval per the rule.
 //

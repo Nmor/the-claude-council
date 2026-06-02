@@ -640,6 +640,15 @@ touched. They are the "first contact with a repo" gate.
   fixed (wired, defined, or removed with user confirmation) —
   never silently deleted, never bandaged with `// TODO: wire
   later` markers.
+- [`project-scoped-artifacts.md`](project-scoped-artifacts.md) —
+  every project's `.claude/` is workspace-scoped + auto-bootstrapped
+  on first significant work. Plans + audits are ALWAYS
+  gitignored (per rule 11) and NEVER referenced as repo paths in
+  checked-in code — only as runtime paths
+  (`<workspace>/.claude/plans/<slug>.md`,
+  `~/.claude/audits/learning-events.jsonl`). CI link-integrity
+  fails on any tracked file referencing `plans/...` /
+  `audits/...` as a repo location.
 
 ## Per-language no-discards extensions
 

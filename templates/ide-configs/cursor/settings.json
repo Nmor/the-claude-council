@@ -16,7 +16,7 @@
 {
   // ============================================================
   // Workspace trust + extension governance
-  // (per ~/.claude/rules/common/install-allowlist.md)
+  // (per ~/.claude/rules-library/common/install-allowlist.md)
   // ============================================================
   "security.workspace.trust.enabled": true,
   "security.workspace.trust.untrustedFiles": "prompt",
@@ -28,7 +28,7 @@
   "task.allowAutomaticTasks": "off",
 
   // ============================================================
-  // Git safety (per ~/.claude/rules/common/git-workflow.md)
+  // Git safety (per ~/.claude/rules-library/common/git-workflow.md)
   // ============================================================
   "git.allowNoVerifyCommit": false,
   "git.allowForcePush": false,
@@ -107,7 +107,7 @@
 
   // ============================================================
   // TypeScript / JavaScript strictness
-  // (per ~/.claude/rules/typescript/no-discards.md)
+  // (per ~/.claude/rules-library/typescript/no-discards.md)
   // ============================================================
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
@@ -126,7 +126,7 @@
 
   // ============================================================
   // Python strictness
-  // (per ~/.claude/rules/python/no-discards.md)
+  // (per ~/.claude/rules-library/python/no-discards.md)
   // ============================================================
   "python.analysis.typeCheckingMode": "strict",
   "python.analysis.autoImportCompletions": true,
@@ -140,7 +140,7 @@
 
   // ============================================================
   // Go strictness
-  // (per ~/.claude/rules/golang/no-discards.md)
+  // (per ~/.claude/rules-library/golang/no-discards.md)
   // ============================================================
   "go.useLanguageServer": true,
   "go.lintTool": "golangci-lint",
@@ -165,7 +165,7 @@
 
   // ============================================================
   // Rust strictness
-  // (per ~/.claude/rules/rust/no-discards.md)
+  // (per ~/.claude/rules-library/rust/no-discards.md)
   // ============================================================
   "rust-analyzer.check.command": "clippy",
   "rust-analyzer.check.allTargets": true,
@@ -176,7 +176,7 @@
 
   // ============================================================
   // SonarLint thresholds — STRICT
-  // (per ~/.claude/rules/common/extreme-lint-policy.md)
+  // (per ~/.claude/rules-library/common/extreme-lint-policy.md)
   // ============================================================
   "sonarlint.rules": {
     "javascript:S3776": { "level": "on", "parameters": { "Threshold": "10" } },
@@ -309,7 +309,7 @@
 
   // ============================================================
   // Cursor-specific: AI features (governance per
-  // ~/.claude/rules/common/install-allowlist.md and
+  // ~/.claude/rules-library/common/install-allowlist.md and
   // performance.md model-selection policy)
   // ============================================================
   // Cursor's own Pyright wrapper. Stricter than the upstream

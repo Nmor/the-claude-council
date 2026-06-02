@@ -51,7 +51,12 @@ stdin.on("end", () => {
   }
 
   // git push detected. Authorisation gate.
-  const authorised = process.env.CLAUDE_PUSH_AUTHORIZED === "yes";
+  // The harness env reflects the prior shell, not the command we're
+  // about to run. So we also accept the inline form
+  // `CLAUDE_PUSH_AUTHORIZED=yes git push ...` which is the shape the
+  // hook's own documentation prescribes.
+  const inlineAuth = /(^|[\s;&|`(]+)CLAUDE_PUSH_AUTHORIZED=yes\s/.test(cmd);
+  const authorised = process.env.CLAUDE_PUSH_AUTHORIZED === "yes" || inlineAuth;
 
   // Allow `git push --help` and dry-run inspection regardless.
   const isHelp = /\s--help(\s|$)/.test(cmd);

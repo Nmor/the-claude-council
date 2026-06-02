@@ -61,13 +61,17 @@ id_ed25519*
 .netrc
 .vault-token
 
-# --- Per-session plan-tasks that are auto-generated ---
-plans/tasks/
-
-# --- Audits archive: TRACKED so historical security audits preserve
-# their git history. Per-session auto-generated logs are excluded.
-audits/learning-events.jsonl
-audits/bypass-log.jsonl
+# --- Plans + audits: per-session narrative + per-user state.
+# Per `~/.claude/rules/common/project-scoped-artifacts.md` rule 11,
+# these directories MUST always be gitignored AND MUST NOT be
+# referenced as repo paths in any checked-in code file. They
+# carry rebuild narrative, per-author drafts, workspace names,
+# customer / vendor references, learning-event streams, and
+# security audit reports that don't belong in shared history.
+# Archive workspace-scrubbed institutional knowledge under
+# `docs/adr/` (per `adr-template.md`) instead.
+plans/
+audits/
 
 # --- Python bytecode (improve-prompt.py is committed source) ---
 __pycache__/

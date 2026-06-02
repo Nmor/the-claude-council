@@ -314,11 +314,11 @@ Submitting a SAQ A every year because "nothing changed" without actually re-veri
 
 - `~/.claude/skills/owasp-asvs/SKILL.md` — V3 session mgmt, V8 data protection, V9 cryptography, V11 logging overlap with PCI §3, §8, §10
 - `~/.claude/skills/gdpr-ccpa-compliance/SKILL.md` — when payment data is also EU PII, both regimes apply
-- `~/.claude/rules/common/secrets-management.md` — KEK + DEK handling
-- `~/.claude/rules/common/security.md` — broader OWASP/encryption baseline
-- `~/.claude/rules/common/audit-logging.md` — log shape, retention, integrity
-- `~/.claude/rules/common/dependency-vulnerabilities.md` — CVE gate maps to §6.3.3
-- `~/.claude/rules/common/no-discards.md` — no CVV/PAN in logs; no `console.log` of payment requests
+- `~/.claude/rules-library/common/secrets-management.md` — KEK + DEK handling
+- `~/.claude/rules-library/common/security.md` — broader OWASP/encryption baseline
+- `~/.claude/rules-library/common/audit-logging.md` — log shape, retention, integrity
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md` — CVE gate maps to §6.3.3
+- `~/.claude/rules-library/common/no-discards.md` — no CVV/PAN in logs; no `console.log` of payment requests
 - Council Division 6 (Compliance & Legal) — auto-engages on any payment-touching change
 - PCI SSC: pcisecuritystandards.org (official documents library, SAQ instructions, prioritized approach worksheet)
 

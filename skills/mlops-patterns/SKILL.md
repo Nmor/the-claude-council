@@ -340,8 +340,8 @@ Different user segments have different needs. Single monolithic model under-serv
 - `~/.claude/skills/observability-patterns/SKILL.md` — general observability that ML monitoring layers onto
 - `~/.claude/skills/cost-aware-llm-pipeline/SKILL.md` — cost discipline for LLM workloads
 - `~/.claude/skills/aws-serverless-patterns/SKILL.md` — Lambda deployment for low-cost inference
-- `~/.claude/rules/common/runbook-template.md` — incident response
-- `~/.claude/rules/common/deploy-failures-become-checks.md` — every ML deploy failure becomes a pre-deploy check
+- `~/.claude/rules-library/common/runbook-template.md` — incident response
+- `~/.claude/rules-library/common/deploy-failures-become-checks.md` — every ML deploy failure becomes a pre-deploy check
 
 ## Why This Skill Exists
 

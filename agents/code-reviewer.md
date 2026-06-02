@@ -69,7 +69,7 @@ const result = await db.query(query, [userId]);
 - **console.log statements** — Remove debug logging before merge
 - **Missing tests** — New code paths without test coverage
 - **Dead code** — Commented-out code, unused imports, unreachable branches
-- **Reuse-first violations** (per `~/.claude/rules/common/reuse-first.md`) — flag any new component / function / class that duplicates an existing primitive. Grep the project for the OUTCOME name first; the PR must route through the existing shared primitive (or extend it with a prop) rather than hand-roll a parallel implementation. Forking a primitive is the same severity as introducing a regression — REJECT.
+- **Reuse-first violations** (per `~/.claude/rules-library/common/reuse-first.md`) — flag any new component / function / class that duplicates an existing primitive. Grep the project for the OUTCOME name first; the PR must route through the existing shared primitive (or extend it with a prop) rather than hand-roll a parallel implementation. Forking a primitive is the same severity as introducing a regression — REJECT.
 - **Inline duplicates** — the same string literal / regex / config block / error-shape appearing 2+ times in this PR (or appearing once in this PR AND once in the existing codebase) — flag for extraction.
 
 ```typescript
@@ -220,14 +220,14 @@ Every review MUST also flag violations of these global rules:
   description or commit message claims "done", "100%", "shipped",
   "complete" without a verification block listing which gates ran
   this turn (build, tests, lint, docs-sync, probes).
-- **`~/.claude/rules/common/docs-sync-with-code.md`** — for any
+- **`~/.claude/rules-library/common/docs-sync-with-code.md`** — for any
   PR touching user-visible behavior, confirm the feature appears
   on every doc surface (docs/, README, CLAUDE.md, landing,
   runbook). A failing doc-sync gate is a BLOCKER.
 - **`~/.claude/rules/common/official-docs-first.md`** — for any
   external-provider integration, confirm `docs/provider-research/
   <provider>.md` exists and was refreshed if older than 6 months.
-- **`~/.claude/rules/common/no-local-fs.md`** — flag any
+- **`~/.claude/rules-library/common/no-local-fs.md`** — flag any
   `os.Create` / `fs.writeFile` / `open(..., "w")` / equivalent in
   production source. Ephemeral-container platforms (Lambda, ECS
   Fargate, Cloud Run) lose local FS state on restart.

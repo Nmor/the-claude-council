@@ -249,9 +249,9 @@ deep code archaeology, cross-repo audits, multi-file research.
   → subagent for telemetry
 - **Anthropic Multi-Agent Patterns** (docs.anthropic.com) —
   parallel + sequential subagent patterns
-- **`~/.claude/rules/common/no-silent-failures.md`** —
+- **`~/.claude/rules-library/common/no-silent-failures.md`** —
   subagent results MUST surface back; never silently dropped
-- **`~/.claude/rules/common/error-handling-with-context.md`**
+- **`~/.claude/rules-library/common/error-handling-with-context.md`**
   — subagent failures wrapped with operation context for
   main-agent retry
 
@@ -288,9 +288,9 @@ deep code archaeology, cross-repo audits, multi-file research.
   build; iterative-retrieval is the search-execution arm
 - `~/.claude/skills/verification-loop/SKILL.md` — main-agent
   context management; complementary
-- `~/.claude/rules/common/no-silent-failures.md` — subagent
+- `~/.claude/rules-library/common/no-silent-failures.md` — subagent
   failure-surfacing contract
-- `~/.claude/rules/common/error-handling-with-context.md` —
+- `~/.claude/rules-library/common/error-handling-with-context.md` —
   subagent error envelope
 - Anthropic docs on Agent / sub-agent orchestration
 

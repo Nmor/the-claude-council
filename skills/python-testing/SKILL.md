@@ -875,9 +875,9 @@ Principal-level pytest methodology: fixtures + scopes + parametrize, hypothesis 
 - `~/.claude/skills/python-patterns/SKILL.md` — language idioms
 - `~/.claude/skills/django-tdd/SKILL.md` — Django-specific
 - `~/.claude/skills/tdd-workflow/SKILL.md` — RED-GREEN-REFACTOR
-- `~/.claude/rules/common/testing.md` — coverage thresholds
-- `~/.claude/rules/common/no-ambient-globals.md` — Clock / RNG injection
-- `~/.claude/rules/python/no-discards.md` — pytest pattern hooks
+- `~/.claude/rules-library/common/testing.md` — coverage thresholds
+- `~/.claude/rules-library/common/no-ambient-globals.md` — Clock / RNG injection
+- `~/.claude/rules-library/python/no-discards.md` — pytest pattern hooks
 - `~/.claude/agents/python-reviewer.md` — Python code review delegate
 - `~/.claude/agents/tdd-guide.md`
 

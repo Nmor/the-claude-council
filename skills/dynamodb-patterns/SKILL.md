@@ -283,8 +283,8 @@ Principal-level DynamoDB design: single-table modelling with composite PK + GSI 
 - `~/.claude/skills/backend-patterns/SKILL.md` — repository shape
 - `~/.claude/skills/postgres-patterns/SKILL.md` — relational alternative
 - `~/.claude/skills/clickhouse-io/SKILL.md` — OLAP alternative
-- `~/.claude/rules/common/idempotency.md` — conditional-write pattern
-- `~/.claude/rules/common/observability.md` — DDB metrics + alarms
+- `~/.claude/rules-library/common/idempotency.md` — conditional-write pattern
+- `~/.claude/rules-library/common/observability.md` — DDB metrics + alarms
 - `~/.claude/agents/database-reviewer.md` — Council Division 9
 - `~/.claude/agents/security-reviewer.md` — IAM + tenant isolation
 

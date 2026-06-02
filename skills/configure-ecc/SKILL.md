@@ -156,9 +156,9 @@ Execute installation:
 cp -r $ECC_ROOT/rules/common/* $TARGET/rules/
 
 # Language-specific rules (flat copy into rules/)
-cp -r $ECC_ROOT/rules/typescript/* $TARGET/rules/   # if selected
-cp -r $ECC_ROOT/rules/python/* $TARGET/rules/        # if selected
-cp -r $ECC_ROOT/rules/golang/* $TARGET/rules/        # if selected
+cp -r $ECC_ROOT/rules-library/typescript/* $TARGET/rules/   # if selected
+cp -r $ECC_ROOT/rules-library/python/* $TARGET/rules/        # if selected
+cp -r $ECC_ROOT/rules-library/golang/* $TARGET/rules/        # if selected
 ```
 
 **Important**: If the user selects any language-specific rules but NOT common rules, warn them:
@@ -288,7 +288,7 @@ Then print a summary report:
 - For project-level: check `.claude/skills/<skill-name>/SKILL.md` exists
 
 ### "Rules not working"
-- Rules are flat files, not in subdirectories: `$TARGET/rules/coding-style.md` (correct) vs `$TARGET/rules/common/coding-style.md` (incorrect for flat install)
+- Rules are flat files, not in subdirectories: `$TARGET/rules/coding-style.md` (correct) vs `$TARGET/rules-library/common/coding-style.md` (incorrect for flat install)
 - Restart Claude Code after installing rules
 
 ### "Path reference errors after project-level install"
@@ -338,9 +338,9 @@ shims) operates with the same rule-set everywhere.
 - **OWASP ASVS 4.0.3 §14.1** — Build pipeline integrity
 - **SLSA Framework v1.0 Build L2** — Reproducible
   configuration deployment
-- **`~/.claude/rules/common/install-allowlist.md`** — Every
+- **`~/.claude/rules-library/common/install-allowlist.md`** — Every
   install passes the publisher allowlist
-- **`~/.claude/rules/common/dependency-pinning.md`** — Lockfile
+- **`~/.claude/rules-library/common/dependency-pinning.md`** — Lockfile
   + digest pinning applies to ECC's dependencies
 - **CWE-829** — Inclusion of Functionality from Untrusted
   Control Sphere (relevant when ECC pulls remote artifacts)
@@ -375,16 +375,16 @@ shims) operates with the same rule-set everywhere.
 
 ## Cross-References
 
-- `~/.claude/rules/common/install-allowlist.md` — publisher gate
-- `~/.claude/rules/common/dependency-pinning.md` — lockfile +
+- `~/.claude/rules-library/common/install-allowlist.md` — publisher gate
+- `~/.claude/rules-library/common/dependency-pinning.md` — lockfile +
   digest discipline
-- `~/.claude/rules/common/repo-setup-checklist.md` — first-touch
+- `~/.claude/rules-library/common/repo-setup-checklist.md` — first-touch
   posture (configure-ecc invokes this on bootstrap)
 - `~/.claude/rules/common/project-scoped-artifacts.md` —
   workspace `.claude/` lifecycle (separate from global ECC)
 - `~/.claude/rules/common/rule-authoring-global-vs-project.md`
   — promotion / demotion path between workspace + global
-- `~/.claude/rules/common/secrets-management.md` — ECC never
+- `~/.claude/rules-library/common/secrets-management.md` — ECC never
   carries plaintext secrets
 
 ## Why this skill exists

@@ -82,7 +82,7 @@ Flag these patterns immediately:
 4. **Don't Trust Input** — Validate and sanitize everything
 5. **Update Regularly** — Keep dependencies current
 6. **No local filesystem for state** — see
-   `~/.claude/rules/common/no-local-fs.md`. Production code on
+   `~/.claude/rules-library/common/no-local-fs.md`. Production code on
    Lambda / ECS Fargate / Cloud Run / Kubernetes MUST NOT
    `os.Create`, `fs.writeFile`, `open(path, "w")`, etc. The
    container's local disk dies on restart and never replicates to

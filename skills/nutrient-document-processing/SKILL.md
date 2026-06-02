@@ -6,10 +6,10 @@ description: Process, convert, OCR, extract, redact, sign, and fill documents vi
 # Nutrient Document Processing
 
 > Vendor-integration recipe for the [Nutrient DWS Processor API](https://www.nutrient.io/api/).
-> Sister to `~/.claude/rules/common/install-allowlist.md` (publisher
-> review before adopting any vendor SDK), `~/.claude/rules/common/secrets-management.md`
-> (API key handling), `~/.claude/rules/common/data-retention.md`
-> (document lifecycle), `~/.claude/rules/common/gdpr-ccpa.md` (when
+> Sister to `~/.claude/rules-library/common/install-allowlist.md` (publisher
+> review before adopting any vendor SDK), `~/.claude/rules-library/common/secrets-management.md`
+> (API key handling), `~/.claude/rules-library/common/data-retention.md`
+> (document lifecycle), `~/.claude/rules-library/common/gdpr-ccpa.md` (when
 > processing PII), `~/.claude/skills/payment-processing-patterns/SKILL.md`
 > (if processing payment-related documents).
 
@@ -30,7 +30,7 @@ apply when documents contain user data.
 - Extracting plain text or tabular data from PDFs
 - OCR on scanned documents or images (100+ languages)
 - Redacting PII before sharing documents (per
-  `~/.claude/rules/common/gdpr-ccpa.md`)
+  `~/.claude/rules-library/common/gdpr-ccpa.md`)
 - Adding watermarks to drafts or confidential documents
 - Digitally signing contracts or agreements (CMS / PAdES)
 - Filling PDF forms programmatically
@@ -58,7 +58,7 @@ Get a free API key at
 ```bash
 # Store the key in the per-user secrets store (Keychain via
 # aws-vault, 1Password CLI, doppler, etc.) — never in source
-# control. Per ~/.claude/rules/common/secrets-management.md.
+# control. Per ~/.claude/rules-library/common/secrets-management.md.
 export NUTRIENT_API_KEY="$(security find-generic-password \
   -a "$USER" -s NUTRIENT_API_KEY -w)"
 ```
@@ -188,7 +188,7 @@ curl -X POST https://api.nutrient.io/build \
 ## MCP server (alternative)
 
 Nutrient publishes an MCP server (`@nutrient-sdk/dws-mcp-server`).
-**Per `~/.claude/rules/common/install-allowlist.md`:**
+**Per `~/.claude/rules-library/common/install-allowlist.md`:**
 
 - `npx -y` auto-install is in the global deny list. Adoption
   requires explicit user approval after publisher review.
@@ -227,7 +227,7 @@ the API + filesystem-access combo escape the intended directory.
 For any document containing PII / PHI / cardholder-data /
 education records, run the appropriate redaction step BEFORE the
 document lands in long-term storage. Per
-`~/.claude/rules/common/data-retention.md` + the regulation-
+`~/.claude/rules-library/common/data-retention.md` + the regulation-
 specific compliance skills (`hipaa-compliance`,
 `ferpa-coppa-compliance`, `pci-dss-patterns`).
 
@@ -249,10 +249,10 @@ non-repudiation.
 ### Pattern 5: Rate-limit + retry with jitter
 
 Nutrient enforces per-key rate limits. Per
-`~/.claude/rules/common/rate-limiting.md` + `circuit-breaker.md`,
+`~/.claude/rules-library/common/rate-limiting.md` + `circuit-breaker.md`,
 wrap calls in a breaker + retry-with-jitter; respect
 `Retry-After` headers; surface failures via
-`~/.claude/rules/common/error-codes.md` envelope.
+`~/.claude/rules-library/common/error-codes.md` envelope.
 
 ## Anti-patterns
 
@@ -280,7 +280,7 @@ When integrating this API, confirm:
       (eIDAS / ESIGN / UETA / local equivalent)
 - [ ] OCR language explicit when known
 - [ ] Failure paths emit stable error codes per
-      `~/.claude/rules/common/error-codes.md`
+      `~/.claude/rules-library/common/error-codes.md`
 
 ## Standards + references
 
@@ -304,13 +304,13 @@ When integrating this API, confirm:
 
 ## Cross-references
 
-- `~/.claude/rules/common/install-allowlist.md` — review MCP
+- `~/.claude/rules-library/common/install-allowlist.md` — review MCP
   server publisher before adoption
-- `~/.claude/rules/common/secrets-management.md` — API key
+- `~/.claude/rules-library/common/secrets-management.md` — API key
   storage
-- `~/.claude/rules/common/data-retention.md` — document lifecycle
-- `~/.claude/rules/common/gdpr-ccpa.md` — PII handling
-- `~/.claude/rules/common/rate-limiting.md` + `circuit-breaker.md`
+- `~/.claude/rules-library/common/data-retention.md` — document lifecycle
+- `~/.claude/rules-library/common/gdpr-ccpa.md` — PII handling
+- `~/.claude/rules-library/common/rate-limiting.md` + `circuit-breaker.md`
   — vendor-call resilience
 - `~/.claude/skills/hipaa-compliance/SKILL.md` — when documents
   contain PHI
@@ -357,19 +357,19 @@ it, so Nutrient adoption lands secure-by-default.
 - **GDPR Article 32 + ISO/IEC 27001:2022 Annex A.8.24** —
   Encryption-at-rest + in-transit when documents contain personal
   data
-- **`~/.claude/rules/common/secrets-management.md`** — Nutrient API
+- **`~/.claude/rules-library/common/secrets-management.md`** — Nutrient API
   key in vault, never source
 
 ## Cross-References
 
-- `~/.claude/rules/common/secrets-management.md` — API key handling
-- `~/.claude/rules/common/dependency-vulnerabilities.md` — Nutrient
+- `~/.claude/rules-library/common/secrets-management.md` — API key handling
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md` — Nutrient
   SDK kept current; CVE gate enforced
-- `~/.claude/rules/common/error-handling-with-context.md` —
+- `~/.claude/rules-library/common/error-handling-with-context.md` —
   document-processing errors wrapped with file id + operation
-- `~/.claude/rules/common/data-retention.md` — processed-document
+- `~/.claude/rules-library/common/data-retention.md` — processed-document
   retention policy
-- `~/.claude/rules/common/gdpr-ccpa.md` — when documents contain
+- `~/.claude/rules-library/common/gdpr-ccpa.md` — when documents contain
   personal data
 - `~/.claude/agents/security-reviewer.md` — file-upload + SSRF
   review for document-processing endpoints

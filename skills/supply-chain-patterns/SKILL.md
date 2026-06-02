@@ -572,7 +572,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Order-promising commits without ATP / CTP check
 - Supplier scorecard reviewed annually instead of quarterly
 - SCOR model metrics not benchmarked against peer set
-- Sustainability / scope-3 emissions not tracked in supplier evaluation (per `~/.claude/rules/common/audit-logging.md`)
+- Sustainability / scope-3 emissions not tracked in supplier evaluation (per `~/.claude/rules-library/common/audit-logging.md`)
 
 **Refinement candidates**:
 - New supply-chain risk row when a new disruption class emerges (e.g., cyber attack on logistics)

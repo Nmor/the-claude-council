@@ -1,11 +1,22 @@
 # Per-user overrides
 settings.local.json
 
-# Runtime audit streams (kept as durable per-workspace state but
-# not committed — they accumulate per-session data that doesn't
-# belong in shared history).
-audits/*.jsonl
-audits/<date>/
+# Plans + audits — per-session narrative + per-user state.
+# These directories carry rebuild / refactor / incident narrative
+# AND runtime audit streams. They are kept locally as durable
+# per-workspace state, but NEVER committed:
+#   - Plans contain in-flight architectural decisions, per-author
+#     drafts, and references to teammates / vendors / customers
+#     that don't belong in shared history.
+#   - Audits contain learning-event streams, Council-bypass logs,
+#     and security audit reports — all of which can leak workspace
+#     names, user identifiers, or sensitive scan output.
+# Per global rule `~/.claude/rules/common/project-scoped-artifacts.md`
+# (section "Gitignore + reference discipline"), no checked-in code
+# file may REFERENCE `plans/` or `audits/` as a repo location —
+# only as runtime paths (`<workspace>/.claude/plans/`).
+plans/
+audits/
 
 # Project memory feedback files are committed; only local override
 # files are ignored.

@@ -1,6 +1,6 @@
 # JetBrains IDE setup (IntelliJ IDEA / GoLand / WebStorm / PyCharm / PhpStorm / RubyMine)
 
-> Per `~/.claude/rules/common/install-allowlist.md`, every plugin
+> Per `~/.claude/rules-library/common/install-allowlist.md`, every plugin
 > install passes through publisher review. The plugins below are
 > all from verified vendors (JetBrains, Anthropic, SonarSource,
 > JetBrains Marketplace verified publishers).
@@ -23,7 +23,7 @@ Linux) opens the Claude Code sidebar.
 All JetBrains products:
 
 - **SonarLint** (SonarSource) — strict ruleset per
-  `~/.claude/rules/common/extreme-lint-policy.md`
+  `~/.claude/rules-library/common/extreme-lint-policy.md`
 - **GitToolBox** (zielu) — git status in editor gutter
 - **.env files support** (Borys Pierov)
 - **Prettier** (JetBrains)
@@ -91,9 +91,9 @@ Settings → Appearance & Behavior → System Settings:
 
 - **Allow plugins to access internal API**: OFF
 - **Auto-update plugins**: OFF (per
-  `~/.claude/rules/common/install-allowlist.md`)
+  `~/.claude/rules-library/common/install-allowlist.md`)
 - **Allow data sharing**: OFF (per
-  `~/.claude/rules/common/secrets-management.md`)
+  `~/.claude/rules-library/common/secrets-management.md`)
 
 Settings → Tools → Server Certificates:
 
@@ -125,13 +125,13 @@ running IDE.
 
 ## 8. References
 
-- `~/.claude/rules/common/install-allowlist.md` — publisher
+- `~/.claude/rules-library/common/install-allowlist.md` — publisher
   allowlist + denylist
-- `~/.claude/rules/common/extreme-lint-policy.md` — strictness
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — strictness
   thresholds the IDE inspections enforce
-- `~/.claude/rules/common/secrets-management.md` — no telemetry,
+- `~/.claude/rules-library/common/secrets-management.md` — no telemetry,
   no auto-update of plugins
-- `~/.claude/rules/common/git-workflow.md` — signed commits +
+- `~/.claude/rules-library/common/git-workflow.md` — signed commits +
   hooks-before-commit
 - `~/.claude/rules/common/plan-completion-before-push.md` — push
   gate

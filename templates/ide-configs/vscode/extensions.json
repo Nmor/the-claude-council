@@ -3,7 +3,7 @@
 // running the install script in ~/.claude/templates/ide-configs/install.sh.
 //
 // Every publisher in this list is on the allowlist in
-// ~/.claude/rules/common/install-allowlist.md. Adding a new
+// ~/.claude/rules-library/common/install-allowlist.md. Adding a new
 // extension whose publisher is NOT on that allowlist requires
 // explicit user approval per the rule.
 {

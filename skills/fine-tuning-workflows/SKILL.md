@@ -495,7 +495,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Signals to watch**:
 - Fine-tuning chosen before prompt + RAG ceiling demonstrated (premature fine-tune)
 - SFT / DPO / RLHF chosen without explicit data-quality investment (garbage-in-garbage-out)
-- Training data not vetted for PII / copyright / license (per `~/.claude/rules/common/gdpr-ccpa.md`)
+- Training data not vetted for PII / copyright / license (per `~/.claude/rules-library/common/gdpr-ccpa.md`)
 - LoRA / QLoRA adapter merged into base without ablation (regression risk)
 - Eval suite identical to training data (test-set leakage)
 - Safety re-tune skipped after capability fine-tune (jailbreak surface re-opened)

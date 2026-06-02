@@ -204,8 +204,8 @@ Principal-level PostgreSQL design + query optimisation: index strategy (B-tree /
 - `~/.claude/skills/backend-patterns/SKILL.md` — service layer
 - `~/.claude/skills/dynamodb-patterns/SKILL.md` — NoSQL alternative
 - `~/.claude/skills/clickhouse-io/SKILL.md` — OLAP alternative
-- `~/.claude/rules/common/schema-evolution.md` — expand-contract
-- `~/.claude/rules/sql/no-discards.md` — SQL pattern hooks
+- `~/.claude/rules-library/common/schema-evolution.md` — expand-contract
+- `~/.claude/rules-library/sql/no-discards.md` — SQL pattern hooks
 - `~/.claude/agents/database-reviewer.md` — Council Division 9
 - `~/.claude/agents/security-reviewer.md` — RLS / SQL-injection review
 
@@ -222,7 +222,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - N+1 query pattern in handler (multiple round-trips when a JOIN / IN-clause would suffice)
 - Long-running transaction holding locks > 10s (advisory + connection-pool starvation risk)
 - `SELECT *` in production code (over-fetch + schema-evolution coupling)
-- Missing RLS policy on a new multi-tenant table (per `~/.claude/rules/common/no-ambient-globals.md`)
+- Missing RLS policy on a new multi-tenant table (per `~/.claude/rules-library/common/no-ambient-globals.md`)
 - DDL change without `CREATE INDEX CONCURRENTLY` (lock-the-world risk)
 - Backfill UPDATE on full table without batching (long-transaction lock contention)
 - JSONB column queried without GIN index (sequential scan on every query)

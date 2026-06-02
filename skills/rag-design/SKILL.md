@@ -539,11 +539,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Single-vector retrieval without hybrid (BM25 + vector) — recall gap on rare terms
 - Reranking step absent on multi-document corpora (precision gap at top-k)
 - Tenant isolation absent in vector store (cross-tenant content leak)
-- Embedding model deprecated by vendor without migration plan (per `~/.claude/rules/common/deprecation-lifecycle.md`)
+- Embedding model deprecated by vendor without migration plan (per `~/.claude/rules-library/common/deprecation-lifecycle.md`)
 - Source citation absent from grounded answers (hallucination opacity)
 - Retrieval evaluation suite missing (no recall@k / nDCG / answer-faithfulness metrics)
 - Long-context model used where RAG would be cheaper + more current (per `~/.claude/skills/cost-aware-llm-pipeline/SKILL.md`)
-- PII-bearing chunk indexed without classification (per `~/.claude/rules/common/gdpr-ccpa.md`)
+- PII-bearing chunk indexed without classification (per `~/.claude/rules-library/common/gdpr-ccpa.md`)
 - Stale chunks (source doc updated, index not refreshed) — staleness window unmonitored
 
 **Refinement candidates**:

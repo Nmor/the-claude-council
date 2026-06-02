@@ -5,7 +5,7 @@ description: Django architecture patterns, REST API design with DRF, ORM best pr
 
 # Django Development Patterns
 
-> **Reuse-first** (per `~/.claude/rules/common/reuse-first.md`):
+> **Reuse-first** (per `~/.claude/rules-library/common/reuse-first.md`):
 > One source of truth per Django concept — one base
 > `ModelSerializer` per shared shape, one custom permission
 > class per access rule, one mixin per cross-cutting view
@@ -803,7 +803,7 @@ Principal-level Django architecture: app structure, settings split by environmen
 - `~/.claude/skills/python-patterns/SKILL.md` — language idioms
 - `~/.claude/skills/api-design/SKILL.md` — REST contract design
 - `~/.claude/skills/observability-patterns/SKILL.md` — structured logs
-- `~/.claude/rules/common/no-ambient-globals.md` — DI patterns in Django
+- `~/.claude/rules-library/common/no-ambient-globals.md` — DI patterns in Django
 - `~/.claude/agents/python-reviewer.md` — Django code review delegate
 
 ## Why this skill exists
@@ -822,7 +822,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `get_or_create` race condition (no unique constraint to back it up)
 - Generic CBV used when explicit FBV would be clearer / more testable
 - New app added without migrations / admin / tests scaffolding
-- Settings.py with environment-specific values hardcoded (per `~/.claude/rules/common/no-ambient-globals.md`)
+- Settings.py with environment-specific values hardcoded (per `~/.claude/rules-library/common/no-ambient-globals.md`)
 - Mixed sync/async views (calling sync ORM from async view causes thread-pool exhaustion)
 
 **Refinement candidates**:

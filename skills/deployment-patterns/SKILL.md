@@ -460,11 +460,11 @@ that turns schema changes from outage candidates into routine.
 - **NIST SP 800-218 (SSDF)** — secure software development framework
 - **OWASP CI/CD Security Top 10**
 - **Kubernetes Deployment API v1** — rolling-update semantics
-- **`~/.claude/rules/common/deploy-failures-become-checks.md`** —
+- **`~/.claude/rules-library/common/deploy-failures-become-checks.md`** —
   every deploy failure becomes a pre-deploy gate
 - **`~/.claude/rules/common/plan-completion-before-push.md`** —
   push gate after plan completion
-- **`~/.claude/rules/common/feature-flags.md`** — decoupling release
+- **`~/.claude/rules-library/common/feature-flags.md`** — decoupling release
   from deploy
 
 ## Anti-Patterns
@@ -509,11 +509,11 @@ that turns schema changes from outage candidates into routine.
   decoupling
 - `~/.claude/skills/observability-patterns/SKILL.md` — SLO + alerting
   feeds rollback predicate
-- `~/.claude/rules/common/deploy-failures-become-checks.md` —
+- `~/.claude/rules-library/common/deploy-failures-become-checks.md` —
   every failure becomes a gate
 - `~/.claude/rules/common/plan-completion-before-push.md` — push
   gate enforcement
-- `~/.claude/rules/common/feature-flags.md` — release vs deploy
+- `~/.claude/rules-library/common/feature-flags.md` — release vs deploy
 - `~/.claude/agents/ops-reviewer.md` — Council Division 8
 
 ## Why this skill exists
@@ -532,12 +532,12 @@ hum.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
-- Deploy without rollback path tested in staging (per `~/.claude/rules/common/deploy-failures-become-checks.md`)
+- Deploy without rollback path tested in staging (per `~/.claude/rules-library/common/deploy-failures-become-checks.md`)
 - Canary stage skipped on a high-risk change (blast-radius weakening — Division 11 Risk concern)
-- Pre-deploy gate (CVE scan, license gate, schema migration dry-run) bypassed (per `~/.claude/rules/common/security-controls-org-wide.md`)
+- Pre-deploy gate (CVE scan, license gate, schema migration dry-run) bypassed (per `~/.claude/rules-library/common/security-controls-org-wide.md`)
 - Deploy succeeds without post-deploy health check verification (false-positive success)
-- Database migration shipped in same deploy as code that reads new shape (atomicity violation — per `~/.claude/rules/common/schema-evolution.md`)
-- Feature flag introduced without owner / expiry / removal-task (per `~/.claude/rules/common/feature-flags.md`)
+- Database migration shipped in same deploy as code that reads new shape (atomicity violation — per `~/.claude/rules-library/common/schema-evolution.md`)
+- Feature flag introduced without owner / expiry / removal-task (per `~/.claude/rules-library/common/feature-flags.md`)
 - Production deploy on Friday afternoon / before weekend without explicit override
 - Deploy that touches > 10% of services without Risk Division engagement
 - Blue-green / canary metric thresholds set arbitrarily (without observed-baseline justification)

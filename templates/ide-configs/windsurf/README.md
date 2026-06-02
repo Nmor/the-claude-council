@@ -5,7 +5,7 @@
 > apply identically; this directory holds the Windsurf-specific
 > delta.
 >
-> Per `~/.claude/rules/common/install-allowlist.md`, every extension
+> Per `~/.claude/rules-library/common/install-allowlist.md`, every extension
 > install passes through publisher review. The recommendations in
 > `extensions.json` are all from verified publishers; bypass requires
 > explicit user approval.
@@ -74,18 +74,18 @@ cp "$DST" "$DST.bak.$(date +%Y%m%d-%H%M%S)"
 The settings.json hardening covers:
 
 - Workspace trust + extension governance (per
-  `~/.claude/rules/common/install-allowlist.md`)
+  `~/.claude/rules-library/common/install-allowlist.md`)
 - Git safety — no `--no-verify`, no force push, signed commits (per
-  `~/.claude/rules/common/git-workflow.md` +
+  `~/.claude/rules-library/common/git-workflow.md` +
   `~/.claude/rules/common/plan-completion-before-push.md`)
 - Telemetry off — both VS Code side AND Codeium side (per
-  `~/.claude/rules/common/secrets-management.md`)
+  `~/.claude/rules-library/common/secrets-management.md`)
 - Format-on-save + per-language formatters (per
-  `~/.claude/rules/common/extreme-lint-policy.md`)
+  `~/.claude/rules-library/common/extreme-lint-policy.md`)
 - SonarLint strict thresholds (cognitive ≤ 10, function lines ≤ 80,
   function params ≤ 5, file lines ≤ 500, nested depth ≤ 3, boolean
   operators ≤ 2, magic numbers flagged) (per
-  `~/.claude/rules/common/sonarlint-checks.md`)
+  `~/.claude/rules-library/common/sonarlint-checks.md`)
 
 ## 4. Disable Windsurf's built-in AI when running Claude Code
 
@@ -129,7 +129,7 @@ per-language opt-outs under `codeium.enableConfig`:
 }
 ```
 
-Per `~/.claude/rules/common/gdpr-ccpa.md` data-minimisation
+Per `~/.claude/rules-library/common/gdpr-ccpa.md` data-minimisation
 principle, default to OFF and opt IN per-workspace only when the
 data class is non-sensitive AND the legal review is documented.
 
@@ -143,7 +143,7 @@ data class is non-sensitive AND the legal review is documented.
 
 The first time you open any new workspace, Windsurf prompts.
 Default to "Don't trust" until you've verified the repo (per
-`~/.claude/rules/common/repo-setup-checklist.md` 20-point first-
+`~/.claude/rules-library/common/repo-setup-checklist.md` 20-point first-
 touch checklist).
 
 ## 7. Disable noisy / known-bad extensions
@@ -177,21 +177,21 @@ grep -E '"codeium.telemetry.optOut"|"security.workspace.trust.enabled"|"git.allo
 
 ## 9. References
 
-- `~/.claude/rules/common/install-allowlist.md` — publisher
+- `~/.claude/rules-library/common/install-allowlist.md` — publisher
   allowlist + known-bad denylist
-- `~/.claude/rules/common/extreme-lint-policy.md` — strictness
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — strictness
   thresholds the IDE inspections enforce
-- `~/.claude/rules/common/secrets-management.md` — telemetry off,
+- `~/.claude/rules-library/common/secrets-management.md` — telemetry off,
   no auto-update of extensions
-- `~/.claude/rules/common/git-workflow.md` — signed commits +
+- `~/.claude/rules-library/common/git-workflow.md` — signed commits +
   no-verify blocked
 - `~/.claude/rules/common/plan-completion-before-push.md` — push
   gate (active plan complete before any `git push`)
-- `~/.claude/rules/common/sonarlint-checks.md` — SonarLint rule
+- `~/.claude/rules-library/common/sonarlint-checks.md` — SonarLint rule
   config the settings.json wires
-- `~/.claude/rules/common/gdpr-ccpa.md` — data-minimisation
+- `~/.claude/rules-library/common/gdpr-ccpa.md` — data-minimisation
   default for Codeium telemetry
-- `~/.claude/rules/common/repo-setup-checklist.md` — 20-point first-
+- `~/.claude/rules-library/common/repo-setup-checklist.md` — 20-point first-
   touch checklist (run on every new workspace)
 - `~/.claude/templates/ide-configs/vscode/settings.json` — base
   VS Code settings this file extends

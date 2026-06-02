@@ -5,7 +5,7 @@ description: Spring Boot architecture patterns, REST API design, layered service
 
 # Spring Boot Development Patterns
 
-> **Reuse-first** (per `~/.claude/rules/common/reuse-first.md`):
+> **Reuse-first** (per `~/.claude/rules-library/common/reuse-first.md`):
 > One source of truth per Spring concept — one `@ControllerAdvice`
 > exception handler, one custom `Validator`, one common base
 > entity, one shared `JpaRepository` interface per aggregate.
@@ -382,8 +382,8 @@ Principal-level Spring Boot architecture: layered separation (controller / servi
 - `~/.claude/skills/java-coding-standards/SKILL.md` — language idioms
 - `~/.claude/skills/api-design/SKILL.md` — REST contract design
 - `~/.claude/skills/observability-patterns/SKILL.md` — Micrometer + OTel
-- `~/.claude/rules/common/no-ambient-globals.md` — DI is the substrate
-- `~/.claude/rules/common/error-handling-with-context.md` — RFC 9457 mapping
+- `~/.claude/rules-library/common/no-ambient-globals.md` — DI is the substrate
+- `~/.claude/rules-library/common/error-handling-with-context.md` — RFC 9457 mapping
 - `~/.claude/agents/code-reviewer.md` — Java code-review delegate
 
 ## Why this skill exists
@@ -399,7 +399,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Fat controller (business logic in `@RestController` instead of `@Service`)
 - `@Transactional` on public method called via `this.method()` (proxy bypass — TX not applied)
 - HikariCP defaults left in place when QPS profile suggests tuning needed
-- `@ControllerAdvice` missing for exception translation (per `~/.claude/rules/common/error-handling-with-context.md`)
+- `@ControllerAdvice` missing for exception translation (per `~/.claude/rules-library/common/error-handling-with-context.md`)
 - Bean cycle / circular `@Autowired` — startup-time signal of architectural smell
 - DTO returned from repository (entity-vs-DTO leakage)
 - Application properties hardcoded instead of using `@ConfigurationProperties` + validation

@@ -209,8 +209,8 @@ Principal-level JPA / Hibernate patterns: entity modelling, association fetching
 - `~/.claude/skills/database-migrations/SKILL.md` — Flyway / Liquibase patterns
 - `~/.claude/skills/postgres-patterns/SKILL.md` — index design + EXPLAIN
 - `~/.claude/skills/java-coding-standards/SKILL.md` — record / Optional / immutability
-- `~/.claude/rules/common/schema-evolution.md` — expand-contract migration
-- `~/.claude/rules/common/observability.md` — slow-query metrics
+- `~/.claude/rules-library/common/schema-evolution.md` — expand-contract migration
+- `~/.claude/rules-library/common/observability.md` — slow-query metrics
 - `~/.claude/agents/database-reviewer.md` — Council Division 9 delegate
 
 ## Why this skill exists
@@ -244,7 +244,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Entity returned from controller (entity-vs-DTO leakage; serialization triggers lazy-load LazyInitializationException)
 - `@Transactional` not on service / handler but on repository (TX boundary anti-pattern)
 - `@Modifying` query without `clearAutomatically = true` (stale persistence context)
-- Native query with string-concat parameter (per `~/.claude/rules/sql/no-discards.md`)
+- Native query with string-concat parameter (per `~/.claude/rules-library/sql/no-discards.md`)
 - Long-running transaction (TX span > 5s — DB connection held; pool exhaustion)
 - Generated SQL not reviewed via Hibernate SQL logging in dev
 - Missing index on FK column (Postgres doesn't auto-index FKs — cascade-delete becomes Seq Scan)

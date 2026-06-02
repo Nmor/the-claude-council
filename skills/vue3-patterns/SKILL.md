@@ -5,7 +5,7 @@ description: Vue 3 idioms — Composition API, `<script setup>`, composables, Pi
 
 # Vue 3 Patterns
 
-> **Reuse-first** (per `~/.claude/rules/common/reuse-first.md`):
+> **Reuse-first** (per `~/.claude/rules-library/common/reuse-first.md`):
 > Before creating any new component, composable, store, or
 > utility, sweep `components/`, `components/ui/`, `composables/`,
 > `stores/`, `lib/`, `utils/`. One source of truth per primitive
@@ -346,10 +346,10 @@ the SSR + hydration discipline (Nuxt 3 / Vite SSR).
 - `~/.claude/skills/frontend-patterns/SKILL.md` — generic patterns
 - `~/.claude/skills/typescript-patterns/SKILL.md` — TS depth
 - `~/.claude/skills/coding-standards/SKILL.md` — universal baseline
-- `~/.claude/rules/common/a11y.md` — accessibility floor
-- `~/.claude/rules/common/no-discards.md` — Vue-specific S6299
+- `~/.claude/rules-library/common/a11y.md` — accessibility floor
+- `~/.claude/rules-library/common/no-discards.md` — Vue-specific S6299
   (no-bypass-sanitization) ban
-- `~/.claude/rules/common/extreme-lint-policy.md` — eslint-plugin-vue
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — eslint-plugin-vue
   + sonarjs strict
 - `~/.claude/agents/code-reviewer.md` — Council Division 3
 - `~/.claude/agents/ux-reviewer.md` — Council Division 7

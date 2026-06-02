@@ -472,9 +472,9 @@ Without daily reconciliation, a webhook gap from 3 months ago is undiscoverable.
 - `~/.claude/skills/fp-and-a/SKILL.md` — uses ledger data for forecasting + variance analysis
 - `~/.claude/skills/pci-dss-patterns/SKILL.md` — payment-data side of money handling
 - `~/.claude/skills/gdpr-ccpa-compliance/SKILL.md` — financial records under retention obligations
-- `~/.claude/rules/common/audit-logging.md` — immutability + integrity patterns
-- `~/.claude/rules/common/idempotency.md` — idempotency-key design
-- `~/.claude/rules/common/data-retention.md` — financial records retention (typically 7 years)
+- `~/.claude/rules-library/common/audit-logging.md` — immutability + integrity patterns
+- `~/.claude/rules-library/common/idempotency.md` — idempotency-key design
+- `~/.claude/rules-library/common/data-retention.md` — financial records retention (typically 7 years)
 - Council Division 10 (Finance & FinOps) — auto-engages on ledger-affecting changes
 - Getlago (open-source billing) for usage-based metering → invoicing → ledger feed
 
@@ -525,7 +525,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Subsidiary ledger out of sync with general ledger (reconciliation gap)
 - Bank reconciliation skipped or > 30 days behind
 - Inter-company eliminations missing on consolidated reports
-- Idempotency missing on payment posting (per `~/.claude/rules/common/idempotency.md` — double-post risk)
+- Idempotency missing on payment posting (per `~/.claude/rules-library/common/idempotency.md` — double-post risk)
 
 **Refinement candidates**:
 - New journal-template row when a new business event class emerges (e.g., crypto-asset, ESG credit)

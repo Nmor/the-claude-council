@@ -5,7 +5,7 @@ description: AWS Lambda + API Gateway + Step Functions + EventBridge + SQS/SNS p
 
 # AWS Serverless Patterns
 
-> **Reuse-first** (per `~/.claude/rules/common/reuse-first.md`):
+> **Reuse-first** (per `~/.claude/rules-library/common/reuse-first.md`):
 > One source of truth per Lambda layer concern — one auth
 > middleware, one error responder, one body parser, one
 > idempotency helper, one DDB client factory, one outbox
@@ -222,7 +222,7 @@ The auto-rollback window is your safety net. Outside it, manual rollback (re-dep
 | One IAM role for every Lambda in the stack | Split per-function |
 | Cron job with no idempotency check | Idempotency key per scheduled run |
 | `events: stream:` consumer that throws on bad row | Catch + log + ack; only retry on transient |
-| `fs.writeFile`, `os.Create`, `open(path, "w")` in production source | Stream to in-memory buffer + S3 PutObject. Lambda's local disk dies on invocation end; relying on it is a P1 in waiting. See `~/.claude/rules/common/no-local-fs.md` |
+| `fs.writeFile`, `os.Create`, `open(path, "w")` in production source | Stream to in-memory buffer + S3 PutObject. Lambda's local disk dies on invocation end; relying on it is a P1 in waiting. See `~/.claude/rules-library/common/no-local-fs.md` |
 
 ## Skill Chain
 
@@ -288,9 +288,9 @@ AWS serverless architecture patterns for Lambda + API Gateway + DynamoDB + SQS +
 - `~/.claude/skills/dynamodb-patterns/SKILL.md` — single-table modelling
 - `~/.claude/skills/deployment-patterns/SKILL.md` — CI/CD + canary + rollback
 - `~/.claude/skills/observability-patterns/SKILL.md` — EMF + X-Ray + structured logs
-- `~/.claude/rules/common/idempotency.md` — Idempotency-Key + dedupe table
-- `~/.claude/rules/common/secrets-management.md` — vault-first, never hardcoded
-- `~/.claude/rules/common/no-local-fs.md` — Lambda /tmp is ephemeral
+- `~/.claude/rules-library/common/idempotency.md` — Idempotency-Key + dedupe table
+- `~/.claude/rules-library/common/secrets-management.md` — vault-first, never hardcoded
+- `~/.claude/rules-library/common/no-local-fs.md` — Lambda /tmp is ephemeral
 - `~/.claude/agents/security-reviewer.md` — IAM least-privilege audit
 
 ## Why this skill exists

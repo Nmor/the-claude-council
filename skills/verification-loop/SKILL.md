@@ -129,7 +129,7 @@ Hooks catch issues immediately; this skill provides comprehensive review.
 These gates ride alongside the build/test/lint loop above. Each must
 pass before any change is declared complete:
 
-- **Docs-sync gate** (`~/.claude/rules/common/docs-sync-with-code.md`)
+- **Docs-sync gate** (`~/.claude/rules-library/common/docs-sync-with-code.md`)
   — every feature page under `docs/` reflects what shipped; README,
   CLAUDE.md, landing page describe only working features;
   `docs/runbook.md` has an entry per new failure-mode.
@@ -261,7 +261,7 @@ cleanly so the next session resumes without re-derivation.
   policy this skill implements at file-edit granularity
 - **`~/.claude/rules/common/done-criteria.md`** — the
   per-language gate suite this skill runs
-- **`~/.claude/rules/common/extreme-lint-policy.md`** —
+- **`~/.claude/rules-library/common/extreme-lint-policy.md`** —
   strict thresholds the gates enforce
 
 ## Anti-Patterns
@@ -299,11 +299,11 @@ cleanly so the next session resumes without re-derivation.
   the skill implements
 - `~/.claude/rules/common/done-criteria.md` — per-language
   gate suite
-- `~/.claude/rules/common/extreme-lint-policy.md` — strict
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — strict
   thresholds
 - `~/.claude/rules/common/no-overclaim.md` — never claim
   done without same-turn proof
-- `~/.claude/rules/common/local-testability.md` — every
+- `~/.claude/rules-library/common/local-testability.md` — every
   change must be locally testable (verification gate runs
   locally)
 - `~/.claude/skills/tdd-workflow/SKILL.md` — TDD RED-GREEN

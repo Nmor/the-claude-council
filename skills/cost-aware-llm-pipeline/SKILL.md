@@ -436,9 +436,9 @@ tenant / per call class.
 - **RFC 7232 §3.1** — Conditional requests / ETags (apply to
   prompt-cache hit semantics)
 - **ISO/IEC 23894:2023** — AI risk management
-- **`~/.claude/rules/common/observability.md`** — cost is a
+- **`~/.claude/rules-library/common/observability.md`** — cost is a
   metric like any other
-- **`~/.claude/rules/common/rate-limiting.md`** — protects against
+- **`~/.claude/rules-library/common/rate-limiting.md`** — protects against
   cost-amplification attacks
 
 ## Anti-Patterns
@@ -484,9 +484,9 @@ tenant / per call class.
   optimisation
 - `~/.claude/skills/observability-patterns/SKILL.md` — cost as
   metric
-- `~/.claude/rules/common/rate-limiting.md` — cost-amplification
+- `~/.claude/rules-library/common/rate-limiting.md` — cost-amplification
   defence
-- `~/.claude/rules/common/observability.md` — cost dashboards
+- `~/.claude/rules-library/common/observability.md` — cost dashboards
 - `~/.claude/agents/ai-ethics-reviewer.md` — Council Division 15
 - `~/.claude/agents/finance-reviewer.md` — Council Division 10
 

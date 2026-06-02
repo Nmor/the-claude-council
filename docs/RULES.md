@@ -10,10 +10,9 @@
 ## Counts
 
 - **`rules/common/`** — 73 universal rules
-- **`rules/<lang>/`** — 21 language subfolders (cpp, csharp, dart,
-  golang, java, kotlin, lua, python, ruby, rust, sql, swift,
-  typescript, bash, html-css, markdown, yaml, dockerfile, terraform,
-  solidity, and the implicit shared `common/`)
+- **`rules/<lang>/`** — 16 language subfolders (bash, cpp, csharp,
+  dart, golang, java, kotlin, lua, markdown, python, ruby, rust,
+  sql, swift, typescript, and the implicit shared `common/`)
 
 ## Common rules — by cluster
 
@@ -174,24 +173,14 @@ rule with language-specific banned patterns and linter configs.
 - [`typescript/`](../rules/typescript/) — TS strict mode +
   @typescript-eslint/strict-type-checked + sonarjs/recommended;
   React 19 + Vue 3 patterns
-- [`html-css/`](../rules/html-css/) — HTML Living Standard + CSS
-  specifications; WCAG 2.2 contrast + reduced-motion
 
 ### Data + infra languages
 
 - [`sql/`](../rules/sql/) — SQL:2023 + PostgreSQL Style Guide;
   sqlfluff strict; squawk for Postgres migration safety
-- [`yaml/`](../rules/yaml/) — YAML 1.2.2 spec; yamllint with
-  published schemas
-- [`dockerfile/`](../rules/dockerfile/) — OCI image spec; hadolint;
-  multi-stage builds; non-root user
-- [`terraform/`](../rules/terraform/) — HashiCorp style + Anton
-  Babenko modules; `terraform fmt`, `tflint`, `tfsec`, `checkov`
 - [`markdown/`](../rules/markdown/) — CommonMark spec + markdownlint
 - [`bash/`](../rules/bash/) — Bash Reference Manual + Google Shell
   Style Guide; `set -euo pipefail`; ShellCheck `-S style`
-- [`solidity/`](../rules/solidity/) — Solidity docs + OpenZeppelin
-  patterns + SWC Registry; slither, mythril, hardhat
 
 ## How rules are applied
 

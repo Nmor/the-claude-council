@@ -87,7 +87,7 @@ Links to other codemaps
 2. **Update** — README.md, docs/GUIDES/*.md, package.json, API docs
 3. **Validate** — Verify files exist, links work, examples run, snippets compile
 4. **Enforce docs-sync gate** — per
-   `~/.claude/rules/common/docs-sync-with-code.md`, every shipped
+   `~/.claude/rules-library/common/docs-sync-with-code.md`, every shipped
    feature must appear on every documentation surface (docs/ page,
    README, CLAUDE.md, landing copy, runbook). When updating one
    surface, audit the others; if any project has an

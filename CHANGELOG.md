@@ -31,7 +31,6 @@ principal-engineer level, and ships a cross-platform install surface
 
 - All workspace-specific plans / memories relocated to their
   respective project `.claude/` directories
-- `audits/archive/` for historical security audits
 - New global rules:
   - `plan-execution-progress.md` — structured per-phase progress
   - `plan-task-breakdown.md` — long-list-of-small-tasks discipline

@@ -527,9 +527,9 @@ Principal-level Django verification: migration safety, `manage.py check --deploy
 - `~/.claude/skills/django-security/SKILL.md`
 - `~/.claude/skills/django-tdd/SKILL.md`
 - `~/.claude/skills/python-testing/SKILL.md`
-- `~/.claude/rules/common/dependency-vulnerabilities.md`
-- `~/.claude/rules/common/license-allowlist-gate.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/common/license-allowlist-gate.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`
 - `~/.claude/rules/common/done-criteria.md`
 
 ## Why this skill exists
@@ -547,7 +547,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `collectstatic` not run in deploy pipeline (broken static assets in prod)
 - Settings.py changes without re-running deploy check
 - Coverage gate not enforced in CI for changed Django files
-- Bandit / safety not wired in pre-push (per `~/.claude/rules/common/dependency-vulnerabilities.md`)
+- Bandit / safety not wired in pre-push (per `~/.claude/rules-library/common/dependency-vulnerabilities.md`)
 - New management command added without corresponding test
 - Async view added without verifying ASGI server is in use
 

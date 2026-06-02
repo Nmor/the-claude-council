@@ -1,6 +1,17 @@
 ---
 name: cpp-coding-standards
 description: C++ coding standards based on the C++ Core Guidelines (isocpp.github.io). Use when writing, reviewing, or refactoring C++ code to enforce modern, safe, and idiomatic practices.
+paths:
+  - "**/*.c"
+  - "**/*.cpp"
+  - "**/*.cc"
+  - "**/*.cxx"
+  - "**/*.h"
+  - "**/*.hpp"
+  - "**/*.hxx"
+  - "**/CMakeLists.txt"
+  - "**/Makefile"
+  - "**/*.cmake"
 ---
 
 # C++ Coding Standards (C++ Core Guidelines)
@@ -784,9 +795,9 @@ Principal-level C++ coding standards (C++20 / C++23): RAII for every resource, s
 - `~/.claude/skills/cpp-testing/SKILL.md` — GoogleTest + sanitisers
 - `~/.claude/skills/coding-standards/SKILL.md` — cross-language baseline
 - `~/.claude/skills/security-review/SKILL.md` — memory-safety review
-- `~/.claude/rules/common/extreme-lint-policy.md` — strict thresholds
-- `~/.claude/rules/cpp/no-discards.md` — banned C++ patterns
-- `~/.claude/rules/cpp/security.md` — memory safety
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — strict thresholds
+- `~/.claude/rules-library/cpp/no-discards.md` — banned C++ patterns
+- `~/.claude/rules-library/cpp/security.md` — memory safety
 - `~/.claude/agents/security-reviewer.md` — Council Division 4 (memory safety)
 - `~/.claude/agents/code-reviewer.md`
 
@@ -816,3 +827,1034 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New cross-reference when a sister skill (cpp-testing, security-review) adds a C++ gate
 - Tightening of the magic-number rule when domain-specific constant patterns recur
 - New row in concurrency checklist when a new sync primitive becomes idiomatic
+
+<!-- ============================================================
+     Migration appendix: 2026-06-02 lazy-rules-loading
+     Source: /Users/APPLE/.claude/rules-library/cpp/
+     ============================================================ -->
+
+## Migrated rules (rules-library/cpp/, 2026-06-02)
+
+Phase H will delete the source files at `rules-library/cpp/`. Content below preserves the original rule bodies for lazy-load via the `paths:` glob above.
+
+---
+
+<!-- ============================================================
+     Section: cpp/coding-style.md
+     ============================================================ -->
+
+---
+paths:
+  - "**/*.cpp"
+  - "**/*.hpp"
+  - "**/*.cc"
+  - "**/*.hh"
+  - "**/*.c"
+  - "**/*.h"
+  - "**/CMakeLists.txt"
+  - "**/*.cmake"
+---
+
+# C++ Coding Standards
+
+> Auto-activates for C/C++ source files and CMake build files. Chains with `cpp-coding-standards` skill for C++ Core Guidelines.
+
+## Checklist
+
+- [ ] C++17 standard or later
+- [ ] RAII for resource management (smart pointers over raw)
+- [ ] No manual memory management (no raw `new`/`delete` in application code)
+- [ ] `const` correctness enforced
+- [ ] No undefined behavior (bounds checking, null checks)
+- [ ] CMake targets properly defined
+- [ ] Warnings treated as errors (`-Wall -Wextra -Werror`)
+
+## Skill Chain
+
+1. **cpp-coding-standards** - C++ Core Guidelines, modern idioms, safety
+2. **cpp-testing** - GoogleTest, CTest, sanitizers, coverage
+3. **security-review** - Buffer overflows, injection, memory safety
+
+---
+
+<!-- ============================================================
+     Section: cpp/hooks.md
+     ============================================================ -->
+
+# C / C++ Hooks
+
+> Auto-fires on every `*.c`, `*.cpp`, `*.h`, `*.hpp`, `CMakeLists.txt`,
+> `*.cmake`, `Makefile` file. Sister to `~/.claude/rules-library/common/hooks.md`.
+
+## Pre-commit gates
+
+`.githooks/pre-commit`:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+staged_cpp=$(git diff --cached --name-only --diff-filter=ACMR \
+    | grep -E '\.(c|cpp|cc|cxx|h|hpp|hxx)$' || true)
+[ -z "$staged_cpp" ] && exit 0
+
+# Format
+echo "$staged_cpp" | xargs clang-format --dry-run --Werror
+
+# Lint (per-file; faster than full project)
+for f in $staged_cpp; do
+    clang-tidy "$f" --warnings-as-errors='*' -- -std=c++20
+done
+```
+
+`.githooks/pre-push`:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Build + test + sanitizers
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DSANITIZERS=ON
+cmake --build build/ --parallel
+ctest --test-dir build/ --output-on-failure
+```
+
+## CMake hardening
+
+`CMakeLists.txt`:
+
+```cmake
+cmake_minimum_required(VERSION 3.27)
+project(myapp LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Strict warnings — treat as errors
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(
+        -Wall -Wextra -Wpedantic -Wconversion
+        -Wshadow -Wnon-virtual-dtor -Wold-style-cast
+        -Wcast-align -Wsign-conversion -Wnull-dereference
+        -Wdouble-promotion -Wformat=2 -Wformat-security
+        -Wimplicit-fallthrough
+        -Werror
+    )
+endif()
+
+# Position-independent code + ASLR
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# Sanitizers (toggle via -DSANITIZERS=ON)
+option(SANITIZERS "Build with ASan + UBSan" OFF)
+if(SANITIZERS)
+    add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
+    add_link_options(-fsanitize=address,undefined)
+endif()
+
+# LTO in Release
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT lto_ok)
+    if(lto_ok)
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+    endif()
+endif()
+
+# clang-tidy integration
+set(CMAKE_CXX_CLANG_TIDY clang-tidy --warnings-as-errors='*')
+
+# Testing
+enable_testing()
+add_subdirectory(tests)
+```
+
+## CI workflow
+
+```yaml
+name: C++ CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        compiler: [gcc-14, clang-18]
+        build_type: [Debug, Release]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@<sha>
+
+      - name: Install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ${{ matrix.compiler }} cmake clang-tidy clang-format cppcheck
+
+      - name: Configure
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+            -DSANITIZERS=ON
+
+      - name: Build
+        run: cmake --build build/ --parallel
+
+      - name: Test
+        run: ctest --test-dir build/ --output-on-failure
+
+  static-analysis:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@<sha>
+      - run: |
+          sudo apt-get install -y clang-tidy cppcheck
+          clang-tidy --warnings-as-errors='*' src/*.cpp -- -std=c++20
+          cppcheck --enable=all --inconclusive --error-exitcode=1 src/
+
+  format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@<sha>
+      - run: |
+          find . -name '*.cpp' -o -name '*.h' | xargs clang-format --dry-run --Werror
+
+  coverage:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@<sha>
+      - run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCOVERAGE=ON
+          cmake --build build/
+          ctest --test-dir build/
+          lcov --capture --directory build/ --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' '*/tests/*' --output-file coverage.info
+          genhtml coverage.info --output-directory coverage_html
+      - uses: codecov/codecov-action@<sha>
+        with: { files: coverage.info }
+```
+
+## `.clang-format`
+
+```yaml
+BasedOnStyle: Google
+ColumnLimit: 100
+IndentWidth: 4
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: Empty
+BinPackArguments: false
+BinPackParameters: false
+SortIncludes: CaseSensitive
+SpaceBeforeParens: ControlStatements
+```
+
+## `.clang-tidy`
+
+```yaml
+Checks: >
+  *,
+  -fuchsia-*,
+  -llvmlibc-*,
+  -altera-*,
+  -modernize-use-trailing-return-type,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -hicpp-*
+
+WarningsAsErrors: '*'
+
+HeaderFilterRegex: '.*'
+
+CheckOptions:
+  - { key: readability-identifier-naming.ClassCase,     value: CamelCase }
+  - { key: readability-identifier-naming.FunctionCase,  value: camelBack }
+  - { key: readability-identifier-naming.VariableCase,  value: camelBack }
+  - { key: readability-identifier-naming.ConstantCase,  value: UPPER_CASE }
+```
+
+## Cross-references
+
+- `~/.claude/rules-library/common/hooks.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/cpp/no-discards.md`
+- `~/.claude/rules-library/cpp/security.md`
+- `~/.claude/rules-library/cpp/testing.md`
+- clang-tidy docs (clang.llvm.org/extra/clang-tidy/)
+- cppcheck manual (cppcheck.sourceforge.io)
+
+---
+
+<!-- ============================================================
+     Section: cpp/no-discards.md
+     ============================================================ -->
+
+# C / C++ — No-Discards Extension
+
+> Auto-fires on every `*.c`, `*.cpp`, `*.cc`, `*.cxx`, `*.h`,
+> `*.hpp`, `*.hxx`, `*.inl` file. Extends
+> `~/.claude/rules-library/common/no-discards.md`. Sister to
+> `extreme-lint-policy.md`. Tooling: `clang-tidy`, `clang-format`,
+> `cppcheck`, AddressSanitizer / UndefinedBehaviorSanitizer /
+> ThreadSanitizer.
+
+## Core Principle (C/C++-specific restatement)
+
+**Every return value of every function that's marked `[[nodiscard]]`
+MUST be used; every allocation has a matching deallocation (or
+better: RAII); every pointer is checked for nullness before
+dereference; every error code is propagated, never ignored.
+Modern C++ (C++20+) features (smart pointers, `std::expected`,
+RAII, references over pointers) are mandatory.**
+
+C/C++ silent failures are uniquely dangerous because they
+compile fine + run fine until they CORRUPT MEMORY or LEAK.
+
+## Banned patterns
+
+### 1. Ignoring `[[nodiscard]]` returns
+
+```cpp
+// FORBIDDEN — compiler warns; we treat as error
+file.open(path);  // returns [[nodiscard]] bool
+
+// CORRECT
+if (!file.open(path)) {
+    spdlog::error("open failed: {}", path);
+    return ErrorCode::OpenFailed;
+}
+```
+
+`-Werror=unused-result` makes this a build failure.
+
+### 2. Raw `new` / `delete`
+
+```cpp
+// FORBIDDEN — leak risk; manual management
+Foo* p = new Foo();
+use(p);
+delete p;  // may not run on exception
+
+// CORRECT — RAII via smart pointer
+auto p = std::make_unique<Foo>();
+use(*p);
+// Destruction is automatic + exception-safe
+```
+
+### 3. Raw `malloc` / `free` in C++
+
+```cpp
+// FORBIDDEN in C++ (raw memory ops without RAII)
+char* buf = (char*)malloc(1024);
+// ... possibly leak on early return
+free(buf);
+
+// CORRECT
+std::vector<char> buf(1024);
+// destructor frees automatically
+```
+
+In pure C: use `goto cleanup` patterns + paired malloc/free.
+
+### 4. Out-pointer / out-reference unused
+
+```cpp
+// FORBIDDEN — caller dropped the value
+size_t bytes_written;
+write_to_buffer(data, &bytes_written);
+// `bytes_written` never read
+
+// CORRECT
+size_t bytes_written = 0;
+if (!write_to_buffer(data, &bytes_written) || bytes_written < expected) {
+    return std::unexpected{ErrorCode::WriteShort};
+}
+```
+
+### 5. Casting away `const` / signedness
+
+```cpp
+// FORBIDDEN
+const int* read_only = get_const_data();
+int* mutable_ptr = const_cast<int*>(read_only);
+*mutable_ptr = 42;  // UB if underlying is genuinely const
+
+// CORRECT — don't fight the type system; pass non-const if you need mutation
+```
+
+### 6. C-style casts
+
+```cpp
+// FORBIDDEN
+int x = (int)y;
+Foo* p = (Foo*)ptr;
+
+// CORRECT — explicit cast kind
+int x = static_cast<int>(y);
+auto* p = static_cast<Foo*>(ptr);  // when safe
+auto* d = dynamic_cast<Derived*>(base);
+if (d == nullptr) { /* handle */ }
+```
+
+### 7. Uninitialised variables
+
+```cpp
+// FORBIDDEN — undefined behavior if read
+int count;
+if (some_branch) count = 1;
+return count;  // UB if some_branch false
+
+// CORRECT — always initialise
+int count = 0;
+if (some_branch) count = 1;
+return count;
+
+// CORRECT (C++17+)
+auto count = some_branch ? 1 : 0;
+```
+
+### 8. Pointer arithmetic on raw pointers in C++
+
+```cpp
+// FORBIDDEN — bounds errors
+int arr[10];
+int* p = arr + 20;  // UB
+
+// CORRECT — use containers + iterators / std::span
+std::array<int, 10> arr;
+auto it = arr.begin() + 5;  // bounded by container semantics
+```
+
+### 9. `printf` family with user input
+
+```cpp
+// FORBIDDEN — format string injection
+printf(user_input);
+
+// CORRECT
+printf("%s", user_input);
+// or modern C++:
+fmt::print("{}", user_input);
+```
+
+### 10. Magic strings / numbers + raw concatenation
+
+```cpp
+// FORBIDDEN — buffer overflow risk
+char buf[64];
+strcpy(buf, name);
+strcat(buf, "@example.com");
+
+// CORRECT
+std::string buf = fmt::format("{}@example.com", name);
+```
+
+## Required compiler flags
+
+```bash
+g++ -std=c++20 \
+    -Wall -Wextra -Wpedantic -Wconversion -Wshadow \
+    -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual \
+    -Wcast-align -Wsign-conversion -Wnull-dereference \
+    -Wdouble-promotion -Wformat=2 -Wimplicit-fallthrough \
+    -Werror -O2 -g
+```
+
+With sanitizers in debug:
+
+```bash
+g++ -std=c++20 -fsanitize=address,undefined -g -O1
+```
+
+## Required static analysis
+
+```bash
+clang-tidy --checks='*,-fuchsia-*,-llvmlibc-*,-modernize-use-trailing-return-type' \
+  --warnings-as-errors='*' \
+  --header-filter='.*' \
+  *.cpp
+
+cppcheck --enable=all --inconclusive --error-exitcode=1 .
+```
+
+## Verification block
+
+```
+C++ build (this turn):
+  - cmake --build build/ -- -Werror: 0 errors / 0 warnings
+  - clang-tidy: 0 issues
+  - cppcheck --enable=all: 0 issues
+  - ASan: clean
+  - UBSan: clean
+  - ctest --verbose: PASS (coverage 88%)
+```
+
+## Cross-references
+
+- `~/.claude/rules-library/common/no-discards.md`
+- `~/.claude/rules-library/common/no-silent-failures.md`
+- `~/.claude/rules-library/common/error-handling-with-context.md`
+- C++ Core Guidelines (Stroustrup + Sutter)
+- MISRA C++ (safety-critical)
+
+## Why this rule exists
+
+C++ silent failures cause memory corruption + UB:
+- Ignored `[[nodiscard]]` from `open()` → write to closed fd
+- Forgotten `delete` → leak; with `new[]` without `delete[]` →
+  heap corruption
+- Pointer arithmetic past end → UB; sometimes crashes, sometimes
+  silently corrupts neighbouring data
+- C-style cast hiding sign mismatch → integer overflow → security
+  bug
+
+RAII + smart pointers + sanitisers + strict warnings close
+nearly all of these.
+
+---
+
+<!-- ============================================================
+     Section: cpp/patterns.md
+     ============================================================ -->
+
+# C / C++ Patterns
+
+> Auto-fires on every `*.c`, `*.cpp`, `*.h`, `*.hpp` file.
+> Standards: **C++ Core Guidelines (Stroustrup + Sutter)**,
+> **Effective C++ / Effective Modern C++ (Meyers)**, **C++
+> Concurrency in Action (Williams)**, **Modern C++ Design
+> (Alexandrescu)**.
+
+## Core Principle
+
+**RAII for every resource (memory, file, lock, socket, GPU
+context); smart pointers over raw `new`/`delete`; value
+semantics over pointer semantics where possible; concepts (C++20)
+for generic constraints; templates for compile-time polymorphism,
+virtual functions for runtime polymorphism; PIMPL for ABI
+stability.**
+
+## RAII (the foundational pattern)
+
+```cpp
+// File
+{
+    std::ifstream file(path);  // open
+    process(file);
+    // close automatic on scope exit, even on exception
+}
+
+// Lock
+{
+    std::lock_guard<std::mutex> lock(mu);
+    shared_data++;
+    // unlock on scope exit
+}
+
+// Custom — every resource needs a wrapper
+class DatabaseHandle {
+    DB* db;
+public:
+    explicit DatabaseHandle(const std::string& conn)
+        : db(db_open(conn.c_str())) {
+        if (!db) throw std::runtime_error("db_open failed");
+    }
+    ~DatabaseHandle() { db_close(db); }
+    // Rule of 5: delete copy, define move
+    DatabaseHandle(const DatabaseHandle&) = delete;
+    DatabaseHandle& operator=(const DatabaseHandle&) = delete;
+    DatabaseHandle(DatabaseHandle&& o) noexcept : db(o.db) { o.db = nullptr; }
+    DatabaseHandle& operator=(DatabaseHandle&& o) noexcept {
+        if (this != &o) { db_close(db); db = o.db; o.db = nullptr; }
+        return *this;
+    }
+    DB* get() const { return db; }
+};
+```
+
+## Smart pointers
+
+| Pointer | Use when |
+| --- | --- |
+| `std::unique_ptr<T>` | Single owner; transfer via move; default choice |
+| `std::shared_ptr<T>` | Shared ownership; ref-counted; thread-safe ref-count |
+| `std::weak_ptr<T>` | Break cycles with shared_ptr; lock to access |
+| Raw `T*` (non-owning) | Function parameter when ownership stays with caller; never owns |
+| `gsl::owner<T*>` | Annotate raw pointer that owns (when C-API requires) |
+
+```cpp
+// Factory returning unique ownership
+std::unique_ptr<Foo> make_foo(int x) {
+    return std::make_unique<Foo>(x);
+}
+
+// Non-owning argument
+void process(const Foo& foo) { ... }
+void process(const Foo* foo) {
+    if (!foo) return;
+    ...
+}
+```
+
+## Value types
+
+```cpp
+// CORRECT — pass by value for small + cheap-to-copy
+void process(int x);
+void process(std::string_view s);   // never owns
+void process(std::span<const int> data);
+
+// CORRECT — pass by const-ref for non-trivial
+void process(const Order& order);
+
+// CORRECT — pass by rvalue-ref to consume
+void consume(Order&& order);
+
+// Avoid passing by mutable-ref unless out-param
+void update(Order& order, const UpdateRequest& req);
+```
+
+## Builder pattern
+
+```cpp
+class HttpRequestBuilder {
+    std::string method_;
+    std::string url_;
+    std::vector<std::pair<std::string, std::string>> headers_;
+    std::string body_;
+
+public:
+    HttpRequestBuilder& method(std::string m) { method_ = std::move(m); return *this; }
+    HttpRequestBuilder& url(std::string u) { url_ = std::move(u); return *this; }
+    HttpRequestBuilder& header(std::string k, std::string v) {
+        headers_.emplace_back(std::move(k), std::move(v));
+        return *this;
+    }
+    HttpRequestBuilder& body(std::string b) { body_ = std::move(b); return *this; }
+    HttpRequest build() && {
+        return HttpRequest{std::move(method_), std::move(url_),
+                           std::move(headers_), std::move(body_)};
+    }
+};
+
+auto req = HttpRequestBuilder()
+    .method("POST")
+    .url("https://api.example.com/orders")
+    .header("authorization", token)
+    .body(payload)
+    .build();
+```
+
+## PIMPL (compilation firewall + ABI stability)
+
+```cpp
+// foo.h — public header
+class Foo {
+public:
+    Foo();
+    ~Foo();
+    void bar();
+private:
+    struct Impl;
+    std::unique_ptr<Impl> impl_;
+};
+
+// foo.cpp — implementation
+struct Foo::Impl {
+    int state;
+    std::vector<std::string> data;
+};
+
+Foo::Foo() : impl_(std::make_unique<Impl>()) {}
+Foo::~Foo() = default;          // out-of-line; needs Impl complete
+void Foo::bar() { impl_->state++; }
+```
+
+Changes to `Impl` don't trigger downstream recompilation; ABI
+stays stable as long as `Foo`'s public surface doesn't change.
+
+## Type erasure
+
+```cpp
+// Without type erasure: storing different shapes needs inheritance
+class Shape { virtual void draw() = 0; };
+
+// With type erasure: any callable with right signature
+class Drawable {
+    struct Concept {
+        virtual ~Concept() = default;
+        virtual void draw() const = 0;
+        virtual std::unique_ptr<Concept> clone() const = 0;
+    };
+    template<typename T>
+    struct Model : Concept {
+        T obj;
+        explicit Model(T x) : obj(std::move(x)) {}
+        void draw() const override { obj.draw(); }
+        std::unique_ptr<Concept> clone() const override {
+            return std::make_unique<Model>(obj);
+        }
+    };
+    std::unique_ptr<Concept> impl_;
+public:
+    template<typename T>
+    Drawable(T x) : impl_(std::make_unique<Model<T>>(std::move(x))) {}
+    void draw() const { impl_->draw(); }
+};
+```
+
+## Concurrency
+
+```cpp
+// std::async (low-effort; less control)
+auto fut = std::async(std::launch::async, do_work);
+auto result = fut.get();
+
+// std::thread + join
+std::thread t(do_work);
+t.join();
+
+// std::jthread (C++20) — auto-joins + stop_token
+std::jthread t([](std::stop_token st) {
+    while (!st.stop_requested()) {
+        do_work_chunk();
+    }
+});
+// t goes out of scope; requests stop + joins
+
+// std::atomic for lock-free counters
+std::atomic<int64_t> counter{0};
+counter.fetch_add(1, std::memory_order_relaxed);
+```
+
+## Reuse-first
+
+| Use case | Library |
+| --- | --- |
+| Strings + algorithms | `std::` + Abseil if needed |
+| JSON | nlohmann/json, simdjson |
+| HTTP server | Drogon, Boost.Beast, cpp-httplib |
+| HTTP client | libcurl, cpr |
+| Async I/O | Boost.Asio, libuv |
+| Logging | spdlog |
+| Testing | GoogleTest, Catch2, doctest |
+| CLI args | CLI11, argparse |
+| YAML / TOML | yaml-cpp, toml++ |
+| Date / time | std::chrono + date.h (Howard Hinnant) |
+
+Per `~/.claude/rules-library/common/reuse-first.md`.
+
+## Modern C++ over C-isms
+
+| C-ism | Modern C++ |
+| --- | --- |
+| `char buf[64]; strcpy(...)` | `std::string` / `std::string_view` |
+| `int arr[10]` + manual length | `std::array<int, 10>` / `std::span` |
+| `new T()` / `delete` | `std::make_unique<T>()` |
+| `malloc` / `free` | `std::vector<char>` / smart pointers |
+| `printf` | `std::format` (C++20) / `std::print` (C++23) |
+| `qsort` | `std::sort` with lambda |
+| pointer iteration | range-for |
+| NULL macro | `nullptr` |
+| typedef | `using` |
+| `enum E { ... }` | `enum class E { ... }` |
+
+## Cross-references
+
+- `~/.claude/rules-library/common/patterns.md`
+- `~/.claude/rules-library/common/reuse-first.md`
+- `~/.claude/rules-library/cpp/coding-style.md`
+- `~/.claude/rules-library/cpp/no-discards.md`
+- C++ Core Guidelines
+- Effective Modern C++ (Meyers)
+- C++ Concurrency in Action (Williams)
+
+---
+
+<!-- ============================================================
+     Section: cpp/security.md
+     ============================================================ -->
+
+# C / C++ Security
+
+> Auto-fires on every `*.c`, `*.cpp`, `*.cc`, `*.cxx`, `*.h`,
+> `*.hpp`, `*.hxx` file. Sister to `~/.claude/rules-library/common/security.md`.
+> Standards: **CERT C / C++ Coding Standard**, **MISRA C 2023 /
+> MISRA C++ 2023**, **OWASP C / C++ Top 10**, **CWE Top 25 (2026)**,
+> **C++ Core Guidelines (Stroustrup + Sutter)**.
+
+## Core Principle
+
+**C/C++ vulnerabilities are CWE Top-25 dominant: buffer
+overflows, use-after-free, double-free, integer overflow,
+format-string bugs, time-of-check-time-of-use (TOCTOU). The
+mitigations: RAII; smart pointers; bounds-checked containers
+(`std::array`, `std::vector`, `std::span`); compiler hardening
+flags; sanitizers in CI; static analysis at full strictness.**
+
+## OWASP / CWE — C/C++ specifics
+
+### CWE-787 Out-of-bounds Write (#1 in CWE Top 25)
+
+```cpp
+// FORBIDDEN — C-style buffer ops
+char buf[64];
+strcpy(buf, user_input);     // overflow if user_input > 63 bytes
+sprintf(buf, "%s", user_input);
+
+// CORRECT (C++) — std::string / std::format
+std::string buf = std::format("{}", user_input);
+
+// CORRECT (C, when std::string not available) — bounded
+char buf[64];
+if (snprintf(buf, sizeof(buf), "%s", user_input) >= (int)sizeof(buf)) {
+    fprintf(stderr, "input truncated");
+    return -1;
+}
+```
+
+### CWE-416 Use After Free
+
+```cpp
+// FORBIDDEN
+Foo* p = new Foo();
+delete p;
+p->method();          // UAF
+
+// CORRECT — smart pointer
+auto p = std::make_unique<Foo>();
+p->method();
+// Destructed automatically; can't UAF
+```
+
+### CWE-415 Double Free
+
+```cpp
+// FORBIDDEN
+free(p);
+free(p);              // double free
+
+// CORRECT — set to nullptr after free; or use smart pointer
+std::unique_ptr<Foo> p = std::make_unique<Foo>();
+// no manual delete; no double-free possible
+```
+
+### CWE-190 Integer Overflow
+
+```cpp
+// FORBIDDEN — silent wraparound
+size_t total = a + b;     // overflows -> tiny number -> small malloc -> UB
+
+// CORRECT (C++) — std::numeric_limits + check
+if (a > std::numeric_limits<size_t>::max() - b) {
+    throw std::overflow_error("integer overflow");
+}
+size_t total = a + b;
+
+// CORRECT — use checked arithmetic (C++26: <stdckdint.h>)
+size_t total;
+if (ckd_add(&total, a, b)) {
+    throw std::overflow_error("integer overflow");
+}
+```
+
+### CWE-134 Format String
+
+```cpp
+// FORBIDDEN — user controls the format string
+printf(user_input);
+
+// CORRECT — fixed format
+printf("%s", user_input);
+
+// CORRECT (C++20) — std::format
+std::cout << std::format("{}", user_input);
+```
+
+### CWE-367 TOCTOU (file race)
+
+```cpp
+// FORBIDDEN — gap between check + use
+if (access(path, W_OK) == 0) {
+    fp = fopen(path, "w");
+    // attacker can swap file in this window
+}
+
+// CORRECT — open then check, or use openat with file descriptor
+int fd = open(path, O_WRONLY | O_CREAT | O_NOFOLLOW | O_EXCL, 0600);
+if (fd < 0) { /* handle */ }
+```
+
+### CWE-78 OS Command Injection
+
+```cpp
+// FORBIDDEN
+system(std::format("ls {}", user_input).c_str());
+
+// CORRECT — execvp with argv array
+const char* argv[] = {"ls", user_input.c_str(), nullptr};
+execvp("ls", const_cast<char* const*>(argv));
+```
+
+### CWE-22 Path Traversal
+
+```cpp
+// FORBIDDEN — `..` escapes base directory
+auto path = base_dir / user_input;
+std::ifstream f(path);
+
+// CORRECT — canonicalise + prefix-check
+auto requested = std::filesystem::weakly_canonical(base_dir / user_input);
+auto base = std::filesystem::weakly_canonical(base_dir);
+if (requested.string().rfind(base.string(), 0) != 0) {
+    throw std::runtime_error("path traversal attempt");
+}
+std::ifstream f(requested);
+```
+
+## Compiler hardening flags
+
+```bash
+g++ -std=c++20 \
+    -Wall -Wextra -Wpedantic -Wconversion \
+    -Wformat=2 -Wformat-security \
+    -Wnull-dereference -Wstack-usage=8192 \
+    -Wstack-protector -fstack-protector-strong \
+    -D_FORTIFY_SOURCE=3 \
+    -fstack-clash-protection \
+    -fPIE -pie \
+    -Wl,-z,relro -Wl,-z,now \
+    -fno-strict-aliasing \
+    -Werror \
+    -O2
+
+# Clang adds:
+# -fsanitize=cfi -flto -fvisibility=hidden
+```
+
+`_FORTIFY_SOURCE=3` enables compiler-inserted bounds checks for
+glibc string/memory functions.
+
+## Sanitizers (mandatory in CI)
+
+```bash
+# AddressSanitizer + UndefinedBehaviorSanitizer
+g++ -fsanitize=address,undefined,leak -fno-omit-frame-pointer -g -O1 ...
+./my_program       # ASan + UBSan + LSan active
+
+# ThreadSanitizer (separate run; doesn't mix with ASan)
+g++ -fsanitize=thread -g -O1 ...
+./my_program
+
+# MemorySanitizer (Clang only; uses different lib)
+clang++ -fsanitize=memory -fno-omit-frame-pointer -g -O1 ...
+```
+
+Run unit tests with each sanitizer in CI. Failures block merge.
+
+## Static analysis
+
+```bash
+# clang-tidy — full rule set
+clang-tidy --checks='*,-fuchsia-*,-llvmlibc-*,-modernize-use-trailing-return-type' \
+  --warnings-as-errors='*' \
+  *.cpp -- -std=c++20
+
+# cppcheck
+cppcheck --enable=all --inconclusive --error-exitcode=1 --suppress=missingIncludeSystem .
+
+# Coverity / Klocwork / PVS-Studio (commercial)
+# For OSS: also run scan-build (Clang Static Analyzer)
+scan-build --status-bugs make
+```
+
+## Memory hardening
+
+| Feature | Compiler flag |
+| --- | --- |
+| ASLR | `-fPIE -pie` |
+| Stack protector | `-fstack-protector-strong` |
+| Stack clash | `-fstack-clash-protection` |
+| RELRO | `-Wl,-z,relro -Wl,-z,now` |
+| NX bit | `-Wl,-z,noexecstack` |
+| Control Flow Integrity (Clang) | `-fsanitize=cfi -flto` |
+| FORTIFY_SOURCE | `-D_FORTIFY_SOURCE=3` |
+| Source fortification | `-Wstack-usage=8192` |
+
+## Secrets
+
+- NEVER hardcode in source
+- Use environment variables, or platform key stores (macOS
+  Keychain, Windows DPAPI, Linux libsecret)
+- For embedded: PKCS#11 / HSM
+- Per `~/.claude/rules-library/common/secrets-management.md`
+
+## Dependencies (supply-chain)
+
+```bash
+# Conan dependency audit (when using Conan)
+conan inspect <package>/<version>
+
+# CMake dependency scan via OSV-Scanner
+osv-scanner --lockfile=conan.lock
+
+# Trivy on Docker image / binary
+trivy filesystem .
+```
+
+## Required tooling
+
+```bash
+clang-format -i src/*.cpp                # format
+clang-tidy --checks='*' src/*.cpp        # lint
+cppcheck --enable=all src/               # static analysis
+cmake -DCMAKE_BUILD_TYPE=Debug -DSANITIZERS=ON .. && make && ctest
+osv-scanner --lockfile=conan.lock        # CVE scan
+```
+
+## Cross-references
+
+- `~/.claude/rules-library/common/security.md`
+- `~/.claude/rules-library/common/secrets-management.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/cpp/no-discards.md`
+- `~/.claude/rules-library/cpp/coding-style.md`
+- CERT C / C++ Coding Standard (wiki.sei.cmu.edu/confluence/display/c/)
+- MISRA C 2023 / MISRA C++ 2023
+- OWASP C / C++ Top 10
+- C++ Core Guidelines — GSL (Stroustrup + Sutter)
+- CWE Top 25
+
+---
+
+<!-- ============================================================
+     Section: cpp/testing.md
+     ============================================================ -->
+
+---
+paths:
+  - "**/*test*.cpp"
+  - "**/*test*.hpp"
+  - "**/*Test*.cpp"
+  - "**/tests/**/*.cpp"
+  - "**/test/**/*.cpp"
+---
+
+# C++ Testing Standards
+
+> Auto-activates for C++ test files. Chains with `cpp-testing` skill for GoogleTest patterns and coverage.
+
+## Checklist
+
+- [ ] GoogleTest framework used
+- [ ] Test names are descriptive (`TEST(ClassName, MethodBehaviorExpected)`)
+- [ ] Setup/teardown via fixtures, not repeated code
+- [ ] Edge cases covered (null, empty, boundary values)
+- [ ] Memory sanitizers enabled in test builds (ASan, UBSan)
+- [ ] Coverage meets 70% minimum
+
+## Skill Chain
+
+1. **cpp-testing** - GoogleTest, CTest, fixtures, sanitizers, coverage
+2. **tdd-workflow** - Red-Green-Refactor methodology
+
+---

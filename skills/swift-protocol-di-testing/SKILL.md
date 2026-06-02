@@ -201,7 +201,7 @@ closures) for cases where a protocol-with-extension is heavy.
 
 **Negative scope** (NOT what this skill covers):
 - Actor + persistence patterns — see `swift-actor-persistence`
-- Generic Swift coding style — see `~/.claude/rules/swift/`
+- Generic Swift coding style — see `~/.claude/rules-library/swift/`
 - UI testing (XCUITest) — out
 - Snapshot testing — out (separate library: pointfree's
   `swift-snapshot-testing`)
@@ -270,10 +270,10 @@ closures) for cases where a protocol-with-extension is heavy.
 - `~/.claude/skills/swift-actor-persistence/SKILL.md` — sister
   Swift concurrency skill
 - `~/.claude/skills/coding-standards/SKILL.md` — universal baseline
-- `~/.claude/rules/swift/no-discards.md` — discards / force-unwrap
+- `~/.claude/rules-library/swift/no-discards.md` — discards / force-unwrap
   bans
-- `~/.claude/rules/common/no-ambient-globals.md` — DI principle
-- `~/.claude/rules/common/local-testability.md` — testable-before-
+- `~/.claude/rules-library/common/no-ambient-globals.md` — DI principle
+- `~/.claude/rules-library/common/local-testability.md` — testable-before-
   write mandate
 - `~/.claude/agents/code-reviewer.md` — Council Division 3
 - `~/.claude/agents/tdd-guide.md` — Council Division 5

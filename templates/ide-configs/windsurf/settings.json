@@ -8,13 +8,13 @@
 // This file augments the VS Code baseline with Windsurf-specific
 // Codeium settings (privacy + AI feature toggles) so the Codeium
 // telemetry surface is brought down to the same posture as Microsoft
-// VS Code telemetry per ~/.claude/rules/common/secrets-management.md.
+// VS Code telemetry per ~/.claude/rules-library/common/secrets-management.md.
 //
 // References:
 // - ~/.claude/templates/ide-configs/vscode/settings.json (base)
-// - ~/.claude/rules/common/install-allowlist.md
-// - ~/.claude/rules/common/secrets-management.md
-// - ~/.claude/rules/common/extreme-lint-policy.md
+// - ~/.claude/rules-library/common/install-allowlist.md
+// - ~/.claude/rules-library/common/secrets-management.md
+// - ~/.claude/rules-library/common/extreme-lint-policy.md
 // - Codeium / Windsurf docs: codeium.com/windsurf/docs
 {
   // ============================================================
@@ -53,7 +53,7 @@
   // Disable Codeium telemetry. Codeium-Codeium (free) opts into
   // training data sharing by default; Codeium Teams / Enterprise
   // does not. Either way, opt out explicitly per
-  // ~/.claude/rules/common/gdpr-ccpa.md customer-data minimisation.
+  // ~/.claude/rules-library/common/gdpr-ccpa.md customer-data minimisation.
   "codeium.enableConfig": {
     "*": true,
     // Per-language opt-outs go here when a workspace handles

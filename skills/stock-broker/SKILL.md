@@ -380,7 +380,7 @@ First 5 minutes (open auction): wide spreads, news catch-up, volatility. Last 5 
 - `~/.claude/skills/bookkeeping-patterns/SKILL.md` — settlement booking + ledger posting
 - `~/.claude/skills/gdpr-ccpa-compliance/SKILL.md` — client data privacy
 - `~/.claude/skills/iso27001-controls/SKILL.md` — broker-dealer security controls
-- `~/.claude/rules/common/audit-logging.md` — order + execution + allocation audit trail (FINRA recordkeeping)
+- `~/.claude/rules-library/common/audit-logging.md` — order + execution + allocation audit trail (FINRA recordkeeping)
 - `~/.claude/rules/common/no-overclaim.md` — never promise "best price" — promise "best execution duty"
 
 ## Why This Skill Exists

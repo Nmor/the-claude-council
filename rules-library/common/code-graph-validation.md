@@ -111,7 +111,7 @@ language / per stack:
 | **Webhook signatures** | every signed-event path verifies signature | every signing-key has a verifier on the receiver |
 | **Cron / scheduled** | every cron expression maps to a registered handler | every scheduled handler has a registered cron entry |
 | **Feature flags** | every flag read has a registry entry; every registry entry has a removal task (per `feature-flags.md`) | every defined flag is read OR has an expiry per `feature-flags.md` |
-| **Docs surfaces** | every `[link](...)` resolves; every code-block reference exists | every documented feature has a code path; every code path that's user-visible has a doc page (per `docs-sync-with-code.md`) |
+| **Docs surfaces** | every markdown link resolves; every code-block reference exists | every documented feature has a code path; every code path that's user-visible has a doc page (per `docs-sync-with-code.md`) |
 | **Agents / skills / rules / hooks / commands (~/.claude/)** | every cited file exists; every named agent / skill / hook script / command is on disk | every defined artifact is referenced by at least one consumer (CLAUDE.md, auto-skills.md, council-triggers.md, settings.json) |
 | **Tests** | every imported subject exists; every assertion's expected code path runs | every test file has ≥ 1 test; every public function has ≥ 1 test or documented as untested |
 

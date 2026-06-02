@@ -212,7 +212,7 @@ Document the rotation procedure in the project runbook.
 - `provider-research` skill — the workflow.
 - `fire-and-forget` skill — the canonical shape for the
   send-side-effect that doesn't block alarm dispatch.
-- `~/.claude/rules/common/no-discards.md` — pushSubscription errors
+- `~/.claude/rules-library/common/no-discards.md` — pushSubscription errors
   must surface via typed error / log, never silently swallowed.
 
 ## Purpose
@@ -310,9 +310,9 @@ acknowledgement.
   delivery metrics + audit
 - `~/.claude/rules/common/official-docs-first.md` — RFC + W3C
   citations
-- `~/.claude/rules/common/secrets-management.md` — VAPID key
+- `~/.claude/rules-library/common/secrets-management.md` — VAPID key
   storage
-- `~/.claude/rules/common/audit-logging.md` — consent + send
+- `~/.claude/rules-library/common/audit-logging.md` — consent + send
   records
 - `~/.claude/agents/security-reviewer.md` — Council Division 4
 
@@ -345,4 +345,4 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New section when a browser ships new push capability (e.g., richer notification actions, push for native apps via WebPush W3C)
 - Quota / burn-rate tracking pattern when push send volumes scale past pilot
 - Multi-endpoint orchestration (FCM + APNs Web + Edge Workers) when reach gaps surface
-- Provider-rotation pattern when one push service has reliability issues (graceful degradation per `~/.claude/rules/common/graceful-degradation.md`)
+- Provider-rotation pattern when one push service has reliability issues (graceful degradation per `~/.claude/rules-library/common/graceful-degradation.md`)

@@ -1,7 +1,7 @@
 {
   "env": {
-    "MAX_THINKING_TOKENS": "31999",
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
+    "MAX_THINKING_TOKENS": "100000",
+    "autoCompactEnabled": "false"
   },
   "permissions": {
     "allow": []
@@ -43,9 +43,27 @@
             "command": "node \"$HOME/.claude/scripts/hooks/suggest-compact.js\""
           }
         ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/pre-write-governance-sweep.js\""
+          }
+        ]
       }
     ],
     "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/pre-compact-council-brief.js\""
+          }
+        ]
+      },
       {
         "matcher": "*",
         "hooks": [
@@ -101,6 +119,15 @@
           {
             "type": "command",
             "command": "node \"$HOME/.claude/scripts/hooks/post-edit-console-warn.js\""
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-no-discards.js\""
           }
         ]
       }

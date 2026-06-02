@@ -42,7 +42,7 @@
 
 > *"Every plan or piece of work routed through Claude should shock the world."*
 >
-> — The user directive that drove the v2.0 rebuild
+> — The user directive that drove the v1.0.0 build
 
 ---
 
@@ -231,8 +231,8 @@ Pick where to start based on what you want to do:
 | **Set up a new project** | [docs/PROJECT-BOOTSTRAP.md](docs/PROJECT-BOOTSTRAP.md) |
 | **Add a rule / skill / agent** | [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) |
 | **Run the safety nets** | [tests/](tests/) |
-| **See what changed in v2.0** | [CHANGELOG.md](CHANGELOG.md) |
-| **Inspect the rebuild plan** | [plans/peppy-painting-parrot.md](plans/peppy-painting-parrot.md) |
+| **See what changed in v1.0.0** | [CHANGELOG.md](CHANGELOG.md) |
+| **See the architecture** | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 
 ---
 
@@ -292,7 +292,7 @@ Per-IDE walkthroughs live in [INSTALL.md](INSTALL.md).
 
 ```text
 ═══════════════════════════════════════════════════════════════
-       THE CLAUDE COUNCIL  ·  v2.0.0  ·  VERIFICATION BLOCK
+       THE CLAUDE COUNCIL  ·  v1.0.0  ·  VERIFICATION BLOCK
 ═══════════════════════════════════════════════════════════════
 
   Common rules .............................. 73 / 73    PASS
@@ -343,8 +343,8 @@ your team, fork it for your org — no restrictions.
 Built on top of [Anthropic's Claude
 Code](https://docs.claude.com/claude-code). The Council protocol,
 principal-level mandate, 16-division structure, and continuous
-learning loop were authored as part of the *peppy-painting-parrot*
-rebuild plan ([plans/peppy-painting-parrot.md](plans/peppy-painting-parrot.md)).
+learning loop are documented in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+and [docs/COUNCIL.md](docs/COUNCIL.md).
 
 The rules and skills cite primary-source standards from OWASP,
 NIST, ISO, IEC, IEEE, W3C, IETF (RFCs), IFRS, FASB, ITIL, and
@@ -356,7 +356,7 @@ redistribute or modify any standard.
 
 <div align="center">
 
-**The Claude Council** · *v2.0.0* · *<a href="LICENSE">MIT</a>*
+**The Claude Council** · *v1.0.0* · *<a href="LICENSE">MIT</a>*
 
 [Architecture](docs/ARCHITECTURE.md) ·
 [Council](docs/COUNCIL.md) ·

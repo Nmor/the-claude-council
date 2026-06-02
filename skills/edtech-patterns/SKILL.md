@@ -871,12 +871,12 @@ When this skill activates, verify:
   REST endpoints alongside standards-mandated ones
 - `~/.claude/skills/research-methods/SKILL.md` — validity +
   reliability evidence for assessment + adaptive engines
-- `~/.claude/rules/common/a11y.md` — global WCAG floor rule
-- `~/.claude/rules/common/security.md` — global security
+- `~/.claude/rules-library/common/a11y.md` — global WCAG floor rule
+- `~/.claude/rules-library/common/security.md` — global security
   umbrella (LTI JWT, OAuth, JWKS rotation)
-- `~/.claude/rules/common/audit-logging.md` — access to
+- `~/.claude/rules-library/common/audit-logging.md` — access to
   educational records is audit-logged
-- `~/.claude/rules/common/data-retention.md` — minor-data
+- `~/.claude/rules-library/common/data-retention.md` — minor-data
   retention bounded; biometric retention 30 days max
 - `~/.claude/agents/accessibility-reviewer.md` — pairs on UI /
   assessment a11y review

@@ -8,9 +8,9 @@ description: Scan a Claude Code configuration surface (`.claude/` directory, `CL
 > Vendor-integration recipe for [AgentShield](https://github.com/affaan-m/agentshield).
 > Sister to `~/.claude/skills/security-review/SKILL.md` (source-code
 > audit — different scope), `~/.claude/skills/owasp-asvs/SKILL.md`
-> (ASVS L1/L2/L3 verification), `~/.claude/rules/common/install-allowlist.md`
-> (publisher review before adoption), `~/.claude/rules/common/secrets-management.md`
-> (vault-first secret storage), `~/.claude/rules/common/repo-setup-checklist.md`
+> (ASVS L1/L2/L3 verification), `~/.claude/rules-library/common/install-allowlist.md`
+> (publisher review before adoption), `~/.claude/rules-library/common/secrets-management.md`
+> (vault-first secret storage), `~/.claude/rules-library/common/repo-setup-checklist.md`
 > (20-point first-touch checklist).
 
 ## Purpose
@@ -31,7 +31,7 @@ this skill addresses it.
 ## When to use
 
 - Setting up a new Claude Code project for the first time
-  (per `~/.claude/rules/common/repo-setup-checklist.md`)
+  (per `~/.claude/rules-library/common/repo-setup-checklist.md`)
 - After modifying `.claude/settings.json`, `CLAUDE.md`, or MCP
   configs
 - Before committing configuration changes
@@ -47,10 +47,10 @@ this skill addresses it.
 - Pen-testing a deployed system → use a real DAST tool
   (OWASP ZAP, Burp Suite Pro, Nuclei)
 - Dependency CVE scanning → use the sister gates in
-  `~/.claude/rules/common/dependency-vulnerabilities.md`
+  `~/.claude/rules-library/common/dependency-vulnerabilities.md`
   (`pnpm audit`, `npm audit`, `osv-scanner`, `govulncheck`,
   `pip-audit`, `cargo audit`, `bundler-audit`, `trivy`)
-- License auditing → use `~/.claude/rules/common/license-allowlist-gate.md`
+- License auditing → use `~/.claude/rules-library/common/license-allowlist-gate.md`
   workflow
 
 ## What it scans
@@ -65,7 +65,7 @@ this skill addresses it.
 
 ## Prerequisites
 
-**Per `~/.claude/rules/common/install-allowlist.md`:** Confirm
+**Per `~/.claude/rules-library/common/install-allowlist.md`:** Confirm
 AgentShield's npm publisher (`affaan-m`) + recent release
 cadence + signing posture before adoption. The tool is
 single-author maintained; treat it as higher supply-chain risk
@@ -132,7 +132,7 @@ Auto-fix applies only safe, well-defined fixes:
 - Leaves manual-only suggestions untouched
 
 **Always review the diff** before committing auto-fixes; per
-`~/.claude/rules/common/proper-fixes-first.md`, never accept a
+`~/.claude/rules-library/common/proper-fixes-first.md`, never accept a
 mechanical fix without verifying the root cause is addressed.
 
 ### Deep analysis (opus-backed adversarial agents)
@@ -161,7 +161,7 @@ Scaffolds:
 - `mcp.json` placeholder
 
 Useful for new projects; per
-`~/.claude/rules/common/repo-setup-checklist.md`, ALSO run the
+`~/.claude/rules-library/common/repo-setup-checklist.md`, ALSO run the
 20-point first-touch checklist in the same pass.
 
 ### GitHub Action
@@ -174,7 +174,7 @@ Useful for new projects; per
     fail-on-findings: true
 ```
 
-**Per `~/.claude/rules/common/security-controls-org-wide.md` rule
+**Per `~/.claude/rules-library/common/security-controls-org-wide.md` rule
 on SHA-pinning third-party actions:** pin to a full commit SHA,
 not `@v1`. Use Dependabot / Renovate to bump the SHA on a
 documented cadence.
@@ -219,7 +219,7 @@ documented cadence.
 
 ### Pattern 1: Run before every config-touching commit
 
-Per `~/.claude/rules/common/hooks.md` PostToolUse philosophy,
+Per `~/.claude/rules-library/common/hooks.md` PostToolUse philosophy,
 treat AgentShield as part of the local pre-commit gate when the
 diff touches `.claude/**`. Adds ~5 seconds; catches the entire
 class of "I just dropped a secret into `mcp.json`."
@@ -229,7 +229,7 @@ class of "I just dropped a secret into `mcp.json`."
 When `mcp.json` adds a new MCP server, AgentShield flags
 supply-chain risk patterns (`npx -y` without pin, unknown
 publisher). Pair with the manual review in
-`~/.claude/rules/common/install-allowlist.md` for the full
+`~/.claude/rules-library/common/install-allowlist.md` for the full
 adoption decision.
 
 ### Pattern 3: Treat auto-fix as a starting point
@@ -241,7 +241,7 @@ extend the fix as needed.
 
 ### Pattern 4: Don't silence findings
 
-Per `~/.claude/rules/common/no-discards.md` + `extreme-lint-policy.md`,
+Per `~/.claude/rules-library/common/no-discards.md` + `extreme-lint-policy.md`,
 the answer to a finding is either a fix or a documented
 exception with expiry — never a per-line suppression directive.
 
@@ -291,17 +291,17 @@ After running a scan, confirm:
   security review (different scope)
 - `~/.claude/skills/owasp-asvs/SKILL.md` — ASVS L1/L2/L3
   verification
-- `~/.claude/rules/common/install-allowlist.md` — publisher
+- `~/.claude/rules-library/common/install-allowlist.md` — publisher
   review before MCP / agent / tool adoption
-- `~/.claude/rules/common/secrets-management.md` — vault storage;
+- `~/.claude/rules-library/common/secrets-management.md` — vault storage;
   no secrets in config files
-- `~/.claude/rules/common/repo-setup-checklist.md` — 20-point
+- `~/.claude/rules-library/common/repo-setup-checklist.md` — 20-point
   first-touch checklist (includes a security-scan step)
-- `~/.claude/rules/common/security-controls-org-wide.md` —
+- `~/.claude/rules-library/common/security-controls-org-wide.md` —
   SHA-pin third-party GitHub Actions
-- `~/.claude/rules/common/no-discards.md` — don't silence
+- `~/.claude/rules-library/common/no-discards.md` — don't silence
   findings
-- `~/.claude/rules/common/proper-fixes-first.md` — auto-fix is
+- `~/.claude/rules-library/common/proper-fixes-first.md` — auto-fix is
   a starting point, not a finished fix
 
 ## Why this skill exists
@@ -349,24 +349,24 @@ so adoption itself stays safe.
   vulnerability management) + Control 16 (application software
   security)
 - **CVSS v3.1 / v4.0** — Vulnerability scoring system
-- **`~/.claude/rules/common/dependency-vulnerabilities.md`** —
+- **`~/.claude/rules-library/common/dependency-vulnerabilities.md`** —
   CVE gate runs as part of every scan
 
 ## Cross-References
 
-- `~/.claude/rules/common/security.md` — OWASP Top 10 umbrella +
+- `~/.claude/rules-library/common/security.md` — OWASP Top 10 umbrella +
   per-vulnerability sister-rule index
-- `~/.claude/rules/common/secrets-management.md` — secret scan
+- `~/.claude/rules-library/common/secrets-management.md` — secret scan
   layer of the audit
-- `~/.claude/rules/common/dependency-vulnerabilities.md` — CVE
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md` — CVE
   gate (MODERATE+ blocks)
-- `~/.claude/rules/common/license-allowlist-gate.md` — SPDX
+- `~/.claude/rules-library/common/license-allowlist-gate.md` — SPDX
   license gate
-- `~/.claude/rules/common/security-controls-org-wide.md` — 5-layer
+- `~/.claude/rules-library/common/security-controls-org-wide.md` — 5-layer
   non-bypassable enforcement
 - `~/.claude/agents/security-reviewer.md` — review the findings;
   classify severity; propose fixes
-- `~/.claude/rules/common/audit-logging.md` — scan results
+- `~/.claude/rules-library/common/audit-logging.md` — scan results
   audit-logged
 
 

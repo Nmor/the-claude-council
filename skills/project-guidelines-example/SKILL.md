@@ -77,7 +77,7 @@ intentional reminders to substitute.
 - **Database**: PostgreSQL via Supabase (or RDS / Cloud SQL /
   Neon — your choice)
 - **AI**: Claude API (current models per
-  `~/.claude/rules/common/performance.md`) — opus for coding /
+  `~/.claude/rules-library/common/performance.md`) — opus for coding /
   reviewing / planning, haiku for doc generation
 - **Deployment**: Cloud Run / Vercel / Fly.io / Lambda — your
   choice
@@ -168,7 +168,7 @@ class ApiResponse(BaseModel, Generic[T]):
         return cls(success=False, error_code=code, message=message, details=details)
 ```
 
-Per `~/.claude/rules/common/error-codes.md` + `error-handling-with-context.md`,
+Per `~/.claude/rules-library/common/error-codes.md` + `error-handling-with-context.md`,
 error responses carry a stable `error_code` (machine) + a
 human-readable `message` + structured `details`. Tests assert on
 `error_code`, never on `message`.
@@ -237,7 +237,7 @@ async def analyze_with_claude(content: str) -> AnalysisResult:
 
     response = client.messages.create(
         # Use the current Claude model. Per
-        # ~/.claude/rules/common/performance.md, opus for
+        # ~/.claude/rules-library/common/performance.md, opus for
         # coding/reviewing/planning, haiku for mechanical work.
         # Pin to the latest GA model ID via your config layer.
         model=os.environ["ANTHROPIC_MODEL"],
@@ -308,8 +308,8 @@ export function useApi<T>(fetchFn: () => Promise<ApiResponse<T>>) {
 
 ### Testing requirements
 
-Per `~/.claude/rules/common/extreme-lint-policy.md` +
-`~/.claude/rules/common/testing.md`, the project enforces:
+Per `~/.claude/rules-library/common/extreme-lint-policy.md` +
+`~/.claude/rules-library/common/testing.md`, the project enforces:
 
 - **Touched-file coverage**: ≥ 90% line + branch
 - **Project coverage**: ≥ 80% line + branch
@@ -357,7 +357,7 @@ async def test_unauthenticated_request_returns_stable_code(client: AsyncClient):
     response = await client.get("/api/protected")
     assert response.status_code == 401
     body = response.json()
-    # Assert on stable code per ~/.claude/rules/common/error-codes.md
+    # Assert on stable code per ~/.claude/rules-library/common/error-codes.md
     assert body["error_code"] == "auth_missing_token"
 ```
 
@@ -400,16 +400,16 @@ any deploy:
 - [ ] `pnpm build` succeeds (frontend)
 - [ ] `uv run pytest --cov-fail-under=80` passes (backend)
 - [ ] No hardcoded secrets (per
-      `~/.claude/rules/common/secrets-management.md`)
+      `~/.claude/rules-library/common/secrets-management.md`)
 - [ ] Environment variables documented + present in vault
 - [ ] Database migrations reviewed (per
-      `~/.claude/rules/common/schema-evolution.md`)
+      `~/.claude/rules-library/common/schema-evolution.md`)
 - [ ] CVE gate green (per
-      `~/.claude/rules/common/dependency-vulnerabilities.md`)
+      `~/.claude/rules-library/common/dependency-vulnerabilities.md`)
 - [ ] License gate green (per
-      `~/.claude/rules/common/license-allowlist-gate.md`)
+      `~/.claude/rules-library/common/license-allowlist-gate.md`)
 - [ ] Docs in sync (per
-      `~/.claude/rules/common/docs-sync-with-code.md`)
+      `~/.claude/rules-library/common/docs-sync-with-code.md`)
 
 #### Deployment commands (illustrative)
 
@@ -442,7 +442,7 @@ SUPABASE_URL=https://<project>.supabase.co
 SUPABASE_SERVICE_KEY=<from-vault>
 ```
 
-Per `~/.claude/rules/common/secrets-management.md`, secrets come
+Per `~/.claude/rules-library/common/secrets-management.md`, secrets come
 from a vault (Keychain via aws-vault, 1Password CLI, doppler,
 AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault),
 NEVER from a committed file. The `.env.example` lists every var
@@ -478,10 +478,10 @@ extends global:
 | Copying this template verbatim without customising | Replace every `<placeholder>` and illustrative version pin with the project's real values |
 | Workspace skill lowering a global threshold (e.g., "this project only requires 60% coverage") | Workspace rules can RAISE thresholds, never LOWER them per `rule-authoring-global-vs-project.md` rule 4 |
 | Pinning a Claude model ID literal in code | Source from env / config so model upgrades roll forward without code changes |
-| Pinning an EOL runtime (Python 3.11, Node 18) | Use current LTS per `~/.claude/rules/common/updated-frameworks.md` |
+| Pinning an EOL runtime (Python 3.11, Node 18) | Use current LTS per `~/.claude/rules-library/common/updated-frameworks.md` |
 | Restating global rules verbatim in the workspace skill | Workspace skill should ADD project-specifics; cross-reference global rather than duplicate |
-| Skipping the `.env.example` placeholder list | Every env var the app reads must appear in `.env.example` with a placeholder value per `~/.claude/rules/common/local-dev-setup.md` |
-| Coverage threshold stuck at 70% (older `tdd-workflow` default) | Match `~/.claude/rules/common/extreme-lint-policy.md` — 80% project / 90% touched / 95% critical paths |
+| Skipping the `.env.example` placeholder list | Every env var the app reads must appear in `.env.example` with a placeholder value per `~/.claude/rules-library/common/local-dev-setup.md` |
+| Coverage threshold stuck at 70% (older `tdd-workflow` default) | Match `~/.claude/rules-library/common/extreme-lint-policy.md` — 80% project / 90% touched / 95% critical paths |
 
 ## Verification checklist
 
@@ -493,7 +493,7 @@ When using this template for a new project, confirm:
       (`package.json`, `pyproject.toml`, `go.mod`)
 - [ ] File structure matches actual repo layout
 - [ ] Code patterns match the actual project's reuse-first
-      primitives (per `~/.claude/rules/common/reuse-first.md`)
+      primitives (per `~/.claude/rules-library/common/reuse-first.md`)
 - [ ] Coverage thresholds ≥ global floors (80 / 90 / 95)
 - [ ] Critical rules EXTEND global; do NOT lower any threshold
 - [ ] `.env.example` lists every env var
@@ -522,22 +522,22 @@ When using this template for a new project, confirm:
 - `~/.claude/rules/common/project-scoped-artifacts.md` —
   workspace `.claude/` scaffold creation on first significant
   work
-- `~/.claude/rules/common/reuse-first.md` — project's
+- `~/.claude/rules-library/common/reuse-first.md` — project's
   reuse-first sweep before adding new primitives
-- `~/.claude/rules/common/extreme-lint-policy.md` — coverage +
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — coverage +
   complexity thresholds the workspace inherits
-- `~/.claude/rules/common/testing.md` — test types + coverage
+- `~/.claude/rules-library/common/testing.md` — test types + coverage
   floors
-- `~/.claude/rules/common/error-codes.md` +
-  `~/.claude/rules/common/error-handling-with-context.md` —
+- `~/.claude/rules-library/common/error-codes.md` +
+  `~/.claude/rules-library/common/error-handling-with-context.md` —
   stable error envelope conventions
-- `~/.claude/rules/common/local-dev-setup.md` — 30-minute
+- `~/.claude/rules-library/common/local-dev-setup.md` — 30-minute
   fresh-clone bootstrap
-- `~/.claude/rules/common/secrets-management.md` — vault-based
+- `~/.claude/rules-library/common/secrets-management.md` — vault-based
   secrets
-- `~/.claude/rules/common/docs-sync-with-code.md` — docs ship in
+- `~/.claude/rules-library/common/docs-sync-with-code.md` — docs ship in
   the same PR as code
-- `~/.claude/rules/common/performance.md` — Claude model
+- `~/.claude/rules-library/common/performance.md` — Claude model
   selection policy (opus default, haiku for mechanical)
 - `~/.claude/skills/coding-standards/` — universal coding
   standards
@@ -586,12 +586,12 @@ spawning its workspace skill on first significant work.
   classification of project-specific guidance
 - `~/.claude/rules/common/project-scoped-artifacts.md` — workspace
   `.claude/` scaffold structure
-- `~/.claude/rules/common/auto-skills.md` — skill auto-fire
+- `~/.claude/rules-library/common/auto-skills.md` — skill auto-fire
   registry
 - `configure-ecc` skill — installs project-scoped Claude config
 - `~/.claude/CLAUDE.md` — Council protocol the project guidelines
   inherit
-- `~/.claude/rules/common/extreme-lint-policy.md` — strictness
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — strictness
   baseline a project guidelines example illustrates
 
 

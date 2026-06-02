@@ -541,8 +541,8 @@ happen to share a logo.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
-- Raw colour literal in component file (per `~/.claude/rules/common/no-discards.md` — design-token weakening)
-- New component built without searching shared `components/ui/` first (per `~/.claude/rules/common/reuse-first.md`)
+- Raw colour literal in component file (per `~/.claude/rules-library/common/no-discards.md` — design-token weakening)
+- New component built without searching shared `components/ui/` first (per `~/.claude/rules-library/common/reuse-first.md`)
 - Component fork to add one variant instead of extending with prop (rule-of-three violation)
 - Design tokens defined twice (CSS variable + JS const drift)
 - Storybook story missing for a new component (docs / governance weakening)

@@ -40,7 +40,7 @@ Every workspace `.claude/` contains:
 ├── README.md              # how this .claude/ is organised
 ├── settings.json          # workspace-scoped settings (optional)
 ├── settings.local.json    # per-user overrides (gitignored)
-├── .gitignore             # excludes settings.local.json, audits/jsonl etc.
+├── .gitignore             # excludes settings.local.json, plans/, audits/, sessions/ — see rule 11
 ├── rules/                 # workspace-specific rules (extend global)
 │   ├── 00-index.md
 │   └── <rule>.md
@@ -164,6 +164,55 @@ reference) live at `<workspace>/.claude/memory/`. The global
 memory dir at `~/.claude/projects/-Users-APPLE/memory/` holds
 ONLY universal preferences (e.g., "Use pnpm not npm", "React
 19 + SonarLint pitfalls", "Web quality bar").
+
+### 11. Plans + audits are always gitignored + never referenced as repo paths
+
+The workspace `.claude/plans/` and `.claude/audits/` directories
+(and the global `~/.claude/plans/` + `~/.claude/audits/`)
+carry per-session narrative + per-user state that MUST NOT
+enter git history:
+
+- **Plans** — In-flight architectural drafts, rebuild narratives,
+  per-author phase tracking, references to teammates / vendors /
+  customers / customers' specific incidents that don't belong in
+  shared history.
+- **Audits** — Learning-event streams, Council-bypass logs,
+  security audit reports that can leak workspace names, user
+  identifiers, internal vendor names, or sensitive scan output.
+
+Mandatory hygiene:
+
+1. Every `.gitignore` (global + every workspace) MUST include
+   `plans/` and `audits/` as full-directory entries. The
+   `templates/project-claude-scaffold/.gitignore` carries this
+   by default.
+2. No checked-in code file (source, doc, config, agent, skill,
+   rule, command, template) may REFERENCE `plans/` or `audits/`
+   as a REPO LOCATION (e.g., a markdown link pointing at
+   `plans/<slug>` or `audits/<file>` as if it were a repo
+   artifact, or an unquoted path token in agent / skill
+   frontmatter). The only acceptable references are to RUNTIME
+   PATHS that resolve at install time on the user's machine
+   (paths under `~/.claude/plans/`, `<workspace>/.claude/plans/`,
+   `<workspace>/.claude/audits/`).
+3. README / CHANGELOG / docs that previously pointed at a plan
+   or audit file as a repo artifact MUST be rewritten to point
+   at the equivalent stable doc (e.g., `docs/ARCHITECTURE.md`,
+   `docs/COUNCIL.md`).
+4. CI link-integrity checks (per `done-criteria.md`) include
+   a sweep that fails the build if any tracked file references
+   `plans/...` or `audits/...` as a repo path (anchor:
+   `^plans/` or `^audits/` in markdown links, or unquoted
+   path tokens in agent / skill frontmatter).
+5. If a plan needs to be archived for institutional memory,
+   it lives in `~/.claude/.local/plans/` (per-user, gitignored
+   at `.local/`) OR is rewritten into an ADR (per
+   `adr-template.md`) and committed under `docs/adr/` —
+   STRIPPED of every workspace / customer / teammate name.
+
+User directive (verbatim): "plan and claude files should always
+be gitignored and not be referenced in and code file. This
+should be part of all relevant rules and files".
 
 ## Tech-stack auto-detection (on scaffold creation)
 

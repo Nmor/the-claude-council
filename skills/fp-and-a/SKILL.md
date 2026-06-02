@@ -480,8 +480,8 @@ A 5-year LRP showing $500M ARR at year 5 from a current run-rate of $20M ARR wit
 - `~/.claude/skills/ifrs-gaap-reporting/SKILL.md` — financial statements feed budget vs actual
 - `~/.claude/skills/clickhouse-io/SKILL.md` — warehouse for cohort + metric queries
 - `~/.claude/skills/postgres-patterns/SKILL.md` — operational stores for budget tables
-- `~/.claude/rules/common/observability.md` — KPI dashboards are observability
-- `~/.claude/rules/common/data-retention.md` — board-deck data retention
+- `~/.claude/rules-library/common/observability.md` — KPI dashboards are observability
+- `~/.claude/rules-library/common/data-retention.md` — board-deck data retention
 - Council Division 10 (Finance & FinOps) — auto-engages on FP&A engineering
 - Council Division 12 (Strategy & Innovation) — uses FP&A scenarios
 - OpenView SaaS Benchmarks (annual report)

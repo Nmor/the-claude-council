@@ -41,7 +41,7 @@ side-effect duplication).
 ## When NOT to use
 
 - **An MCP server already exists** that covers the use case —
-  consume it instead (per `~/.claude/rules/common/reuse-first.md`)
+  consume it instead (per `~/.claude/rules-library/common/reuse-first.md`)
 - The workload is a one-time script — write the script, not an
   MCP server
 - The integration is purely intra-process (one app calling another
@@ -58,9 +58,9 @@ side-effect duplication).
   MCP rides on
 - **JSON Schema Draft 2020-12** — input / output schema validation
 - **RFC 9110 §9.2.2** — idempotency semantics for tool calls
-  (sister: `~/.claude/rules/common/idempotency.md`)
+  (sister: `~/.claude/rules-library/common/idempotency.md`)
 - **W3C Trace Context** — for distributed tracing through MCP
-  servers (sister: `~/.claude/rules/common/observability.md`)
+  servers (sister: `~/.claude/rules-library/common/observability.md`)
 - **OAuth 2.1** — when the MCP server fronts a third-party API
   that requires user-scoped auth
 
@@ -137,7 +137,7 @@ Every tool gets:
 | **inputSchema** | JSON Schema (Zod for TS, Pydantic for Python). Every parameter named + typed + described + constrained. Include `examples` in field descriptions. |
 | **outputSchema** | Define wherever the response shape is structured. Lets clients pre-validate + lets the LLM reason about the result before the call. |
 | **annotations** | `readOnlyHint` (true/false) + `destructiveHint` + `idempotentHint` + `openWorldHint`. Determines whether agents auto-confirm or require user approval. |
-| **error envelope** | Stable `error_code` per `~/.claude/rules/common/error-codes.md`. Never raw stack traces. |
+| **error envelope** | Stable `error_code` per `~/.claude/rules-library/common/error-codes.md`. Never raw stack traces. |
 
 #### Tool implementation pattern (TypeScript)
 
@@ -201,19 +201,19 @@ server.registerTool({
 
 #### Core infrastructure to build once
 
-- **Structured logger** (per `~/.claude/rules/common/observability.md`):
+- **Structured logger** (per `~/.claude/rules-library/common/observability.md`):
   request_id, trace_id, tool name, user_id (when available),
   duration_ms, error_code
 - **Error envelope** with stable codes (per
-  `~/.claude/rules/common/error-codes.md`)
+  `~/.claude/rules-library/common/error-codes.md`)
 - **Pagination helper** (cursor-based per
-  `~/.claude/rules/common/api-versioning.md`)
-- **Auth boundary** (per `~/.claude/rules/common/secrets-management.md`
+  `~/.claude/rules-library/common/api-versioning.md`)
+- **Auth boundary** (per `~/.claude/rules-library/common/secrets-management.md`
   — secrets from vault, never source)
-- **Idempotency cache** (per `~/.claude/rules/common/idempotency.md`)
+- **Idempotency cache** (per `~/.claude/rules-library/common/idempotency.md`)
 - **Rate limit + circuit breaker** wrapping every downstream call
-  (per `~/.claude/rules/common/rate-limiting.md` +
-  `~/.claude/rules/common/circuit-breaker.md`)
+  (per `~/.claude/rules-library/common/rate-limiting.md` +
+  `~/.claude/rules-library/common/circuit-breaker.md`)
 
 ### Phase 3: Review + test
 
@@ -227,9 +227,9 @@ server.registerTool({
 - [ ] Every error path emits a stable `error_code` + structured
       log + (where applicable) metric
 - [ ] No secrets in source (per
-      `~/.claude/rules/common/secrets-management.md`)
+      `~/.claude/rules-library/common/secrets-management.md`)
 - [ ] No raw user input concatenated into shell / SQL / file
-      paths (per `~/.claude/rules/common/security.md` A03 + A10)
+      paths (per `~/.claude/rules-library/common/security.md` A03 + A10)
 - [ ] Every tool description ≤ 3 sentences (LLMs read all
       descriptions every request)
 - [ ] Every input field has a `describe()` / `description` —
@@ -240,7 +240,7 @@ server.registerTool({
 - **Unit**: Vitest / pytest per tool — input schema validation,
   happy path, every named error path
 - **Integration**: real downstream service via Testcontainers OR
-  recorded fixtures (per `~/.claude/rules/common/local-testability.md`)
+  recorded fixtures (per `~/.claude/rules-library/common/local-testability.md`)
 - **MCP Inspector**: interactive test harness — `npx
   @modelcontextprotocol/inspector` (TS) — exercise every tool
   through the wire protocol before declaring done
@@ -249,7 +249,7 @@ server.registerTool({
   OR `mypy --strict` + `ruff check --select=ALL`
 - **Contract test**: schema + a sample request/response pair for
   every tool — verifies the server keeps its published contract
-  across versions (per `~/.claude/rules/common/contract-testing.md`)
+  across versions (per `~/.claude/rules-library/common/contract-testing.md`)
 
 ### Phase 4: Evaluation (10 questions)
 
@@ -318,7 +318,7 @@ Good:
 
 The agent can read `error_code`, branch on it, and retry / fall
 back / surface to user. Per
-`~/.claude/rules/common/error-codes.md` — stable codes only.
+`~/.claude/rules-library/common/error-codes.md` — stable codes only.
 
 ### Pattern 3: Pagination + filter early
 
@@ -340,7 +340,7 @@ clients build safe UX around your tools.
 ### Pattern 5: Version the wire surface, not just the code
 
 Treat your MCP server like any public API (per
-`~/.claude/rules/common/api-versioning.md`). Tool names are
+`~/.claude/rules-library/common/api-versioning.md`). Tool names are
 permanent; tool signatures evolve additively. Breaking changes
 mean a new server name (e.g., `shop-v2`), not a renamed tool.
 
@@ -352,10 +352,10 @@ mean a new server name (e.g., `shop-v2`), not a renamed tool.
 | `inputSchema` accepts `any` / unconstrained `object` | Define every field with type + constraint + description |
 | Tool returns raw API response without sanitisation | Strip sensitive fields (PII, secrets) before returning; transform to a documented `outputSchema` |
 | Single mega-tool with 30 parameters | Split into named tools per use case (`shop_search_orders` vs `shop_get_order_by_id`) |
-| Server logs unstructured `console.log` | Structured logger with required fields (per `~/.claude/rules/common/observability.md`) |
+| Server logs unstructured `console.log` | Structured logger with required fields (per `~/.claude/rules-library/common/observability.md`) |
 | Auth checked once at startup, never per-request | Per-request auth check; revoked tokens fail fast |
 | `outputSchema` omitted on structured returns | Define it — lets the client + LLM both reason about shape before parsing |
-| Tools fire-and-forget side effects (email, payment) without idempotency key | Always require an idempotency_key on side-effecting tools (per `~/.claude/rules/common/idempotency.md`) |
+| Tools fire-and-forget side effects (email, payment) without idempotency key | Always require an idempotency_key on side-effecting tools (per `~/.claude/rules-library/common/idempotency.md`) |
 
 ## Verification checklist
 
@@ -365,7 +365,7 @@ MCP server build (this turn):
   - Transport selected + rationale documented (stdio | streamable HTTP)
   - Every tool has: name, description ≤ 3 sentences, inputSchema, outputSchema, annotations
   - Structured logger wired with request_id + trace_id + tool name + duration_ms + error_code
-  - Stable error codes per ~/.claude/rules/common/error-codes.md
+  - Stable error codes per ~/.claude/rules-library/common/error-codes.md
   - No secrets in source; vault-retrieval pattern per secrets-management.md
   - Rate limit + circuit breaker on every downstream call
   - Idempotency keys on side-effecting tools
@@ -383,18 +383,18 @@ When the MCP server YOU built is published:
 
 - Sign the npm / PyPI package (provenance)
 - Pin all dependencies (per
-  `~/.claude/rules/common/dependency-pinning.md`)
+  `~/.claude/rules-library/common/dependency-pinning.md`)
 - License-allowlist gate (per
-  `~/.claude/rules/common/license-allowlist-gate.md`) — MIT /
+  `~/.claude/rules-library/common/license-allowlist-gate.md`) — MIT /
   Apache-2.0 / BSD / ISC for the published artifact
 - Document required scopes / permissions in README
 - Document the data classes the server touches (PII / payment /
   health) — consumers need this for compliance review (per
-  `~/.claude/rules/common/gdpr-ccpa.md`)
+  `~/.claude/rules-library/common/gdpr-ccpa.md`)
 
 When the MCP server is being CONSUMED:
 
-- Per `~/.claude/rules/common/install-allowlist.md` — Anthropic-
+- Per `~/.claude/rules-library/common/install-allowlist.md` — Anthropic-
   official MCPs allowed; Docker official allowed; third-party
   MCPs from unknown publishers require explicit user approval
 - Read the source before registering (the `command` line is
@@ -403,26 +403,26 @@ When the MCP server is being CONSUMED:
 
 ## Cross-references
 
-- `~/.claude/rules/common/install-allowlist.md` — MCP publisher
+- `~/.claude/rules-library/common/install-allowlist.md` — MCP publisher
   allowlist (consumer side)
-- `~/.claude/rules/common/secrets-management.md` — vault-only
+- `~/.claude/rules-library/common/secrets-management.md` — vault-only
   secret retrieval
-- `~/.claude/rules/common/error-codes.md` — stable error code
+- `~/.claude/rules-library/common/error-codes.md` — stable error code
   registry
-- `~/.claude/rules/common/error-handling-with-context.md` —
+- `~/.claude/rules-library/common/error-handling-with-context.md` —
   wrapping + structured logging
-- `~/.claude/rules/common/idempotency.md` — side-effecting tools
+- `~/.claude/rules-library/common/idempotency.md` — side-effecting tools
   require idempotency keys
-- `~/.claude/rules/common/rate-limiting.md` — protect downstreams
-- `~/.claude/rules/common/circuit-breaker.md` — open the breaker
+- `~/.claude/rules-library/common/rate-limiting.md` — protect downstreams
+- `~/.claude/rules-library/common/circuit-breaker.md` — open the breaker
   on cascading failures
-- `~/.claude/rules/common/observability.md` — structured logs +
+- `~/.claude/rules-library/common/observability.md` — structured logs +
   metrics + traces
-- `~/.claude/rules/common/api-versioning.md` — version the tool
+- `~/.claude/rules-library/common/api-versioning.md` — version the tool
   surface
-- `~/.claude/rules/common/contract-testing.md` — contract tests
+- `~/.claude/rules-library/common/contract-testing.md` — contract tests
   prevent silent breakage
-- `~/.claude/rules/common/local-testability.md` — every tool
+- `~/.claude/rules-library/common/local-testability.md` — every tool
   testable locally before claim
 - `~/.claude/rules/common/principal-level-mandate.md` — the
   template this skill follows
@@ -489,7 +489,7 @@ new ways to misuse the loose surface.
   descriptions are the LLM's only context)
 - **CWE-1284** — Improper validation of specified quantity in
   input (every MCP tool argument validated against its schema)
-- **`~/.claude/rules/common/install-allowlist.md`** — Publisher
+- **`~/.claude/rules-library/common/install-allowlist.md`** — Publisher
   trust gate before registering a new MCP
 
 ## Cross-References
@@ -503,9 +503,9 @@ new ways to misuse the loose surface.
   correctness + annotation discipline
 - `~/.claude/agents/architect.md` — transport choice (stdio vs
   streamable HTTP), single-server vs federated design
-- `~/.claude/rules/common/install-allowlist.md` — publisher
+- `~/.claude/rules-library/common/install-allowlist.md` — publisher
   allowlist
-- `~/.claude/rules/common/error-handling-with-context.md` — MCP
+- `~/.claude/rules-library/common/error-handling-with-context.md` — MCP
   error envelope shape
 
 
@@ -518,7 +518,7 @@ new ways to misuse the loose surface.
 | Single-shot tool call for multi-step workflow | LLM cannot recover from intermediate failures | Decompose into smaller tools; use resources for state |
 | Server holds secrets in plain-text config | Source-control leak risk | Vault / Keychain; per `secrets-management.md` |
 | Tool description over 1000 tokens | Bloats every prompt; reduces effective context | Concise description; link to canonical docs for detail |
-| Server makes outbound calls without rate-limiting | DoS amplification surface | Rate-limit per `~/.claude/rules/common/rate-limiting.md` |
+| Server makes outbound calls without rate-limiting | DoS amplification surface | Rate-limit per `~/.claude/rules-library/common/rate-limiting.md` |
 | Tool args validated only at server, not in schema | Bad LLM calls produce confusing errors | Schema-validate at the boundary; reject with clear error |
 | Logs tool inputs in plaintext | Sensitive PII / secrets leak | Redact per `log-levels.md`; structured fields only |
 | New MCP installed without source review | Supply-chain attack surface | Publisher allowlist per `install-allowlist.md` |

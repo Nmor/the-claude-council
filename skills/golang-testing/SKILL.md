@@ -782,10 +782,10 @@ Principal-level Go test methodology: table-driven tests + subtests, parallel exe
 
 - `~/.claude/skills/golang-patterns/SKILL.md` — code idioms under test
 - `~/.claude/skills/tdd-workflow/SKILL.md` — RED-GREEN-REFACTOR
-- `~/.claude/rules/common/testing.md` — coverage thresholds
-- `~/.claude/rules/common/no-ambient-globals.md` — Clock / RNG injection
-- `~/.claude/rules/golang/no-discards.md` — Go pattern hooks
-- `~/.claude/rules/golang/testing.md` — Go-specific testing rule
+- `~/.claude/rules-library/common/testing.md` — coverage thresholds
+- `~/.claude/rules-library/common/no-ambient-globals.md` — Clock / RNG injection
+- `~/.claude/rules-library/golang/no-discards.md` — Go pattern hooks
+- `~/.claude/rules-library/golang/testing.md` — Go-specific testing rule
 - `~/.claude/agents/go-reviewer.md` — Go code review delegate
 - `~/.claude/agents/tdd-guide.md`
 

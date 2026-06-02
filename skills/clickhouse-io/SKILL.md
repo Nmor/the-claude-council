@@ -510,7 +510,7 @@ mutation cost awareness, and the ClickHouse data-type discipline
 - `~/.claude/skills/dynamodb-patterns/SKILL.md` — operational NoSQL sister
 - `~/.claude/skills/database-migrations/SKILL.md` — schema evolution discipline
 - `~/.claude/skills/observability-patterns/SKILL.md` — ClickHouse is often the metrics / log store backend
-- `~/.claude/rules/common/schema-evolution.md` — additive, reversible migrations
+- `~/.claude/rules-library/common/schema-evolution.md` — additive, reversible migrations
 - `~/.claude/agents/database-reviewer.md` — Council Division 9 reviewer
 - `~/.claude/agents/data-reviewer.md` — schema + analytics governance
 

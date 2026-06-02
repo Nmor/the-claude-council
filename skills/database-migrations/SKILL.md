@@ -370,8 +370,8 @@ backfill → cutover → cleanup), and cross-ORM migration semantics
 - **MySQL Reference Manual 8.4** — Online DDL operations matrix
   (ALGORITHM=INPLACE, LOCK=NONE)
 - **SQL:2023 (ISO/IEC 9075)** — DDL grammar
-- **`~/.claude/rules/common/schema-evolution.md`** — expand-contract
-- **`~/.claude/rules/common/deprecation-lifecycle.md`** — old-column
+- **`~/.claude/rules-library/common/schema-evolution.md`** — expand-contract
+- **`~/.claude/rules-library/common/deprecation-lifecycle.md`** — old-column
   retirement runway
 - **OWASP ASVS 4.0.3 §1.4 (Architectural Documentation)** —
   versioned schema as ADR
@@ -397,9 +397,9 @@ backfill → cutover → cleanup), and cross-ORM migration semantics
 - `~/.claude/skills/postgres-patterns/SKILL.md` — OLTP target
 - `~/.claude/skills/clickhouse-io/SKILL.md` — OLAP migration shape
 - `~/.claude/skills/dynamodb-patterns/SKILL.md` — NoSQL evolution
-- `~/.claude/rules/common/schema-evolution.md` — expand-contract
-- `~/.claude/rules/common/deprecation-lifecycle.md` — runway
-- `~/.claude/rules/common/idempotency.md` — re-runnable migrations
+- `~/.claude/rules-library/common/schema-evolution.md` — expand-contract
+- `~/.claude/rules-library/common/deprecation-lifecycle.md` — runway
+- `~/.claude/rules-library/common/idempotency.md` — re-runnable migrations
 - `~/.claude/agents/database-reviewer.md` — Council Division 9
 
 ## Why this skill exists

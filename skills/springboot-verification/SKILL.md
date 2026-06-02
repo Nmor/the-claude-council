@@ -287,9 +287,9 @@ Principal-level Spring Boot build + verification: Maven / Gradle gate orchestrat
 - `~/.claude/skills/springboot-patterns/SKILL.md`
 - `~/.claude/skills/springboot-security/SKILL.md`
 - `~/.claude/skills/springboot-tdd/SKILL.md`
-- `~/.claude/rules/common/dependency-vulnerabilities.md`
-- `~/.claude/rules/common/license-allowlist-gate.md`
-- `~/.claude/rules/common/extreme-lint-policy.md`
+- `~/.claude/rules-library/common/dependency-vulnerabilities.md`
+- `~/.claude/rules-library/common/license-allowlist-gate.md`
+- `~/.claude/rules-library/common/extreme-lint-policy.md`
 - `~/.claude/rules/common/done-criteria.md`
 - `~/.claude/agents/code-reviewer.md`
 
@@ -303,7 +303,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 - `mvn verify` succeeds while spotbugs / pmd / checkstyle warnings ignored (gate-strictness weakening)
-- `dependency-check-maven` / OWASP Dependency-Check disabled or set to non-blocking (per `~/.claude/rules/common/dependency-vulnerabilities.md`)
+- `dependency-check-maven` / OWASP Dependency-Check disabled or set to non-blocking (per `~/.claude/rules-library/common/dependency-vulnerabilities.md`)
 - Jacoco coverage gate set below `extreme-lint-policy.md` thresholds
 - `@SpringBootApplication` startup fails in CI but passes locally (env-config drift)
 - Native-image / GraalVM build broken without prod plan to ship native

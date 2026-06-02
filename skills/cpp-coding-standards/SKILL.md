@@ -737,6 +737,7 @@ Before marking C++ work complete:
 Principal-level C++ coding standards (C++20 / C++23): RAII for every resource, smart pointers over raw new/delete, concepts-constrained templates, deterministic destruction, value semantics over pointer semantics, modern alternatives to legacy idioms, undefined-behaviour avoidance.
 
 **Negative scope** (NOT what this skill covers):
+
 - C++ test methodology — see `cpp-testing`
 - CMake build configuration — see `deployment-patterns`
 - Generic code-quality + naming — see `coding-standards`
@@ -810,6 +811,7 @@ C++ rewards discipline and punishes its absence — use-after-free, buffer overf
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Raw `new` / `delete` in code (RAII / smart-pointer weakening)
 - Pointer where reference would suffice (Core Guidelines F.7)
 - C-style cast `(T)x` instead of `static_cast<T>(x)` / `dynamic_cast<T>(x)` / `reinterpret_cast<T>(x)`
@@ -823,6 +825,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `using namespace std;` in a header (namespace pollution)
 
 **Refinement candidates**:
+
 - New rule row when a new C++ standard ships (C++23 `std::expected`, C++26 reflection)
 - New cross-reference when a sister skill (cpp-testing, security-review) adds a C++ gate
 - Tightening of the magic-number rule when domain-specific constant patterns recur
@@ -845,14 +848,16 @@ Phase H will delete the source files at `rules-library/cpp/`. Content below pres
 
 ---
 paths:
-  - "**/*.cpp"
-  - "**/*.hpp"
-  - "**/*.cc"
-  - "**/*.hh"
-  - "**/*.c"
-  - "**/*.h"
-  - "**/CMakeLists.txt"
-  - "**/*.cmake"
+
+- "**/*.cpp"
+- "**/*.hpp"
+- "**/*.cc"
+- "**/*.hh"
+- "**/*.c"
+- "**/*.h"
+- "**/CMakeLists.txt"
+- "**/*.cmake"
+
 ---
 
 # C++ Coding Standards
@@ -1278,7 +1283,7 @@ cppcheck --enable=all --inconclusive --error-exitcode=1 .
 
 ## Verification block
 
-```
+```text
 C++ build (this turn):
   - cmake --build build/ -- -Werror: 0 errors / 0 warnings
   - clang-tidy: 0 issues
@@ -1299,6 +1304,7 @@ C++ build (this turn):
 ## Why this rule exists
 
 C++ silent failures cause memory corruption + UB:
+
 - Ignored `[[nodiscard]]` from `open()` → write to closed fd
 - Forgotten `delete` → leak; with `new[]` without `delete[]` →
   heap corruption
@@ -1832,11 +1838,13 @@ osv-scanner --lockfile=conan.lock        # CVE scan
 
 ---
 paths:
-  - "**/*test*.cpp"
-  - "**/*test*.hpp"
-  - "**/*Test*.cpp"
-  - "**/tests/**/*.cpp"
-  - "**/test/**/*.cpp"
+
+- "**/*test*.cpp"
+- "**/*test*.hpp"
+- "**/*Test*.cpp"
+- "**/tests/**/*.cpp"
+- "**/test/**/*.cpp"
+
 ---
 
 # C++ Testing Standards

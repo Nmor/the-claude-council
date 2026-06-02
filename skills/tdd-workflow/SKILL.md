@@ -18,9 +18,11 @@ This skill ensures all code development follows TDD principles with comprehensiv
 ## Core Principles
 
 ### 1. Tests BEFORE Code
+
 ALWAYS write tests first, then implement code to make tests pass.
 
 ### 2. Coverage Requirements
+
 - Minimum 70% coverage (unit + integration + E2E)
 - All edge cases covered
 - Error scenarios tested
@@ -29,18 +31,21 @@ ALWAYS write tests first, then implement code to make tests pass.
 ### 3. Test Types
 
 #### Unit Tests
+
 - Individual functions and utilities
 - Component logic
 - Pure functions
 - Helpers and utilities
 
 #### Integration Tests
+
 - API endpoints
 - Database operations
 - Service interactions
 - External API calls
 
 #### E2E Tests (Playwright)
+
 - Critical user flows
 - Complete workflows
 - Browser automation
@@ -49,7 +54,8 @@ ALWAYS write tests first, then implement code to make tests pass.
 ## TDD Workflow Steps
 
 ### Step 1: Write User Journeys
-```
+
+```text
 As a [role], I want to [action], so that [benefit]
 
 Example:
@@ -58,6 +64,7 @@ so that I can find relevant markets even without exact keywords.
 ```
 
 ### Step 2: Generate Test Cases
+
 For each user journey, create comprehensive test cases:
 
 ```typescript
@@ -81,12 +88,14 @@ describe('Semantic Search', () => {
 ```
 
 ### Step 3: Run Tests (They Should Fail)
+
 ```bash
 npm test
 # Tests should fail - we haven't implemented yet
 ```
 
 ### Step 4: Implement Code
+
 Write minimal code to make tests pass:
 
 ```typescript
@@ -97,19 +106,23 @@ export async function searchMarkets(query: string) {
 ```
 
 ### Step 5: Run Tests Again
+
 ```bash
 npm test
 # Tests should now pass
 ```
 
 ### Step 6: Refactor
+
 Improve code quality while keeping tests green:
+
 - Remove duplication
 - Improve naming
 - Optimize performance
 - Enhance readability
 
 ### Step 7: Verify Coverage
+
 ```bash
 npm run test:coverage
 # Verify 70%+ coverage achieved
@@ -118,6 +131,7 @@ npm run test:coverage
 ## Testing Patterns
 
 ### Unit Test Pattern (Jest/Vitest)
+
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Button } from './Button'
@@ -145,6 +159,7 @@ describe('Button Component', () => {
 ```
 
 ### API Integration Test Pattern
+
 ```typescript
 import { NextRequest } from 'next/server'
 import { GET } from './route'
@@ -176,6 +191,7 @@ describe('GET /api/markets', () => {
 ```
 
 ### E2E Test Pattern (Playwright)
+
 ```typescript
 import { test, expect } from '@playwright/test'
 
@@ -230,7 +246,7 @@ test('user can create a new market', async ({ page }) => {
 
 ## Test File Organization
 
-```
+```text
 src/
 ├── components/
 │   ├── Button/
@@ -254,6 +270,7 @@ src/
 ## Mocking External Services
 
 ### Supabase Mock
+
 ```typescript
 jest.mock('@/lib/supabase', () => ({
   supabase: {
@@ -270,6 +287,7 @@ jest.mock('@/lib/supabase', () => ({
 ```
 
 ### Redis Mock
+
 ```typescript
 jest.mock('@/lib/redis', () => ({
   searchMarketsByVector: jest.fn(() => Promise.resolve([
@@ -280,6 +298,7 @@ jest.mock('@/lib/redis', () => ({
 ```
 
 ### OpenAI Mock
+
 ```typescript
 jest.mock('@/lib/openai', () => ({
   generateEmbedding: jest.fn(() => Promise.resolve(
@@ -291,11 +310,13 @@ jest.mock('@/lib/openai', () => ({
 ## Test Coverage Verification
 
 ### Run Coverage Report
+
 ```bash
 npm run test:coverage
 ```
 
 ### Coverage Thresholds
+
 ```json
 {
   "jest": {
@@ -314,24 +335,28 @@ npm run test:coverage
 ## Common Testing Mistakes to Avoid
 
 ### ❌ WRONG: Testing Implementation Details
+
 ```typescript
 // Don't test internal state
 expect(component.state.count).toBe(5)
 ```
 
 ### ✅ CORRECT: Test User-Visible Behavior
+
 ```typescript
 // Test what users see
 expect(screen.getByText('Count: 5')).toBeInTheDocument()
 ```
 
 ### ❌ WRONG: Brittle Selectors
+
 ```typescript
 // Breaks easily
 await page.click('.css-class-xyz')
 ```
 
 ### ✅ CORRECT: Semantic Selectors
+
 ```typescript
 // Resilient to changes
 await page.click('button:has-text("Submit")')
@@ -339,6 +364,7 @@ await page.click('[data-testid="submit-button"]')
 ```
 
 ### ❌ WRONG: No Test Isolation
+
 ```typescript
 // Tests depend on each other
 test('creates user', () => { /* ... */ })
@@ -346,6 +372,7 @@ test('updates same user', () => { /* depends on previous test */ })
 ```
 
 ### ✅ CORRECT: Independent Tests
+
 ```typescript
 // Each test sets up its own data
 test('creates user', () => {
@@ -362,18 +389,21 @@ test('updates user', () => {
 ## Continuous Testing
 
 ### Watch Mode During Development
+
 ```bash
 npm test -- --watch
 # Tests run automatically on file changes
 ```
 
 ### Pre-Commit Hook
+
 ```bash
 # Runs before every commit
 npm test && npm run lint
 ```
 
 ### CI/CD Integration
+
 ```yaml
 # GitHub Actions
 - name: Run Tests
@@ -422,6 +452,7 @@ faster-feedback-loop disciplines that keep TDD enjoyable instead
 of bureaucratic.
 
 **Negative scope** (NOT what this skill covers):
+
 - Language-specific testing patterns — see `golang-testing`,
   `python-testing`, `springboot-tdd`, `django-tdd`,
   `swift-protocol-di-testing`, `cpp-testing`
@@ -547,6 +578,7 @@ contract tests for service boundaries.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Production code written before its failing test (RED-VERIFY skipped — workflow violation)
 - Test written that passes without the implementation (false-positive RED — flaky guard)
 - "70%" coverage target cited (stale — canonical is 90% touched / 80% project per `extreme-lint-policy.md`)
@@ -557,6 +589,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Mock used where Testcontainers / real DB would catch the bug class
 
 **Refinement candidates**:
+
 - Tightening of the success-metrics coverage figures when the canonical floor moves
 - New test-pyramid row when a recurring test class emerges (e.g., contract-pact, mutation testing, AI eval harness)
 - New cross-reference when a sister rule (testing, verify-before-claim, local-testability) adds a verification surface

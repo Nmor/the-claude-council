@@ -27,12 +27,58 @@
 
 {
   "default": true,
+  // ----------------------------------------------------------------
+  // Line length — disabled.  The repo's prose width comes from
+  // multi-paragraph code-style hard wrapping that already passes
+  // human review.  Enforcing MD013 in markdown produces churn
+  // without quality gain.
+  // ----------------------------------------------------------------
   "MD013": false,
-  "MD024": { "siblings_only": true },
+
+  // ----------------------------------------------------------------
+  // Multiple H1s — DISABLED for this repo.  The skills/* SKILL.md
+  // pattern concatenates several source files (each with their own
+  // canonical `# Title`) into a single skill body so the cold-load
+  // surface stays under the lazy-load budget.  Converting every
+  // sub-title to H2 would change every cross-reference.
+  // The frontmatter `name:` is the canonical title.
+  // ----------------------------------------------------------------
+  "MD025": false,
+
+  // ----------------------------------------------------------------
+  // First-line H1 — DISABLED.  Many files start with either a
+  // frontmatter block followed by a "> Migrated 2026-06-02 from..."
+  // note OR a blockquote callout.  The H1 lives further down.
+  // ----------------------------------------------------------------
+  "MD041": false,
+
+  // ----------------------------------------------------------------
+  // Duplicate headings — DISABLED.  Skills concatenate sections
+  // that legitimately share names ("Why this rule exists",
+  // "Cross-references", "Standards Cited").  siblings_only doesn't
+  // help because every section H2 IS a sibling.
+  // ----------------------------------------------------------------
+  "MD024": false,
+
+  // ----------------------------------------------------------------
+  // Emphasis as heading — DISABLED.  The "**Bold sub-title:**"
+  // pattern is intentional UX for in-text labels that don't deserve
+  // an H3 in the document outline.
+  // ----------------------------------------------------------------
+  "MD036": false,
+
+  // ----------------------------------------------------------------
+  // Table column style — DISABLED.  Both `| x | y |` and `|x|y|`
+  // styles are valid CommonMark + GFM.  Enforcing one over the
+  // other across 100+ tables produces churn without quality gain.
+  // ----------------------------------------------------------------
+  "MD060": false,
+
+  // ----------------------------------------------------------------
+  // Active rules with project-specific tuning
+  // ----------------------------------------------------------------
   "MD004": { "style": "dash" },
   "MD007": { "indent": 2 },
-  "MD025": { "front_matter_title": "" },
-  "MD041": true,
   "MD033": {
     "allowed_elements": [
       "a", "br", "img", "div", "span",

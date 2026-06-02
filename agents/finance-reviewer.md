@@ -54,7 +54,7 @@ For every triggered task:
 
 ## Output shape
 
-```
+```text
 Finance review (Division 10):
 
 Cost forecast:
@@ -136,6 +136,7 @@ Verdict: APPROVED / CHANGES_REQUIRED / ESCALATE_TO_STRATEGY
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Cost forecast vs actuals drift > 20% at 90 days (forecasting rubric needs recalibration)
 - Untagged spend > 5% of total (tagging policy needs enforcement strengthening)
 - Vendor switching costs underestimated > 3x at exit (vendor-lock-in checklist row needs sharpening)
@@ -146,6 +147,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Revenue recognition restatements (IFRS 15 / ASC 606 application needs strengthening)
 
 **Refinement candidates**:
+
 - New auto-fire trigger when a recurring cost-class surfaces
 - New review-checklist row when a missed cost dimension appears in post-launch review
 - New anti-pattern entry when a cost-shortcut recurs across 2+ projects

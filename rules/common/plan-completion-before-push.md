@@ -44,6 +44,7 @@ applies under EVERY policy — see rule 2.
 ### 2. `git push` is gated on plan completion
 
 A push only happens when:
+
 - ALL phases of the active plan are complete (every task ticked,
   every verification gate green per `done-criteria.md`)
 - AND the final phase's verification block names the gates that
@@ -60,6 +61,7 @@ phases OR the code-graph has dangling references, no push.
 
 A push during plan execution is allowed ONLY when ALL of the
 following are true:
+
 - The push is fixing a production bug (live failure, blocking
   incident, security exposure)
 - The user explicitly says something like "push the fix now" /
@@ -86,6 +88,7 @@ contexts."
 ### 5. Branch protection still applies
 
 Even when a push is authorized, branch protection rules apply:
+
 - No force-push to `main` / `master` / `production` / release
   branches
 - No `--no-verify` to skip hooks
@@ -97,6 +100,7 @@ Even when a push is authorized, branch protection rules apply:
 Per `no-overclaim.md`: "complete" requires re-running the
 verification gates this turn, not relying on a verification from
 an earlier session. Before pushing:
+
 - Run the full `done-criteria.md` checklist
 - Run the plan's defined verification (synthetic Council task,
   link-integrity grep, dep-CVE gate, license gate, etc.)
@@ -125,6 +129,7 @@ plan complete" rule covers tag pushes.
 ### 10. The agent surfaces the push decision
 
 When the user requests a push, the agent answers with:
+
 - Whether the plan is complete (yes / no + which phases pending)
 - Whether the exception applies (bug fix? Explicitly requested?)
 - The exact `git push` command that would run
@@ -137,7 +142,7 @@ embarrassment.
 
 ## Canonical correct push flow
 
-```
+```text
 User: "push it"
 Agent: "The active plan has <X>/<Y> phases complete. Phases
         <list> are still in progress.
@@ -157,7 +162,7 @@ Agent: <runs full verification, presents block, then pushes>
 
 ## Anti-pattern: what NOT to do
 
-```
+```text
 User: "ok looks good"
 Agent: <silently runs git push> "Pushed."
 ```
@@ -197,6 +202,7 @@ Multi-phase plans span days or weeks. The temptation during long
 executions is to push intermediate state to remote — "for
 backup," "so CI can see," "in case I lose work." Each premature
 push:
+
 - Triggers CI on incomplete state (red builds, false alerts)
 - Confuses teammates pulling the branch (broken state)
 - Locks the agent into supporting the partial shape (revert is
@@ -217,6 +223,7 @@ break the rule."
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `git push` executed while plan phases still pending (rule 2 violation — push gate weakening)
 - Active plan does not declare `commit-policy` in its Context (rule 1 violation — implicit policy drift)
 - "Push" inferred from ambiguous user language ("ship", "ready", "looks good") without explicit confirmation (rule 10 weakening)
@@ -227,6 +234,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `--no-verify` / `--no-gpg-sign` used to bypass hooks (rule 5 violation)
 
 **Refinement candidates**:
+
 - New row in the "exception" rule when a recurring time-pressure class (security incident, regulator deadline) emerges with documented user-side authorization shape
 - Tightening of the ambiguous-language list when a new phrase ("let's go", "all good") proves to silently authorize pushes
 - New cross-reference when a sister rule (no-overclaim, verify-before-claim, no-silent-drops) provides a pre-push gate

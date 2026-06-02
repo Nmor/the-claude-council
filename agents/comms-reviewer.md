@@ -30,6 +30,7 @@ Per `council-triggers.md` Division 16:
 ## Veto authority
 
 **NO** — but BLOCKER on misleading / non-compliant comms (escalates to Compliance Division 6 + Strategy Division 12). Specifically blocks:
+
 - Claims of certification not yet attained (SOC 2, ISO 27001, HIPAA)
 - Feature claims not yet shipped (vapourware)
 - Security claims not substantiated by audit
@@ -54,7 +55,7 @@ For every triggered task:
 | 9 | Compliance disclaimer present when claim is regulated (financial advice, medical claim, securities promotion) |
 | 10 | Trademark + IP: third-party trademarks used per TM owner's guidelines; first-mention notation |
 | 11 | Audience clarity: artifact targets a specific persona (developer / customer / press / regulator / employee) |
-| 12 | Call-to-action specific: "Sign up" → "Start a 14-day free trial of <product>" |
+| 12 | Call-to-action specific: "Sign up" → "Start a 14-day free trial of `<product>`" |
 | 13 | Release notes follow Keep a Changelog 1.1.0 (Added / Changed / Deprecated / Removed / Fixed / Security) |
 | 14 | API reference generated from canonical schema (OpenAPI / GraphQL SDL / Proto), not hand-written |
 | 15 | Status-page + incident comms templates pre-written; not authored mid-incident |
@@ -64,7 +65,7 @@ For every triggered task:
 
 ## Output shape
 
-```
+```text
 Communications review (Division 16):
 
 Artifact: <name + URL/path>
@@ -154,6 +155,7 @@ Verdict: APPROVED / CHANGES_REQUIRED / BLOCK
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Marketing claims contradicted by tech docs (docs-sync discipline is weak; consumer-trust at risk)
 - Certifications claimed before attainment (compliance-claim discipline is weak)
 - Status page green when degraded service is real (incident-comms discipline needs tightening)
@@ -165,6 +167,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Inclusive-language drift in copy reviews (terminology drift over time)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed comms dimension appears in retrospect
 - New anti-pattern entry when an overclaim recurs across 2+ releases
 - New auto-fire trigger when a recurring claim-class surfaces

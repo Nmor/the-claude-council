@@ -352,6 +352,7 @@ first in, first out.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Flag created without owner / expiry / decision criteria (rule 1 weakening)
 - Flag at 100% rollout for > 14 days without cleanup PR (rule 10 weakening — flag spaghetti accumulating)
 - Flag evaluation buried in the data layer instead of at boundary (rule 3 violation)
@@ -363,6 +364,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Kill switch flipped for the first time during an incident (rule 8 weakening — not pre-tested)
 
 **Refinement candidates**:
+
 - New flag-category row when a recurring use case doesn't fit the current 5 categories
 - Tightening of the cleanup-by-D+14 SLA when stale flags accumulate
 - New cross-reference when a sister rule (graceful-degradation, audit-logging) defines the surface a flag depends on

@@ -120,7 +120,7 @@ A QoE report independently re-derives the target's normalised EBITDA. The dilige
 
 Output:
 
-```
+```text
 QoE REPORT — SUMMARY
                     Reported        Adjusted          Notes
 Revenue             $48.2M          $46.8M            Removed $1.4M of related-party sales
@@ -420,6 +420,7 @@ Trust, but verify. Then verify again with a different source. Then write it down
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Reference check using only references the founder provided (no independent off-list refs)
 - QoE / financial diligence skipped on the basis of "we'll fix it post-close" (high regret rate)
 - Legal diligence missing IP-ownership chain back to founders + contractors
@@ -432,6 +433,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Background checks on key principals deferred
 
 **Refinement candidates**:
+
 - New diligence-workstream row when a new asset class emerges
 - New cross-reference when a sister skill (financial-analyst, valuation-models, investment-research, soc2-readiness, pci-dss-patterns) adds a diligence gate
 - New red-flag scoring rubric row when a recurring deal-breaker class emerges

@@ -15,7 +15,6 @@ paths:
 
 # bash-scripting-patterns
 
-
 <!-- ============================================================
      Section: bash/coding-style.md
      ============================================================ -->
@@ -56,6 +55,7 @@ IFS=$'\n\t'  # safer word-splitting
 ```
 
 Why each flag:
+
 - `-e` — exit on any command failure
 - `-u` — exit on unbound variable
 - `-o pipefail` — exit if any pipe component fails (not just
@@ -670,6 +670,7 @@ shfmt -d -i 4 -ci -bn -sr script.sh
 ```
 
 Flags:
+
 - `-i 4` — indent with 4 spaces
 - `-ci` — switch case indent
 - `-bn` — binary ops at line start when wrapped
@@ -677,7 +678,7 @@ Flags:
 
 ## Verification block
 
-```
+```text
 Bash sweep (this turn):
   - shellcheck -S style: 0 findings
   - shfmt -d -i 4 -ci -bn -sr: clean

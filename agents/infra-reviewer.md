@@ -90,7 +90,7 @@ You are part of Council Division 2 (Implementation & Build). Your mission: every
 
 ## Output shape
 
-```
+```text
 Infrastructure review (Division 2 — infra):
 
 Dockerfile / image: [digest-pinned? non-root? multi-stage? secrets-clean?]
@@ -135,6 +135,7 @@ Verdict: APPROVED / CHANGES_REQUIRED
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Terraform / IaC drift between code and live infra (apply discipline needs review)
 - IAM policies over-broad on review (least-privilege rubric needs sharpening)
 - Container images failing CVE gate (base-image pin + refresh cadence needs strengthening)
@@ -145,6 +146,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Network egress / cross-AZ surprise costs (architecture review needs cost dimension)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed infra dimension appears in retrospect
 - New anti-pattern entry when an IaC shortcut recurs across 2+ stacks
 - New auto-fire trigger when a recurring infra-change pattern surfaces

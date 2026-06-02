@@ -526,6 +526,7 @@ Engineering teams that build this well unlock finance as a multiplier. Engineeri
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - ARR / MRR computed differently across engineering and finance (definition drift)
 - Cohort triangle recomputed from raw events ad-hoc instead of materialised view
 - Budget vs actual variance manual in Excel instead of automated against GL
@@ -538,6 +539,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Forecast model not back-tested against prior-period actuals (calibration gap)
 
 **Refinement candidates**:
+
 - New metric row when SaaS measurement landscape evolves (e.g., new NRR variants)
 - New cross-reference when a sister skill (bookkeeping-patterns, ifrs-gaap-reporting, valuation-models, financial-analyst) adds an FP&A gate
 - New scenario template when a recurring business question emerges

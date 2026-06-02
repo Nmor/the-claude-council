@@ -117,7 +117,7 @@ unchanged in the world, the KR is wrong.
 
 For any team at any level, in any quarter:
 
-```
+```text
 Objective (1, sometimes 2; never more)
 ├── Key Result 1 (a leading or outcome metric)
 ├── Key Result 2 (different dimension of the same Objective)
@@ -125,6 +125,7 @@ Objective (1, sometimes 2; never more)
 ```
 
 The constraints:
+
 - **One Objective is the strong default.** A team with three
   Objectives has no priority. Most teams that say "we have five
   Objectives" actually have one Objective with five competing
@@ -171,6 +172,7 @@ modes.
 The naive OKR model is cascade: company OKRs decompose into BU OKRs
 decompose into team OKRs decompose into individual OKRs. This
 produces three pathologies:
+
 - Strict math errors — sum of teams ≠ BU goal
 - Lost translation — by the time you reach the team, the connection
   to company strategy is invisible
@@ -178,6 +180,7 @@ produces three pathologies:
   assignments
 
 The mature pattern is **alignment via line-of-sight**, not cascade:
+
 - Company OKRs are published before team planning
 - Team OKRs are proposed bottom-up with explicit reference to which
   company OKR they ladder up to
@@ -206,6 +209,7 @@ operating cadence that makes OKRs work or fail.
 ### Grading
 
 At quarter end, each KR is graded 0.0 - 1.0:
+
 - **1.0** — achieved at or beyond target
 - **0.7** — achieved 70% of stretch target (the "Google goal")
 - **0.5** — meaningful progress, missed target
@@ -214,6 +218,7 @@ At quarter end, each KR is graded 0.0 - 1.0:
 The Objective grade is the average of its KRs (sometimes weighted).
 
 The grade is a learning signal, not a verdict:
+
 - 0.7 on aspirational is excellent
 - 1.0 on aspirational suggests sandbagging — the next OKR is set
   harder
@@ -385,6 +390,7 @@ predictable failure modes:
   organisation gradually loses its ability to take ambitious bets
 
 Conversely, when OKRs work:
+
 - The top three things any team is doing are visible to everyone
 - Trade-off conversations happen with shared language and data
 - New initiatives are evaluated against existing OKRs ("will this
@@ -422,7 +428,7 @@ ground is the failure ground.
 - **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
   engineering basis (when civil / structural scope)
 - **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  + digital coordination (when AEC scope)
+  - digital coordination (when AEC scope)
 - **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
   Matrix** — Systematic innovation methodology
 - **Stanford d.school + IDEO Field Guide** — Design thinking
@@ -438,7 +444,6 @@ ground is the failure ground.
   Management (Grove)** — People + culture frameworks
 - **Getting to Yes (Fisher + Ury) + Never Split the Difference
   (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
 
 ### Cross-cutting engineering standards
 
@@ -461,12 +466,12 @@ ground is the failure ground.
 - **CWE-1059** — Insufficient technical documentation (process
   workflows MUST be documented)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Key Results that are activities ("ship feature X") instead of outcomes
 - Objectives sandbagged to hit 100% (commitment-OKR misuse as aspirational)
 - Cascading top-down without team-level translation (OKR theatre)
@@ -479,6 +484,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Tracking spreadsheet manual instead of automated against source systems
 
 **Refinement candidates**:
+
 - New OKR-template row when a new framework variant proves out
 - New cross-reference when a sister skill (org-design, performance-management, fp-and-a) adds an OKR gate
 - Tightening of the outcome-not-activity discipline when activity-KR recurs

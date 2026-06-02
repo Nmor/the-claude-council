@@ -51,6 +51,7 @@ Use functional patterns over classes when appropriate.
 ```
 
 **Properties:**
+
 - **Atomic** — one trigger, one action
 - **Confidence-weighted** — 0.3 = tentative, 0.9 = near certain
 - **Domain-tagged** — code-style, testing, git, debugging, workflow, etc.
@@ -58,7 +59,7 @@ Use functional patterns over classes when appropriate.
 
 ## How It Works
 
-```
+```text
 Session Activity
       │
       │ Hooks capture prompts + tool use (100% reliable)
@@ -231,7 +232,7 @@ Edit `config.json`:
 
 ## File Structure
 
-```
+```text
 ~/.claude/homunculus/
 ├── identity.json           # Your profile, technical level
 ├── observations.jsonl      # Current session observations
@@ -248,6 +249,7 @@ Edit `config.json`:
 ## Integration with Skill Creator
 
 When you use the [Skill Creator GitHub App](https://skill-creator.app), it now generates **both**:
+
 - Traditional SKILL.md files (for backward compatibility)
 - Instinct collections (for v2 learning system)
 
@@ -265,11 +267,13 @@ Confidence evolves over time:
 | 0.9 | Near-certain | Core behavior |
 
 **Confidence increases** when:
+
 - Pattern is repeatedly observed
 - User doesn't correct the suggested behavior
 - Similar instincts from other sources agree
 
 **Confidence decreases** when:
+
 - User explicitly corrects the behavior
 - Pattern isn't observed for extended periods
 - Contradicting evidence appears
@@ -279,6 +283,7 @@ Confidence evolves over time:
 > "v1 relied on skills to observe. Skills are probabilistic—they fire ~50-80% of the time based on Claude's judgment."
 
 Hooks fire **100% of the time**, deterministically. This means:
+
 - Every tool call is observed
 - No patterns are missed
 - Learning is comprehensive
@@ -286,6 +291,7 @@ Hooks fire **100% of the time**, deterministically. This means:
 ## Backward Compatibility
 
 v2 is fully compatible with v1:
+
 - Existing `~/.claude/skills/learned/` skills still work
 - Stop hook still runs (but now also feeds into v2)
 - Gradual migration path: run both in parallel
@@ -317,6 +323,7 @@ rules / skills / agents. Closes the loop that makes the
 ruleset sharper over time instead of stale.
 
 **Negative scope** (NOT what this skill covers):
+
 - Authoring new rules from scratch — see
   `rule-authoring-global-vs-project.md`
 - Workspace-side learning bootstrap — see
@@ -412,6 +419,7 @@ grows sharper rather than stale.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Council-mediated task finishes without a `learning-candidate` event written to `audits/learning-events.jsonl` (mandate rule 1 weakening)
 - Candidate emitted with `confidence < 0.6` but auto-applied anyway (review-policy violation)
 - Candidate with same shape emitted 5+ times across sessions without surfacing for promotion (workspace → global promotion gap)
@@ -422,6 +430,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Operator commands (`/learn`, `/evolve`, `/instinct-*`) failing silently or returning empty batches
 
 **Refinement candidates**:
+
 - New event shape when a recurring learning class (e.g., cross-tool failure correlation, latent rule conflict) needs its own schema
 - Confidence-calibration update when scoring proves systematically too-high or too-low against user approval rates
 - Promotion / demotion automation when the manual review batches stay stuck for > 4 weeks

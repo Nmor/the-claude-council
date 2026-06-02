@@ -56,7 +56,7 @@ For each under-covered file, generate tests following this priority:
 
 Show before/after comparison:
 
-```
+```text
 Coverage Report
 ──────────────────────────────
 File                   Before  After

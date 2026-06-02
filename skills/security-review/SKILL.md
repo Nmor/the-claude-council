@@ -57,12 +57,14 @@ This skill ensures all code follows security best practices and identifies poten
 ### 1. Secrets Management
 
 #### ❌ NEVER Do This
+
 ```typescript
 const apiKey = "sk-proj-xxxxx"  // Hardcoded secret
 const dbPassword = "password123" // In source code
 ```
 
 #### ✅ ALWAYS Do This
+
 ```typescript
 const apiKey = process.env.OPENAI_API_KEY
 const dbUrl = process.env.DATABASE_URL
@@ -74,6 +76,7 @@ if (!apiKey) {
 ```
 
 #### Verification Steps
+
 - [ ] No hardcoded API keys, tokens, or passwords
 - [ ] All secrets in environment variables
 - [ ] `.env.local` in .gitignore
@@ -83,6 +86,7 @@ if (!apiKey) {
 ### 2. Input Validation
 
 #### Always Validate User Input
+
 ```typescript
 import { z } from 'zod'
 
@@ -108,6 +112,7 @@ export async function createUser(input: unknown) {
 ```
 
 #### File Upload Validation
+
 ```typescript
 function validateFileUpload(file: File) {
   // Size check (5MB max)
@@ -134,6 +139,7 @@ function validateFileUpload(file: File) {
 ```
 
 #### Verification Steps
+
 - [ ] All user inputs validated with schemas
 - [ ] File uploads restricted (size, type, extension)
 - [ ] No direct use of user input in queries
@@ -143,6 +149,7 @@ function validateFileUpload(file: File) {
 ### 3. SQL Injection Prevention
 
 #### ❌ NEVER Concatenate SQL
+
 ```typescript
 // DANGEROUS - SQL Injection vulnerability
 const query = `SELECT * FROM users WHERE email = '${userEmail}'`
@@ -150,6 +157,7 @@ await db.query(query)
 ```
 
 #### ✅ ALWAYS Use Parameterized Queries
+
 ```typescript
 // Safe - parameterized query
 const { data } = await supabase
@@ -165,6 +173,7 @@ await db.query(
 ```
 
 #### Verification Steps
+
 - [ ] All database queries use parameterized queries
 - [ ] No string concatenation in SQL
 - [ ] ORM/query builder used correctly
@@ -173,6 +182,7 @@ await db.query(
 ### 4. Authentication & Authorization
 
 #### JWT Token Handling
+
 ```typescript
 // ❌ WRONG: localStorage (vulnerable to XSS)
 localStorage.setItem('token', token)
@@ -183,6 +193,7 @@ res.setHeader('Set-Cookie',
 ```
 
 #### Authorization Checks
+
 ```typescript
 export async function deleteUser(userId: string, requesterId: string) {
   // ALWAYS verify authorization first
@@ -203,6 +214,7 @@ export async function deleteUser(userId: string, requesterId: string) {
 ```
 
 #### Row Level Security (Supabase)
+
 ```sql
 -- Enable RLS on all tables
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
@@ -219,6 +231,7 @@ CREATE POLICY "Users update own data"
 ```
 
 #### Verification Steps
+
 - [ ] Tokens stored in httpOnly cookies (not localStorage)
 - [ ] Authorization checks before sensitive operations
 - [ ] Row Level Security enabled in Supabase
@@ -228,6 +241,7 @@ CREATE POLICY "Users update own data"
 ### 5. XSS Prevention
 
 #### Sanitize HTML
+
 ```typescript
 import DOMPurify from 'isomorphic-dompurify'
 
@@ -242,6 +256,7 @@ function renderUserContent(html: string) {
 ```
 
 #### Content Security Policy
+
 ```typescript
 // next.config.js
 const securityHeaders = [
@@ -260,6 +275,7 @@ const securityHeaders = [
 ```
 
 #### Verification Steps
+
 - [ ] User-provided HTML sanitized
 - [ ] CSP headers configured
 - [ ] No unvalidated dynamic content rendering
@@ -268,6 +284,7 @@ const securityHeaders = [
 ### 6. CSRF Protection
 
 #### CSRF Tokens
+
 ```typescript
 import { csrf } from '@/lib/csrf'
 
@@ -286,12 +303,14 @@ export async function POST(request: Request) {
 ```
 
 #### SameSite Cookies
+
 ```typescript
 res.setHeader('Set-Cookie',
   `session=${sessionId}; HttpOnly; Secure; SameSite=Strict`)
 ```
 
 #### Verification Steps
+
 - [ ] CSRF tokens on state-changing operations
 - [ ] SameSite=Strict on all cookies
 - [ ] Double-submit cookie pattern implemented
@@ -299,6 +318,7 @@ res.setHeader('Set-Cookie',
 ### 7. Rate Limiting
 
 #### API Rate Limiting
+
 ```typescript
 import rateLimit from 'express-rate-limit'
 
@@ -313,6 +333,7 @@ app.use('/api/', limiter)
 ```
 
 #### Expensive Operations
+
 ```typescript
 // Aggressive rate limiting for searches
 const searchLimiter = rateLimit({
@@ -325,6 +346,7 @@ app.use('/api/search', searchLimiter)
 ```
 
 #### Verification Steps
+
 - [ ] Rate limiting on all API endpoints
 - [ ] Stricter limits on expensive operations
 - [ ] IP-based rate limiting
@@ -333,6 +355,7 @@ app.use('/api/search', searchLimiter)
 ### 8. Sensitive Data Exposure
 
 #### Logging
+
 ```typescript
 // ❌ WRONG: Logging sensitive data
 console.log('User login:', { email, password })
@@ -344,6 +367,7 @@ console.log('Payment:', { last4: card.last4, userId })
 ```
 
 #### Error Messages
+
 ```typescript
 // ❌ WRONG: Exposing internal details
 catch (error) {
@@ -364,6 +388,7 @@ catch (error) {
 ```
 
 #### Verification Steps
+
 - [ ] No passwords, tokens, or secrets in logs
 - [ ] Error messages generic for users
 - [ ] Detailed errors only in server logs
@@ -372,6 +397,7 @@ catch (error) {
 ### 9. Blockchain Security (Solana)
 
 #### Wallet Verification
+
 ```typescript
 import { verify } from '@solana/web3.js'
 
@@ -394,6 +420,7 @@ async function verifyWalletOwnership(
 ```
 
 #### Transaction Verification
+
 ```typescript
 async function verifyTransaction(transaction: Transaction) {
   // Verify recipient
@@ -417,6 +444,7 @@ async function verifyTransaction(transaction: Transaction) {
 ```
 
 #### Verification Steps
+
 - [ ] Wallet signatures verified
 - [ ] Transaction details validated
 - [ ] Balance checks before transactions
@@ -425,6 +453,7 @@ async function verifyTransaction(transaction: Transaction) {
 ### 10. Dependency Security
 
 #### Regular Updates
+
 ```bash
 # Check for vulnerabilities
 npm audit
@@ -440,6 +469,7 @@ npm outdated
 ```
 
 #### Lock Files
+
 ```bash
 # ALWAYS commit lock files
 git add package-lock.json
@@ -449,6 +479,7 @@ npm ci  # Instead of npm install
 ```
 
 #### Verification Steps
+
 - [ ] Dependencies up to date
 - [ ] No known vulnerabilities (npm audit clean)
 - [ ] Lock files committed
@@ -458,7 +489,8 @@ npm ci  # Instead of npm install
 ### 11. Payment Security
 
 Sister skills: [`payment-processing-patterns`](../payment-processing-patterns/SKILL.md)
-+ [`pci-dss-patterns`](../pci-dss-patterns/SKILL.md). Payment
+
+- [`pci-dss-patterns`](../pci-dss-patterns/SKILL.md). Payment
 flows have a dedicated security envelope on top of the general
 OWASP / ASVS surface — the threat model includes credential
 stuffing on checkout, card-testing fraud, BIN-attack patterns,
@@ -621,6 +653,7 @@ Per `payment-processing-patterns` Pattern 11:
 - 4-eyes principle on manual escrow release > $threshold
 
 #### Verification Steps
+
 - [ ] Webhook signature verification on every payment webhook
       endpoint
 - [ ] Webhook timestamp window (≤ 5 min) enforced
@@ -651,6 +684,7 @@ Per `payment-processing-patterns` Pattern 11:
 ## Security Testing
 
 ### Automated Security Tests
+
 ```typescript
 // Test authentication
 test('requires authentication', async () => {
@@ -732,6 +766,7 @@ flow (rotate FIRST, scrub LATER), and the cross-language security
 checks every reviewer applies before approving a merge.
 
 **Negative scope** (NOT what this skill covers):
+
 - Penetration testing methodology (engage external pentesters)
 - Red-team / offensive security (different discipline)
 - Cryptographic protocol design (use vetted primitives; don't
@@ -818,7 +853,7 @@ checks every reviewer applies before approving a merge.
 
 - [`cloud-infrastructure-security.md`](cloud-infrastructure-security.md)
   — sister document within this skill: cloud platform + IAM + CI/CD
-  + IaC + monitoring deep-dive (361-line checklist for AWS, Vercel,
+  - IaC + monitoring deep-dive (361-line checklist for AWS, Vercel,
   Railway, Cloudflare, Terraform, GitHub Actions)
 - `~/.claude/skills/owasp-asvs/SKILL.md` — ASVS catalogue
 - `~/.claude/skills/gdpr-ccpa-compliance/SKILL.md` — privacy lens
@@ -845,7 +880,8 @@ review can't be skipped silently. The patterns above codify the
 production-ready posture: STRIDE at design, ASVS-mapped controls
 in code, vault-first secrets, CVE gate at every PR, sanitised
 errors, audit log for sensitive actions, rate limit on every auth
-+ public endpoint. Teams that adopt these ship features without
+
+- public endpoint. Teams that adopt these ship features without
 shipping incidents; teams that don't burn engineering quarters
 on incident response.
 
@@ -854,6 +890,7 @@ on incident response.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - User input handler ships without input validation / sanitisation (A03 weakening)
 - Authentication endpoint without rate-limit (A07 + Sonar S5876)
 - Hardcoded credential reaches a commit (A02 + Sonar S2068; hook should have caught it)
@@ -880,6 +917,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - mTLS not enforced for service-to-service inside CDE (§ 11; PCI-DSS Req 4 weakening)
 
 **Refinement candidates**:
+
 - New row in OWASP A01-A10 checklist when a recurring pattern surfaces in the codebase
 - Threat-model template extended when a new attack class emerges (e.g., AI prompt injection, supply-chain typosquats)
 - Cross-reference added when a sister skill (owasp-asvs, gdpr-ccpa-compliance, pci-dss-patterns, payment-processing-patterns, hipaa-compliance) adds a security gate
@@ -922,6 +960,7 @@ The following rules were migrated from `~/.claude/rules/common/` into this skill
 > **GDPR (EU 2016/679)**, **CCPA (Cal. Civ. Code §1798.100+)**.
 >
 > Sister rules (each enforces a slice of this umbrella):
+>
 > - `dependency-vulnerabilities.md` — CVE gate (MODERATE+ blocks)
 > - `license-allowlist-gate.md` — SPDX allowlist + cross-check
 > - `dependency-overrides-not-exceptions.md` — fix the tree, not
@@ -935,7 +974,7 @@ The following rules were migrated from `~/.claude/rules/common/` into this skill
 > - `docker-localhost-binding.md` — every host port `127.0.0.1:`
 > - `no-local-fs.md` — no local FS state on ephemeral platforms
 > - `no-discards.md` (hook-enforced) — blocks hardcoded secrets
->   + weak crypto patterns on save
+>   - weak crypto patterns on save
 > - `extreme-lint-policy.md` — `gosec`, `bandit`, `eslint-
 >   plugin-security` mandatory
 
@@ -1074,7 +1113,7 @@ review, post-merge, production incident, external report):
 - `docker-localhost-binding.md` — `127.0.0.1:` on every port
 - `no-local-fs.md` — no FS state on ephemeral platforms
 - `no-discards.md` (hook-enforced) — blocks hardcoded secrets
-  + weak-crypto patterns on save
+  - weak-crypto patterns on save
 - `error-handling-with-context.md` — error responses sanitise
   internal details before reaching client
 - `extreme-lint-policy.md` — `gosec`, `bandit`,
@@ -1105,6 +1144,7 @@ Top 25, PCI-DSS, GDPR, CCPA, POPIA, HIPAA).
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New OWASP Top 10 release that changes category names or rankings (taxonomy needs update)
 - New CVE class recurring across multiple repos (new sister rule candidate)
 - New regulation (e.g., DORA, NIS2, EU AI Act) in scope but no compliance section in the umbrella (regulation row needed)
@@ -1115,6 +1155,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Compliance table row marked N/A without justification
 
 **Refinement candidates**:
+
 - New row in the compliance table when a regulation enters scope
 - New cross-reference when a new sister rule covers a control the umbrella names but doesn't enforce
 - Tightening of the pre-commit checklist when a new defence-in-depth gate emerges
@@ -1167,7 +1208,7 @@ org-admin actions, each audit-logged.
 The canonical security gate (workflow + allowlists + cross-check
 scripts) lives at:
 
-```
+```text
 <org>/.github/
 ├── .github/
 │   ├── workflows/
@@ -1185,6 +1226,7 @@ arbitrary exceptions. Allowlists + exceptions live in the org repo,
 under CODEOWNERS approval by the security team.
 
 This applies to:
+
 - License-allowlist exceptions
 - CVE-allowlist entries (LOW findings, unfixable advisories with
   documented non-exploitability)
@@ -1204,12 +1246,14 @@ on the ruleset config).
 2. New `main` SHA on `<org>/.github` is calculated.
 3. Org ruleset (e.g., `require-security-baseline`) is updated to pin
    the new SHA:
+
    ```bash
    gh api orgs/<org>/rulesets/<id> > /tmp/r.json
    jq '.rules[].parameters.workflows[0].sha = "<new-sha>"' \
      /tmp/r.json > /tmp/r-bumped.json
    gh api orgs/<org>/rulesets/<id> -X PUT --input /tmp/r-bumped.json
    ```
+
 4. The next CI run on every consumer PR picks up the new gate
    logic. No consumer-side change needed.
 
@@ -1218,7 +1262,7 @@ on the ruleset config).
 Every security gate produces a verification block the developer +
 reviewer reads:
 
-```
+```text
 Security baseline (this turn):
   pnpm audit (backend):        0 HIGH, 0 CRITICAL, 0 MODERATE
   pnpm audit (frontend):       0 HIGH, 0 CRITICAL, 0 MODERATE
@@ -1233,7 +1277,7 @@ Status: PASS
 
 A failing block names the specific blocker + the documented fix path:
 
-```
+```text
 Security baseline (this turn):
   osv-scanner CVE scan:        1 MODERATE — qs@6.15.1 (CVSS 6.3)
                                Fix: pnpm.overrides "qs": ">=6.15.2"
@@ -1279,16 +1323,18 @@ exception — it's wishful thinking.
 ## What the consumer repo carries
 
 Consumer repos under this regime carry:
+
 - A `.githooks/pre-push` symlink + the `git config core.hooksPath
   .githooks` setup documented in the README
 - A `docs/security-advisories.md` listing the LOW findings tracked
   (NOT the exceptions — those are org-side)
 - A `.github/CODEOWNERS` requiring security-team review on lockfile
-  + IaC changes
+  - IaC changes
 - A `infra/verify-local.sh` (or equivalent) wiring the same gates CI
   runs, so `git push` triggers them locally
 
 Consumers do NOT carry:
+
 - The security-baseline workflow source (org repo owns it)
 - Allowlist values (org repo owns them)
 - Exception lists (org repo owns them)
@@ -1312,6 +1358,7 @@ Consumers do NOT carry:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Per-consumer security-exceptions file found (rule 2 violation — exceptions live in org repo)
 - Layer skipped (e.g., pre-push hook bypassed via `--no-verify`) — defence-in-depth weakening
 - Required-workflow ruleset's SHA pin not bumped after gate logic change (org-side drift)
@@ -1322,6 +1369,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Bypass actor allowlist non-empty for branch protection on `main` (configuration drift)
 
 **Refinement candidates**:
+
 - New row in the 5-layer table when a new enforcement surface emerges (e.g., MCP gateway, IDE plugin)
 - Tightening of the SHA-pin lifecycle when a malicious-tag retargeting incident is observed
 - New cross-reference when a sister rule (dependency-vulnerabilities, license-allowlist-gate) provides the gate this enforces
@@ -1556,7 +1604,7 @@ NEVER skip step 1. Scrubbing without rotating is theatre.
 Every new repo Claude creates (or first-touches) follows the checklist
 in `repo-setup-checklist.md` § "Secrets surface", which includes:
 
-- `.gitignore` covers .env, *.pem, *.key, etc.
+- `.gitignore` covers .env, *.pem,*.key, etc.
 - Pre-commit hook with gitleaks
 - `.env.example` exists with placeholders (no real values)
 - `docs/secrets.md` documents where each secret comes from (AWS
@@ -1578,6 +1626,7 @@ in `repo-setup-checklist.md` § "Secrets surface", which includes:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Long-term AWS access key (`AKIA...`) found in `~/.aws/credentials` (rule 1 violation — Keychain via aws-vault required)
 - `.env` tracked by git (rule 3 violation)
 - Private key (`*.pem`, `*.key`, `id_rsa*`) found in repo (rule 6 violation)
@@ -1589,6 +1638,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Secret format-validation skipped on push to vault
 
 **Refinement candidates**:
+
 - New vault provider row when a new secrets manager gains adoption
 - Tightening of the rotation cadence table when a regulator (PCI / SOC2) updates frequency requirements
 - New banned-pattern entry when a new credential prefix shape recurs
@@ -1795,7 +1845,7 @@ Each event references the hash of the previous event for the same
 tenant + event_type stream. Tampering with any event invalidates
 the chain for every later event in that stream:
 
-```
+```text
 event N:
   prev_event_hash = sha256(canonical_json(event N-1))
   event_hash = sha256(canonical_json(event N))
@@ -2010,6 +2060,7 @@ cannot defend.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Audit event emitted on success but not on failure (rule 5 weakening — failed actions are often the most important)
 - PII surfacing in audit fields (rule 4 PII-handling violation)
 - Audit event not in the same DB transaction as the business write (rule 1 weakening — audit becomes a lie when txn rolls back)
@@ -2020,6 +2071,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Clock drift > 1 second tolerated (chain-of-custody risk)
 
 **Refinement candidates**:
+
 - New event class in the catalog when a new security-relevant operation emerges
 - New required field when forensics consistently needs a dimension the canonical shape lacks
 - Tightening of retention minimums when a regulation update lengthens the floor
@@ -2212,6 +2264,7 @@ incident.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `docs/provider-research/<provider>.md` missing for an integration that shipped (rule violation pattern)
 - Provider-research note > 6 months stale and integration touched without refresh (cadence rule needs reinforcement)
 - Integration shaped from npm README / Stack Overflow instead of provider docs (Phase 0 discipline weak)
@@ -2221,6 +2274,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Same provider integrated by multiple agents independently (candidate for shared provider-research template)
 
 **Refinement candidates**:
+
 - New canonical-doc-surface entry when a provider's docs need named anchor (table extension)
 - New anti-pattern entry when a shortcut recurs across 2+ integrations
 - Tightening of the 6-month refresh cadence when provider deprecations get missed

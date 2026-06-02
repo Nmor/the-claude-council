@@ -42,6 +42,7 @@ For each error:
 ## Step 4: Guardrails
 
 Stop and ask the user if:
+
 - A fix introduces **more errors than it resolves**
 - The **same error persists after 3 attempts** (likely a deeper issue)
 - The fix requires **architectural changes** (not just a build fix)
@@ -50,6 +51,7 @@ Stop and ask the user if:
 ## Step 5: Summary
 
 Show results:
+
 - Errors fixed (with file paths)
 - Errors remaining (if any)
 - New errors introduced (should be zero)

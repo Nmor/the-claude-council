@@ -182,18 +182,21 @@ Confusion about who decides is the largest single source of
 slow decisions. Adopt one framework consistently:
 
 **DACI** (per decision):
+
 - **D**river: drives the decision to closure
 - **A**pprover: makes the final call (single person)
 - **C**ontributor: gives input
 - **I**nformed: notified after
 
 **RACI** (per task):
+
 - **R**esponsible: does the work
 - **A**ccountable: owns the outcome
 - **C**onsulted: two-way input
 - **I**nformed: one-way update
 
 **RAPID** (Bain):
+
 - **R**ecommend, **A**gree, **P**erform, **I**nput, **D**ecide
 
 Pick one. Document for every recurring decision class. The "two
@@ -205,7 +208,7 @@ the recipe for either deadlock or after-the-fact recrimination.
 Robin Dunbar's research suggests social cohesion at ~150 with
 nested rings:
 
-```
+```text
 Inner circle:   ~5     (immediate team / family)
 Close colleagues: ~15
 Working group:   ~50    (your "department")
@@ -296,7 +299,7 @@ react.
 
 Map team ownership to the code:
 
-```
+```text
 # .github/CODEOWNERS
 /services/auth/         @team-platform-auth
 /services/billing/      @team-payments
@@ -490,7 +493,7 @@ coordination cost is bounded.
 - **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
   engineering basis (when civil / structural scope)
 - **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  + digital coordination (when AEC scope)
+  - digital coordination (when AEC scope)
 - **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
   Matrix** — Systematic innovation methodology
 - **Stanford d.school + IDEO Field Guide** — Design thinking
@@ -506,7 +509,6 @@ coordination cost is bounded.
   Management (Grove)** — People + culture frameworks
 - **Getting to Yes (Fisher + Ury) + Never Split the Difference
   (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
 
 ### Cross-cutting engineering standards
 
@@ -529,12 +531,12 @@ coordination cost is bounded.
 - **CWE-1059** — Insufficient technical documentation (process
   workflows MUST be documented)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Manager span > 10 reports without enabling-team support (span-of-control weakening)
 - Conway's Law mismatch: org chart inverted vs system architecture
 - Team boundaries cut across value streams (cross-team coordination tax)
@@ -547,6 +549,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Onboarding time-to-productivity unmeasured
 
 **Refinement candidates**:
+
 - New team-topology row when a new pattern proves out (Team Topologies revisions)
 - New cross-reference when a sister skill (hiring-process, performance-management, okr-framework) adds an org gate
 - New transition-plan template when reorg-fatigue recurs

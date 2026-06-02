@@ -19,18 +19,22 @@ This reference provides systematic approaches for researching codebase context, 
 Before researching, explicitly identify gaps:
 
 **Target Gap:**
+
 - "Which file/function needs modification?"
 - "What component is involved?"
 
 **Approach Gap:**
+
 - "How should this be implemented?"
 - "What pattern should be used?"
 
 **Scope Gap:**
+
 - "How much should be changed?"
 - "What's included in this request?"
 
 **Context Gap:**
+
 - "What's the current state?"
 - "What patterns exist already?"
 
@@ -39,7 +43,8 @@ Before researching, explicitly identify gaps:
 Use TodoWrite to create a research plan before executing. This ensures systematic investigation.
 
 **Template:**
-```
+
+```text
 Research Plan for [Prompt Type]:
 1. [What to research] - [Tool/approach]
 2. [What to research] - [Tool/approach]
@@ -47,7 +52,8 @@ Research Plan for [Prompt Type]:
 ```
 
 **Example:**
-```
+
+```text
 Research Plan for "fix the bug":
 1. Check conversation history for error messages - Review recent messages
 2. Search for failing tests - Grep for "failing", "error", "TODO"
@@ -62,6 +68,7 @@ Systematically execute each research step, documenting findings.
 ### Phase 4: Document Findings
 
 Summarize what you learned:
+
 - Key files involved
 - Existing patterns found
 - Common approaches in the codebase
@@ -75,7 +82,8 @@ Summarize what you learned:
 **When to use:** Need to understand architecture, find similar implementations, or explore unknown territory
 
 **Approach:**
-```
+
+```text
 Use Task tool with subagent_type=Explore to:
 - Map codebase structure
 - Find similar implementations
@@ -84,7 +92,8 @@ Use Task tool with subagent_type=Explore to:
 ```
 
 **Example:**
-```
+
+```text
 Prompt: "find the bug"
 
 Research:
@@ -98,6 +107,7 @@ Research:
 **When to use:** Know what you're looking for (file type, name pattern)
 
 **Common patterns:**
+
 ```bash
 # Find all authentication-related files
 **/*auth*.ts
@@ -116,7 +126,8 @@ Research:
 ```
 
 **Example:**
-```
+
+```text
 Prompt: "add tests"
 
 Research:
@@ -130,6 +141,7 @@ Research:
 **When to use:** Looking for specific code patterns, function calls, or keywords
 
 **Effective searches:**
+
 ```bash
 # Find authentication implementations
 pattern: "authenticate|login|auth"
@@ -148,7 +160,8 @@ pattern: "process\.env|config\.|getConfig"
 ```
 
 **Example:**
-```
+
+```text
 Prompt: "improve error handling"
 
 Research:
@@ -163,13 +176,15 @@ Research:
 **When to use:** Need to understand how systems connect
 
 **Approach:**
+
 1. Start with entry points (index.ts, main.ts, app.ts)
 2. Read key configuration files (package.json, tsconfig.json)
 3. Explore directory structure
 4. Read README.md and architecture docs
 
 **Example:**
-```
+
+```text
 Prompt: "refactor the API"
 
 Research:
@@ -184,6 +199,7 @@ Research:
 **When to use:** Understanding evolution, finding related changes
 
 **Useful git commands via Bash:**
+
 ```bash
 # Recent commits
 git log --oneline -20
@@ -202,7 +218,8 @@ git diff HEAD~5..HEAD --stat
 ```
 
 **Example:**
-```
+
+```text
 Prompt: "fix the recent regression"
 
 Research:
@@ -217,6 +234,7 @@ Research:
 ### Strategy 1: Local Documentation (Read)
 
 **Priority order:**
+
 1. README.md at project root
 2. docs/ directory
 3. Package-specific READMEs (packages/*/README.md)
@@ -225,7 +243,8 @@ Research:
 6. API documentation (docs/api/)
 
 **Example:**
-```
+
+```text
 Prompt: "implement caching"
 
 Research:
@@ -240,12 +259,14 @@ Research:
 **When to use:** Understanding third-party library usage
 
 **Approach:**
+
 1. Read package.json for library versions
 2. Check local docs or examples
 3. WebFetch official documentation if needed
 
 **Example:**
-```
+
+```text
 Prompt: "update the validation"
 
 Research:
@@ -260,6 +281,7 @@ Research:
 **When to use:** Finding design decisions, warnings, constraints
 
 **Patterns:**
+
 ```bash
 # Find important comments
 pattern: "NOTE:|WARNING:|IMPORTANT:|FIXME:"
@@ -272,7 +294,8 @@ pattern: "must|require|cannot|constraint"
 ```
 
 **Example:**
-```
+
+```text
 Prompt: "modify the database schema"
 
 Research:
@@ -288,7 +311,8 @@ Research:
 **When to use:** Need current approaches, recent changes, industry standards
 
 **Effective queries:**
-```
+
+```text
 # Framework-specific patterns
 "React authentication best practices 2024"
 "Express.js error handling patterns 2024"
@@ -307,7 +331,8 @@ Research:
 ```
 
 **Example:**
-```
+
+```text
 Prompt: "add authentication"
 
 Research:
@@ -323,7 +348,8 @@ Research:
 **When to use:** Need official guidance for frameworks in use
 
 **Common documentation sites:**
-```
+
+```text
 # JavaScript/TypeScript
 https://developer.mozilla.org/docs/
 https://nodejs.org/docs/
@@ -340,7 +366,8 @@ https://prettier.io/docs/
 ```
 
 **Example:**
-```
+
+```text
 Prompt: "update the middleware"
 
 Research:
@@ -355,7 +382,8 @@ Research:
 **When to use:** Implementing well-known patterns
 
 **Queries:**
-```
+
+```text
 "repository pattern TypeScript example"
 "MVC architecture Node.js best practices"
 "clean architecture Node.js implementation"
@@ -363,7 +391,8 @@ Research:
 ```
 
 **Example:**
-```
+
+```text
 Prompt: "refactor data access"
 
 Research:
@@ -381,6 +410,7 @@ Research:
 **When to use:** Always (first step in research)
 
 **Check for:**
+
 - Error messages in recent messages
 - File names mentioned
 - Features discussed
@@ -388,7 +418,8 @@ Research:
 - Code shown or referenced
 
 **Example:**
-```
+
+```text
 Recent messages:
 User: "I'm getting TypeError: Cannot read property 'id' of undefined"
 User: "It happens when I click the login button"
@@ -406,12 +437,14 @@ Research:
 **When to use:** Understanding what user is working on
 
 **Pattern:**
+
 - Last 5-10 messages establish working context
 - File views indicate focus area
 - Previous questions show user intent
 
 **Example:**
-```
+
+```text
 Message history:
 5 messages ago: "How do I implement caching in Express?"
 3 messages ago: "Should I use Redis or in-memory cache?"
@@ -430,12 +463,14 @@ Research:
 **When to use:** User viewing specific file
 
 **System messages indicate:**
-```
+
+```text
 [System: User opened src/api/auth.ts]
 ```
 
 **Example:**
-```
+
+```text
 [System: User opened src/components/LoginForm.tsx]
 User: "refactor this to use hooks"
 
@@ -451,41 +486,48 @@ Research:
 ### Choosing the Right Tool
 
 **Task/Explore Agent:**
+
 - Broad exploration needed
 - Understanding architecture
 - Finding similar patterns
 - Complex multi-step research
 
 **Glob:**
+
 - Finding files by name pattern
 - Known file types
 - Specific naming conventions
 
 **Grep:**
+
 - Searching code content
 - Finding function calls
 - Pattern matching
 - TODO/FIXME discovery
 
 **Read:**
+
 - Reading specific files
 - Documentation review
 - Configuration inspection
 - Package.json analysis
 
 **Bash (git commands):**
+
 - Historical context
 - Recent changes
 - Commit messages
 - File history
 
 **WebSearch:**
+
 - Current best practices
 - Industry standards
 - Library comparisons
 - Common solutions
 
 **WebFetch:**
+
 - Official documentation
 - Specific documentation pages
 - API references
@@ -494,7 +536,8 @@ Research:
 ### Multi-Tool Research Patterns
 
 **Pattern 1: Architecture Discovery**
-```
+
+```text
 1. Read: package.json (understand stack)
 2. Read: README.md (understand project)
 3. Task/Explore: Map architecture
@@ -503,7 +546,8 @@ Research:
 ```
 
 **Pattern 2: Implementation Approach**
-```
+
+```text
 1. Grep: Search for existing pattern
 2. Read: Example implementation
 3. WebSearch: Best practices
@@ -512,7 +556,8 @@ Research:
 ```
 
 **Pattern 3: Bug Investigation**
-```
+
+```text
 1. Review: Conversation history for errors
 2. Grep: Search for error patterns
 3. Bash: Git log for recent changes
@@ -527,7 +572,8 @@ Research:
 **When:** Simple ambiguity, limited scope
 
 **Example:**
-```
+
+```text
 Prompt: "add tests"
 
 Research:
@@ -545,7 +591,8 @@ Findings:
 **When:** Multiple unknowns, need pattern understanding
 
 **Example:**
-```
+
+```text
 Prompt: "improve error handling"
 
 Research:
@@ -566,7 +613,8 @@ Findings:
 **When:** Major feature, architectural decision, complex implementation
 
 **Example:**
-```
+
+```text
 Prompt: "add authentication"
 
 Research:
@@ -590,7 +638,7 @@ Findings:
 
 After research, document findings:
 
-```
+```text
 ## Research Findings for "[Prompt]"
 
 **What was unclear:**
@@ -632,6 +680,7 @@ Before asking questions:
 - [ ] Marked research phase complete in todo list
 
 **Critical Rules:**
+
 1. NEVER skip research phase
 2. ALWAYS ground questions in findings
 3. NEVER assume based on general knowledge

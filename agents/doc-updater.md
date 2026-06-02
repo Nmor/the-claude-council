@@ -36,18 +36,21 @@ npx jsdoc2md src/**/*.ts                # Extract JSDoc
 ## Codemap Workflow
 
 ### 1. Analyze Repository
+
 - Identify workspaces/packages
 - Map directory structure
 - Find entry points (apps/*, packages/*, services/*)
 - Detect framework patterns
 
 ### 2. Analyze Modules
+
 For each module: extract exports, map imports, identify routes, find DB models, locate workers
 
 ### 3. Generate Codemaps
 
 Output structure:
-```
+
+```text
 docs/CODEMAPS/
 ├── INDEX.md          # Overview of all areas
 ├── frontend.md       # Frontend structure
@@ -172,6 +175,7 @@ Links to other codemaps
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Docs lagging code by 2+ deploys (docs-sync gate enforcement weak)
 - Feature shipped without a `docs/<feature>.md` page (rule violation pattern)
 - README + landing + CLAUDE.md drift from each other (doc-sync sweep skipped)
@@ -184,6 +188,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Broken internal links recurring (CI link-check missing)
 
 **Refinement candidates**:
+
 - New docs-sync verification step when a surface class repeatedly drifts
 - New anti-pattern entry when a docs shortcut recurs across 2+ PRs
 - Tightening of docs CI gate when chronic drift observed

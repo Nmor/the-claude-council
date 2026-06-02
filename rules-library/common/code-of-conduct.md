@@ -42,7 +42,7 @@ Per `reuse-first.md` — there's a well-tested standard, used by
 40,000+ open-source projects, including Python, Go, Linux Kernel
 (adapted), Rust, Apache Foundation. Use it:
 
-```
+```text
 # CODE_OF_CONDUCT.md
 
 # Contributor Covenant Code of Conduct
@@ -321,6 +321,7 @@ isn't an accident — it works. Projects that adopt+enforce see:
 - Clearer paths through difficult situations
 
 Projects that don't:
+
 - Lose contributors silently (they don't tell you why they
   leave)
 - Develop "missing stair" patterns (everyone knows person X is
@@ -336,6 +337,7 @@ people, trust, and sometimes the entire project.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New OSS repo created without `CODE_OF_CONDUCT.md` (rule 1 violation)
 - CoC text watered down vs Contributor Covenant baseline (rule 1 weakening)
 - Scope statement missing or ambiguous about specific spaces (Discord, conf parties, social media) — rule 2 weakening
@@ -349,6 +351,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Long-standing contributor's CoC violation handled differently from newcomer's (rule 10 violation)
 
 **Refinement candidates**:
+
 - New row in the published-Covenant adoptions when a new major OSS or org joins (e.g., new foundation, new vendor)
 - Tightening of the committee composition criteria when conflict-of-interest patterns recur
 - New cross-reference when a sister rule (audit-logging, gdpr-ccpa) provides the moderation-record contract

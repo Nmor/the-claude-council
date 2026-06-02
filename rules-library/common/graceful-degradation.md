@@ -35,6 +35,7 @@ Every product surface is categorised:
 | **P3 — Best-effort** | Nice-to-have | Fire-and-forget; never block on it |
 
 Example (e-commerce):
+
 - P0: Browse products, place an order, see order history
 - P1: Personalised recommendations, search ranking
 - P2: Real-time inventory levels, related-products carousel
@@ -206,7 +207,7 @@ Per `task-intake-due-diligence.md` Q14 (testing strategy). Tools:
 
 ### Pattern 1: Cache-aside with stale fallback
 
-```
+```text
 Read → Cache hit?  YES → Return cached
             NO    → Try fresh
                     Fresh OK?  YES → Update cache, return fresh
@@ -218,7 +219,7 @@ Use when: data changes slowly; user tolerates 1-hour-stale.
 
 ### Pattern 2: Outbox + worker
 
-```
+```text
 Request → Validate → Write to outbox + business state (same TX)
 Outbox worker → Pick up → Call external → Retry on failure
                                        → Move to DLQ after N attempts
@@ -229,7 +230,7 @@ confirmation can be "in progress."
 
 ### Pattern 3: Async pre-warm + fast read
 
-```
+```text
 Background job: pre-compute recommendations every hour, store in
                 cache.
 Request: read from cache. Fresh fetch is impossible without the
@@ -241,7 +242,7 @@ fallback while cache warms.
 
 ### Pattern 4: Hedged requests
 
-```
+```text
 Request → Call primary → If no response in 100ms → Call secondary in parallel
                     → First response wins
 ```
@@ -251,7 +252,7 @@ Use when: tail latency matters; redundant downstreams exist
 
 ### Pattern 5: Bulkhead isolation
 
-```
+```text
 Pool A (critical): 50 connections, dedicated to checkout
 Pool B (other):    50 connections, shared by everything else
 ```
@@ -341,6 +342,7 @@ product is slow today" and "the product is down today."
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Feature shipped without a criticality tier assigned (rule 1 weakening)
 - Degraded state shown without explicit UX surface (rule 4 weakening — silent degradation pattern)
 - Catch-all 500 wrapper found around handlers (anti-pattern 1 violation)
@@ -353,6 +355,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Periodic chaos test cycle skipped > 6 months (rule 10 weakening)
 
 **Refinement candidates**:
+
 - New criticality tier when a recurring class of feature doesn't fit P0/P1/P2/P3
 - New pattern entry when a canonical fallback shape emerges (e.g., hedged requests, request collapsing)
 - New row in the anti-patterns when a recurring degradation failure mode surfaces

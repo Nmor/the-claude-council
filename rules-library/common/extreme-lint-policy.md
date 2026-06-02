@@ -126,6 +126,7 @@ fix is:
 ## CI integration
 
 Every project's CI:
+
 - Runs every linter in this rule
 - Fails on ANY finding (no `continue-on-error: true`, no
   `--exit-zero`)
@@ -150,6 +151,7 @@ via `--no-verify` is forbidden per the global rule on actions.
 Every supported IDE (VS Code, Cursor, JetBrains family, Windsurf,
 Neovim, Emacs) gets a `.vscode/settings.json` / `.idea/inspection
 profile.xml` / equivalent that:
+
 - Points at the project's lint config
 - Surfaces every finding inline
 - Sets format-on-save = on (so format-blockers don't accumulate)
@@ -160,7 +162,7 @@ profile.xml` / equivalent that:
 When a file is touched, the verification block names the lint
 sweep result:
 
-```
+```text
 Lint sweep (this turn):
 - tsc --strict --noEmit: 0 errors
 - eslint <files>: 0 warnings (sonarjs + strict-type-checked)
@@ -206,6 +208,7 @@ User directive (verbatim): **"update lint rules extremely"**.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Per-line suppression attempted (`// eslint-disable`, `//nolint`, `# noqa`, etc.) — rule violation
 - Linter config change that loosens a threshold instead of fixing code (escape-hatch pattern)
 - Same lint class recurring across PRs in 30 days (developer-pattern signal — needs surfaced)
@@ -215,6 +218,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Threshold (cognitive complexity, function length, parameters) creep above the strict cap on a class of functions (architectural smell)
 
 **Refinement candidates**:
+
 - New mandatory-linters row when a language gains presence in the rebuild
 - New strict-threshold value when a default proves too loose for a class of bugs
 - Tightening of the suppression-detection sweep when bypass patterns evolve

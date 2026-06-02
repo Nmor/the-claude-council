@@ -96,6 +96,7 @@ This skill engages when work involves:
 - Organizational change with strong human dimension
 
 It does NOT engage when:
+
 - The problem is well-defined and the answer is technical
   (in which case it's engineering)
 - The constraint is regulatory + the path is prescribed
@@ -165,6 +166,7 @@ After empathy, before ideation. The Point-of-View statement:
 > [User] needs [need] because [insight]
 
 Done well, it forces:
+
 - Specificity about who you're designing for
 - Articulation of unmet need (not feature request)
 - Causal insight ("because") that justifies the need
@@ -201,6 +203,7 @@ people; JTBD describes situations.
 ### Ideation — the divergent phase
 
 Brainstorming rules (Osborn 1953, refined endlessly since):
+
 - Defer judgment
 - Encourage wild ideas
 - Build on the ideas of others
@@ -210,6 +213,7 @@ Brainstorming rules (Osborn 1953, refined endlessly since):
 - Go for quantity (target: 100+ ideas in 60 minutes)
 
 Techniques to escape obvious answers:
+
 - **Worst-possible-idea** — frees creativity; sometimes
   produces good ideas inverted
 - **SCAMPER** — Substitute / Combine / Adapt / Modify-
@@ -254,9 +258,9 @@ Testing should DISCONFIRM hypotheses, not validate them.
 Common patterns:
 
 - **Concept testing** — 5-8 users react to lookalike concept
-  + describe what they think it does + would they use it
+  - describe what they think it does + would they use it
 - **Usability testing** — 5-8 users attempt tasks; observe
-  + record (Nielsen's "5 users find 80% of issues" — see
+  - record (Nielsen's "5 users find 80% of issues" — see
   [[ux-research]] for the rigorous version of this claim)
 - **Comparative testing** — show variants side by side
 - **Field pilots** — deploy to a real subset of users +
@@ -270,7 +274,7 @@ spike before testing desirability.
 
 ### The double diamond — alternating divergence + convergence
 
-```
+```text
 Discover (diverge) → Define (converge) → Develop (diverge) → Deliver (converge)
 ```
 
@@ -282,6 +286,7 @@ volume without commitment.
 ### Wicked problems
 
 Rittel + Webber 1973 — characteristics:
+
 - No definitive formulation
 - No stopping rule (no obvious "done")
 - Solutions are not true/false but good/bad
@@ -313,7 +318,7 @@ uncertain.
 ### Combination with other methods
 
 - **Design thinking + Lean Startup** — DT frames the problem
-  + opportunity; LS validates the business model via
+  - opportunity; LS validates the business model via
   build/measure/learn (see [[lean-startup]])
 - **Design thinking + Agile** — DT discovers what to build;
   Agile builds it iteratively
@@ -395,6 +400,7 @@ disconfirming hypotheses; let users complete tasks; surface
 struggles.
 
 ### Design thinking without manufacturing / engineering /
+
 operations early
 
 The product is desirable + the prototype works on a designer's
@@ -490,6 +496,7 @@ sticky-note theatre, abandoned prototypes, and consultant-led
 "innovation initiatives" that produced no innovations.
 
 What design thinking actually is:
+
 - A disciplined methodology for tackling problems where the
   user's needs are unknown, the solution space is open, and
   the organization is willing to test + iterate
@@ -502,6 +509,7 @@ What design thinking actually is:
   Procter & Gamble, Intuit — when sustained over years
 
 What design thinking is NOT:
+
 - A substitute for engineering rigor on well-defined problems
 - A replacement for statistical UX research at scale
 - A magic wand for organizational change
@@ -544,7 +552,7 @@ the discipline that makes that possible.
 - **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
   engineering basis (when civil / structural scope)
 - **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  + digital coordination (when AEC scope)
+  - digital coordination (when AEC scope)
 - **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
   Matrix** — Systematic innovation methodology
 - **Stanford d.school + IDEO Field Guide** — Design thinking
@@ -560,7 +568,6 @@ the discipline that makes that possible.
   Management (Grove)** — People + culture frameworks
 - **Getting to Yes (Fisher + Ury) + Never Split the Difference
   (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
 
 ### Cross-cutting engineering standards
 
@@ -583,12 +590,12 @@ the discipline that makes that possible.
 - **CWE-1059** — Insufficient technical documentation (process
   workflows MUST be documented)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Empathise phase skipped — team jumps to solution without user interviews
 - HMW questions phrased as solutions in disguise ("how might we add a search bar?")
 - Ideate phase converges too fast (first idea picked without divergent exploration)
@@ -599,6 +606,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Stakeholder politics override user insight (validated learning ignored)
 
 **Refinement candidates**:
+
 - New phase-template row when a recurring design-process gap emerges
 - New cross-reference when a sister skill (ux-research, lean-startup, interaction-design) adds a DT gate
 - Tightening of the divergent-ideation discipline when convergence-too-fast recurs

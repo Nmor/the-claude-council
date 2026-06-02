@@ -67,7 +67,7 @@ TTL pattern, or Lua script for atomic check-and-decrement.
 When the request is throttled, the response is `429 Too Many
 Requests` with:
 
-```
+```text
 HTTP/1.1 429 Too Many Requests
 Retry-After: 60                        # seconds OR HTTP-date
 RateLimit-Limit: 60                    # the cap
@@ -127,7 +127,7 @@ For operations with side-effects (sending email, charging a
 card, calling an expensive API), rate-limit on the OPERATION
 not just the HTTP request:
 
-```
+```text
 Endpoint: POST /api/send-email
 Rate limit:
   - 60 req/min per user (HTTP rate)
@@ -178,6 +178,7 @@ crypto). If the limit fires after `bcrypt.compare`, attackers
 exhaust CPU before the limit kicks in.
 
 ### Mistake 3: Rate-limit by API key only when the key is
+
 user-supplied
 
 If clients can rotate keys cheaply, per-key limits don't
@@ -209,7 +210,7 @@ implement different retry policies for 4xx vs 5xx.
 - **RFC 6585** — HTTP 429 status code
 - **RFC 7231 §6.5.3** — 4xx semantics
 - **draft-ietf-httpapi-ratelimit-headers** — modern Retry-After
-  + RateLimit-* header conventions
+  - RateLimit-* header conventions
 - **OWASP ASVS V11.1** — Rate Limiting
 - **OWASP API Security Top 10 — API4:2023** — Unrestricted
   Resource Consumption
@@ -218,13 +219,15 @@ implement different retry policies for 4xx vs 5xx.
 
 Without rate limits, every endpoint is a free DoS amplifier.
 The attack costs the attacker $0; defending costs you scaling
-+ incident response + customer trust. Without rate limits on
+
+- incident response + customer trust. Without rate limits on
 auth endpoints, credential stuffing succeeds. Without rate
 limits on email/SMS triggers, your service becomes a
 spam-amplification vector for attackers.
 
 Rate-limiting is mechanical: one Redis bucket + one middleware
-+ one response shape. The cost is small; the protection is
+
+- one response shape. The cost is small; the protection is
 large.
 
 ## Learning hooks
@@ -232,6 +235,7 @@ large.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Endpoint shipped without rate limiting (rule 1 weakening — every public endpoint needs limits)
 - Auth endpoint missing per-IP + per-account limits (rule 6 weakening — credential-stuffing exposure)
 - Rate limit applied only on success path (mistake 1 pattern)
@@ -242,6 +246,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Rate-limit headers not emitted per draft-ietf-httpapi-ratelimit-headers (rule 4 weakening)
 
 **Refinement candidates**:
+
 - New row in the per-endpoint defaults table when a new endpoint class needs its own limit
 - Tightening of the auth-endpoint defaults when credential-stuffing patterns evolve
 - New algorithm row when a new throttling pattern (e.g., hierarchical leaky-bucket) gains adoption

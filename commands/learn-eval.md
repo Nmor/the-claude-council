@@ -52,7 +52,7 @@ origin: auto-extracted
 [Trigger conditions]
 ```
 
-5. **Self-evaluate before saving** using this rubric:
+1. **Self-evaluate before saving** using this rubric:
 
    | Dimension | 1 | 3 | 5 |
    |-----------|---|---|---|
@@ -66,11 +66,11 @@ origin: auto-extracted
    - If any dimension scores 1–2, improve the draft and re-score until all dimensions are ≥ 3
    - Show the user the scores table and the final draft
 
-6. Ask user to confirm:
+2. Ask user to confirm:
    - Show: proposed save path + scores table + final draft
    - Wait for explicit confirmation before writing
 
-7. Save to the determined location
+3. Save to the determined location
 
 ## Output Format for Step 5 (scores table)
 

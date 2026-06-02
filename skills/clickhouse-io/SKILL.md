@@ -21,6 +21,7 @@ ClickHouse-specific patterns for high-performance analytics and data engineering
 ClickHouse is a column-oriented database management system (DBMS) for online analytical processing (OLAP). It's optimized for fast analytical queries on large datasets.
 
 **Key Features:**
+
 - Column-oriented storage
 - Data compression
 - Parallel query execution
@@ -409,27 +410,32 @@ pgClient.on('notification', async (msg) => {
 ## Best Practices
 
 ### 1. Partitioning Strategy
+
 - Partition by time (usually month or day)
 - Avoid too many partitions (performance impact)
 - Use DATE type for partition key
 
 ### 2. Ordering Key
+
 - Put most frequently filtered columns first
 - Consider cardinality (high cardinality first)
 - Order impacts compression
 
 ### 3. Data Types
+
 - Use smallest appropriate type (UInt32 vs UInt64)
 - Use LowCardinality for repeated strings
 - Use Enum for categorical data
 
 ### 4. Avoid
+
 - SELECT * (specify columns)
 - FINAL (merge data before query instead)
 - Too many JOINs (denormalize for analytics)
 - Small frequent inserts (batch instead)
 
 ### 5. Monitoring
+
 - Track query performance
 - Monitor disk usage
 - Check merge operations
@@ -448,6 +454,7 @@ mutation cost awareness, and the ClickHouse data-type discipline
 (LowCardinality, Nullable cost, codecs).
 
 **Negative scope** (NOT what this skill covers):
+
 - Relational OLTP — see `postgres-patterns`
 - Document / key-value workloads — see `dynamodb-patterns`
 - Druid / Pinot / StarRocks / Doris (different engines, similar shape)
@@ -532,6 +539,7 @@ ballooning storage cost.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Single-row INSERT into MergeTree (batching weakening — should be ≥ 1000 rows / batch)
 - Query missing PRIMARY KEY prefix in WHERE clause (full-table scan)
 - ORDER BY column not in sort key (sort-on-read latency balloon)
@@ -544,6 +552,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Query timing out via `max_execution_time` instead of optimised — slow-query log signal
 
 **Refinement candidates**:
+
 - New row in MergeTree engine selection guide (e.g., ReplicatedReplacingMergeTree, AggregatingMergeTree)
 - New materialized-view pattern when a recurring real-time aggregation shape emerges
 - New cross-reference when a sister skill (postgres-patterns, dynamodb-patterns, observability-patterns) adds an analytical pattern

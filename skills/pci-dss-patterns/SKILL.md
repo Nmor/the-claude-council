@@ -337,6 +337,7 @@ When tokenization isn't enough — POS terminals, IVR, niche processors, legacy 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New payment flow ships without scope-reduction analysis (tokenization-first weakening)
 - Cardholder data logged in plain text (§3.4 + §10.7 violation)
 - Payment page without `Content-Security-Policy` + Subresource Integrity on third-party scripts (§6.4.3, §11.6.1)
@@ -350,6 +351,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Privileged action without MFA (§8.4.2)
 
 **Refinement candidates**:
+
 - New control mapping row when PCI-DSS v4 customised approach is used
 - New cross-reference when a sister skill (security-review, soc2-readiness, iso27001-controls) adds a payments gate
 - New scope-reduction pattern row when a new tokenisation provider emerges

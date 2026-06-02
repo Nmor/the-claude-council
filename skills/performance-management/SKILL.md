@@ -141,6 +141,7 @@ GE, Microsoft) move away from numeric / ordinal ratings. The
 arguments:
 
 **For abolishing ratings**:
+
 - Forced-distribution ratings (the "stack rank") produce political
   behaviour, internal competition, and rating drift toward the
   median
@@ -150,6 +151,7 @@ arguments:
 - Ratings-as-management-by-fear damage psychological safety
 
 **For keeping ratings**:
+
 - Compensation distribution requires SOME differentiation signal;
   if not ratings, then something else
 - Promotion calibration needs comparative judgement; without
@@ -159,6 +161,7 @@ arguments:
 - Without ratings, low performers are harder to surface objectively
 
 The pragmatic middle:
+
 - Keep meaningful performance categories (e.g., "below expectations"
   / "meets" / "exceeds" / "outstanding") for differentiation +
   compensation + legal defensibility
@@ -204,6 +207,7 @@ teams to ensure consistency. Without it, the easy-grading manager's
 the org.
 
 Calibration mechanics:
+
 - Managers come pre-prepared with proposed ratings + evidence for
   each report
 - Discussion centres on specific examples ("Jamal shipped X, led
@@ -226,6 +230,7 @@ they're an L5" vs "I think they're an L4" with no shared
 definition.
 
 A good framework:
+
 - **Two tracks** — IC + Manager — with parity at every level
   (an L6 IC and an L6 manager are equivalent in scope, comp,
   influence, and respect)
@@ -254,6 +259,7 @@ operating at the next level for long enough + consistently enough
 that we should now formally recognise it?
 
 Patterns:
+
 - **Promotion at level you're already operating at** — the right
   rule. Promotion confirms a state already reached, not a state
   hoped for
@@ -278,6 +284,7 @@ help a struggling employee return to acceptable performance —
 or, if they don't, to provide documented basis for termination.
 
 Done well, a PIP is:
+
 - **Specific** — names exact behaviours / outputs that must change
 - **Measurable** — clear success criteria
 - **Time-bound** — typically 30-90 days
@@ -291,6 +298,7 @@ Done well, a PIP is:
   groups; uneven issuance is a legal red flag
 
 Done badly, a PIP is:
+
 - Used as a paperwork formality before a pre-decided termination
   (a "managed exit" disguised as a development opportunity) —
   ethically dubious + legally exposed
@@ -308,6 +316,7 @@ help, reference) often beats forcing the process.
 Multi-source feedback — peer, direct-report, cross-functional,
 self — adds dimensions that direct manager feedback can't reach.
 Useful for senior IC + manager development. Cautions:
+
 - Anonymous 360 feedback can become weaponised (especially when
   combined with comp / promotion impact)
 - Survey fatigue is real — limit cadence
@@ -363,7 +372,7 @@ reduces anxiety and increases trust. Opacity feeds suspicion.
   actionable signal. Replace with: "When you were leading the
   migration, you focused on the technical implementation without
   surfacing the business trade-offs to the leadership team; next
-  time, send a one-pager with options + recommendation to <name>
+  time, send a one-pager with options + recommendation to `<name>`
   before starting."
 - **Strength-only feedback.** "You're great at everything!" tells
   the employee nothing about where to grow. The honest manager
@@ -465,6 +474,7 @@ in predictable, often-fatal ways:
   output drifts from what the strategy needs
 
 Conversely, when performance management is principal-grade:
+
 - High performers are recognised, retained, developed, promoted
 - Strong middle performers are clearly told what would make them
   exceed
@@ -506,7 +516,7 @@ pretend it is.
 - **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
   engineering basis (when civil / structural scope)
 - **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  + digital coordination (when AEC scope)
+  - digital coordination (when AEC scope)
 - **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
   Matrix** — Systematic innovation methodology
 - **Stanford d.school + IDEO Field Guide** — Design thinking
@@ -522,7 +532,6 @@ pretend it is.
   Management (Grove)** — People + culture frameworks
 - **Getting to Yes (Fisher + Ury) + Never Split the Difference
   (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
 
 ### Cross-cutting engineering standards
 
@@ -545,12 +554,12 @@ pretend it is.
 - **CWE-1059** — Insufficient technical documentation (process
   workflows MUST be documented)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Performance feedback annual only (no quarterly / continuous touchpoints)
 - Rating without supporting evidence (manager-impression-only)
 - Calibration session skipped (rating drift across teams)
@@ -563,6 +572,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Calibration data not reviewed for demographic equity
 
 **Refinement candidates**:
+
 - New rating-scale row when ratings-vs-no-ratings debate re-opens
 - New cross-reference when a sister skill (hiring-process, org-design, okr-framework) adds a perf gate
 - New PIP template when recurring exit-pattern emerges

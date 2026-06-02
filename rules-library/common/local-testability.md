@@ -76,14 +76,16 @@ cd backend
 pnpm test src/services/payment.test.ts
 pnpm tsc --noEmit
 pnpm build
-```
+```text
 
 Expected output:
+
 - Tests: 14/14 pass
 - Type-check: 0 errors
 - Build: clean
 
 If anything fails, share the output and I'll fix.
+
 ```
 
 The instructions are exact — no "run your usual test command"
@@ -174,18 +176,21 @@ resumes by running the same commands first.
 
 ## Anti-pattern: write-and-hope
 
-```
+```text
+
 Agent: <writes 200 lines of payment-processing code>
 Agent: "Done!"
 User: <tries to run> "It crashes — Stripe key missing."
 Agent: "Oh, add STRIPE_SECRET_KEY to .env."
 User: <adds, runs again> "Now it crashes on the DB."
 Agent: "Run the migration first."
+
 ```
 
 Should have been:
 
-```
+```text
+
 Agent: "Before I write the payment code, I need to confirm:
         1. STRIPE_SECRET_KEY is in your .env
         2. The migration `add_payment_intents` has been run
@@ -196,6 +201,7 @@ Agent: <writes 200 lines + the test command>
         "Run: `pnpm test src/services/payment.test.ts`
          Expected: 14/14 pass.
          If anything fails, share output."
+
 ```
 
 ## Cross-references
@@ -240,6 +246,7 @@ every code that is written must be testable."**
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Code written before prerequisite check ran (rule 1 violation — "write-and-hope")
 - Missing prerequisite discovered post-edit instead of pre-edit (env-setup request not issued in time)
 - "I'll write it and you can test later" pattern recurrence (rule 4 violation)
@@ -250,6 +257,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Verification commands in plan file but not surfaced in the per-code-emit response (rule 9 weakening)
 
 **Refinement candidates**:
+
 - New row in the prerequisite-check table when a recurring tool / runtime / service emerges (e.g., new vector DB, new auth provider, new package manager)
 - Tightening of the prereq-detection heuristic when missing-prereq incidents recur for the same shape
 - New cross-language entry in the local-testability matrix when a new framework / stack appears

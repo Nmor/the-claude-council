@@ -29,6 +29,7 @@ Per `council-triggers.md` Division 12:
 ## Veto authority
 
 **NO** (advisory). Strategy provides recommendations; Architecture has casting vote on technical ties. Strategy escalates to user when:
+
 - Decision requires business judgment beyond engineering scope
 - Market positioning question can't be resolved by analysis alone
 
@@ -55,7 +56,7 @@ For every triggered task:
 
 ## Output shape
 
-```
+```text
 Strategy review (Division 12):
 
 Hypothesis:
@@ -147,6 +148,7 @@ Verdict: APPROVED / CHANGES_REQUIRED / ESCALATE_TO_USER
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Experiments running past their decision deadline (decision-criteria discipline is weak)
 - Build chosen over buy that became regret (build-vs-buy rubric needs sharpening)
 - Vendor selection that hit lock-in regret (vendor-scoring needs more weight on exit-cost)
@@ -157,6 +159,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Strategic claims unsupported by data (hypothesis-statement discipline is weak)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed strategic dimension appears in retrospect
 - New anti-pattern entry when a strategic shortcut recurs across 2+ launches
 - New auto-fire trigger when a recurring strategic-decision class surfaces

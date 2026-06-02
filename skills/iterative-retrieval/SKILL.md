@@ -18,11 +18,13 @@ Solves the "context problem" in multi-agent workflows where subagents don't know
 ## The Problem
 
 Subagents are spawned with limited context. They don't know:
+
 - Which files contain relevant code
 - What patterns exist in the codebase
 - What terminology the project uses
 
 Standard approaches fail:
+
 - **Send everything**: Exceeds context limits
 - **Send nothing**: Agent lacks critical information
 - **Guess what's needed**: Often wrong
@@ -31,7 +33,7 @@ Standard approaches fail:
 
 A 4-phase loop that progressively refines context:
 
-```
+```text
 ┌─────────────────────────────────────────────┐
 │                                             │
 │   ┌──────────┐      ┌──────────┐            │
@@ -79,6 +81,7 @@ function evaluateRelevance(files, task) {
 ```
 
 Scoring criteria:
+
 - **High (0.8-1.0)**: Directly implements target functionality
 - **Medium (0.5-0.7)**: Contains related patterns or types
 - **Low (0.2-0.4)**: Tangentially related
@@ -143,7 +146,7 @@ async function iterativeRetrieve(task, maxCycles = 3) {
 
 ### Example 1: Bug Fix Context
 
-```
+```text
 Task: "Fix the authentication token expiry bug"
 
 Cycle 1:
@@ -161,7 +164,7 @@ Result: auth.ts, tokens.ts, session-manager.ts, jwt-utils.ts
 
 ### Example 2: Feature Implementation
 
-```
+```text
 Task: "Add rate limiting to API endpoints"
 
 Cycle 1:
@@ -219,6 +222,7 @@ own context window. Used for "find all consumers of X",
 deep code archaeology, cross-repo audits, multi-file research.
 
 **Negative scope** (NOT what this skill covers):
+
 - Writing code via subagents — they're read-only here
 - One-shot questions answered by direct grep — that's faster
   in-line
@@ -312,6 +316,7 @@ agent retaining full context for the actual problem.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Subagent dispatched with overly-broad query (entire codebase) where targeted glob would suffice (context window waste)
 - Subagent results not synthesised before next dispatch (linear chain instead of iterative refinement)
 - Same subagent spawned in parallel with overlapping scope (duplicate work, redundant token cost)
@@ -322,6 +327,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Subagent loop count > 5 without convergence (the question is mis-framed; restate before continuing)
 
 **Refinement candidates**:
+
 - New dispatch pattern when a recurring class of question (e.g., "find all consumers of X function") surfaces
 - Convergence-criterion update when subagent loops fail to terminate (add explicit "I've found enough" predicate)
 - Brief-template improvement when subagents repeatedly ask for clarification (main agent's brief is under-specified)

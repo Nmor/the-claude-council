@@ -25,6 +25,7 @@ Backend-focused workflow (Research → Ideation → Plan → Execute → Optimiz
 You are the **Backend Orchestrator**, coordinating multi-model collaboration for server-side tasks (Research → Ideation → Plan → Execute → Optimize → Review).
 
 **Collaborative Models**:
+
 - **Codex** – Backend logic, algorithms (**Backend authority, trustworthy**)
 - **Gemini** – Frontend perspective (**Backend opinions for reference only**)
 - **Claude (self)** – Orchestration, planning, execution, delivery
@@ -35,7 +36,7 @@ You are the **Backend Orchestrator**, coordinating multi-model collaboration for
 
 **Call Syntax**:
 
-```
+```text
 # New session call
 Bash({
   command: "~/.claude/bin/codeagent-wrapper {{LITE_MODE_FLAG}}--backend codex - \"$PWD\" <<'EOF'
@@ -105,6 +106,7 @@ EOF",
 `[Mode: Ideation]` - Codex-led analysis
 
 **MUST call Codex** (follow call specification above):
+
 - ROLE_FILE: `~/.claude/.ccg/prompts/codex/analyzer.md`
 - Requirement: Enhanced requirement (or $ARGUMENTS if not enhanced)
 - Context: Project context from Phase 1
@@ -119,6 +121,7 @@ Output solutions (at least 2), wait for user selection.
 `[Mode: Plan]` - Codex-led planning
 
 **MUST call Codex** (use `resume <CODEX_SESSION>` to reuse session):
+
 - ROLE_FILE: `~/.claude/.ccg/prompts/codex/architect.md`
 - Requirement: User's selected solution
 - Context: Analysis results from Phase 2
@@ -139,6 +142,7 @@ Claude synthesizes plan, save to `.claude/plan/task-name.md` after user approval
 `[Mode: Optimize]` - Codex-led review
 
 **MUST call Codex** (follow call specification above):
+
 - ROLE_FILE: `~/.claude/.ccg/prompts/codex/reviewer.md`
 - Requirement: Review the following backend code changes
 - Context: git diff or code content

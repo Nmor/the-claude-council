@@ -41,6 +41,7 @@ Quick reference for PostgreSQL best practices. For detailed guidance, use the `d
 ### Common Patterns
 
 **Composite Index Order:**
+
 ```sql
 -- Equality columns first, then range columns
 CREATE INDEX idx ON orders (status, created_at);
@@ -48,24 +49,28 @@ CREATE INDEX idx ON orders (status, created_at);
 ```
 
 **Covering Index:**
+
 ```sql
 CREATE INDEX idx ON users (email) INCLUDE (name, created_at);
 -- Avoids table lookup for SELECT email, name, created_at
 ```
 
 **Partial Index:**
+
 ```sql
 CREATE INDEX idx ON users (email) WHERE deleted_at IS NULL;
 -- Smaller index, only includes active users
 ```
 
 **RLS Policy (Optimized):**
+
 ```sql
 CREATE POLICY policy ON orders
   USING ((SELECT auth.uid()) = user_id);  -- Wrap in SELECT!
 ```
 
 **UPSERT:**
+
 ```sql
 INSERT INTO settings (user_id, key, value)
 VALUES (123, 'theme', 'dark')
@@ -74,12 +79,14 @@ DO UPDATE SET value = EXCLUDED.value;
 ```
 
 **Cursor Pagination:**
+
 ```sql
 SELECT * FROM products WHERE id > $last_id ORDER BY id LIMIT 20;
 -- O(1) vs OFFSET which is O(n)
 ```
 
 **Queue Processing:**
+
 ```sql
 UPDATE jobs SET status = 'processing'
 WHERE id = (
@@ -146,6 +153,7 @@ SELECT pg_reload_conf();
 Principal-level PostgreSQL design + query optimisation: index strategy (B-tree / GIN / GIST / BRIN), partitioning, RLS for multi-tenant, JSONB column patterns, foreign-key + check constraint discipline, EXPLAIN ANALYZE reading, connection pooling, autovacuum tuning.
 
 **Negative scope** (NOT what this skill covers):
+
 - ORM-level query patterns (Hibernate / Django ORM / SQLAlchemy / Active Record) — see ORM-specific skills
 - Migration tooling — see `database-migrations`
 - DynamoDB / NoSQL — see `dynamodb-patterns`
@@ -218,6 +226,7 @@ Postgres is the most powerful open-source RDBMS — and the easiest to misuse: m
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Sequential scan on table > 100k rows (missing index — EXPLAIN ANALYZE shows Seq Scan)
 - N+1 query pattern in handler (multiple round-trips when a JOIN / IN-clause would suffice)
 - Long-running transaction holding locks > 10s (advisory + connection-pool starvation risk)
@@ -230,6 +239,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Foreign key without index on referencing column (cascade-delete becomes Seq Scan)
 
 **Refinement candidates**:
+
 - New query-pattern row when a recurring access pattern surfaces (e.g., reverse-chronological with cursor)
 - New index template when a slow-query alert fires repeatedly
 - Tightening of the RLS template when a new multi-tenant table is added

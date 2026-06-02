@@ -81,7 +81,7 @@ This skill engages when work involves:
 - Identifying ideal final result (IFR) before solving
 - Resource analysis — finding hidden assets in the system
 - Function modelling — mapping useful + harmful + insufficient
-  + excessive functions
+  - excessive functions
 - Failure prediction (anticipatory failure determination, AFD)
 - Engineering optimization problems with parameter conflicts
 - New product development at the early concept stage
@@ -94,6 +94,7 @@ This skill engages when work involves:
   in distant industries
 
 It does NOT engage:
+
 - For problems where the answer is well-known and standard
 - For pure UX / desirability problems (use design thinking)
 - For business-model innovation alone (use Lean Startup /
@@ -261,7 +262,7 @@ points to the best leverage.
 
 Technical systems evolve through predictable stages:
 
-```
+```text
 Performance
    |                      _____  (Maturity)
    |                  ___/
@@ -388,6 +389,7 @@ gives the SUBSTANCES + FIELDS to apply them through. Without
 resource analysis, principle application is unanchored.
 
 ### Applying TRIZ to non-technical contradictions without
+
 adaptation
 
 Classical TRIZ was developed for engineering. Applying the
@@ -478,6 +480,7 @@ Startup as the "complete" methodologies, when in fact each
 solves different problem classes.
 
 For principal-level decisions:
+
 - When a technical contradiction is the constraint,
   brainstorming harder will not solve it; TRIZ will, often
   surprisingly fast
@@ -521,7 +524,7 @@ which.
 - **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
   engineering basis (when civil / structural scope)
 - **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  + digital coordination (when AEC scope)
+  - digital coordination (when AEC scope)
 - **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
   Matrix** — Systematic innovation methodology
 - **Stanford d.school + IDEO Field Guide** — Design thinking
@@ -537,7 +540,6 @@ which.
   Management (Grove)** — People + culture frameworks
 - **Getting to Yes (Fisher + Ury) + Never Split the Difference
   (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
 
 ### Cross-cutting engineering standards
 
@@ -560,12 +562,12 @@ which.
 - **CWE-1059** — Insufficient technical documentation (process
   workflows MUST be documented)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - TRIZ applied where the constraint is non-technical (market / regulatory / cultural)
 - Contradiction misformulated (two parameters not actually opposed)
 - 40 Inventive Principles cited as menu instead of mapped via contradiction matrix
@@ -574,6 +576,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - TRIZ output never tested / prototyped (theory without validation)
 
 **Refinement candidates**:
+
 - New principle-mapping row when a new tech-domain adoption emerges
 - New cross-reference when a sister skill (design-thinking, lean-startup) adds an innovation gate
 - Tightening of the contradiction-formulation discipline when misformulations recur

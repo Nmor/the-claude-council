@@ -26,6 +26,7 @@ trust completion claims because they can't audit the trajectory.
 
 Every phase begins with a one-line announcement BEFORE the first
 tool call of that phase. The header names:
+
 - The phase id (matches the plan file)
 - A short summary of the phase's goal
 - The first concrete action
@@ -41,7 +42,7 @@ Not "cleaned up the cache" — the exact bytes moved.
 Each phase ends with a verification block listing the gates that
 passed THIS turn (per `verify-before-claim.md`):
 
-```
+```text
 Phase <id> verification:
 - <gate 1>: <result this turn>
 - <gate 2>: <result this turn>
@@ -61,6 +62,7 @@ next file / command / decision.
 ### 5. Commit boundaries are progress milestones
 
 When a phase produces a commit, the progress update includes:
+
 - The commit SHA + subject (so the user can `git show <sha>`)
 - The branch name (so multi-phase workflows stay traceable)
 - The count of files in the commit
@@ -68,6 +70,7 @@ When a phase produces a commit, the progress update includes:
 ### 6. Blockers surface immediately with recovery direction
 
 When a phase hits a blocker, the update names:
+
 - The blocker (specific error, not "something went wrong")
 - The root cause (not the symptom — per `proper-fixes-first.md`)
 - The recovery direction (what to try next, OR what user input is
@@ -101,6 +104,7 @@ can read the todo list at any moment and see exact progress.
 
 If the agent decides to skip a phase, defer it, or reorder phases,
 the progress update names:
+
 - Which phase is being skipped/deferred/reordered
 - Why (the constraint that drove the change)
 - When the deferred phase will resume
@@ -111,7 +115,7 @@ Re-ordering without telling the user is a silent-drop variant
 
 ## Canonical progress-update shape
 
-```
+```text
 <phase id> complete.
 
 Changes:
@@ -132,7 +136,7 @@ Next: <one-line concrete action>.
 
 ## Anti-pattern: what NOT to write
 
-```
+```text
 Done with <phase>. Moving on.
 ```
 
@@ -184,6 +188,7 @@ execution and progress updates."
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Phase-header announcement missing before first tool call of that phase (rule 1 weakening)
 - Bulk change (5+ files, directory delete, large data move) reported without before/after counts (rule 2 violation)
 - Verification block missing from a phase end (rule 3 violation)
@@ -195,6 +200,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Phase skipped or reordered without explicit user-visible justification (rule 10 violation)
 
 **Refinement candidates**:
+
 - New row in the canonical progress-update shape when a new artifact class (commit / tag / push / migration) needs reporting
 - Tightening of the "bulk change" threshold (currently 5 files) when small-batch silent edits prove load-bearing
 - New cross-reference when a sister rule (verify-before-claim, no-silent-drops) provides a per-phase gate

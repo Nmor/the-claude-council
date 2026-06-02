@@ -784,6 +784,7 @@ Cost of disciplined Go: minutes per file. Cost of skipping it: incidents where t
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `_, err :=` / `, _ :=` / `_ = …` introduced (sister `golang/no-discards.md` rule 1 violation)
 - `for _, v := range ...` outside rune-iteration exception (sister rule 2 violation)
 - `defer file.Close()` without error-handling closure (sister rule 3 violation)
@@ -795,6 +796,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Test function with underscore (`TestFoo_Bar`) — sister S100 violation
 
 **Refinement candidates**:
+
 - New idiom row when a new Go release ships (e.g., `range` over int — Go 1.22, new iter pattern in 1.23+)
 - Tightening of the "boring is best" thresholds when over-clever generics / type-params recur
 - New cross-reference when a sister rule (golang/no-discards, error-handling-with-context) adds a banned pattern
@@ -817,10 +819,13 @@ Phase H will delete the source files at `rules-library/golang/`. Content below p
 
 ---
 paths:
-  - "**/*.go"
-  - "**/go.mod"
-  - "**/go.sum"
+
+- "**/*.go"
+- "**/go.mod"
+- "**/go.sum"
+
 ---
+
 # Go Coding Style
 
 > This file extends [common/coding-style.md](../../rules-library/common/coding-style.md) with Go specific content.
@@ -856,10 +861,13 @@ See skill: `golang-patterns` for comprehensive Go idioms and patterns.
 
 ---
 paths:
-  - "**/*.go"
-  - "**/go.mod"
-  - "**/go.sum"
+
+- "**/*.go"
+- "**/go.mod"
+- "**/go.sum"
+
 ---
+
 # Go Hooks
 
 > This file extends [common/hooks.md](../../rules-library/common/hooks.md) with Go specific content.
@@ -1229,7 +1237,7 @@ issues:
 
 When a Go file is touched:
 
-```
+```text
 Go lint sweep (this turn):
   - go build ./...: 0 errors
   - go vet ./...: 0 issues
@@ -1284,10 +1292,13 @@ strictness.
 
 ---
 paths:
-  - "**/*.go"
-  - "**/go.mod"
-  - "**/go.sum"
+
+- "**/*.go"
+- "**/go.mod"
+- "**/go.sum"
+
 ---
+
 # Go Patterns
 
 > This file extends [common/patterns.md](../../rules-library/common/patterns.md) with Go specific content.
@@ -1336,10 +1347,13 @@ See skill: `golang-patterns` for comprehensive Go patterns including concurrency
 
 ---
 paths:
-  - "**/*.go"
-  - "**/go.mod"
-  - "**/go.sum"
+
+- "**/*.go"
+- "**/go.mod"
+- "**/go.sum"
+
 ---
+
 # Go Security
 
 > This file extends [common/security.md](../../rules-library/common/security.md) with Go specific content.
@@ -1356,6 +1370,7 @@ if apiKey == "" {
 ## Security Scanning
 
 - Use **gosec** for static security analysis:
+
   ```bash
   gosec ./...
   ```
@@ -1377,10 +1392,13 @@ defer cancel()
 
 ---
 paths:
-  - "**/*.go"
-  - "**/go.mod"
-  - "**/go.sum"
+
+- "**/*.go"
+- "**/go.mod"
+- "**/go.sum"
+
 ---
+
 # Go Testing
 
 > This file extends [common/testing.md](../../rules-library/common/testing.md) with Go specific content.

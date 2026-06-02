@@ -46,6 +46,7 @@ language idiom:
   `throw .doThingFailed(userId: userId, underlying: error)`.
 
 Every wrap names:
+
 - The operation (verb + noun: `doThing`, `commitTx`, `parseRequest`)
 - The ids in scope (the smallest set that lets oncall reproduce)
 - The cause (preserved, never stringified-and-lost)
@@ -295,6 +296,7 @@ context."**
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Bare `return err` / `raise X` / `throw e` without context wrap shipping (wrapping discipline weakening)
 - Error chain lost on the way through a layer (`%v` instead of `%w`, no `from err`, no `cause:`)
 - Test asserting on `message` instead of `error_code` (rule 10 enforcement weak)
@@ -304,6 +306,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Log entry without `request_id` / `trace_id` / `error_code` (structured-fields discipline weak)
 
 **Refinement candidates**:
+
 - New error-code class entry when a recurring failure shape needs a stable code
 - New required-field entry when a context dimension proves load-bearing in production debugging
 - Tightening of the EXP test rubric on `error_code` assertions when chronic copy-fragile tests observed

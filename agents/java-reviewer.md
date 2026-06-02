@@ -89,7 +89,7 @@ Per global `code-reviewer` shape:
 
 ## Output shape
 
-```
+```text
 Java/Kotlin review (Division 3 — language):
 
 Stack: [Spring Boot X / Ktor / Quarkus / Android / plain JVM]
@@ -137,6 +137,7 @@ Verdict: APPROVED / CHANGES_REQUIRED
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - NullPointerException patterns in production (NullAway / Optional discipline needs strengthening)
 - Checked-exception suppression with `throw new RuntimeException` (error-handling rule needs enforcement)
 - Spring Boot startup time creep (autowiring complexity needs review)
@@ -147,6 +148,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Virtual-thread vs platform-thread misalignment (Java 21+ concurrency rule needs sharpening)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed Java idiom dimension appears in retrospect
 - New anti-pattern entry when a Java-style shortcut recurs across 2+ services
 - New auto-fire trigger when a recurring Java pattern surfaces

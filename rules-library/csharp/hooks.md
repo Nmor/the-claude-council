@@ -178,7 +178,7 @@ uses the lockfile strictly; lockfile drift fails the build.
 
 Maintain at `nuget-banned.txt` (audited via CODEOWNERS):
 
-```
+```text
 # Abandoned / replaced
 Newtonsoft.Json          # prefer System.Text.Json
 RestSharp                # prefer HttpClient + System.Text.Json

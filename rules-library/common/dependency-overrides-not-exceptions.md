@@ -118,8 +118,9 @@ boundary the parent doesn't tolerate. Symptoms: build errors,
 runtime crashes, broken APIs.
 
 Decision tree:
+
 1. **Is the parent abandoned?** Replace the parent. Bad transitive
-   + abandoned parent = upstream isn't coming back; fork or swap.
+   - abandoned parent = upstream isn't coming back; fork or swap.
 2. **Is the broken behaviour exercised in your code?** Run the
    integration tests / e2e flow that touches it. If green, ship
    the override.
@@ -166,6 +167,7 @@ Three legitimate cases:
    deployment-flow proof.
 
 Every exception:
+
 - Lives in the org's `docs/security-advisories.md` (NOT consumer).
 - Carries the package + version + finding ID + reviewer + date +
   expiry.
@@ -206,6 +208,7 @@ the override fixes the tree.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Exception added to `docs/security-exceptions.json` without first trying override path (escalation order violated)
 - `pnpm.overrides` / `resolutions` / Go `replace` directive not attempted on a transitive CVE / license finding
 - Override version pinned exactly (`X.Y.Z`) instead of forward-compatible (`>=X.Y.Z`) — rule 5 violation
@@ -216,6 +219,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Exception added without expiry date (drift toward permanent state)
 
 **Refinement candidates**:
+
 - New row in the abandoned-consumer replacement table when a recurring class emerges (e.g., `formidable`, `multer`, new Go HTTP libs)
 - Tightening of the override-vs-exception decision tree when a new framework's overrides syntax appears (e.g., `bun` overrides, `pnpm` v11 changes)
 - New cross-reference when a sister rule (updated-frameworks, install-allowlist) provides a replacement target

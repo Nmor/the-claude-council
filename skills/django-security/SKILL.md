@@ -596,6 +596,7 @@ Remember: Security is a process, not a product. Regularly review and update your
 Principal-level Django security: SECRET_KEY rotation, auth (django.contrib.auth + django-allauth + OAuth2), CSRF posture, SQL injection prevention via ORM, XSS prevention in templates, file-upload safety, rate limiting (django-ratelimit), security headers, secrets management.
 
 **Negative scope** (NOT what this skill covers):
+
 - Django architecture / app structure — see `django-patterns`
 - Test methodology (including security tests) — see `django-tdd`
 - Deployment / dependency CVE gates — see `django-verification`
@@ -667,6 +668,7 @@ Django ships with sensible defaults (auto-escape, CSRF middleware, Argon2 hasher
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - View without `@login_required` / `LoginRequiredMixin` (broken access control — A01)
 - Raw SQL via `cursor.execute` with string interpolation (SQL injection — A03)
 - `mark_safe` / `|safe` on user-controlled HTML (XSS — A03)
@@ -680,6 +682,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Custom auth backend that doesn't extend Django's password hashers (weak crypto — A02)
 
 **Refinement candidates**:
+
 - New OWASP A01-A10 row when a recurring Django anti-pattern emerges
 - New cross-reference when a sister skill (security-review, owasp-asvs, gdpr-ccpa-compliance) adds a Django-specific gate
 - New `django-csp` / security middleware row when a new Django security library ships

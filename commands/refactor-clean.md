@@ -22,7 +22,8 @@ Run analysis tools based on project type:
 | cargo-udeps | Unused Rust dependencies | `cargo +nightly udeps` |
 
 If no tool is available, use Grep to find exports with zero imports:
-```
+
+```text
 # Find exports, then check if they're imported anywhere
 ```
 
@@ -49,6 +50,7 @@ For each SAFE item:
 ## Step 4: Handle CAUTION Items
 
 Before deleting CAUTION items:
+
 - Search for dynamic imports: `import()`, `require()`, `__import__`
 - Search for string references: route names, component names in configs
 - Check if exported from a public package API
@@ -57,6 +59,7 @@ Before deleting CAUTION items:
 ## Step 5: Consolidate Duplicates
 
 After removing dead code, look for:
+
 - Near-duplicate functions (>80% similar) — merge into one
 - Redundant type definitions — consolidate
 - Wrapper functions that add no value — inline them
@@ -66,7 +69,7 @@ After removing dead code, look for:
 
 Report results:
 
-```
+```text
 Dead Code Cleanup
 ──────────────────────────────
 Deleted:   12 unused functions

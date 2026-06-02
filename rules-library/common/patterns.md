@@ -12,6 +12,7 @@
 ## Skeleton Projects
 
 When implementing new functionality:
+
 1. Search for battle-tested skeleton projects
 2. Use parallel agents to evaluate options:
    - Security assessment
@@ -26,6 +27,7 @@ When implementing new functionality:
 ### Repository Pattern
 
 Encapsulate data access behind a consistent interface:
+
 - Define standard operations: findAll, findById, create, update, delete
 - Concrete implementations handle storage details (database, API, file, etc.)
 - Business logic depends on the abstract interface, not the storage mechanism
@@ -34,6 +36,7 @@ Encapsulate data access behind a consistent interface:
 ### API Response Format
 
 Use a consistent envelope for all API responses:
+
 - Include a success/status indicator
 - Include the data payload (nullable on error)
 - Include an error message field (nullable on success)
@@ -44,6 +47,7 @@ Use a consistent envelope for all API responses:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New component / function / class introduced without sweep against `reuse-first.md` (existing primitive missed)
 - Rule of three violated — third occurrence of same shape without extraction (parallel implementations growing)
 - Response envelope inconsistent across handlers (different success indicators, different error shapes)
@@ -52,6 +56,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Pattern catalog gap: a recurring shape (e.g., outbox, saga, CQRS, fanout) absent from this file
 
 **Refinement candidates**:
+
 - New pattern entry when a recurring architectural shape (event-sourcing, sidecar, ambassador, anti-corruption layer) emerges
 - Tightening of the rule-of-three threshold when twin parallel implementations cause defect drift
 - New response-envelope field when a recurring metadata need (rate-limit headers, request-id, deprecation notice) emerges

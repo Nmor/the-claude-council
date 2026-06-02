@@ -127,7 +127,14 @@ jobs:
         # ludeeus/action-shellcheck@2.0.0
         uses: ludeeus/action-shellcheck@00b27aa7cb85167568cb48a3838b75f4265f2bca
         with:
-          severity: style
+          # Threshold: warning. SC2016 (info) fires false-positive
+          # on grep regex patterns where single quotes are the
+          # correct delimiter (would expand $ otherwise). Per
+          # ~/.claude/rules-library/common/extreme-lint-policy.md:
+          # "If a rule is wrong for the project, the project's lint
+          # CONFIG changes ... The CODE never carries a per-line
+          # suppression." This threshold is that config.
+          severity: warning
           scandir: '.'
           ignore_paths: 'node_modules sessions projects file-history'
 

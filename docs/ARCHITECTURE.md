@@ -11,7 +11,7 @@ The Claude Council is a layered system that turns a single prompt
 into the deliberate output of a multi-disciplinary team. The layers,
 top to bottom:
 
-```
+```text
                        USER PROMPT
                             │
                             ▼
@@ -177,7 +177,7 @@ The repo's `claude-home/` directory is a one-to-one mirror of what
 gets installed to `~/.claude/`. Workspaces add their own
 `<workspace>/.claude/` on top with the same shape:
 
-```
+```text
 <workspace>/.claude/
 ├── CLAUDE.md                  # workspace-level rules + vendor table
 ├── rules/                     # project-specific rules (extend global)
@@ -243,7 +243,7 @@ demotion review.
 Per [`verify-before-claim.md`](../rules/common/verify-before-claim.md),
 every claim of completion attaches a same-turn verification block:
 
-```
+```text
 Verification (this turn):
 - tsc --noEmit: 0 errors
 - eslint <files>: 0 warnings

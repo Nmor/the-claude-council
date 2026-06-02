@@ -61,6 +61,7 @@ NOT WARN:
   surfaces at runtime it's an ERROR)
 
 ### 3. INFO is for "a thing happened that's part of normal
+
 operation"
 
 INFO is the audit + lifecycle level:
@@ -156,7 +157,7 @@ Per `security.md` A09 + `secrets-management.md`:
 
 A failure that retries successfully:
 
-```
+```text
 attempt 1: WARN "transient failure; retrying" + error_code
 attempt 2: WARN
 attempt N (success): INFO "succeeded after retries" + attempts: N
@@ -229,6 +230,7 @@ sanity.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - ERROR fired without an alert routing to on-call (rule 1 weakening — "ERROR reserved for alerts")
 - WARN volume growing > N/min on a service without trend signal (rule 2 dumping-ground anti-pattern)
 - INFO used for genuine handler failure (rule 3 violation — real error hidden)
@@ -241,6 +243,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Log ingestion cost crosses per-service budget without action (rule 8 weakening)
 
 **Refinement candidates**:
+
 - New per-library mapping row when a new logger surfaces (e.g., new structured logger in a niche language)
 - Tightening of the WARN-vs-ERROR boundary when a recurring "what level is this?" decision class emerges
 - New PII-redaction entry when a new sensitive field shape recurs (e.g., new identifier format, new biometric)

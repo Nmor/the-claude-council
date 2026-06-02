@@ -34,7 +34,7 @@ tweak). Trivial work uses inherited global rules only.
 
 Every workspace `.claude/` contains:
 
-```
+```text
 <workspace>/.claude/
 ├── CLAUDE.md              # workspace-level rules + vendor list
 ├── README.md              # how this .claude/ is organised
@@ -124,7 +124,7 @@ demoted:
    (e.g., global rule references one workspace's specific
    deployment shape).
 2. Surfaces via AskUserQuestion: "This rule has workspace-
-   specific content; relocate to <workspace>/.claude/rules/?"
+   specific content; relocate to `<workspace>`/.claude/rules/?"
 3. On approval: copy to the workspace; remove from global.
 4. Add a redirect stub in global if the rule was widely
    referenced: `> Relocated to <workspace>/.claude/rules/<rule>.md`.
@@ -282,6 +282,7 @@ proveeds (This is for global and workspace/projects)."**
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Non-trivial Council-mediated task in a workspace without `.claude/` directory + no first-touch scaffold offered (rule 1 violation)
 - Scaffold copied but `CLAUDE.md` not customised for project name / tech stack (rule 3 weakening)
 - Project rule LOWERS a global threshold (rule 4 violation — strictest wins)
@@ -293,6 +294,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Tech-stack auto-detection skipped on first scaffold (heuristic-table gap)
 
 **Refinement candidates**:
+
 - New tech-stack detection row when a new ecosystem signal surfaces (e.g., `bun.lockb`, `deno.json`, `mise.toml`)
 - Tightening of the "first-touch trigger" criteria when trivial-work cases are misclassified as non-trivial
 - New cross-reference when a sister rule (rule-authoring-global-vs-project, continuous-learning-mandate) provides the classification or promotion pipeline

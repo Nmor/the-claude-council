@@ -15,7 +15,7 @@ streams; DI via constructor injection (Hilt / Koin / manual).**
 
 ## Layered architecture (Spring Boot / Ktor)
 
-```
+```text
 com.example.app/
 ├── domain/               # Pure Kotlin, no framework deps
 │   ├── Order.kt

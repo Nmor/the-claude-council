@@ -164,7 +164,7 @@ specifics).
 
 When a new rule lands, the agent's response includes:
 
-```
+```text
 Rule added:
 - Path: ~/.claude/rules/common/<rule>.md  (or workspace path)
 - Classification: global | project
@@ -177,7 +177,7 @@ exists" section for durable record.
 
 ## Anti-pattern: project ref in global
 
-```
+```text
 # WRONG — global rule with workspace-specific reference
 "For projects with verify-local.sh (<project-a>, <project-b>,
 <project-c>), add this gate inline."
@@ -190,7 +190,7 @@ inline."
 
 ## Anti-pattern: global principle in project
 
-```
+```text
 # WRONG — project rule restating global principle
 "This project does not allow `// eslint-disable` comments." (the
 global no-discards / extreme-lint-policy rules already say this)
@@ -237,6 +237,7 @@ improved and clean"**.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New rule written without classification step (rule 1 violation — classify-before-writing)
 - Global rule contains project / workspace / vendor names or session-specific dates (rule 2 violation — purity sweep failed)
 - Workspace rule attempts to LOWER a global threshold (rule 4 violation — strictest wins)
@@ -248,6 +249,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Classification rationale absent from the agent's response when adding a rule (rule 10 weakening — decision not recorded)
 
 **Refinement candidates**:
+
 - New banned-content row when a recurring project-specific leak class appears in global (e.g., specific cloud region, specific compliance regulator)
 - Tightening of the cross-workspace-pattern detection when 2+ similar rules accumulate without promotion
 - New cross-reference when a sister rule (project-scoped-artifacts, continuous-learning-mandate) provides the promotion / demotion pipeline

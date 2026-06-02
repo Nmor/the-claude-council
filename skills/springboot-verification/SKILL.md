@@ -28,11 +28,13 @@ If build fails, stop and fix.
 ## Phase 2: Static Analysis
 
 Maven (common plugins):
+
 ```bash
 mvn -T 4 spotbugs:check pmd:check checkstyle:check
 ```
 
 Gradle (if configured):
+
 ```bash
 ./gradlew checkstyleMain pmdMain spotbugsMain
 ```
@@ -47,6 +49,7 @@ mvn jacoco:report   # verify 70%+ coverage
 ```
 
 Report:
+
 - Total tests, passed/failed
 - Coverage % (lines/branches)
 
@@ -173,7 +176,7 @@ git secrets --scan  # if configured
 
 ### Common Security Findings
 
-```
+```text
 # Check for System.out.println (use logger instead)
 grep -rn "System\.out\.print" src/main/ --include="*.java"
 
@@ -199,6 +202,7 @@ git diff
 ```
 
 Checklist:
+
 - No debugging logs left (`System.out`, `log.debug` without guards)
 - Meaningful errors and HTTP statuses
 - Transactions and validation present where needed
@@ -206,7 +210,7 @@ Checklist:
 
 ## Output Template
 
-```
+```text
 VERIFICATION REPORT
 ===================
 Build:     [PASS/FAIL]
@@ -234,6 +238,7 @@ Issues to Fix:
 Principal-level Spring Boot build + verification: Maven / Gradle gate orchestration, dependency CVE scan, license allowlist, code coverage thresholds, mutation testing, OWASP Dependency-Check, Docker image hardening, deploy gates.
 
 **Negative scope** (NOT what this skill covers):
+
 - Code-level patterns — see `springboot-patterns`
 - Security configuration — see `springboot-security`
 - Test methodology — see `springboot-tdd`
@@ -302,6 +307,7 @@ A Spring Boot app that passes `mvn test` can still ship CVE-laden dependencies, 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `mvn verify` succeeds while spotbugs / pmd / checkstyle warnings ignored (gate-strictness weakening)
 - `dependency-check-maven` / OWASP Dependency-Check disabled or set to non-blocking (per `~/.claude/rules-library/common/dependency-vulnerabilities.md`)
 - Jacoco coverage gate set below `extreme-lint-policy.md` thresholds
@@ -311,6 +317,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New module added without entry in build verification matrix
 
 **Refinement candidates**:
+
 - New verification step when a new Spring Boot tooling lands (e.g., `spring-boot-buildpacks` rotation)
 - New cross-reference when a sister rule (deploy-failures-become-checks, done-criteria) adds a Java gate
 - Tightening of the warnings-as-errors policy when a recurring escape surfaces

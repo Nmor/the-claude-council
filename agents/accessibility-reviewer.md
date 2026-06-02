@@ -79,7 +79,7 @@ The most-violated in practice (the "everyday a11y" sweep):
 
 ## Output shape
 
-```
+```text
 Accessibility review (Division 7 — a11y):
 
 WCAG 2.2 conformance level: AA / AAA (per surface)
@@ -119,6 +119,7 @@ Standards-cited references in every finding. Vague advice ("improve accessibilit
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - axe-core / pa11y findings shipped to production (CI gate has gaps)
 - WCAG 2.2 new-SC violations (2.4.11, 2.5.7, 2.5.8, 3.2.6, 3.3.7, 3.3.8) — the 2.2 additions are easy to miss
 - Keyboard-only walkthrough surfacing trap or focus-order issues (manual-test rubric needs enforcement)
@@ -128,6 +129,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - 200%/400% zoom causing content overlap (reflow rule needs sharpening)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed a11y SC appears in audit
 - New anti-pattern entry when an a11y-shortcut recurs across 2+ surfaces
 - New automated-test gate when manual-test miss patterns surface

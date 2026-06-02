@@ -29,6 +29,7 @@ attack surface every time the laptop joins a public network.
 1. **All host port mappings in `docker-compose*.yml` files include an
    explicit `127.0.0.1:` prefix.** The four canonical shapes that ARE
    allowed:
+
    ```yaml
    ports:
      - "127.0.0.1:8080:8080"               # bare numeric
@@ -36,7 +37,9 @@ attack surface every time the laptop joins a public network.
      - "127.0.0.1:8080:8080/udp"           # UDP variant
      - "8080"                              # container-only (no host port at all)
    ```
+
    The five forbidden shapes:
+
    ```yaml
    ports:
      - "8080:8080"            # bare → binds 0.0.0.0
@@ -49,6 +52,7 @@ attack surface every time the laptop joins a public network.
 2. **Both quote styles must be checked.** YAML accepts `"..."`,
    `'...'`, and unquoted strings. The sweep grep must cover all
    three:
+
    ```bash
    grep -nE '^\s+- (["\x27]|)(0\.0\.0\.0:[0-9]+|[0-9]+|\$\{[A-Z_]+):[0-9]+'
    ```
@@ -84,6 +88,7 @@ attack surface every time the laptop joins a public network.
 
    Every exception carries a one-line YAML comment naming the
    reason. Example:
+
    ```yaml
    ports:
      - "0.0.0.0:1935:1935"   # RTMP — phone testing on LAN
@@ -123,7 +128,8 @@ service to recreate the containers with new bindings.
 
 When `127.0.0.1:N` collides with a host process or another
 container (common with Postgres, Redis, MinIO when devs run native
-+ Docker copies), the resolution path is:
+
+- Docker copies), the resolution path is:
 
 1. Pick an unused host port on the loopback (e.g. 5433/5434/5435 for
    Postgres clones).
@@ -175,13 +181,14 @@ container behaviour changes, and the gate is one grep wide.
 - `deploy-failures-become-checks.md` — same family: every observed
   posture gap becomes a mechanical gate.
 - `~/.claude/rules/common/auto-skills.md` — already maps Dockerfile
-  + compose files to this rule via the `**/*` path.
+  - compose files to this rule via the `**/*` path.
 
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New compose file shipped with bare `"5432:5432"` / `"6379:6379"` port mapping (Hard rule 1 violation)
 - Existing `127.0.0.1:` prefix removed in a refactor (binding-scope regression)
 - `0.0.0.0:` explicit binding on a developer-machine compose (forbidden shape #3-4)
@@ -191,6 +198,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Port conflict resolved by switching back to `0.0.0.0:` instead of picking an unused loopback port (rule-violation shortcut)
 
 **Refinement candidates**:
+
 - New entry in the allowed-exception list when a recurring legitimate cross-host need surfaces (e.g., new media-streaming protocol, new IoT-device pairing flow)
 - Tightening of the detection grep when YAML formatting variants slip past (e.g., new compose v3.x syntax, Docker Bake)
 - New cross-reference when a sister rule (no-local-fs, secrets-management) provides the broader "developer machine isn't a trusted boundary" baseline

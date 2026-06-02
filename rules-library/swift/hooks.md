@@ -174,6 +174,7 @@ brew install --cask xcodes       # Xcode version management
 ## `.swiftlint.yml` (already covered in `swift/no-discards.md`)
 
 See `~/.claude/rules/swift/no-discards.md` for the strict config:
+
 - `force_unwrapping: error`
 - `force_try: error`
 - `empty_catch: error`
@@ -228,7 +229,7 @@ versions.
 
 `*.xcconfig`:
 
-```
+```text
 // Treat warnings as errors
 SWIFT_TREAT_WARNINGS_AS_ERRORS = YES
 GCC_TREAT_WARNINGS_AS_ERRORS = YES

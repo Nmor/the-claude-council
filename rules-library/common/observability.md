@@ -63,13 +63,13 @@ handler doesn't thread them manually on every log call.
 
 ### 3. Metric naming follows the canonical form
 
-```
+```text
 <service>_<operation>_<unit>{tag1="value1",tag2="value2"}
 ```
 
 Examples:
 
-```
+```text
 auth_login_duration_seconds{provider="google",result="success"}
 payment_charge_total{currency="usd",result="declined"}
 webhook_event_processing_duration_seconds{provider="stripe",event="invoice.paid"}
@@ -277,6 +277,7 @@ with.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Incident takes > expected MTTR because traces / logs / metrics weren't correlated (rule 9 weakening)
 - Alert fires on heuristic threshold instead of SLO breach (rule 8 weakening — alert fatigue)
 - High-cardinality tag attached to a metric (rule 3 violation — cost explosion)
@@ -287,6 +288,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New platform (Lambda / K8s / etc.) shipped without its required signal set
 
 **Refinement candidates**:
+
 - New row in the required-field schema when a context dimension proves load-bearing in production debugging
 - New Golden-Signal entry when a recurring class of failure (cold start, throttle, iterator age) needs its own metric
 - Tightening of the "no PII in logs" linter when new PII shapes surface

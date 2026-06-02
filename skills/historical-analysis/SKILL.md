@@ -283,7 +283,7 @@ The line from L. P. Hartley, used by David Lowenthal as the title of his 1985 st
 - **GRADE working group framework** — Evidence quality grading
   (High / Moderate / Low / Very Low)
 - **OECD Frascati Manual 2015** — Standard practice for research
-  + experimental development
+  - experimental development
 - **AHA + APA + MLA citation styles** — Discipline-specific
   citation formats
 - **Pyramid Principle (Barbara Minto)** — Top-down structured
@@ -297,7 +297,6 @@ The line from L. P. Hartley, used by David Lowenthal as the title of his 1985 st
 - **W3C WAI Research Methods** — Inclusive research practices
 - **CWE-1426** — Improper validation of generative AI output
   (applies when AI assists synthesis)
-
 
 ### Cross-cutting research + documentation standards
 
@@ -319,12 +318,12 @@ The line from L. P. Hartley, used by David Lowenthal as the title of his 1985 st
 - **CWE-1295** — Debug messages revealing unnecessary information
   (applies to research dump-files + intermediate artefacts)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Post-mortem reads founder / engineer intent into events without contemporaneous evidence (presentism)
 - Selection bias in archive — only surviving artifacts cited, lost decisions invisible (Whig history)
 - Single source treated as authoritative without corroboration (oral-history confabulation, founding-myth canonisation)
@@ -335,6 +334,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Periodisation imposed on continuous change (artificial era boundaries hiding actual evolution)
 
 **Refinement candidates**:
+
 - New archival-discipline pattern when a recurring evidence class (Slack archive, GitHub PR history, ADR trail) needs codified treatment
 - Counterfactual-framing template when post-mortems repeatedly collapse to single-narrative readings
 - Bias-identification addition when a recurring fallacy (e.g., founder hagiography, technology determinism) surfaces in reviews

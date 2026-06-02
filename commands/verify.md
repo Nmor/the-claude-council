@@ -41,7 +41,7 @@ Execute verification in this exact order:
 
 Produce a concise verification report:
 
-```
+```text
 VERIFICATION: [PASS/FAIL]
 
 Build:    [OK/FAIL]
@@ -59,6 +59,7 @@ If any critical issues, list them with fix suggestions.
 ## Arguments
 
 $ARGUMENTS can be:
+
 - `quick` - Only build + types
 - `full` - All checks (default)
 - `pre-commit` - Checks relevant for commits

@@ -396,7 +396,7 @@ These rules have surfaced in real code. Every one of them MUST be addressed when
 | **S109** | Magic number literals | Extract to named `const`. |
 | **S101** | Class name not PascalCase | Rename. |
 | **S100** | Function name not camelCase | Rename. No underscores in test names — use `t.Run("sub test", ...)`. |
-| **S6582** | `if (!x || !x.foo)` | Optional chain: `if (!x?.foo)`. |
+| **S6582** | `if (!x \|\| !x.foo)` | Optional chain: `if (!x?.foo)`. |
 | **S7735** | Negated condition in ternary `!cond ? a : b` | Flip to `cond ? b : a`. |
 | **S6606** | `Object.prototype.hasOwnProperty.call(obj, k)` | `Object.hasOwn(obj, k)`. |
 | **S7773** | Bare `parseInt(s)` / `parseFloat(s)` | `Number.parseInt(s, 10)` / `Number.parseFloat(s)`. |
@@ -461,9 +461,11 @@ is the only safety net.
 ### The five steps
 
 1. **Inventory duplicated literals (S1192).** For Go / TS / Python:
+
    ```bash
    grep -oE '"[^"]{8,}"' <file> | sort | uniq -c | sort -rn | awk '$1 >= 3'
    ```
+
    Every line in the output is a violation. If you decide to extract,
    do **declare + replace in the SAME edit** — never declare a
    const and stop, that produces the unused-const warning state the
@@ -474,6 +476,7 @@ is the only safety net.
 2. **Inventory discards.** Run the relevant grep set for the file's
    language from the "Pre-delivery self-audit checklist" section
    below. Fix every hit. Common offenders in Go:
+
    ```bash
    grep -nE '\bfor [_, ]+_[, ]* := range\b' <file>
    grep -nE '_, err :=|, _ :=|^\s*_ =' <file>
@@ -503,9 +506,11 @@ is the only safety net.
 
 6. **Commented-out code audit (no-silent-drops.md Rule 0).** Grep the
    file for commented-out source:
+
    ```bash
    grep -nE '^\s*//\s*(if|for|switch|return|err|var|const|func|import|package|[a-zA-Z_]+[ \t]*[:=]|c\.|i\.|a\.|h\.|k\.)' <file>
    ```
+
    Every match is one of three things:
    - **A genuine TODO marker** — leave it OR open a real ticket and
      remove it. Either way, surface it to the user.
@@ -526,6 +531,7 @@ is the only safety net.
 ### Declare-and-stop is forbidden
 
 If you decide to extract a constant or a helper:
+
 - The same edit MUST replace every usage.
 - Or revert the declaration before reporting done.
 
@@ -607,7 +613,7 @@ exists so the workflow is explicit and the failure cannot recur as
 | 38 | Empty function body (S108) | `grep -nE "\{\s*\}"` | Implement or document why |
 | 39 | `catch (e) { throw e }` useless rethrow (S2737) | Visual | Drop the try/catch or add real handling |
 | 40 | Caught exception used only for `instanceof`, never logged (S1166) | Visual | Always log on the way through |
-| 41 | `throw` / `reject` / `raise` in a user-facing path WITHOUT a paired user-visible surface (toast / inline validation / banner / state transition / modal) — `no-silent-failures.md` rule 7 | Visual + grep for `throw ` / `reject(` / `raise ` in views / handlers / form-submit / API client; confirm each is caught + surfaced | Pair every throw in a user-facing path with toast.error / inline error / banner / status transition. NEVER rely on a generic ErrorBoundary as the first UX surface. Server-side throws route through a centralised exception handler that emits a typed `{error_code, message, details}` envelope per `error-handling-with-context.md` rule 4 |
+| 41 | `throw` / `reject` / `raise` in a user-facing path WITHOUT a paired user-visible surface (toast / inline validation / banner / state transition / modal) — `no-silent-failures.md` rule 7 | Visual + grep for `throw` / `reject(` / `raise` in views / handlers / form-submit / API client; confirm each is caught + surfaced | Pair every throw in a user-facing path with toast.error / inline error / banner / status transition. NEVER rely on a generic ErrorBoundary as the first UX surface. Server-side throws route through a centralised exception handler that emits a typed `{error_code, message, details}` envelope per `error-handling-with-context.md` rule 4 |
 
 ### How to run the audit
 
@@ -653,6 +659,7 @@ Operator override (humans only, never the agent):
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Hook rejection on a new pattern not in the current rule list (candidate for promotion to documented pattern)
 - Discard pattern shipping despite the hook (hook coverage gap — refine the regex / AST query)
 - Suppression directive (`// eslint-disable`, `//nolint`, `# noqa`) attempted (rule violation — log + reinforce)
@@ -662,6 +669,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Hardcoded credential prefix appearing in source despite hook (new prefix pattern to add to the hook)
 
 **Refinement candidates**:
+
 - New banned-pattern entry when a class recurs across 2+ services
 - New hook check when a pattern bypass surfaces
 - Tightening of complexity / length / parameter caps when chronic violation observed

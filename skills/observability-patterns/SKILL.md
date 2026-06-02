@@ -227,6 +227,7 @@ metrics to traces, and the PII-redaction + retention discipline
 that keeps observability legal.
 
 **Negative scope** (NOT what this skill covers):
+
 - Application performance tuning (the analysis after observation)
 - Business analytics (out — see `clickhouse-io`)
 - Audit logging (different retention + integrity contract — see
@@ -244,7 +245,7 @@ that keeps observability legal.
 - **OpenTelemetry Specification v1.x** (opentelemetry.io) — traces,
   metrics, logs, propagation
 - **W3C Trace Context** (w3.org/TR/trace-context/) — `traceparent`
-  + `tracestate` headers
+  - `tracestate` headers
 - **W3C Baggage** (w3.org/TR/baggage/) — user-context propagation
 - **OTel Semantic Conventions** — http.*, db.*, messaging.*
 - **OpenMetrics** (RFC pending) — Prometheus-compatible exposition
@@ -329,6 +330,7 @@ and customer trust.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Free-form `console.log` / `console.error` in production handler (structured-logger weakening)
 - Log line without `request_id` / `trace_id` / `user_id` / `tenant_id` correlation fields
 - New external call without a metric (latency / error-rate / throughput) — Four Golden Signals weakening
@@ -341,6 +343,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Trace span missing on a cross-service call (W3C trace-context propagation weakening)
 
 **Refinement candidates**:
+
 - New metric template when a new handler class emerges (e.g., webhook handler, scheduled job, stream consumer)
 - New alarm template when a new failure class is observed in production
 - New cross-reference when a sister rule / skill (log-levels, audit-logging, runbook-template, error-handling-with-context) gains an observability gate
@@ -427,13 +430,13 @@ handler doesn't thread them manually on every log call.
 
 ### 3. Metric naming follows the canonical form
 
-```
+```text
 <service>_<operation>_<unit>{tag1="value1",tag2="value2"}
 ```
 
 Examples:
 
-```
+```text
 auth_login_duration_seconds{provider="google",result="success"}
 payment_charge_total{currency="usd",result="declined"}
 webhook_event_processing_duration_seconds{provider="stripe",event="invoice.paid"}
@@ -641,6 +644,7 @@ with.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Incident takes > expected MTTR because traces / logs / metrics weren't correlated (rule 9 weakening)
 - Alert fires on heuristic threshold instead of SLO breach (rule 8 weakening — alert fatigue)
 - High-cardinality tag attached to a metric (rule 3 violation — cost explosion)
@@ -651,6 +655,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New platform (Lambda / K8s / etc.) shipped without its required signal set
 
 **Refinement candidates**:
+
 - New row in the required-field schema when a context dimension proves load-bearing in production debugging
 - New Golden-Signal entry when a recurring class of failure (cold start, throttle, iterator age) needs its own metric
 - Tightening of the "no PII in logs" linter when new PII shapes surface

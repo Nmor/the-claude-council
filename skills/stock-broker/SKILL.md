@@ -233,7 +233,7 @@ KYC + suitability are mandatory pre-trade. Failure produces FINRA enforcement ac
 
 Block trades (typically > 10% of ADV) require special handling — market impact can be catastrophic if displayed openly.
 
-```
+```text
 BLOCK EXECUTION PLAYBOOK
 
 1. PRE-TRADE
@@ -427,6 +427,7 @@ In a fragmented market with 16+ US equity exchanges, dozens of dark pools, retai
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Order routed to PFOF venue without best-ex documentation (Reg NMS Rule 605/606 gap)
 - TCA report missing on institutional execution (Best Execution evidence gap)
 - Suitability check skipped on a complex product (Reg BI violation risk)
@@ -439,6 +440,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Pattern day trader rules misapplied (PDT designation drift)
 
 **Refinement candidates**:
+
 - New venue row when new exchange / dark pool comes online
 - New cross-reference when a sister skill (portfolio-theory, investment-research, financial-analyst) adds a broker gate
 - New compliance template when new regulation passes (e.g., SEC equity market structure rules)

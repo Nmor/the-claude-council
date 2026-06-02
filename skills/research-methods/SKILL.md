@@ -37,7 +37,7 @@ This skill provides:
 8. Bias identification (selection, response, confirmation,
    publication, survivorship, recall)
 9. Statistical inference + p-values + confidence intervals
-   + effect sizes
+   - effect sizes
 10. Reproducibility + replicability + FAIR data
 11. Citation + reference management discipline
 12. Research ethics (IRB, informed consent, data privacy)
@@ -157,7 +157,7 @@ discipline of how you know what you know.
 
 - **FAIR Principles — Findable, Accessible, Interoperable,
   Reusable (Wilkinson et al., Scientific Data 3:160018, 2016)
-  + Research Data Alliance recommendations** — Standard for
+  - Research Data Alliance recommendations** — Standard for
   scientific data management.
 - **Open Science Framework (cos.io)** — Pre-registration +
   data sharing platform.
@@ -244,7 +244,7 @@ question by adding "so what?" pressure.
 > Question: How do AI coding agents affect engineer productivity?
 > So-what: → If they 2x productivity, hiring strategy changes
 > Better question: How does Claude Code adoption affect lines-of-
->   code-per-engineer-per-quarter at YC W23 startups?
+> code-per-engineer-per-quarter at YC W23 startups?
 
 The research question determines methodology. A descriptive
 question ("how many?") wants different methods from a causal
@@ -726,6 +726,7 @@ paper, not just the abstract. Especially when the citation is
 load-bearing.
 
 ### Anti-Pattern 15: Conflation of Statistical with Practical
+
 Significance
 
 A p-value of 0.001 with an effect size of 0.001% is
@@ -953,7 +954,7 @@ uses to ground methodology in evidence rather than opinion.
 - **GRADE working group framework** — Evidence quality grading
   (High / Moderate / Low / Very Low)
 - **OECD Frascati Manual 2015** — Standard practice for research
-  + experimental development
+  - experimental development
 - **AHA + APA + MLA citation styles** — Discipline-specific
   citation formats
 - **Pyramid Principle (Barbara Minto)** — Top-down structured
@@ -967,7 +968,6 @@ uses to ground methodology in evidence rather than opinion.
 - **W3C WAI Research Methods** — Inclusive research practices
 - **CWE-1426** — Improper validation of generative AI output
   (applies when AI assists synthesis)
-
 
 ### Cross-cutting research + documentation standards
 
@@ -989,12 +989,12 @@ uses to ground methodology in evidence rather than opinion.
 - **CWE-1295** — Debug messages revealing unnecessary information
   (applies to research dump-files + intermediate artefacts)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Claims made without primary-source citation (secondary / tertiary substitution — evidence hierarchy weakening)
 - Sample drawn without documented sampling frame (convenience sampling masquerading as representative)
 - p-value cited without effect size + confidence interval (statistical-significance theatre)
@@ -1005,6 +1005,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Author / funder / institution conflicts of interest undisclosed
 
 **Refinement candidates**:
+
 - New method row when a recurring research class (e.g., A/B tests, user-interview studies, market sizing) needs codified protocol
 - Update to evidence hierarchy when a domain (e.g., ML, behavioural econ, epidemiology) shifts what counts as gold-standard
 - Bias-identification additions when a recurring blind spot surfaces in post-study reviews

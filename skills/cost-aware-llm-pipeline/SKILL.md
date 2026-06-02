@@ -190,7 +190,7 @@ marginal cost. LLM is reserved for the low-confidence remainder.
 
 ### Decision framework
 
-```
+```text
 Is the text format consistent and repeating?
 ├── Yes (>90% follows a pattern) → Start with regex
 │   ├── Regex handles 95%+ → Done, no LLM needed
@@ -200,7 +200,7 @@ Is the text format consistent and repeating?
 
 ### Hybrid pipeline architecture
 
-```
+```text
 Source Text
     │
     ▼
@@ -400,6 +400,7 @@ observability surface that lets a team see cost per feature / per
 tenant / per call class.
 
 **Negative scope** (NOT what this skill covers):
+
 - Prompt engineering depth — see `prompt-engineering`
 - Model fine-tuning — see `fine-tuning-workflows`
 - RAG architecture — see `rag-design`
@@ -507,6 +508,7 @@ LLM line-item dominate the cloud bill.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - LLM call where regex / parser would suffice (e.g., date extraction, integer parsing) — cost waste
 - Routing always uses the most-expensive model for trivial classification (model-tier weakening)
 - Prompt template re-sent every call instead of cached via provider's prompt-caching API
@@ -519,6 +521,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Cost-per-task not metered in observability dashboard (FinOps blind spot)
 
 **Refinement candidates**:
+
 - New routing-table row when a new model class becomes economically attractive (e.g., Haiku 5, Llama 4)
 - New cache-key template when a recurring high-cost call pattern emerges
 - New cross-reference when a sister skill (rag-design, prompt-engineering, ml-model-selection) adds a cost-aware pattern

@@ -200,6 +200,7 @@ boundaries, and the protocol-witness pattern (a struct of
 closures) for cases where a protocol-with-extension is heavy.
 
 **Negative scope** (NOT what this skill covers):
+
 - Actor + persistence patterns — see `swift-actor-persistence`
 - Generic Swift coding style — see `~/.claude/rules-library/swift/`
 - UI testing (XCUITest) — out
@@ -298,6 +299,7 @@ flaky tests that get disabled and then forgotten.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Concrete dependency hardcoded in initializer (testability weakening — protocol-DI absent)
 - Mock missing protocol conformance (test doesn't compile when protocol evolves)
 - Test using singleton-shared `URLSession.shared` instead of injected `URLProtocol` stub
@@ -307,6 +309,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - DI container (Resolver / Factory / Needle) used inconsistently across modules
 
 **Refinement candidates**:
+
 - New protocol-DI pattern row when SwiftUI / async/await ships a new feature
 - New cross-reference when a sister skill (swift-actor-persistence, tdd-workflow) adds a Swift gate
 - New mock-template row when a recurring stub shape emerges

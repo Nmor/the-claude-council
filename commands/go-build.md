@@ -18,6 +18,7 @@ This command invokes the **go-build-resolver** agent to incrementally fix Go bui
 ## When to Use
 
 Use `/go-build` when:
+
 - `go build ./...` fails with errors
 - `go vet ./...` reports issues
 - `golangci-lint run` shows warnings
@@ -57,7 +58,7 @@ $ go build ./...
 internal/service/user.go:25:15: undefined: UserRepository
 internal/handler/api.go:42:9: cannot use x (type string) as type int
 internal/handler/api.go:58:2: missing return at end of function
-```
+```text
 
 Errors found: 3
 
@@ -75,12 +76,12 @@ import "project/internal/repository"
 var repo UserRepository
 // To
 var repo repository.UserRepository
-```
+```text
 
 ```bash
 $ go build ./...
 # 2 errors remaining
-```
+```text
 
 ## Fix 2: Type Mismatch
 
@@ -93,12 +94,12 @@ count := params.Get("count")
 // To
 countStr := params.Get("count")
 count, _ := strconv.Atoi(countStr)
-```
+```text
 
 ```bash
 $ go build ./...
 # 1 error remaining
-```
+```text
 
 ## Fix 3: Missing Return
 
@@ -114,12 +115,12 @@ func GetUser(id string) (*User, error) {
     // Added missing return
     return user, nil
 }
-```
+```text
 
 ```bash
 $ go build ./...
 # Build successful!
-```
+```text
 
 ## Final Verification
 
@@ -130,7 +131,7 @@ $ go vet ./...
 $ go test ./...
 ok      project/internal/service   0.015s
 ok      project/internal/handler   0.023s
-```
+```text
 
 ## Summary
 
@@ -142,6 +143,7 @@ ok      project/internal/handler   0.023s
 | Remaining issues | 0 |
 
 Build Status: ✅ SUCCESS
+
 ```
 
 ## Common Errors Fixed
@@ -167,6 +169,7 @@ Build Status: ✅ SUCCESS
 ## Stop Conditions
 
 The agent will stop and report if:
+
 - Same error persists after 3 attempts
 - Fix introduces more errors
 - Requires architectural changes

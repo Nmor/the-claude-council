@@ -29,6 +29,7 @@ insurance portals, employer-sponsored health plans, and any
 SaaS that processes ePHI on a CE's behalf.
 
 **Out of scope (deliberate)**:
+
 - Clinical-data interoperability (FHIR / HL7 / USCDI) — covered
   by `clinical-data-patterns`
 - General data privacy (GDPR / CCPA) — covered by
@@ -72,6 +73,7 @@ SaaS that processes ePHI on a CE's behalf.
 ## When to Fire
 
 File path triggers:
+
 - `**/health/**`, `**/clinical/**`, `**/patient/**`,
   `**/medical/**`, `**/ehr/**`, `**/emr/**`, `**/telehealth/**`,
   `**/fhir/**`, `**/hl7/**`, `**/dicom/**`, `**/phi/**`,
@@ -82,6 +84,7 @@ File path triggers:
   `hapi-fhir`, `redoxengine`, `1up-health`, `particle.health`
 
 Keyword triggers:
+
 - "PHI", "ePHI", "HIPAA", "BAA", "Business Associate",
   "Covered Entity", "minimum necessary", "treatment / payment /
   operations (TPO)", "Notice of Privacy Practices", "NPP",
@@ -91,6 +94,7 @@ Keyword triggers:
   "information blocking", "Cures Act"
 
 Change-scope triggers:
+
 - Any new health-data ingestion / export path
 - Any new third-party processor handling PHI
 - Any AI / ML training on patient data
@@ -103,6 +107,7 @@ Change-scope triggers:
 ### Pattern 1: Identify scope — CE vs BA vs Subcontractor BA
 
 The first question on every health-data project:
+
 - **Covered Entity (CE)**: health plans, healthcare providers
   that transmit health info electronically, healthcare
   clearinghouses
@@ -120,6 +125,7 @@ status (signed / expired / pending).
 
 Every BA-CE relationship and every BA-Subcontractor relationship
 MUST have a signed BAA before any ePHI flows. Per §164.504(e)(2):
+
 - Permitted uses + disclosures
 - Safeguards (administrative, physical, technical)
 - Subcontractor BAA flow-down
@@ -136,6 +142,7 @@ addendum). Non-eligible services = PHI must not touch them.
 
 §164.502(b) — limit PHI use / disclosure / request to the
 minimum necessary for the purpose. Engineering implications:
+
 - Field-level access control (RBAC + ABAC) — clinicians see
   full chart; billing sees only billing-relevant fields; intake
   sees demographics only
@@ -173,6 +180,7 @@ To use PHI for research, ML training, or analytics WITHOUT
 authorization, the data must be de-identified per §164.514(b):
 
 **Safe Harbor** (§164.514(b)(2)): remove 18 specific identifiers:
+
 1. Names
 2. Geographic subdivisions smaller than state (except first 3
    digits of ZIP if population > 20,000)
@@ -279,6 +287,7 @@ HHS OCR portal URL.
 ### Pattern 9: 42 CFR Part 2 (SUD records) — stricter than HIPAA
 
 Substance Use Disorder records have an extra layer:
+
 - Patient written consent required for most disclosures (not
   just TPO like HIPAA)
 - Specific consent revocation procedure
@@ -321,6 +330,7 @@ audit logs (separate store) hold the access trail; operational
 logs are de-identified or use opaque tokens.
 
 ### Anti-pattern 3: "Minimum necessary" interpreted as "what's
+
 in the schema"
 
 A schema field exists ≠ disclosure is permitted. Minimum necessary
@@ -425,6 +435,7 @@ documentation, OCR treats addressable as required.
 
 HIPAA enforcement is mature, well-funded, and increasingly
 expensive:
+
 - **OCR enforcement settlements 2024**: > $7M aggregate
 - **Penalty tiers**: $137 (didn't know) to $2,067,813 (willful
   neglect) per violation per calendar year (2025 figures, indexed
@@ -461,6 +472,7 @@ enforcement risk.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New cloud service in use for PHI without BAA addendum verified (Anti-pattern 1)
 - ePHI surfacing in operational logs / metrics / traces (Anti-pattern 2; sister rule `observability.md` + `audit-logging.md`)
 - Schema permits a field that the requesting role doesn't have minimum-necessary right to (Anti-pattern 3)
@@ -477,6 +489,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - "encrypted in transit" but TLS < 1.2 or self-signed cert used (NIST SP 800-52 weakening)
 
 **Refinement candidates**:
+
 - New CFR section row when HIPAA NPRM proposals finalize (2024-26 modifications)
 - USCDI version row when ONC publishes v5+
 - State law row when a new state passes HIPAA-overlay law (WA My Health My Data 2024 → other states 2025+)

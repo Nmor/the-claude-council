@@ -13,7 +13,7 @@ The PR review gate is enforced in three places that must agree:
 
 1. The conduct + contributing docs name  as the required reviewer.
 2. [`../.github/CODEOWNERS`](../.github/CODEOWNERS) routes every path
-   to  (default `* ` plus explicit per-path entries).
+   to  (default `*` plus explicit per-path entries).
 3. **GitHub branch protection** on `main` is what GitHub actually
    enforces at merge time.
 
@@ -161,7 +161,7 @@ gh api -X PUT \
 
 Treat the JSON template as security-sensitive: every change to it
 needs the same CODEOWNER review as a rule change (the file is
-already under the default `* ` route in
+already under the default `*` route in
 [`../.github/CODEOWNERS`](../.github/CODEOWNERS)).
 
 ## Symmetry note (the maintainer's own PRs)

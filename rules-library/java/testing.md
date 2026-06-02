@@ -144,10 +144,12 @@ dialects produce false positives + negatives.
 ### 6. No flaky tests
 
 - No `Thread.sleep()` — use `Awaitility`:
+
   ```java
   await().atMost(5, SECONDS).untilAsserted(() ->
       assertThat(repo.findById(id)).isPresent());
   ```
+
 - No real-clock dependencies — inject `Clock` (per `no-ambient-globals.md`)
 - No order-dependent tests; assume random execution order
 - Mark known-flaky tests with `@Disabled("CI-flaky: ticket #...")`

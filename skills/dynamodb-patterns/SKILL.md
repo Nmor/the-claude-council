@@ -36,6 +36,7 @@ Multi-tenant systems MUST use `organization_id` (or equivalent) as the partition
 2. **Cross-tenant leak prevention** — a forgotten filter on a Query is impossible because the Query's PK requires the org.
 
 Allowed deviations:
+
 - Tables keyed by a server-minted unique id (e.g. `connection_id`, `webhook_event_id`) where the org is on a GSI.
 - Lookup tables (Slack workspace → org, share token → diagram) where the key IS the lookup value.
 
@@ -47,7 +48,7 @@ A custom ESLint rule (or equivalent static check) should enforce this on every n
 
 Sort keys can encode hierarchy:
 
-```
+```text
 PK: organization_id        SK: USER#<user_id>
 PK: organization_id        SK: TEAM#<team_id>
 PK: organization_id        SK: TEAM#<team_id>#MEMBER#<user_id>
@@ -222,6 +223,7 @@ If unsure, start multi-table. It's easier to migrate towards single-table when a
 Principal-level DynamoDB design: single-table modelling with composite PK + GSI overload, conditional writes for idempotency, BatchWriteItem chunking, item-collection size limits, TTL for retention, Streams for change capture, tenant isolation, on-demand vs provisioned capacity choice, transactional writes.
 
 **Negative scope** (NOT what this skill covers):
+
 - Relational schema (Postgres / MySQL) — see `postgres-patterns`
 - Analytical query patterns — see `clickhouse-io`
 - AWS Lambda + DDB triggers — see `aws-serverless-patterns`
@@ -297,6 +299,7 @@ DynamoDB rewards single-table design and punishes relational reflexes: developer
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Cross-tenant scan / query without `tenant_id` PK prefix (multi-tenant isolation weakening)
 - BatchWrite > 25 items in one call without chunking (DDB hard limit)
 - Conditional write missing on idempotency-sensitive write (double-execute risk)
@@ -309,6 +312,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - BatchGet returning UnprocessedKeys without retry-with-backoff
 
 **Refinement candidates**:
+
 - New access-pattern row when a new query shape appears (e.g., reverse-chronological by org)
 - New conditional-write template when idempotency is required on a new operation class
 - New GSI design rule when a cost overrun is traced to overprojection

@@ -34,6 +34,7 @@ IFS=$'\n\t'  # safer word-splitting
 ```
 
 Why each flag:
+
 - `-e` — exit on any command failure
 - `-u` — exit on unbound variable
 - `-o pipefail` — exit if any pipe component fails (not just

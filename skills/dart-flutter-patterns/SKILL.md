@@ -32,8 +32,10 @@ paths:
 
 ---
 paths:
-  - "**/*.dart"
-  - "**/pubspec.yaml"
+
+- "**/*.dart"
+- "**/pubspec.yaml"
+
 ---
 
 # Dart/Flutter Coding Style
@@ -543,7 +545,7 @@ linter:
 
 ## Verification block
 
-```
+```text
 Dart analyze (this turn):
   - dart analyze: 0 errors, 0 warnings
   - dart format --set-exit-if-changed: clean
@@ -592,7 +594,7 @@ scoped.**
 
 ## Project layout
 
-```
+```text
 lib/
 ├── main.dart
 ├── src/
@@ -860,7 +862,9 @@ ListView.builder(
 
 ---
 paths:
-  - "**/*.dart"
+
+- "**/*.dart"
+
 ---
 
 # Dart/Flutter Security
@@ -893,8 +897,10 @@ Validate all data crossing platform channel boundaries. Never trust native-side 
 
 ---
 paths:
-  - "**/*_test.dart"
-  - "**/test/**/*.dart"
+
+- "**/*_test.dart"
+- "**/test/**/*.dart"
+
 ---
 
 # Dart/Flutter Testing

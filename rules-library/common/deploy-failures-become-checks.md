@@ -57,7 +57,7 @@ Pre-deploy checks target the **deploy-fail** class.
 3. Fail at a SOFT limit slightly below the documented cap to leave
    headroom for platform-managed reserved keys / template expansion.
 4. Print the offending resource name + computed size + documented cap
-   + a one-line "Fix:" hint pointing to the conventional remediation.
+   - a one-line "Fix:" hint pointing to the conventional remediation.
 5. Add the check to the project's local-pre-flight script. CI runs
    the same script.
 
@@ -97,6 +97,7 @@ the opposite and codify it.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Deploy failure on a documented platform limit + no pre-deploy check added in the SAME commit as the fix (core rule violation)
 - Same-shape failure recurs across deploys (codification never happened)
 - Pre-deploy check exists locally but not in CI (local-CI parity gap)
@@ -106,6 +107,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New platform / vendor adopted without canvassing its documented limits before first deploy
 
 **Refinement candidates**:
+
 - New row in the platform-limits table when a new vendor or service class adopted (e.g., new edge runtime, new K8s admission limit)
 - Tightening of the soft limit when the gap to the documented cap shrinks (e.g., from 90% headroom to 50%)
 - New cross-reference when a sister rule (done-criteria, no-overclaim, runbook-template) provides the verification surface

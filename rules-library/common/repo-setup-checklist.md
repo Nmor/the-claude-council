@@ -62,7 +62,7 @@ edits is hours of git-history surgery and credential rotation.
 
 ### Dependency posture (4 items)
 
-6. **CVE gate passes.**
+1. **CVE gate passes.**
    - Node: `pnpm audit --audit-level=moderate` (or `npm audit`)
      returns exit 0
    - Go: `go run golang.org/x/vuln/cmd/govulncheck@latest ./...`
@@ -70,72 +70,72 @@ edits is hours of git-history surgery and credential rotation.
    - Python: `pip-audit -r requirements.txt` exit 0
    - Ruby: `gem exec bundler-audit check` exit 0
 
-7. **License-allowlist gate passes** (`osv-scanner --licenses=<list>`)
+2. **License-allowlist gate passes** (`osv-scanner --licenses=<list>`)
    per `license-allowlist-gate.md`.
 
-8. **No abandoned-dep flags.** Per `updated-frameworks.md`, the
+3. **No abandoned-dep flags.** Per `updated-frameworks.md`, the
    known-bad list (`request`, `node-sass`, `aws-sdk` v1,
    `dgrijalva/jwt-go`, `golang/mock`, `jinzhu/gorm` v1, etc.) is
    absent.
 
-9. **Lockfile present and committed.** `package-lock.json` /
+4. **Lockfile present and committed.** `package-lock.json` /
    `pnpm-lock.yaml` / `go.sum` / `Pipfile.lock` / `poetry.lock` /
    `Gemfile.lock` / `Cargo.lock` is present.
 
 ### Infra posture (4 items)
 
-10. **Docker compose ports loopback-bound.** Per
+1. **Docker compose ports loopback-bound.** Per
     `docker-localhost-binding.md`, every `ports:` entry in every
     `docker-compose*.yml` is `127.0.0.1:` prefixed (or uses a
     `${PUBLIC_BIND:-127.0.0.1}` env-var pattern for prod-aware repos).
 
-11. **Dockerfile uses a non-root user** for production stages.
+2. **Dockerfile uses a non-root user** for production stages.
     `grep "^USER" Dockerfile` must show a non-root identity.
 
-12. **Health checks declared** for every long-running service.
+3. **Health checks declared** for every long-running service.
     Compose entries have `healthcheck:` blocks; Dockerfiles use
     `HEALTHCHECK CMD`.
 
-13. **Multi-stage builds** for any image that includes a compiler
+4. **Multi-stage builds** for any image that includes a compiler
     or full SDK. The final stage carries only the binary +
     runtime deps.
 
 ### Secrets posture (3 items)
 
-14. **`.env.example` exists** at the repo root (or service root in
+1. **`.env.example` exists** at the repo root (or service root in
     a monorepo) and lists every env var the app reads, with
     placeholder values (`changeme`, `your-token-here`,
     `EXAMPLE_VALUE`).
 
-15. **`docs/secrets.md`** (or equivalent) documents where each
+2. **`docs/secrets.md`** (or equivalent) documents where each
     real secret comes from in production AND in dev:
     - "STRIPE_SECRET_KEY: prod = AWS Secrets Manager `prod/stripe`;
        local = `aws-vault exec <profile> -- pnpm dev`"
 
-16. **No long-term AWS key on disk.** `cat ~/.aws/credentials` shows
+3. **No long-term AWS key on disk.** `cat ~/.aws/credentials` shows
     no `aws_access_key_id = AKIA...` lines. The IAM key lives in
     Keychain via `aws-vault`; `.aws/config` uses
     `credential_process`.
 
 ### CI / quality gates (4 items)
 
-17. **CI runs the same gates the local pre-flight script runs.**
+1. **CI runs the same gates the local pre-flight script runs.**
     `.github/workflows/*.yml` (or equivalent) includes:
     - CVE scan (gitleaks + dep-audit + license-check)
     - Build
     - Test with coverage threshold
     - Static analysis (eslint / staticcheck / ruff / rubocop)
 
-18. **Pre-commit hook installed.** `.pre-commit-config.yaml` exists
+2. **Pre-commit hook installed.** `.pre-commit-config.yaml` exists
     OR `.githooks/pre-commit` is enabled via `git config
     core.hooksPath .githooks`. Hooks must include gitleaks and
     the dep-CVE gate.
 
-19. **Test runner configured and passing.** `pnpm test` / `go test
+3. **Test runner configured and passing.** `pnpm test` / `go test
     ./...` / `pytest` / `bundle exec rspec` succeeds on a fresh
     checkout.
 
-20. **Branch protection on the default branch** (when GitHub /
+4. **Branch protection on the default branch** (when GitHub /
     GitLab repo). Requires PR review + status checks before merge,
     blocks force-push to default, requires signed commits.
 
@@ -229,6 +229,7 @@ side of that trade.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New repo opened without the 20-point checklist run on first touch (rule "When this rule fires" weakening)
 - `.env` found tracked in git on first-touch (item 2 violation)
 - Private key (`*.pem`, `*.key`, `id_rsa*`) found tracked (item 3 violation)
@@ -242,6 +243,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Branch protection missing on default branch (item 20 violation)
 
 **Refinement candidates**:
+
 - New checklist row when a recurring posture gap surfaces (e.g., `dependabot.yml` missing, `CODEOWNERS` missing, secret-scan CI step missing)
 - Tightening of the 30-day re-check cadence when posture drift is observed sooner
 - New cross-reference when a sister rule (secrets-management, install-allowlist, docker-localhost-binding) adds a new mechanical check

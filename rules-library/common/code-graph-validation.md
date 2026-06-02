@@ -182,7 +182,7 @@ relevant one(s) on touched files:
 Per `verify-before-claim.md`, the verification block for every
 claim of completion includes a code-graph row:
 
-```
+```text
 Verification (this turn):
 - tsc --noEmit: 0 errors
 - eslint <touched> --max-warnings 0: clean
@@ -200,6 +200,7 @@ check), say so explicitly: "code-graph not run (doc-only edit,
 no source touched)".
 
 ### 7. Every atomic task in a plan carries a code-graph
+
 predicate
 
 Per `plan-task-breakdown.md` rule 4 (every task has explicit
@@ -207,7 +208,7 @@ verification): the verification predicate for atomic tasks
 SHOULD include a code-graph check when the task touches code,
 config, or wiring. Example task rows:
 
-```
+```text
 Task M.N.1 — Add `OrderService.placeOrder` method in
   src/services/OrderService.ts · verify: tsc clean +
   code-graph for OrderService + handler import resolves
@@ -242,7 +243,8 @@ side of the edge.
 
 Per `plan-completion-before-push.md`, the push gate runs the
 FULL code-graph validation across the touched-in-plan surface
-+ its inbound + outbound 2-hop closure. This is the safety
+
+- its inbound + outbound 2-hop closure. This is the safety
 net before the work becomes visible to teammates / CI /
 production.
 
@@ -424,6 +426,7 @@ implementations 100% of the time."*
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Task / todo claimed done without a code-graph row in the
   verification block (rule 6 weakening)
 - Dangling reference shipped (route → handler missing, import
@@ -448,6 +451,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
   (anti-pattern 5 violation)
 
 **Refinement candidates**:
+
 - New row in the per-language commands table when a stack
   emerges with its own incremental graph tooling (LSIF / SCIP
   / scip-typescript / scip-python adoption)

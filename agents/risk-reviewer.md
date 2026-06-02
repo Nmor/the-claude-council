@@ -54,7 +54,7 @@ For every triggered task:
 
 ## Output shape
 
-```
+```text
 Risk review (Division 11):
 
 Blast radius:
@@ -115,6 +115,7 @@ Verdict: APPROVED / CHANGES_REQUIRED / VETO
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Frequency of blast-radius VETOs (high frequency → scope-definition rule needs tightening at intake)
 - Rollback procedures invoked in production (each invocation surfaces gaps in the documented procedure)
 - Recovery time vs RTO target (chronic miss → RTO is aspirational; calibrate)
@@ -123,6 +124,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Single-point-of-failure introductions caught (each caught miss → trigger ruleset needs expansion)
 
 **Refinement candidates**:
+
 - New auto-fire trigger when a recurring blast-radius pattern surfaces
 - New review-checklist row when a missed failure mode appears in post-mortem
 - New anti-pattern entry when a shortcut recurs across 2+ incidents

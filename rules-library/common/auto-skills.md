@@ -30,7 +30,7 @@ Agents:
 - **tdd-guide** — Write tests first, enforce coverage
 - **security-reviewer** — OWASP, secrets, auth bypass
 
-### TypeScript/JavaScript (*.ts, *.tsx, *.js, *.jsx)
+### TypeScript/JavaScript (*.ts,*.tsx, *.js,*.jsx)
 
 Skills:
 
@@ -63,7 +63,7 @@ Agents:
 
 - **code-reviewer** — UI code quality review
 
-### Python (*.py, *.pyi)
+### Python (*.py,*.pyi)
 
 Skills:
 
@@ -93,7 +93,7 @@ Agents:
 - **security-reviewer** — OWASP for Django
 - **database-reviewer** — Django ORM query optimization
 
-### C/C++ (*.cpp, *.hpp, *.c, *.h, CMakeLists.txt, *.cmake)
+### C/C++ (*.cpp,*.hpp, *.c,*.h, CMakeLists.txt, *.cmake)
 
 Skills:
 
@@ -136,7 +136,7 @@ Agents:
 - **tdd-guide** — Flutter test patterns
 - **security-reviewer** — Mobile security
 
-### C# (*.cs, *.csproj)
+### C# (*.cs,*.csproj)
 
 Skills:
 
@@ -149,7 +149,7 @@ Agents:
 - **code-reviewer** — C# code quality review
 - **security-reviewer** — .NET security
 
-### Java/Spring Boot (*.java, pom.xml, *.gradle)
+### Java/Spring Boot (*.java, pom.xml,*.gradle)
 
 Skills:
 
@@ -167,7 +167,7 @@ Agents:
 - **security-reviewer** — Spring Security audit
 - **database-reviewer** — JPA/Hibernate query optimization
 
-### Lua (*.lua, *.rockspec)
+### Lua (*.lua,*.rockspec)
 
 Skills:
 
@@ -494,7 +494,7 @@ touched. They are the "first contact with a repo" gate.
   source / Postman collections / k8s manifests, dep CVEs, license
   gate, abandoned-dep flags, lockfile presence, Docker port binding,
   non-root containers, healthchecks, multi-stage builds, `.env.example`
-  + `docs/secrets.md`, long-term AWS keys on disk, CI gate parity,
+  - `docs/secrets.md`, long-term AWS keys on disk, CI gate parity,
   pre-commit hooks, test runner config, branch protection.
 - [`secrets-management.md`](secrets-management.md) — every secret in
   a vault (Keychain via aws-vault, AWS Secrets Manager, Vault), never
@@ -692,7 +692,7 @@ specific banned patterns + linter configs.
   propagation; clippy pedantic.
 - [`kotlin/no-discards.md`](../kotlin/no-discards.md) — Kotlin:
   `runCatching` not silent-catch; null-safety enforced; detekt
-  + ktlint strict.
+  - ktlint strict.
 - [`sql/no-discards.md`](../sql/no-discards.md) — SQL: every
   query parameterised; no `SELECT *` in production; explicit
   COMMIT/ROLLBACK; sqlfluff strict.
@@ -719,6 +719,7 @@ These are meta/config skills, not coding skills — only use when explicitly rel
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - File type touched without auto-activating its mapped skill (mapping gap or rule weakening)
 - New file extension / framework arriving without a mapping row (e.g., new IaC tool, new mobile framework)
 - Skill auto-fires but contributes no findings consistently across sessions (low-value skill — refinement candidate)
@@ -729,6 +730,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New skill added under `~/.claude/skills/` without a row in this rule's file-to-skill-and-agent mapping (drift)
 
 **Refinement candidates**:
+
 - New file-type row when a new file extension class becomes common (e.g., `*.sol`, `*.zig`, `*.gleam`, `*.elm`)
 - New auto-load global rule row when a sister rule emerges and needs first-touch enforcement
 - Tightening of the cross-cutting skills section when a new universal pattern (e.g., new observability standard, new compliance baseline) needs always-on coverage

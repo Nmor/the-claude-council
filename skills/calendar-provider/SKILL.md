@@ -143,7 +143,7 @@ allowed.
 returns from a provider, the connection is flipped to
 `status=token_expired` (refreshable) or `status=revoked` (not), an
 audit row is written, and the frontend shows a sticky "Reconnect
-<provider>" banner.
+`<provider>`" banner.
 
 ## Test contract
 
@@ -188,6 +188,7 @@ rotation detection, and the iMIP / iTIP message contracts for
 invite + reply flows.
 
 **Negative scope** (NOT what this skill covers):
+
 - Calendar UI components — out
 - Local calendar (.ics file) parsing in isolation — see RFC 5545
   directly
@@ -291,6 +292,7 @@ every time a provider deprecates a scope.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Calendar handler written before `docs/provider-research/<provider>.md` exists (RFC 4791 / Microsoft Graph / Google Calendar primary-source citation skipped)
 - Refresh-token rotation silently dropped (no-discards extension fires on token write path)
 - Personal Gmail / Outlook.com / iCloud consumer accepted instead of rejected at signup (commercial-tier scope drift)
@@ -301,6 +303,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Reconnect flow doesn't preserve in-flight pending writes (data loss on auth-expiry)
 
 **Refinement candidates**:
+
 - New provider row when a new calendar service (FastMail JMAP, ProtonMail Calendar, Zoho Calendar) is integrated
 - Conflict-resolution policy update when a recurring write-collision pattern surfaces (last-write-wins vs OT vs CRDT decision)
 - Webhook-renewal cron pattern when push subscriptions drop silently across multiple incidents

@@ -38,7 +38,7 @@ Auto-analyze project and generate PM2 service commands.
 
 ## Generated Files
 
-```
+```text
 project/
 ├── ecosystem.config.cjs              # PM2 config
 ├── {backend}/start.cjs               # Python wrapper (if applicable)
@@ -113,76 +113,86 @@ proc.on('close', (code) => process.exit(code));
 ## Command File Templates (Minimal Content)
 
 ### pm2-all.md (Start all + monit)
+
 ````markdown
 Start all services and open PM2 monitor.
 ```bash
 cd "{PROJECT_ROOT}" && pm2 start ecosystem.config.cjs && start wt.exe -d "{PROJECT_ROOT}" pwsh -NoExit -c "pm2 monit"
-```
+```text
 ````
 
 ### pm2-all-stop.md
+
 ````markdown
 Stop all services.
 ```bash
 cd "{PROJECT_ROOT}" && pm2 stop all
-```
+```text
 ````
 
 ### pm2-all-restart.md
+
 ````markdown
 Restart all services.
 ```bash
 cd "{PROJECT_ROOT}" && pm2 restart all
-```
+```text
 ````
 
 ### pm2-{port}.md (Start single + logs)
+
 ````markdown
 Start {name} ({port}) and open logs.
 ```bash
 cd "{PROJECT_ROOT}" && pm2 start ecosystem.config.cjs --only {name} && start wt.exe -d "{PROJECT_ROOT}" pwsh -NoExit -c "pm2 logs {name}"
-```
+```text
 ````
 
 ### pm2-{port}-stop.md
+
 ````markdown
 Stop {name} ({port}).
 ```bash
 cd "{PROJECT_ROOT}" && pm2 stop {name}
-```
+```text
 ````
 
 ### pm2-{port}-restart.md
+
 ````markdown
 Restart {name} ({port}).
 ```bash
 cd "{PROJECT_ROOT}" && pm2 restart {name}
-```
+```text
 ````
 
 ### pm2-logs.md
+
 ````markdown
 View all PM2 logs.
 ```bash
 cd "{PROJECT_ROOT}" && pm2 logs
-```
+```text
 ````
 
 ### pm2-status.md
+
 ````markdown
 View PM2 status.
 ```bash
 cd "{PROJECT_ROOT}" && pm2 status
-```
+```text
 ````
 
 ### PowerShell Scripts (pm2-logs-{port}.ps1)
+
 ```powershell
 Set-Location "{PROJECT_ROOT}"
 pm2 logs {name}
 ```
 
 ### PowerShell Scripts (pm2-monit.ps1)
+
 ```powershell
 Set-Location "{PROJECT_ROOT}"
 pm2 monit
@@ -235,10 +245,11 @@ pm2 start {name} / pm2 stop {name}
 pm2 logs / pm2 status / pm2 monit
 pm2 save                         # Save process list
 pm2 resurrect                    # Restore saved list
-```
+```text
 ````
 
 **Rules for CLAUDE.md update:**
+
 - If PM2 section exists, replace it
 - If not exists, append to end
 - Keep content minimal and essential
@@ -249,7 +260,7 @@ pm2 resurrect                    # Restore saved list
 
 After all files generated, output:
 
-```
+```text
 ## PM2 Init Complete
 
 **Services:**

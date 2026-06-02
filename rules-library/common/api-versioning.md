@@ -136,7 +136,7 @@ Per `deprecation-lifecycle.md`:
    30 days.
 3. **Hard-deprecate** — endpoints return `410 Gone` for new
    clients; existing clients on allowlist get `Deprecation: true`
-   + warning until their cutoff date. Calendar minimum 60 days
+   - warning until their cutoff date. Calendar minimum 60 days
    from soft.
 4. **Remove** — version is gone; requests get `410 Gone` + Link
    header to migration guide.
@@ -354,6 +354,7 @@ damage.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Breaking change shipped inside an existing major version (rule 4 violation — clients silently broken)
 - New endpoint added without OpenAPI / GraphQL SDL / Proto schema update (rule 2 weakening)
 - Tolerant-reader pattern not adopted by a client; new server field broke it (rule 1 weakening)
@@ -364,6 +365,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Internal API treated less rigorously than external (rule converges; treat both like contracts)
 
 **Refinement candidates**:
+
 - New row in the breaking-vs-non-breaking table when a new change shape emerges
 - Tightening of the deprecation-runway minimums when SDK consumers prove slower to upgrade
 - New tooling row when a linter / breaking-change detector (Spectral, buf, GraphQL Inspector) gains adoption

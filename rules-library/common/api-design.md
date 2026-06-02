@@ -36,6 +36,7 @@ When creating or modifying API endpoints:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New endpoint added with verb-based path (`/getUser`, `/createOrder`) — RESTful-naming weakening
 - POST returning 200 instead of 201 / DELETE returning 200 instead of 204 / validation failure returning 400 instead of 422 (status-code mapping drift)
 - Error envelope differs across handlers (some `{error}`, some `{message}`, some both) — consistency weakening
@@ -46,6 +47,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Skill chain incomplete (api-design without security-review pass)
 
 **Refinement candidates**:
+
 - New checklist row when a recurring endpoint class emerges (webhook receivers, SSE streams, GraphQL mutations, gRPC unary)
 - Tightening of the error-envelope shape when sister rules (`error-codes.md`, `error-handling-with-context.md`) evolve the canonical contract
 - New cross-reference when the api-versioning / contract-testing / deprecation-lifecycle rules introduce new gate

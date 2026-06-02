@@ -196,7 +196,7 @@ proper fix THIS turn or reverting the half-finished change.
 Per `no-overclaim.md`, "done", "complete", "100%", "fully migrated",
 "ready to ship", "shipped" are reserved for states where every gate
 in this checklist has been verified THIS turn. Until then, use
-"in progress" / "next: <gate>" / "<X> finished; <Y> pending".
+"in progress" / "next: `<gate>`" / "`<X>` finished; `<Y>` pending".
 
 When the user challenges a completion claim, re-run the verification
 before responding. Do NOT re-affirm without a re-run.
@@ -229,7 +229,7 @@ deferral.
 
 You may only say "done" / "fully X-backed" / "X stripped" / "complete" when
 every check above passes. If even one item is not verified, use language
-like "in progress", "next: <item>", or "needs <verification>".
+like "in progress", "next: `<item>`", or "needs `<verification>`".
 
 ## Failure handling
 
@@ -248,6 +248,7 @@ acknowledgment when it goes wrong.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - "Done" claims later proven incomplete (the checklist had a gap — capture which row was missed)
 - Re-claiming "done" after the same gate failed in the prior turn (verification discipline weak)
 - Verification block missing on a completion claim (no-overclaim.md enforcement weak)
@@ -256,6 +257,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Migration / refactor declared "done" then a follow-up reveals leftover references (mechanical sweep step needs reinforcement)
 
 **Refinement candidates**:
+
 - New per-language verification suite row when a language gains presence in the rebuild
 - New checklist row when a missed dimension appears in 2+ retrospectives
 - Tightening of any threshold (coverage, complexity, lint) when chronic miss observed

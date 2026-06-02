@@ -28,7 +28,7 @@ Production-grade Django architecture patterns for scalable, maintainable applica
 
 ### Recommended Layout
 
-```
+```text
 myproject/
 ├── config/
 │   ├── __init__.py
@@ -746,6 +746,7 @@ Remember: Django provides many shortcuts, but for production applications, struc
 Principal-level Django architecture: app structure, settings split by environment, fat-model / thin-view layering, ORM optimisation (`select_related` / `prefetch_related`), DRF view + serializer patterns, middleware order, signals over inheritance, async views (Django 4+).
 
 **Negative scope** (NOT what this skill covers):
+
 - Django security configuration — see `django-security`
 - Django test methodology — see `django-tdd`
 - Build / coverage / deployment gates — see `django-verification`
@@ -815,6 +816,7 @@ Django's batteries-included approach makes prototypes fast but production-grade 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - ORM N+1 pattern (query in template / loop) — `select_related` / `prefetch_related` weakening
 - Fat view: business logic in view handler instead of service / model method (skinny-views weakening)
 - Signal handler doing heavy lifting (move to Celery task or service layer)
@@ -826,6 +828,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Mixed sync/async views (calling sync ORM from async view causes thread-pool exhaustion)
 
 **Refinement candidates**:
+
 - New pattern row when a Django version ships new built-ins (e.g., async ORM, GeneratedField)
 - New cross-reference when a sister skill (django-security, django-tdd, jpa-patterns, postgres-patterns) adds a related pattern
 - Tightening of the skinny-views rule when fat-view recurrence is observed

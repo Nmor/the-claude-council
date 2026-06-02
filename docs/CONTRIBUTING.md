@@ -394,7 +394,7 @@ This is a hard gate, not a courtesy.
 Mechanics:
 
 - [`.github/CODEOWNERS`](../.github/CODEOWNERS) routes every path
-  to `` (default `* `) plus explicit per-path ownership
+  to `` (default `*`) plus explicit per-path ownership
   for the Council protocol, security-sensitive rules, compliance,
   verifiers / CI, install + cross-platform, and repo governance.
   Every PR therefore needs a CODEOWNER approval — that's .

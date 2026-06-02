@@ -741,7 +741,7 @@ Create depth + atmosphere rather than defaulting to solid colours:
 ### Implementation complexity matching
 
 - **Maximalist designs** — elaborate code with extensive animations
-  + effects justified
+  - effects justified
 - **Minimalist designs** — restraint, precision, careful spacing +
   typography
 - **Elegance = executing the vision well**, not adding more effects
@@ -851,6 +851,7 @@ Cost of accessible + secure + performant components at write time: minutes per c
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Generic AI aesthetic detected (purple gradients, cookie-cutter card layout, no distinctive typography)
 - Inter / Roboto / Arial used as the primary font without rationale (visual-design generic drift)
 - Animations purposeless / decorative without functional intent
@@ -863,6 +864,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Accessibility regression: missing `aria-*` on custom widget, missing focus ring on interactive element
 
 **Refinement candidates**:
+
 - New design-quality row when a recurring "looks AI-generated" feedback class emerges
 - Tightening of the typography / color / motion bars when a new design-system standard ships (Material 4, Apple HIG update)
 - New cross-reference when a sister skill (vue3-patterns, wcag-accessibility, interaction-design) adds a frontend-relevant gate

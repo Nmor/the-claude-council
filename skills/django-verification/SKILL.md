@@ -53,6 +53,7 @@ python manage.py check --deploy
 ```
 
 Common issues:
+
 - Missing type hints on public functions
 - PEP 8 formatting violations
 - Unsorted imports
@@ -78,6 +79,7 @@ python manage.py makemigrations --merge  # Only if conflicts exist
 ```
 
 Report:
+
 - Number of pending migrations
 - Any migration conflicts
 - Model changes without migrations
@@ -100,6 +102,7 @@ open htmlcov/index.html
 ```
 
 Report:
+
 - Total tests: X passed, Y failed, Z skipped
 - Overall coverage: XX%
 - Per-app coverage breakdown
@@ -135,6 +138,7 @@ python -c "from django.core.exceptions import ImproperlyConfigured; from django.
 ```
 
 Report:
+
 - Vulnerable dependencies found
 - Security configuration issues
 - Hardcoded secrets detected
@@ -179,6 +183,7 @@ EOF
 ```
 
 Report:
+
 - Number of queries per page (should be < 50 for typical pages)
 - Missing database indexes
 - Duplicate queries detected
@@ -271,6 +276,7 @@ git diff | grep "import pdb"  # Debugger
 ```
 
 Checklist:
+
 - No debugging statements (print, pdb, breakpoint())
 - No TODO/FIXME comments in critical code
 - No hardcoded secrets or credentials
@@ -281,7 +287,7 @@ Checklist:
 
 ## Output Template
 
-```
+```text
 DJANGO VERIFICATION REPORT
 ==========================
 
@@ -472,6 +478,7 @@ Remember: Automated verification catches common issues but doesn't replace manua
 Principal-level Django verification: migration safety, `manage.py check --deploy`, dependency CVE scan, license gate, coverage thresholds, `collectstatic` validation, static analysis (ruff + mypy + bandit), Docker image hardening, deploy gates.
 
 **Negative scope** (NOT what this skill covers):
+
 - Code-level patterns — see `django-patterns`
 - Security config — see `django-security`
 - Test methodology — see `django-tdd`
@@ -541,6 +548,7 @@ Django apps regress most often at the deploy boundary: `DEBUG = True` left on, m
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `python manage.py check --deploy` warnings ignored (security misconfig — A05)
 - Migrations folder missing for an app that has model changes (migration drift)
 - Pre-deploy gate not running `makemigrations --check --dry-run` (silent schema divergence)
@@ -552,6 +560,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Async view added without verifying ASGI server is in use
 
 **Refinement candidates**:
+
 - New verification step when a new Django release ships (e.g., async ORM checks)
 - New cross-reference when a sister rule (deploy-failures-become-checks, done-criteria) adds a Django gate
 - Tightening of the deploy-check warnings list when a recurring misconfig emerges

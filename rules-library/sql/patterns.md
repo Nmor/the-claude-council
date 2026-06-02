@@ -230,6 +230,7 @@ create table events_2026_02 partition of events
 ```
 
 Use when:
+>
 - > 100M rows in a single table
 - Time-based access patterns (drop old partitions cheaply)
 - Per-tenant isolation at the storage layer

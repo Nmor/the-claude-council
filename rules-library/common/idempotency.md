@@ -41,7 +41,7 @@ consequence (e.g., "double-click submits twice").
 Every non-trivial POST / non-idempotent mutation accepts an
 `Idempotency-Key` request header (per Stripe's pattern):
 
-```
+```text
 POST /api/payments/intents HTTP/1.1
 Idempotency-Key: <client-generated UUID v4 or v7>
 Content-Type: application/json
@@ -137,7 +137,7 @@ against retry).
 
 State transitions that are idempotent:
 
-```
+```text
 draft → published   (idempotent: publishing a published doc = no-op)
 active → archived   (idempotent: archiving an archive = no-op)
 ```
@@ -145,7 +145,7 @@ active → archived   (idempotent: archiving an archive = no-op)
 State transitions that are NOT idempotent (need explicit
 guards):
 
-```
+```text
 balance + amount    (NOT idempotent — double-credits if retried)
 counter++           (NOT idempotent)
 publish-event       (NOT idempotent — fires the event twice)
@@ -265,6 +265,7 @@ exposure (PCI / financial-reporting).
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Webhook handler processed the same event twice (rule 3 weakening — event-id dedupe missing or broken)
 - Double-charge / double-email / double-insert observed in production (idempotency cache miss or TTL too short)
 - Retry storm caused by missing idempotency key (rule 2 not adopted on a non-trivial POST)
@@ -274,6 +275,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New external SDK adopted without idempotency primitive verified (rule 6 weakening)
 
 **Refinement candidates**:
+
 - New TTL row in the defaults table when a new mutation class needs a different window
 - New entry in the conditional-write pattern table when a new DB / queue technology surfaces
 - Tightening of the "test idempotency explicitly" rule when a new state-machine gap is observed

@@ -301,7 +301,7 @@ Per-crate test override (tests may unwrap):
 
 ## Verification block
 
-```
+```text
 Rust sweep (this turn):
   - cargo fmt --check: clean
   - cargo clippy --all-targets --all-features -- -D warnings: 0 issues

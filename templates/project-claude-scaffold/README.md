@@ -27,7 +27,7 @@ The bootstrap flow:
 
 ## Canonical layout (what gets copied)
 
-```
+```text
 <workspace>/.claude/
 ├── CLAUDE.md               # workspace-level rules + vendor table
 ├── README.md               # how this .claude/ is organised

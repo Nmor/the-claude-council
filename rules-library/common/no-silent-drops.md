@@ -152,6 +152,7 @@ The cost of pausing to verify is low; the cost of silently dropping product work
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Commented-out code deleted without user confirmation (Rule 0 violation pattern)
 - TODO / FIXME / XXX marker removed without implementing the underlying work (Rule 1 violation)
 - "Unused" import deleted that was actually a wiring gap (Rule 2 enforcement weak)
@@ -161,6 +162,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Same "we'll do this later" pattern recurring across PRs (taxonomy needs new banned shape)
 
 **Refinement candidates**:
+
 - New entry in the "Specific Rules" list when a new silent-drop shape recurs across 2+ incidents
 - Tightening of the three-layer-restoration evidence requirements when a layer is consistently missed
 - New cross-reference when a sister rule (no-discards, no-overclaim) covers a pattern previously thought unique to this rule

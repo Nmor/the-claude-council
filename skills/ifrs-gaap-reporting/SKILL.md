@@ -90,7 +90,8 @@ CREATE TABLE statement_line_mappings (
 Examples of statement line items + their account roll-ups for a SaaS company:
 
 **Balance Sheet (IFRS — IAS 1 §54)**
-```
+
+```text
 ASSETS
   Non-current assets
     Property, plant and equipment       → 1710 - 1720
@@ -121,7 +122,8 @@ EQUITY AND LIABILITIES
 ```
 
 **Income Statement (IFRS — IAS 1 §82)**
-```
+
+```text
 Revenue                                  → 4000-4099
 Cost of sales                            → 5000-5099
 Gross profit                             → (computed)
@@ -560,6 +562,7 @@ This skill exists to bridge that gap. The standards are public and stable. The p
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Revenue recognised on payment instead of performance-obligation satisfaction (IFRS 15 / ASC 606 5-step violation)
 - Lease modification not re-measured (IFRS 16 / ASC 842 — RoU asset + lease liability drift)
 - ECL / CECL not updated quarterly (IFRS 9 / ASC 326 — credit-loss recognition gap)
@@ -572,6 +575,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New standard (e.g., IFRIC interpretation, new EITF consensus) not assessed for impact
 
 **Refinement candidates**:
+
 - New standard mapping row when IASB / FASB issues new pronouncement
 - New cross-reference when a sister skill (bookkeeping-patterns, fp-and-a, valuation-models) adds a reporting gate
 - New journal template when a new revenue / lease / instrument shape emerges

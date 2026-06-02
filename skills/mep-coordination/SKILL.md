@@ -203,7 +203,8 @@ Every piece of MEP equipment needs maintenance:
 - **Valves** — operator access without working at height
 
 Access requirements often determine ceiling zone allocation
-+ valve placement. "Service-side" access > "code minimum"
+
+- valve placement. "Service-side" access > "code minimum"
 clearance, but is more space-hungry.
 
 ### Vibration + acoustic isolation
@@ -236,6 +237,7 @@ Power flow:
 - Standby vs emergency vs critical (NEC Articles 700, 701, 702)
 
 Coordination concerns:
+
 - Panel locations + working clearance
 - Conduit routing + bend radius
 - Cable derating (NEC Annex B)
@@ -255,7 +257,7 @@ HVAC system types:
 - **Chilled water** — central plant; primary / secondary /
   variable primary; large commercial + institutional
 - **DX (Direct Expansion)** — packaged units; small commercial
-  + residential
+  - residential
 - **Hydronic radiant** — embedded floor or ceiling; high
   comfort, slow response
 - **Displacement** — low-velocity floor supply, ceiling
@@ -269,6 +271,7 @@ F-Gas regulation).
 ### Plumbing coordination
 
 Two parallel systems:
+
 - Domestic water (cold + hot) — sized per DFU (Drainage
   Fixture Units) + WSFU (Water Supply Fixture Units) per UPC
   / IPC
@@ -283,12 +286,14 @@ distribution must coordinate with structure + other trades.
 ### Fire protection coordination
 
 Sprinkler systems (NFPA 13 / 13R / 13D):
+
 - Light, ordinary, extra hazard occupancy classifications
 - Coverage area per head + spacing
 - Density requirements (gpm/sqft)
 - Wet vs dry vs preaction vs deluge systems
 
 Fire alarm (NFPA 72):
+
 - Smoke + heat detectors
 - Pull stations
 - Notification appliances (audio + visual)
@@ -305,6 +310,7 @@ in high-rise.
 ### Datacenter MEP
 
 Particularly demanding:
+
 - Power: utility + UPS + diesel-rotary or generator + ATS +
   STS; redundancy per Uptime Tier (see [[datacenter-ops]])
 - Cooling: CRAC / CRAH / in-row / rear-door HX / direct-to-
@@ -319,6 +325,7 @@ Particularly demanding:
 ### Healthcare MEP
 
 Regulated heavily:
+
 - Operating rooms: HEPA-filtered, positive pressure, ACH 20-25,
   redundant power
 - AII rooms (Airborne Infection Isolation): negative pressure,
@@ -491,7 +498,7 @@ For a project involving MEP coordination:
 ## Cross-References
 
 - [[structural-basics]] — structural penetrations + hung loads
-  + vibration isolation interface
+  - vibration isolation interface
 - [[datacenter-ops]] — MEP is the largest discipline in
   datacenter projects (power + cooling)
 - [[design-systems]] — BIM execution plans + component
@@ -563,7 +570,7 @@ operation.
 - **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
   engineering basis (when civil / structural scope)
 - **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  + digital coordination (when AEC scope)
+  - digital coordination (when AEC scope)
 - **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
   Matrix** — Systematic innovation methodology
 - **Stanford d.school + IDEO Field Guide** — Design thinking
@@ -579,7 +586,6 @@ operation.
   Management (Grove)** — People + culture frameworks
 - **Getting to Yes (Fisher + Ury) + Never Split the Difference
   (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
 
 ### Cross-cutting engineering standards
 
@@ -602,12 +608,12 @@ operation.
 - **CWE-1059** — Insufficient technical documentation (process
   workflows MUST be documented)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Trade-by-trade design without coordination (clash discovered at install)
 - BIM model LOD set too low for trade hand-off (LOD-300 used where LOD-400 needed)
 - Maintenance access not designed (filter / valve / coil unreachable)
@@ -620,6 +626,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - O&M deliverables (manuals, AS-builts, training) skipped
 
 **Refinement candidates**:
+
 - New BIM/LOD row when ISO 19650 ships major update
 - New cross-reference when a sister skill (structural-basics, datacenter-ops) adds an MEP gate
 - New commissioning template when a recurring failure class emerges

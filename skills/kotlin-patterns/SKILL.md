@@ -13,7 +13,6 @@ paths:
 
 # kotlin-patterns
 
-
 <!-- ============================================================
      Section: kotlin/coding-style.md
      ============================================================ -->
@@ -668,7 +667,7 @@ coroutines:
 
 ## Verification block
 
-```
+```text
 Kotlin sweep (this turn):
   - ktlint -F: clean
   - detekt --config detekt-strict.yml: 0 issues
@@ -709,7 +708,7 @@ streams; DI via constructor injection (Hilt / Koin / manual).**
 
 ## Layered architecture (Spring Boot / Ktor)
 
-```
+```text
 com.example.app/
 ├── domain/               # Pure Kotlin, no framework deps
 │   ├── Order.kt

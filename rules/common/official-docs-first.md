@@ -179,6 +179,7 @@ incident.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `docs/provider-research/<provider>.md` missing for an integration that shipped (rule violation pattern)
 - Provider-research note > 6 months stale and integration touched without refresh (cadence rule needs reinforcement)
 - Integration shaped from npm README / Stack Overflow instead of provider docs (Phase 0 discipline weak)
@@ -188,6 +189,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Same provider integrated by multiple agents independently (candidate for shared provider-research template)
 
 **Refinement candidates**:
+
 - New canonical-doc-surface entry when a provider's docs need named anchor (table extension)
 - New anti-pattern entry when a shortcut recurs across 2+ integrations
 - Tightening of the 6-month refresh cadence when provider deprecations get missed

@@ -155,6 +155,7 @@ debugging "is the docs lying or is the code lying" is high.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Feature PR merged without corresponding `docs/<feature>.md` update (rule 1 violation)
 - README lists a feature that doesn't work end-to-end from fresh clone (advertised-but-broken pattern)
 - Marketing / landing page references a feature that isn't shipped yet
@@ -166,6 +167,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - CHANGELOG.md entry missing on releases that change user-visible behaviour
 
 **Refinement candidates**:
+
 - New row in the doc surface table when a recurring artifact class (status page, partner portal, ToS update) emerges
 - Tightening of the docs-sync gate's grep scope when a new surface (e.g., `docs/api/` for OpenAPI) appears
 - New cross-reference when a sister rule (deprecation-lifecycle, runbook-template, adr-template) provides the canonical home for a docs artifact

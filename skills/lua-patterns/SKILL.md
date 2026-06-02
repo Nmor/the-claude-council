@@ -30,8 +30,10 @@ paths:
 
 ---
 paths:
-  - "**/*.lua"
-  - "**/*.rockspec"
+
+- "**/*.lua"
+- "**/*.rockspec"
+
 ---
 
 # Lua Coding Standards
@@ -409,7 +411,7 @@ ignore = {
 
 ## Verification block
 
-```
+```text
 Lua sweep (this turn):
   - luac -p *.lua: 0 syntax errors
   - luacheck --no-cache --std max+busted .: 0 warnings

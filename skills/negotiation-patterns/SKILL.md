@@ -354,6 +354,7 @@ agree.
 #### Ackerman bargaining model
 
 For distributive number-bargaining:
+
 1. Set your target price.
 2. Set your first offer at 65% of target.
 3. Plan three concessions at 85% / 95% / 100% of target.
@@ -476,6 +477,7 @@ Hofstede's dimensions + Brett 2014 + Meyer 2014 inform style:
 | Disagreement style (Meyer) | Confrontational: open disagreement is fine | Confrontation-avoiding: open disagreement is rude |
 
 Examples (each is a tendency, not a rule):
+
 - US: low-context, confrontational, individualist, fast-deal
 - Germany: low-context, confrontational, structured + detailed
 - Japan: high-context, confrontation-avoiding, group-decision,
@@ -583,7 +585,8 @@ might collapse). The walkaway point exists precisely for the
 moment you don't want to use it.
 
 **Correction**: a strong BATNA + a pre-committed reservation value
-+ permission to walk. Walking away is sometimes the value-
+
+- permission to walk. Walking away is sometimes the value-
 maximising move.
 
 ### Anti-Pattern 8: Cultural Tone-Deafness
@@ -776,7 +779,8 @@ This skill should fire when:
 - A partnership or JV is being structured
 
 The principal-level response is to slow down, identify your BATNA
-+ reservation value, list the full issue set, probe the
+
+- reservation value, list the full issue set, probe the
 counterparty's interests, look for trades, and reach durable
 agreements both sides will perform on.
 
@@ -832,7 +836,7 @@ uses to ground tactics in evidence rather than intuition.
 - **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
   engineering basis (when civil / structural scope)
 - **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  + digital coordination (when AEC scope)
+  - digital coordination (when AEC scope)
 - **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
   Matrix** — Systematic innovation methodology
 - **Stanford d.school + IDEO Field Guide** — Design thinking
@@ -848,7 +852,6 @@ uses to ground tactics in evidence rather than intuition.
   Management (Grove)** — People + culture frameworks
 - **Getting to Yes (Fisher + Ury) + Never Split the Difference
   (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
 
 ### Cross-cutting engineering standards
 
@@ -871,12 +874,12 @@ uses to ground tactics in evidence rather than intuition.
 - **CWE-1059** — Insufficient technical documentation (process
   workflows MUST be documented)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Negotiation entered without documented BATNA / reservation point / ZOPA (positional-bargaining trap looming)
 - Single-issue framing where multi-issue tradeoffs (logrolling) would generate value
 - "Win" measured as concession-count rather than joint-value created (Harvard Method weakening)
@@ -887,6 +890,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Concession given without reciprocity ask (one-way value transfer)
 
 **Refinement candidates**:
+
 - New tactical pattern when a recurring counterparty type (procurement, GC, regulator) surfaces a new playbook
 - Cross-cultural addendum when negotiation spans a previously-untouched cultural context
 - Update to BATNA framework when market conditions shift (e.g., vendor supply collapse changes leverage math)

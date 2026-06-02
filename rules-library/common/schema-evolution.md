@@ -397,6 +397,7 @@ take hours to recover from.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Migration combining ADD + DROP / RENAME in a single step (rule 1 violation — not zero-downtime)
 - Long-running DDL on a populated table without CONCURRENTLY / online tooling (rule 4 weakening)
 - Backfill UPDATE wrapped in one transaction over millions of rows (rule 5 violation — table-locking)
@@ -407,6 +408,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Hand-applied DDL discovered in prod (anti-pattern 2 — out-of-VCS migration)
 
 **Refinement candidates**:
+
 - New row in the per-store change-safety table when a DB version changes lock semantics
 - Tightening of the "test on prod-sized data" gate when migration-time-bomb incidents recur
 - New cross-reference when a sister rule (api-versioning, contract-testing) defines the API contract this rolls up to

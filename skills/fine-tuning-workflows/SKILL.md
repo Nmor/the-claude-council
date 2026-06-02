@@ -36,7 +36,7 @@ classical ML model training (see `ml-model-selection`).
 
 - **Ouyang L., et al. (2022)** — "Training language models to
   follow instructions with human feedback" (InstructGPT — the SFT
-  + RM + PPO recipe), NeurIPS
+  - RM + PPO recipe), NeurIPS
 - **Rafailov R., et al. (2023)** — "Direct Preference Optimization:
   Your Language Model is Secretly a Reward Model" (DPO), NeurIPS
 - **Hu E., et al. (2021)** — "LoRA: Low-Rank Adaptation of Large
@@ -93,7 +93,7 @@ monitoring), `audit-logging.md` (training-data provenance),
 
 ### Pattern 1: The decision framework — try cheaper tools first
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │ Question                          Action                          │
 ├──────────────────────────────────────────────────────────────────┤
@@ -487,12 +487,12 @@ would have solved the problem.
 - **`~/.claude/rules/common/council-triggers.md`** (Division 15) — bias,
   fairness, dataset provenance, human-in-the-loop gates
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Fine-tuning chosen before prompt + RAG ceiling demonstrated (premature fine-tune)
 - SFT / DPO / RLHF chosen without explicit data-quality investment (garbage-in-garbage-out)
 - Training data not vetted for PII / copyright / license (per `~/.claude/rules-library/common/gdpr-ccpa.md`)
@@ -505,6 +505,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Cost-of-ownership not compared to API-based equivalent (FinOps blind spot)
 
 **Refinement candidates**:
+
 - New decision-tree row when prompting / RAG / fine-tuning trade-off shifts (e.g., long-context models reduce fine-tune need)
 - New cross-reference when a sister skill (prompt-engineering, rag-design, mlops-patterns, ml-model-selection) adds a fine-tune gate
 - New safety-eval template when a new jailbreak class emerges

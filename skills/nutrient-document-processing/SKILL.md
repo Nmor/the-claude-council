@@ -374,7 +374,6 @@ it, so Nutrient adoption lands secure-by-default.
 - `~/.claude/agents/security-reviewer.md` — file-upload + SSRF
   review for document-processing endpoints
 
-
 ## Anti-Patterns
 
 | Pattern | Why bad | Correct alternative |
@@ -388,12 +387,12 @@ it, so Nutrient adoption lands secure-by-default.
 | Process unsigned / unverified document inputs | Path traversal + SSRF when document references external resources | Validate inputs; disable external-resource fetches |
 | No fallback when Nutrient API is down | Single point of failure for document workflow | Circuit breaker + graceful degradation per sister rules |
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - API key found in source / committed `.env` (sister rule
   `secrets-management.md` weakening — hook didn't fire)
 - MCP server adopted via `npx -y` without version pin + publisher
@@ -413,6 +412,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
   new signature format) without inclusion here
 
 **Refinement candidates**:
+
 - New operation section when Nutrient ships a new
   `actions[].type` (e.g., `splitDocument`, `mergeDocuments`,
   `addPageNumbers`)

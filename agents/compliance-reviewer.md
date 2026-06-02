@@ -53,7 +53,7 @@ For every triggered task:
 
 ## Output shape
 
-```
+```text
 Compliance review (Division 6):
 
 Applicable regulations: [GDPR, CCPA, HIPAA, PCI-DSS, ...]
@@ -106,6 +106,7 @@ Standards-cited references in every finding. Vague advice ("be careful with PII"
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Regulatory VETOs invoked (high frequency → trigger ruleset or default RoPA discipline needs tightening)
 - DSAR endpoints failing identity verification (re-verification rule needs strengthening)
 - Cross-border transfer mechanism gaps surfacing at audit (transfer-mechanism checklist row needs sharpening)
@@ -116,6 +117,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New jurisdiction applicability missed (scope-rubric needs expansion)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed regulatory dimension appears in retrospect
 - New anti-pattern entry when a compliance shortcut recurs across 2+ projects
 - New auto-fire trigger when a recurring regulated-data class surfaces

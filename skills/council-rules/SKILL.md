@@ -724,6 +724,7 @@ Located in `~/.claude/agents/`:
 ## Immediate Agent Usage
 
 No user prompt needed:
+
 1. Complex feature requests - Use **planner** agent
 2. Code just written/modified - Use **code-reviewer** agent
 3. Bug fix or new feature - Use **tdd-guide** agent
@@ -747,6 +748,7 @@ First agent 1, then agent 2, then agent 3
 ## Multi-Perspective Analysis
 
 For complex problems, use split role sub-agents:
+
 - Factual reviewer
 - Senior engineer
 - Security expert
@@ -758,6 +760,7 @@ For complex problems, use split role sub-agents:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Agent not delegated to when its description matches the work (Immediate Agent Usage rule weakening)
 - Sequential agent calls when parallel was possible (Parallel Task Execution rule weakening)
 - Complex feature shipped without `planner` agent producing a phased plan
@@ -768,6 +771,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Agent invoked without the required context (description, file paths, expected output shape)
 
 **Refinement candidates**:
+
 - New row in the "Available Agents" table when a new specialist agent ships (e.g., `accessibility-reviewer`, `data-reviewer`)
 - Tightening of the "Immediate Agent Usage" criteria when an agent's expertise proves load-bearing in retrospectives
 - New parallel-execution template when a recurring fan-out pattern emerges (e.g., three-language security audit)
@@ -822,6 +826,7 @@ it doesn't, the Division is on standby.
 
 **Domain sub-leads** (engage alongside `compliance-reviewer` when the
 matching sub-cluster triggers fire):
+
 - `payments-reviewer` (opus) — payments / escrow / open-banking
   / PCI-DSS / PSD2 / MTL / AML cluster
 - `health-reviewer` (opus) — HIPAA / 42 CFR Part 2 / FDA SaMD /
@@ -835,6 +840,7 @@ share the Division 6 veto authority within their respective
 domain scopes.
 
 **File triggers** (path glob, case-insensitive):
+
 - General compliance:
   `**/consent*`, `**/gdpr*`, `**/ccpa*`, `**/privacy*`,
   `**/cookie*`, `**/terms*`, `**/dsar*`, `**/dpa*`,
@@ -886,6 +892,7 @@ domain scopes.
   `**/imsmanifest.xml`, `**/cmi5.xml`
 
 **Keyword triggers** (in diff or task description):
+
 - General compliance:
   "personal data", "PII", "PHI", "PCI", "card", "credit card",
   "ssn", "passport", "national id",
@@ -950,6 +957,7 @@ domain scopes.
   "transcript"
 
 **Change-scope triggers**:
+
 - Any change to a `users`, `accounts`, `customers`,
   `patients`, `members`, `students`, `learners` table
 - Any change to billing / payment / refund / chargeback /
@@ -975,6 +983,7 @@ domain scopes.
 
 **Veto authority**: Yes — on unresolved regulatory finding.
 Sub-leads share the veto within their domain scopes:
+
 - `payments-reviewer` — VETO on PCI-DSS BLOCKER, PSD2 bypass,
   webhook signature absence, idempotency missing on state-
   mutating endpoint, MTL absence on custodial flow, sanctions
@@ -993,6 +1002,7 @@ Sub-leads share the veto within their domain scopes:
 **Lead agents**: `ux-reviewer`, `accessibility-reviewer` (opus)
 
 **File triggers**:
+
 - `**/*.vue`, `**/*.jsx`, `**/*.tsx` (UI files)
 - `**/views/**`, `**/components/**`, `**/pages/**`,
   `**/layouts/**`, `**/screens/**`, `**/widgets/**`
@@ -1004,6 +1014,7 @@ Sub-leads share the veto within their domain scopes:
 - `**/microcopy/**`, `**/strings/**`, `**/copy/**`
 
 **Keyword triggers**:
+
 - "accessibility", "a11y", "WCAG", "ARIA", "screen reader",
   "keyboard navigation"
 - "user", "customer", "UX", "UI", "user-facing", "user-visible",
@@ -1021,6 +1032,7 @@ Sub-leads share the veto within their domain scopes:
   "Arabic", "Hebrew", "translation"
 
 **Change-scope triggers**:
+
 - Any new user-facing screen / page / view
 - Any change to copy that users see
 - Any change to error messages
@@ -1038,6 +1050,7 @@ Compliance.
 **Lead agent**: `ops-reviewer`
 
 **File triggers**:
+
 - `**/runbook*`, `**/RUNBOOK*`, `**/playbook*`, `**/PLAYBOOK*`
 - `**/SLO*`, `**/SLA*`, `**/SLI*`
 - `**/oncall*`, `**/on-call*`, `**/pagerduty*`, `**/opsgenie*`
@@ -1051,6 +1064,7 @@ Compliance.
 - `**/deploy*`, `**/deployment*`, `**/release*`
 
 **Keyword triggers**:
+
 - "SLO", "SLI", "SLA", "error budget", "burn rate"
 - "monitoring", "observability", "metrics", "tracing", "logs"
 - "alert", "page", "on-call", "rotation"
@@ -1065,6 +1079,7 @@ Compliance.
   degradation"
 
 **Change-scope triggers**:
+
 - Any change to deploy configuration
 - Any change to CI/CD pipeline
 - Any change to monitoring / alerting rules
@@ -1082,6 +1097,7 @@ affecting prod posture.
 **Lead agent**: `data-reviewer`
 
 **File triggers**:
+
 - `**/migrations/**`, `**/db/**`, `**/database/**`,
   `**/schema/**`, `**/models/**`
 - `**/*.sql`, `**/*.dbml`, `**/*.prisma`,
@@ -1095,6 +1111,7 @@ affecting prod posture.
   `**/clickhouse/**`
 
 **Keyword triggers**:
+
 - "schema migration", "ALTER TABLE", "CREATE TABLE", "DROP
   COLUMN"
 - "event tracking", "analytics event", "tracking plan",
@@ -1105,6 +1122,7 @@ affecting prod posture.
 - "aggregation", "metric definition", "dimension"
 
 **Change-scope triggers**:
+
 - Any schema migration
 - Any new event type in analytics
 - Any change to a tracking plan
@@ -1119,6 +1137,7 @@ is involved.
 **Lead agent**: `finance-reviewer`
 
 **File triggers**:
+
 - `**/billing/**`, `**/pricing/**`, `**/plans/**`,
   `**/subscriptions/**`, `**/invoices/**`
 - `**/cost/**`, `**/finops/**`, `**/budget/**`
@@ -1130,6 +1149,7 @@ is involved.
   `**/dynamodb/**`, `**/rds/**` (cost-sensitive services)
 
 **Keyword triggers**:
+
 - "pricing", "plan tier", "subscription", "billing",
   "invoice", "refund", "chargeback"
 - "cost", "spend", "budget", "FinOps", "unit economics",
@@ -1140,6 +1160,7 @@ is involved.
 - "API call cost", "per-request cost", "per-user cost"
 
 **Change-scope triggers**:
+
 - Any change to pricing / plan tier
 - Any change to billing logic
 - Any new cloud resource of significant cost class
@@ -1155,6 +1176,7 @@ material economic impact.
 **Lead agent**: `risk-reviewer`
 
 **File triggers**:
+
 - `**/dr/**`, `**/disaster-recovery/**`, `**/bcp/**`,
   `**/business-continuity/**`
 - `**/backup/**`, `**/restore/**`, `**/snapshot/**`
@@ -1162,6 +1184,7 @@ material economic impact.
 - `**/risk-register*`, `**/risk-log*`
 
 **Keyword triggers**:
+
 - "blast radius", "scope", "change risk", "scenario planning"
 - "disaster recovery", "DR", "BCP", "business continuity"
 - "RPO", "RTO", "MTTR", "MTBF"
@@ -1171,6 +1194,7 @@ material economic impact.
 - "data loss", "irreversible", "destructive"
 
 **Change-scope triggers**:
+
 - Any destructive operation (DROP TABLE, DELETE FROM, file
   unlink)
 - Any change to backup configuration
@@ -1187,12 +1211,14 @@ defined scope.
 **Lead agent**: `strategy-reviewer`
 
 **File triggers**:
+
 - `**/adr/**`, `**/ADR-*`, `**/rfc/**`, `**/RFC-*`
 - `**/roadmap*`, `**/strategy*`, `**/vision*`
 - `**/CHANGELOG*`, `**/RELEASE*`
 - `**/deprecation*`, `**/sunset*`
 
 **Keyword triggers**:
+
 - "new feature", "new product", "new surface", "new market"
 - "competitive", "market positioning", "differentiation"
 - "deprecate", "sunset", "end of life", "EOL", "retire"
@@ -1200,6 +1226,7 @@ defined scope.
 - "experiment", "A/B test", "MVP", "POC", "spike"
 
 **Change-scope triggers**:
+
 - New feature with public-facing impact
 - Major version bump
 - Deprecation announcement
@@ -1213,12 +1240,14 @@ defined scope.
 **Lead agent**: `people-reviewer`
 
 **File triggers**:
+
 - `**/CONTRIBUTING*`, `**/CODE_OF_CONDUCT*`, `**/CODEOWNERS*`
 - `**/hiring/**`, `**/onboarding/**`, `**/career/**`
 - `**/.github/CODEOWNERS`, `**/.gitlab/CODEOWNERS`
 - `**/docs/team*`, `**/team-structure*`, `**/org-chart*`
 
 **Keyword triggers**:
+
 - "onboarding", "hiring", "interview", "career ladder",
   "performance"
 - "knowledge management", "documentation gap", "bus factor",
@@ -1228,6 +1257,7 @@ defined scope.
 - "ownership", "RACI", "responsibility matrix"
 
 **Change-scope triggers**:
+
 - Significant change to team boundaries / ownership
 - Onboarding-impact changes (new tooling, new processes)
 - Anything affecting bus-factor < 2 on critical systems
@@ -1239,10 +1269,12 @@ defined scope.
 **Lead agent**: `esg-reviewer`
 
 **File triggers**:
+
 - `**/esg/**`, `**/sustainability/**`, `**/carbon/**`
 - `**/cloud-carbon-footprint*`, `**/scope*-emissions*`
 
 **Keyword triggers**:
+
 - "carbon footprint", "emissions", "scope 1", "scope 2",
   "scope 3"
 - "green computing", "low-carbon region", "renewable energy"
@@ -1252,6 +1284,7 @@ defined scope.
 - "energy efficiency", "carbon-aware scheduling"
 
 **Change-scope triggers**:
+
 - New cloud region (carbon intensity varies)
 - Significant compute increase (always-on workloads)
 - New vendor with ESG implications
@@ -1263,6 +1296,7 @@ defined scope.
 **Lead agent**: `ai-ethics-reviewer` (opus)
 
 **File triggers**:
+
 - `**/ml/**`, `**/ai/**`, `**/llm/**`, `**/model/**`,
   `**/inference/**`, `**/training/**`
 - `**/prompts/**`, `**/embeddings/**`, `**/rag/**`,
@@ -1274,6 +1308,7 @@ defined scope.
 - `**/decision*` (algorithmic decision-making)
 
 **Keyword triggers**:
+
 - "LLM", "GPT", "Claude", "Gemini", "Llama", "Mistral"
 - "embedding", "vector", "RAG", "fine-tune", "instruction tune"
 - "bias", "fairness", "demographic parity", "equalised odds"
@@ -1284,6 +1319,7 @@ defined scope.
 - "prompt injection", "jailbreak"
 
 **Change-scope triggers**:
+
 - Any new ML / AI / LLM-powered feature
 - Any change to model selection or version
 - Any change to training data
@@ -1299,6 +1335,7 @@ findings.
 **Lead agents**: `doc-updater`, `comms-reviewer`
 
 **File triggers**:
+
 - `**/*.md` (docs), `**/docs/**`, `**/README*`
 - `**/CHANGELOG*`, `**/RELEASE_NOTES*`
 - `**/api/openapi*`, `**/schema.graphql`, `**/proto/**`
@@ -1306,6 +1343,7 @@ findings.
 - `**/status-page*`, `**/incident-comms*`
 
 **Keyword triggers**:
+
 - "release notes", "changelog", "migration guide"
 - "marketing", "blog post", "press release", "announcement"
 - "API docs", "documentation update"
@@ -1314,6 +1352,7 @@ findings.
 - "trademark", "brand guideline"
 
 **Change-scope triggers**:
+
 - Any public-facing artifact (blog, marketing, press)
 - Any API change (consumes downstream docs)
 - Any incident requiring external comms
@@ -1357,7 +1396,7 @@ The trigger detection is mechanical; the assistant should
 SURFACE which Divisions are engaging at the start of the task
 so the user can see the trigger logic:
 
-```
+```text
 Council engaged this turn:
   - Core Five (always)
   - Division 6 (Compliance) — GDPR consent UX change
@@ -1386,6 +1425,7 @@ that should engage Compliance gets missed because the words
 Compliance perspective is lost; a privacy gap ships.
 
 Mechanical triggers solve this:
+
 - File pattern matches → Division engages
 - Keyword matches → Division engages
 - Scope matches → Division engages
@@ -1406,6 +1446,7 @@ Each has its own trigger ruleset."
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Division engaged but its trigger ruleset didn't fire (false-positive engagement — trigger needs narrowing)
 - Division should have engaged but no trigger matched (false-negative — trigger needs broadening)
 - Trigger fires across the wrong file class (file glob overshoots; needs refinement)
@@ -1415,6 +1456,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Trigger-detection logic disagrees with manual judgement in 2+ retrospectives
 
 **Refinement candidates**:
+
 - New file glob / keyword entry when a recurring pattern doesn't fire the right Division
 - Removal of an over-broad trigger when false-positive engagements waste cycles
 - New Division when the trigger ruleset reveals a coverage gap not served by the existing 16

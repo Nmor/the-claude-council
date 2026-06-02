@@ -43,7 +43,7 @@ Conventions and best practices for designing consistent, developer-friendly REST
 
 ### URL Structure
 
-```
+```text
 # Resources are nouns, plural, lowercase, kebab-case
 GET    /api/v1/users
 GET    /api/v1/users/:id
@@ -64,7 +64,7 @@ POST   /api/v1/auth/refresh
 
 ### Naming Rules
 
-```
+```text
 # GOOD
 /api/v1/team-members          # kebab-case for multi-word resources
 /api/v1/orders?status=active  # query params for filtering
@@ -93,7 +93,7 @@ POST   /api/v1/auth/refresh
 
 ### Status Code Reference
 
-```
+```text
 # Success
 200 OK                    — GET, PUT, PATCH (with response body)
 201 Created               — POST (include Location header)
@@ -116,7 +116,7 @@ POST   /api/v1/auth/refresh
 
 ### Common Mistakes
 
-```
+```text
 # BAD: 200 for everything
 { "status": 200, "success": false, "error": "Not found" }
 
@@ -221,7 +221,7 @@ interface ApiError {
 
 ### Offset-Based (Simple)
 
-```
+```text
 GET /api/v1/users?page=2&per_page=20
 
 # Implementation
@@ -235,7 +235,7 @@ LIMIT 20 OFFSET 20;
 
 ### Cursor-Based (Scalable)
 
-```
+```text
 GET /api/v1/users?cursor=eyJpZCI6MTIzfQ&limit=20
 
 # Implementation
@@ -271,7 +271,7 @@ LIMIT 21;  -- fetch one extra to determine has_next
 
 ### Filtering
 
-```
+```text
 # Simple equality
 GET /api/v1/orders?status=active&customer_id=abc-123
 
@@ -288,7 +288,7 @@ GET /api/v1/orders?customer.country=US
 
 ### Sorting
 
-```
+```text
 # Single field (prefix - for descending)
 GET /api/v1/products?sort=-created_at
 
@@ -298,7 +298,7 @@ GET /api/v1/products?sort=-featured,price,-created_at
 
 ### Full-Text Search
 
-```
+```text
 # Search query parameter
 GET /api/v1/products?q=wireless+headphones
 
@@ -308,7 +308,7 @@ GET /api/v1/users?email=alice
 
 ### Sparse Fieldsets
 
-```
+```text
 # Return only specified fields (reduces payload)
 GET /api/v1/users?fields=id,name,email
 GET /api/v1/orders?fields=id,total,status&include=customer.name
@@ -318,7 +318,7 @@ GET /api/v1/orders?fields=id,total,status&include=customer.name
 
 ### Token-Based Auth
 
-```
+```text
 # Bearer token in Authorization header
 GET /api/v1/users
 Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
@@ -350,7 +350,7 @@ app.delete("/api/v1/users/:id", requireRole("admin"), async (req, res) => {
 
 ### Headers
 
-```
+```text
 HTTP/1.1 200 OK
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95
@@ -380,7 +380,7 @@ Retry-After: 60
 
 ### URL Path Versioning (Recommended)
 
-```
+```text
 /api/v1/users
 /api/v2/users
 ```
@@ -390,7 +390,7 @@ Retry-After: 60
 
 ### Header Versioning
 
-```
+```text
 GET /api/users
 Accept: application/vnd.myapp.v2+json
 ```
@@ -400,7 +400,7 @@ Accept: application/vnd.myapp.v2+json
 
 ### Versioning Strategy
 
-```
+```text
 1. Start with /api/v1/ — don't version until you need to
 2. Maintain at most 2 active versions (current + previous)
 3. Deprecation timeline:
@@ -708,6 +708,7 @@ Each of these costs migration weeks across N consumers when the API has integrat
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Verb-based endpoint (`/getUsers`, `/createOrder`) introduced (REST naming weakening)
 - HTTP status code mismatched to outcome (validation failure as 400 not 422, create as 200 not 201)
 - Error envelope differs between handlers (consistency drift — sister `error-codes.md` violation)
@@ -719,6 +720,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `as` cast hiding shape drift between BE + FE (sister S6571 + `no-discards.md` rule 8)
 
 **Refinement candidates**:
+
 - New endpoint-class row when a recurring shape emerges (e.g., webhook receivers, SSE streams, gRPC unary, GraphQL mutation)
 - Tightening of the response-envelope contract when sister rules (`error-codes.md`, `error-handling-with-context.md`) evolve
 - New cross-reference when a sister skill (security-review, observability-patterns) adds an endpoint-level gate
@@ -746,13 +748,15 @@ The following rules were migrated from `~/.claude/rules/common/` into this skill
 
 ---
 paths:
-  - "**/routes/**"
-  - "**/handlers/**"
-  - "**/controllers/**"
-  - "**/api/**"
-  - "**/middleware/**"
-  - "**/nodeApi.js"
-  - "**/customerApi.js"
+
+- "**/routes/**"
+- "**/handlers/**"
+- "**/controllers/**"
+- "**/api/**"
+- "**/middleware/**"
+- "**/nodeApi.js"
+- "**/customerApi.js"
+
 ---
 
 # API Design Standards
@@ -782,6 +786,7 @@ When creating or modifying API endpoints:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New endpoint added with verb-based path (`/getUser`, `/createOrder`) — RESTful-naming weakening
 - POST returning 200 instead of 201 / DELETE returning 200 instead of 204 / validation failure returning 400 instead of 422 (status-code mapping drift)
 - Error envelope differs across handlers (some `{error}`, some `{message}`, some both) — consistency weakening
@@ -792,6 +797,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Skill chain incomplete (api-design without security-review pass)
 
 **Refinement candidates**:
+
 - New checklist row when a recurring endpoint class emerges (webhook receivers, SSE streams, GraphQL mutations, gRPC unary)
 - Tightening of the error-envelope shape when sister rules (`error-codes.md`, `error-handling-with-context.md`) evolve the canonical contract
 - New cross-reference when the api-versioning / contract-testing / deprecation-lifecycle rules introduce new gate
@@ -941,7 +947,7 @@ Per `deprecation-lifecycle.md`:
    30 days.
 3. **Hard-deprecate** — endpoints return `410 Gone` for new
    clients; existing clients on allowlist get `Deprecation: true`
-   + warning until their cutoff date. Calendar minimum 60 days
+   - warning until their cutoff date. Calendar minimum 60 days
    from soft.
 4. **Remove** — version is gone; requests get `410 Gone` + Link
    header to migration guide.
@@ -1159,6 +1165,7 @@ damage.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Breaking change shipped inside an existing major version (rule 4 violation — clients silently broken)
 - New endpoint added without OpenAPI / GraphQL SDL / Proto schema update (rule 2 weakening)
 - Tolerant-reader pattern not adopted by a client; new server field broke it (rule 1 weakening)
@@ -1169,6 +1176,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Internal API treated less rigorously than external (rule converges; treat both like contracts)
 
 **Refinement candidates**:
+
 - New row in the breaking-vs-non-breaking table when a new change shape emerges
 - Tightening of the deprecation-runway minimums when SDK consumers prove slower to upgrade
 - New tooling row when a linter / breaking-change detector (Spectral, buf, GraphQL Inspector) gains adoption
@@ -1241,6 +1249,7 @@ producers verify against them.
    is renegotiated
 
 This pattern is ideal when:
+
 - Producer can identify all its consumers (internal teams,
   paid customers with API keys)
 - Consumers can run a contract test step in their CI
@@ -1249,6 +1258,7 @@ This pattern is ideal when:
 ### Schema-Based Contracts — OpenAPI / GraphQL / Proto
 
 The schema is the contract. Tests verify:
+
 - Producer responses MATCH the published schema (no drift)
 - Consumer code COMPILES against the schema (generated clients)
 - Schema changes are SEMVER-tracked (per `api-versioning.md`)
@@ -1258,6 +1268,7 @@ Tools: **Dredd**, **Schemathesis**, **Spectral** for OpenAPI;
 Proto.
 
 Ideal when:
+
 - API is public + has unknown consumers
 - The schema is the canonical definition
 - Generated clients flow from the schema
@@ -1361,6 +1372,7 @@ update automatically.
 ### 9. Contracts are not load tests
 
 A passing contract test does NOT verify:
+
 - Performance under load
 - Concurrent behaviour
 - Long-running connection handling
@@ -1473,7 +1485,8 @@ graphql-inspector diff \
 ```
 
 Output:
-```
+
+```text
 ⚠️  Breaking changes:
   - Field "username" was removed from type "User"
   - Argument "limit" was added to field "User.orders" (required)
@@ -1564,6 +1577,7 @@ Without contract tests, the typical failure mode:
 7. On-call diagnoses; rollback or hotfix
 
 Contract tests catch this at step 2:
+
 - Backend's PR runs the verification step
 - The frontend's contract expects the OLD field name
 - The PR fails
@@ -1577,6 +1591,7 @@ broke us" production incidents.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - API change shipped but consumer contract test didn't fail (false-negative — contract was over-broad)
 - Producer deploy blocked but the change was actually backwards-compatible (false-positive — contract was over-narrow)
 - CDC broker (Pact / PactFlow / Apollo Studio) outage broke deploys (broker-dependency weakening)
@@ -1587,6 +1602,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Contract test wrapping the whole stack (anti-pattern 1 — really an e2e test)
 
 **Refinement candidates**:
+
 - New tooling row when a contract-test framework (consumer-driven OR schema-based) becomes the team's choice
 - Tightening of the "test the error cases too" requirement when production error paths consistently lack contracts
 - New cross-reference when a sister rule (api-versioning, schema-evolution) defines the surface that contracts test
@@ -1997,6 +2013,7 @@ take hours to recover from.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Migration combining ADD + DROP / RENAME in a single step (rule 1 violation — not zero-downtime)
 - Long-running DDL on a populated table without CONCURRENTLY / online tooling (rule 4 weakening)
 - Backfill UPDATE wrapped in one transaction over millions of rows (rule 5 violation — table-locking)
@@ -2007,6 +2024,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Hand-applied DDL discovered in prod (anti-pattern 2 — out-of-VCS migration)
 
 **Refinement candidates**:
+
 - New row in the per-store change-safety table when a DB version changes lock semantics
 - Tightening of the "test on prod-sized data" gate when migration-time-bomb incidents recur
 - New cross-reference when a sister rule (api-versioning, contract-testing) defines the API contract this rolls up to
@@ -2078,7 +2096,7 @@ process into a trap.
   - New clients get `410 Gone` + Link to migration guide
   - Existing clients on allowlist get `Deprecation: true` + final
     cutoff date
-  - Banners are more prominent ("Removal in <N> days")
+  - Banners are more prominent ("Removal in `<N>` days")
   - Tickets opened against integration partners that haven't
     migrated
 - **Code**: Runtime ERROR on call for non-allowlisted clients;
@@ -2143,6 +2161,7 @@ Per `observability.md`:
 - `deprecated_sdk_method_calls_total{method, sdk_version}`
 
 These metrics inform:
+
 - Which clients still need outreach
 - Whether the cutoff date is realistic
 - When the "nobody's using it" state is genuinely true
@@ -2314,7 +2333,7 @@ message User {
 
 During soft-deprecate:
 
-```
+```text
 HTTP/1.1 200 OK
 Deprecation: true
 Sunset: Sun, 31 Dec 2026 23:59:59 GMT
@@ -2324,7 +2343,7 @@ Warning: 299 - "GET /api/v1/users is deprecated. Use /api/v2/users. Removal 2026
 
 During hard-deprecate (for non-allowlisted clients):
 
-```
+```text
 HTTP/1.1 410 Gone
 Content-Type: application/json
 Link: <https://docs.example.com/api/v2>; rel="successor-version"
@@ -2387,7 +2406,7 @@ ship; they need a calendar date.
 
 - **RFC 8594** — Sunset HTTP header
 - **draft-ietf-httpapi-deprecation-header** — Deprecation header
-  + Link relation `successor-version`
+  - Link relation `successor-version`
 - **Semantic Versioning 2.0.0** — semantics of MINOR vs MAJOR
   bumps for deprecation
 - **PEP 702** (Python) — `@deprecated` decorator typing
@@ -2420,6 +2439,7 @@ actually evolve without breaking customers.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Stage skipped (Announce → Remove without Soft + Hard intermediate) — rule 1 weakening
 - Deprecation marked but cutoff date missing or open-ended (anti-pattern 1 — permanent deprecation)
 - Allowlist extension granted ad-hoc without fresh acknowledgment (rule 5 weakening)
@@ -2430,6 +2450,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Migration tooling absent for a mechanical migration (rule 7 weakening)
 
 **Refinement candidates**:
+
 - New runway-minimum row when an audience class (e.g., mobile SDK consumers) proves slower
 - Tightening of the audit-log shape (rule 6) when forensics needs a dimension currently missing
 - New cross-reference when a sister rule (api-versioning, semver) defines the version semantics this depends on

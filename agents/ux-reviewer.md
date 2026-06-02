@@ -69,7 +69,7 @@ Missing edge-state copy is a finding.
 
 ## Output shape
 
-```
+```text
 UX review (Division 7 — UX writing + interaction):
 
 Copy strategy: [tone, voice, reading-level]
@@ -115,6 +115,7 @@ Standards-cited references where applicable (Nielsen heuristics, Don Norman's De
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - User-support tickets traceable to ambiguous copy (microcopy discipline is weak)
 - Error messages that customers paste verbatim into support tickets (error-UX checklist row needs sharpening)
 - Form-completion drop-off concentrated at a single field (field-level UX needs review)
@@ -123,6 +124,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Empty / loading / partial-success states absent from new features (state-coverage rule needs review)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed UX dimension appears in retrospect
 - New anti-pattern entry when a copy-shortcut recurs across 2+ launches
 - Glossary updates when terminology drift surfaces across teams

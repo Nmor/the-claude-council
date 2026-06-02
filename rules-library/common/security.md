@@ -8,6 +8,7 @@
 > **GDPR (EU 2016/679)**, **CCPA (Cal. Civ. Code §1798.100+)**.
 >
 > Sister rules (each enforces a slice of this umbrella):
+>
 > - `dependency-vulnerabilities.md` — CVE gate (MODERATE+ blocks)
 > - `license-allowlist-gate.md` — SPDX allowlist + cross-check
 > - `dependency-overrides-not-exceptions.md` — fix the tree, not
@@ -21,7 +22,7 @@
 > - `docker-localhost-binding.md` — every host port `127.0.0.1:`
 > - `no-local-fs.md` — no local FS state on ephemeral platforms
 > - `no-discards.md` (hook-enforced) — blocks hardcoded secrets
->   + weak crypto patterns on save
+>   - weak crypto patterns on save
 > - `extreme-lint-policy.md` — `gosec`, `bandit`, `eslint-
 >   plugin-security` mandatory
 
@@ -160,7 +161,7 @@ review, post-merge, production incident, external report):
 - `docker-localhost-binding.md` — `127.0.0.1:` on every port
 - `no-local-fs.md` — no FS state on ephemeral platforms
 - `no-discards.md` (hook-enforced) — blocks hardcoded secrets
-  + weak-crypto patterns on save
+  - weak-crypto patterns on save
 - `error-handling-with-context.md` — error responses sanitise
   internal details before reaching client
 - `extreme-lint-policy.md` — `gosec`, `bandit`,
@@ -191,6 +192,7 @@ Top 25, PCI-DSS, GDPR, CCPA, POPIA, HIPAA).
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New OWASP Top 10 release that changes category names or rankings (taxonomy needs update)
 - New CVE class recurring across multiple repos (new sister rule candidate)
 - New regulation (e.g., DORA, NIS2, EU AI Act) in scope but no compliance section in the umbrella (regulation row needed)
@@ -201,6 +203,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Compliance table row marked N/A without justification
 
 **Refinement candidates**:
+
 - New row in the compliance table when a regulation enters scope
 - New cross-reference when a new sister rule covers a control the umbrella names but doesn't enforce
 - Tightening of the pre-commit checklist when a new defence-in-depth gate emerges

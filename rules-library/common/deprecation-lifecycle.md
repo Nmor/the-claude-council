@@ -58,7 +58,7 @@ process into a trap.
   - New clients get `410 Gone` + Link to migration guide
   - Existing clients on allowlist get `Deprecation: true` + final
     cutoff date
-  - Banners are more prominent ("Removal in <N> days")
+  - Banners are more prominent ("Removal in `<N>` days")
   - Tickets opened against integration partners that haven't
     migrated
 - **Code**: Runtime ERROR on call for non-allowlisted clients;
@@ -123,6 +123,7 @@ Per `observability.md`:
 - `deprecated_sdk_method_calls_total{method, sdk_version}`
 
 These metrics inform:
+
 - Which clients still need outreach
 - Whether the cutoff date is realistic
 - When the "nobody's using it" state is genuinely true
@@ -294,7 +295,7 @@ message User {
 
 During soft-deprecate:
 
-```
+```text
 HTTP/1.1 200 OK
 Deprecation: true
 Sunset: Sun, 31 Dec 2026 23:59:59 GMT
@@ -304,7 +305,7 @@ Warning: 299 - "GET /api/v1/users is deprecated. Use /api/v2/users. Removal 2026
 
 During hard-deprecate (for non-allowlisted clients):
 
-```
+```text
 HTTP/1.1 410 Gone
 Content-Type: application/json
 Link: <https://docs.example.com/api/v2>; rel="successor-version"
@@ -367,7 +368,7 @@ ship; they need a calendar date.
 
 - **RFC 8594** — Sunset HTTP header
 - **draft-ietf-httpapi-deprecation-header** — Deprecation header
-  + Link relation `successor-version`
+  - Link relation `successor-version`
 - **Semantic Versioning 2.0.0** — semantics of MINOR vs MAJOR
   bumps for deprecation
 - **PEP 702** (Python) — `@deprecated` decorator typing
@@ -400,6 +401,7 @@ actually evolve without breaking customers.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Stage skipped (Announce → Remove without Soft + Hard intermediate) — rule 1 weakening
 - Deprecation marked but cutoff date missing or open-ended (anti-pattern 1 — permanent deprecation)
 - Allowlist extension granted ad-hoc without fresh acknowledgment (rule 5 weakening)
@@ -410,6 +412,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Migration tooling absent for a mechanical migration (rule 7 weakening)
 
 **Refinement candidates**:
+
 - New runway-minimum row when an audience class (e.g., mobile SDK consumers) proves slower
 - Tightening of the audit-log shape (rule 6) when forensics needs a dimension currently missing
 - New cross-reference when a sister rule (api-versioning, semver) defines the version semantics this depends on

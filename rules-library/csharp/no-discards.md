@@ -211,7 +211,7 @@ dotnet_diagnostic.CA2016.severity = error    # forward CancellationToken
 
 ## Verification block
 
-```
+```text
 .NET build (this turn):
   - dotnet build /warnaserror: 0 warnings, 0 errors
   - dotnet format --verify-no-changes: clean

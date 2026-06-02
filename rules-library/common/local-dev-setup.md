@@ -239,7 +239,7 @@ tries to clone.
 
 ### Node.js / TypeScript
 
-```
+```text
 .
 ├── .devcontainer/
 │   ├── devcontainer.json
@@ -261,7 +261,7 @@ tries to clone.
 
 ### Go
 
-```
+```text
 .
 ├── .devcontainer/...
 ├── .tool-versions          # asdf-managed go version
@@ -280,23 +280,23 @@ tries to clone.
 .PHONY: dev test verify bootstrap
 
 bootstrap:
-	@./scripts/bootstrap.sh
+ @./scripts/bootstrap.sh
 dev:
-	@docker compose up -d
-	@go run ./cmd/server
+ @docker compose up -d
+ @go run ./cmd/server
 test:
-	@go test -race -count=1 ./...
+ @go test -race -count=1 ./...
 verify:
-	@go vet ./...
-	@staticcheck ./...
-	@golangci-lint run ./...
-	@govulncheck ./...
-	@make test
+ @go vet ./...
+ @staticcheck ./...
+ @golangci-lint run ./...
+ @govulncheck ./...
+ @make test
 ```
 
 ### Python
 
-```
+```text
 .
 ├── .devcontainer/...
 ├── .python-version         # pyenv
@@ -382,7 +382,7 @@ cd repo
 ./scripts/bootstrap.sh   # ~5 minutes on first run
 pnpm dev                 # starts the app + dependencies
 open http://localhost:3000
-```
+```text
 
 ### Common tasks
 
@@ -395,6 +395,7 @@ open http://localhost:3000
 ### Troubleshooting
 
 See [docs/local-dev-troubleshooting.md](docs/local-dev-troubleshooting.md).
+
 ```
 
 ## Cross-references
@@ -441,6 +442,7 @@ engineer-weeks per quarter forever.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New repo's bootstrap takes > 30 minutes for a fresh-clone developer (rule 1 violation — frictionful first-run)
 - Tool version not pinned via `.nvmrc` / `.tool-versions` / equivalent (rule 2 weakening)
 - Service dependency not in `docker-compose.yml` (rule 3 weakening — implicit local install)
@@ -453,6 +455,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Bootstrap script not tested in CI (rule 10 weakening — fresh-clone CI job missing)
 
 **Refinement candidates**:
+
 - New row in the prod-parity table when a recurring service class (vector DB, search engine, ML model server) emerges
 - Tightening of the bootstrap time budget when 30-min target consistently slips
 - New cross-language template when a stack (React Native, Flutter, Tauri, Solidity) needs platform-specific bootstrap

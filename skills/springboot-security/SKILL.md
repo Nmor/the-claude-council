@@ -275,6 +275,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 Principal-level Spring Security 6 architecture: deny-by-default authorisation chains, OAuth2 / OIDC resource-server config, method security, CSRF + CORS posture, JWT / session strategy, password hashing, secrets management for Spring properties.
 
 **Negative scope** (NOT what this skill covers):
+
 - Spring Boot layered architecture — see `springboot-patterns`
 - Cryptographic primitives at large — see `owasp-asvs`
 - Java language idioms — see `java-coding-standards`
@@ -343,6 +344,7 @@ Spring Security 6's defaults are sane, but its DSL gives developers many ways to
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Endpoint not protected by `@PreAuthorize` / `SecurityFilterChain` matcher (broken access control — A01)
 - CSRF disabled on stateful endpoint (`http.csrf(c -> c.disable())` without rationale)
 - `BCryptPasswordEncoder` with low strength factor (< 12) or other weak encoder
@@ -356,6 +358,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Sensitive request param logged via default `RequestLoggingFilter`
 
 **Refinement candidates**:
+
 - New OWASP A01-A10 mapping row when a recurring Spring Security anti-pattern surfaces
 - New cross-reference when a sister skill (springboot-patterns, owasp-asvs, security-review) adds a Spring gate
 - New row in security checklist when Spring Security ships a new feature (e.g., OAuth 2.1 default)

@@ -131,6 +131,7 @@ For these, the right enforcement is `golangci-lint`, `staticcheck`,
 2. If the rule needs file-level (not per-line) context, add it to the
    `fileRules` array instead.
 3. Manually run the test pipeline:
+
    ```bash
    cat > /tmp/probe.go <<'EOF'
    <code that should fail>
@@ -138,6 +139,7 @@ For these, the right enforcement is `golangci-lint`, `staticcheck`,
    echo '{"tool_input":{"file_path":"/tmp/probe.go"}}' \
      | node ~/.claude/scripts/hooks/post-edit-no-discards.js; echo $?
    ```
+
 4. Update the table at the top of this file.
 5. If it's a project-specific rule, add the matching pre-commit + CI gate
    to the project repo (Layer 3 + 4) — the global hook is the floor, not

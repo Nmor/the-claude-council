@@ -111,7 +111,8 @@ The privacy notice MUST state the backup-deletion lag (commonly
   individual contributions are undetectable
 
 For most analytics use cases: aggregate to cohorts (>1000 users)
-+ remove direct identifiers + drop high-cardinality quasi-
+
+- remove direct identifiers + drop high-cardinality quasi-
 identifiers (precise location, device IDs).
 
 ### 6. DSAR deletion has SLAs
@@ -261,7 +262,7 @@ anonymisation needs k-anonymity verification.
 
 ## Verification block
 
-```
+```text
 Data retention (this turn):
   - users.last_login retention: 24 months (was 5y) — aligned with EU norms
   - audit_log: 7 years (SOX) — partition by month + auto-archive after 6y
@@ -311,6 +312,7 @@ Data retention failures hurt twice:
    with the number of records affected
 
 Common real-world incidents:
+
 - Customer-support tools storing chat logs from 2015 still in
   production in 2026 — breach exposes a decade of PII
 - ML training corpora that contain deleted-account data because
@@ -331,6 +333,7 @@ incident report.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New table introduced without retention metadata in `docs/data-classification.md` (rule 1 violation)
 - TTL column / scheduled deletion job missing on a personal-data table (rule 2 weakening)
 - Soft-delete state persisting past the documented grace period without hard-delete cascade (rule 3 weakening)
@@ -343,6 +346,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Tax / SOX / HIPAA-bound records pruned before the longest applicable retention (regulation-driven floor violated)
 
 **Refinement candidates**:
+
 - New regulation row in the retention quick-reference when a new framework emerges (e.g., new EU sector-specific law, US state privacy law)
 - Tightening of the cascade enumeration when a recurring "forgot to delete from X" class appears
 - New cross-reference when a sister rule (gdpr-ccpa, audit-logging, schema-evolution) provides the data-class metadata

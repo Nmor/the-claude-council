@@ -14,7 +14,7 @@ imperative loops.**
 
 ## Layered architecture (Spring Boot)
 
-```
+```text
 com.example.app/
 ├── App.java                          # @SpringBootApplication
 ├── domain/                           # Business logic — pure Java; no Spring
@@ -187,6 +187,7 @@ public class ApiExceptionHandler {
 - Event-driven pipelines (RxJava / Project Reactor)
 
 When NOT:
+
 - CPU-bound workloads
 - Existing code that's all sync (rewriting hurts more than helps)
 - Team unfamiliar with reactive semantics (the debugging cost is

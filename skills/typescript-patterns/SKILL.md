@@ -341,6 +341,7 @@ Cost of strict-mode discipline: minutes per type definition. Cost of stale types
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `any` introduced where `unknown` + narrowing would work (sister `typescript/no-discards.md` rule 7)
 - Type assertion `as T` used where a runtime guard / Zod schema would catch malformed input (rule 8)
 - `// @ts-ignore` / `// @ts-expect-error` / `// @ts-nocheck` introduced (rule 5 violation)
@@ -351,6 +352,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `Readonly<>` wrapper missing on React props (sister `S6759`)
 
 **Refinement candidates**:
+
 - New strictness flag row when a new TS release ships (e.g., `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)
 - Tightening of the branded-type adoption when ID-confusion bugs recur
 - New cross-reference when a sister rule (typescript/no-discards, sonarlint-checks) adds a TS-specific check
@@ -373,11 +375,14 @@ Phase H will delete the source files at `rules-library/typescript/`. Content bel
 
 ---
 paths:
-  - "**/*.ts"
-  - "**/*.tsx"
-  - "**/*.js"
-  - "**/*.jsx"
+
+- "**/*.ts"
+- "**/*.tsx"
+- "**/*.js"
+- "**/*.jsx"
+
 ---
+
 # TypeScript/JavaScript Coding Style
 
 > This file extends [common/coding-style.md](../../rules-library/common/coding-style.md) with TypeScript/JavaScript specific content.
@@ -445,22 +450,24 @@ const validated = schema.parse(input)
 
 ---
 paths:
-  - "**/*.vue"
-  - "**/*.tsx"
-  - "**/*.jsx"
-  - "**/*.swift"
-  - "**/*.dart"
-  - "**/*.xaml"
-  - "**/views/**"
-  - "**/components/**"
-  - "**/pages/**"
-  - "**/layouts/**"
-  - "**/screens/**"
-  - "**/widgets/**"
-  - "**/*.css"
-  - "**/*.scss"
-  - "**/*.storyboard"
-  - "**/*.xib"
+
+- "**/*.vue"
+- "**/*.tsx"
+- "**/*.jsx"
+- "**/*.swift"
+- "**/*.dart"
+- "**/*.xaml"
+- "**/views/**"
+- "**/components/**"
+- "**/pages/**"
+- "**/layouts/**"
+- "**/screens/**"
+- "**/widgets/**"
+- "**/*.css"
+- "**/*.scss"
+- "**/*.storyboard"
+- "**/*.xib"
+
 ---
 
 # Frontend Design Aesthetics
@@ -497,11 +504,14 @@ All three must be satisfied before frontend work is considered complete.
 
 ---
 paths:
-  - "**/*.ts"
-  - "**/*.tsx"
-  - "**/*.js"
-  - "**/*.jsx"
+
+- "**/*.ts"
+- "**/*.tsx"
+- "**/*.js"
+- "**/*.jsx"
+
 ---
+
 # TypeScript/JavaScript Hooks
 
 > This file extends [common/hooks.md](../../rules-library/common/hooks.md) with TypeScript/JavaScript specific content.
@@ -914,7 +924,7 @@ export default tseslint.config(
 
 ## Verification block (TS/JS-side)
 
-```
+```text
 TS lint sweep (this turn):
   - tsc --noEmit: 0 errors
   - eslint . --max-warnings 0: 0 warnings
@@ -966,11 +976,14 @@ is to keep it at full strictness.
 
 ---
 paths:
-  - "**/*.ts"
-  - "**/*.tsx"
-  - "**/*.js"
-  - "**/*.jsx"
+
+- "**/*.ts"
+- "**/*.tsx"
+- "**/*.js"
+- "**/*.jsx"
+
 ---
+
 # TypeScript/JavaScript Patterns
 
 > This file extends [common/patterns.md](../../rules-library/common/patterns.md) with TypeScript/JavaScript specific content.
@@ -1025,11 +1038,14 @@ interface Repository<T> {
 
 ---
 paths:
-  - "**/*.ts"
-  - "**/*.tsx"
-  - "**/*.js"
-  - "**/*.jsx"
+
+- "**/*.ts"
+- "**/*.tsx"
+- "**/*.js"
+- "**/*.jsx"
+
 ---
+
 # TypeScript/JavaScript Security
 
 > This file extends [common/security.md](../../rules-library/common/security.md) with TypeScript/JavaScript specific content.
@@ -1060,11 +1076,14 @@ if (!apiKey) {
 
 ---
 paths:
-  - "**/*.ts"
-  - "**/*.tsx"
-  - "**/*.js"
-  - "**/*.jsx"
+
+- "**/*.ts"
+- "**/*.tsx"
+- "**/*.js"
+- "**/*.jsx"
+
 ---
+
 # TypeScript/JavaScript Testing
 
 > This file extends [common/testing.md](../../rules-library/common/testing.md) with TypeScript/JavaScript specific content.

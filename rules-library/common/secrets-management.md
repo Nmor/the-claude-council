@@ -221,7 +221,7 @@ NEVER skip step 1. Scrubbing without rotating is theatre.
 Every new repo Claude creates (or first-touches) follows the checklist
 in `repo-setup-checklist.md` § "Secrets surface", which includes:
 
-- `.gitignore` covers .env, *.pem, *.key, etc.
+- `.gitignore` covers .env, *.pem,*.key, etc.
 - Pre-commit hook with gitleaks
 - `.env.example` exists with placeholders (no real values)
 - `docs/secrets.md` documents where each secret comes from (AWS
@@ -243,6 +243,7 @@ in `repo-setup-checklist.md` § "Secrets surface", which includes:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Long-term AWS access key (`AKIA...`) found in `~/.aws/credentials` (rule 1 violation — Keychain via aws-vault required)
 - `.env` tracked by git (rule 3 violation)
 - Private key (`*.pem`, `*.key`, `id_rsa*`) found in repo (rule 6 violation)
@@ -254,6 +255,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Secret format-validation skipped on push to vault
 
 **Refinement candidates**:
+
 - New vault provider row when a new secrets manager gains adoption
 - Tightening of the rotation cadence table when a regulator (PCI / SOC2) updates frequency requirements
 - New banned-pattern entry when a new credential prefix shape recurs

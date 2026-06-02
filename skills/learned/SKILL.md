@@ -73,6 +73,7 @@ event with disposition + actor + timestamp, and closes the
 loop.
 
 **Negative scope** (NOT what this skill covers):
+
 - Candidate emission — `continuous-learning-v2` owns that
 - Batch review prompt — `continuous-learning-v2` orchestrates
 - Authoring brand-new rules — see
@@ -113,7 +114,7 @@ loop.
 | Mutable archive entries | Tamper risk; provenance invalid | Append-only `learning-archive/` directory; never edit past entries |
 | Batched candidate apply without per-target rationale | One PR commits 10 unrelated rule edits; hard to revert | One candidate = one logical commit; rationale in commit message |
 | Approved candidates linger un-applied | Drift between intent + state | Apply within the same session that approved |
-| Skip the disposition state | Future debug can't tell "rejected" from "missed" | Every event has `disposition: applied | rejected | deferred | superseded` |
+| Skip the disposition state | Future debug can't tell "rejected" from "missed" | Every event has `disposition: applied \| rejected \| deferred \| superseded` |
 | Archive grows unbounded | Disk + cognitive load | Rotation policy: per-year subdirectory, compress > 1 year old |
 
 ## Verification Checklist
@@ -159,6 +160,7 @@ years later.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Approved learning candidate not reflected in the targeted artifact (loop-closure gap — file edit step skipped)
 - Candidate marked `applied` but the file diff doesn't contain the refinement (false-positive status)
 - Candidate disposition (`applied` / `rejected` / `deferred`) absent — events stay in pending limbo
@@ -169,6 +171,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Operator (user) approves candidate but next-session-Claude doesn't see the refinement (the artifact edit didn't happen this turn)
 
 **Refinement candidates**:
+
 - New disposition state when a recurring outcome (e.g., "queued for next major version", "blocked on external dep") doesn't fit existing slots
 - Archive-rotation policy when `learning-archive/` exceeds size threshold
 - Batched-edit protocol when multiple candidates target the same file

@@ -100,7 +100,7 @@ RTL across locales), `semver.md`, `deprecation-lifecycle.md`,
 
 Tokens are the source of truth. Three tiers:
 
-```
+```text
 TIER 1: Core / primitive tokens
    --color-blue-500: #2563eb
    --space-4: 16px
@@ -260,7 +260,7 @@ Governance answers:
 
 Three stages of component maturity:
 
-```
+```text
 experimental:
   - in the system; opt-in via flag
   - breaking changes allowed
@@ -301,6 +301,7 @@ Skipping stages erodes trust. Consumers will fork to escape an
 unreliable upstream.
 
 ### Pattern 9: Documentation that engineers + designers
+
 both actually use
 
 Docs are a deliverable, not an afterthought. Apply Diátaxis:
@@ -330,6 +331,7 @@ Tools: **Storybook** (web), **Compose Preview** (Android),
 cross-discipline browsing.
 
 ### Pattern 10: Testing — visual + interaction + a11y + token
+
 contract
 
 Components ship with four classes of test:
@@ -365,6 +367,7 @@ Without this, the design system team is invisible until budget
 cuts.
 
 ### Pattern 12: Cross-platform parity — accept platform
+
 conventions
 
 A common failure: forcing one platform's idioms onto another. A
@@ -541,6 +544,7 @@ happen to share a logo.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Raw colour literal in component file (per `~/.claude/rules-library/common/no-discards.md` — design-token weakening)
 - New component built without searching shared `components/ui/` first (per `~/.claude/rules-library/common/reuse-first.md`)
 - Component fork to add one variant instead of extending with prop (rule-of-three violation)
@@ -553,6 +557,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Accessibility regression slips past axe-core in CI
 
 **Refinement candidates**:
+
 - New token category row when a new design dimension emerges (e.g., elevation, motion-duration scale)
 - New cross-reference when a sister skill (frontend-patterns, wcag-accessibility, interaction-design) adds a design-system gate
 - New versioning template when breaking-change discipline drifts

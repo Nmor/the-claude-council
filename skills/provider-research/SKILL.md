@@ -147,6 +147,7 @@ signature verification, idempotency primitives, breaking-change
 calendar; refresh every 6 months or on provider-deprecation notice.
 
 **Negative scope** (NOT what this skill covers):
+
 - Code generation from OpenAPI / GraphQL SDL — out
 - Provider-specific integration implementation — out; that's the
   per-provider skill (calendar-provider, web-push-notifications,
@@ -171,7 +172,7 @@ calendar; refresh every 6 months or on provider-deprecation notice.
 - **RFC 8725 (JWT BCP)** — token validation
 - **W3C Webhooks Working Group** — webhook delivery contracts
 - **OWASP ASVS 4.0.3 §3 (Session Management)** — token storage
-  + rotation
+  - rotation
 - **OWASP ASVS 4.0.3 §10 (Malicious Code)** — verify SDK provenance
 
 ## Anti-Patterns
@@ -234,6 +235,7 @@ artefact every future maintainer can read.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Integration code shipped before `docs/provider-research/<provider>.md` exists (rule weakening)
 - Provider-research file older than 6 months and not refreshed before a change (staleness threshold breached)
 - Stack Overflow / npm README / blog post cited as the canonical source (primary-source-first rule weakening)
@@ -244,6 +246,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - File treated as one-shot artifact rather than living doc updated on every provider change
 
 **Refinement candidates**:
+
 - New section in template when a recurring research-gap surfaces (e.g., SDK breaking-change tracking, region-specific endpoint differences)
 - Freshness-threshold tightening when staleness causes incidents (e.g., 3 months for fast-moving providers like OpenAI vs 6 months for stable like RFC-protocol providers)
 - New provider type when an integration class arrives that doesn't fit existing slots (e.g., blockchain RPC, ML model provider, EDR / SIEM vendor)

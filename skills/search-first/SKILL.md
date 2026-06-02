@@ -10,6 +10,7 @@ Systematizes the "search for existing solutions before implementing" workflow.
 ## Trigger
 
 Use this skill when:
+
 - Starting a new feature that likely has existing solutions
 - Adding a dependency or integration
 - The user asks "add X functionality" and you're about to write code
@@ -17,7 +18,7 @@ Use this skill when:
 
 ## Workflow
 
-```
+```text
 ┌─────────────────────────────────────────────┐
 │  1. NEED ANALYSIS                           │
 │     Define what functionality is needed      │
@@ -69,7 +70,7 @@ Before writing a utility or adding functionality, mentally run through:
 
 For non-trivial functionality, launch the researcher agent:
 
-```
+```text
 Task(subagent_type="general-purpose", prompt="
   Research existing tools for: [DESCRIPTION]
   Language/framework: [LANG]
@@ -83,41 +84,51 @@ Task(subagent_type="general-purpose", prompt="
 ## Search Shortcuts by Category
 
 ### Development Tooling
+
 - Linting → `eslint`, `ruff`, `textlint`, `markdownlint`
 - Formatting → `prettier`, `black`, `gofmt`
 - Testing → `jest`, `pytest`, `go test`
 - Pre-commit → `husky`, `lint-staged`, `pre-commit`
 
 ### AI/LLM Integration
+
 - Claude SDK → Context7 for latest docs
 - Prompt management → Check MCP servers
 - Document processing → `unstructured`, `pdfplumber`, `mammoth`
 
 ### Data & APIs
+
 - HTTP clients → `httpx` (Python), `ky`/`got` (Node)
 - Validation → `zod` (TS), `pydantic` (Python)
 - Database → Check for MCP servers first
 
 ### Content & Publishing
+
 - Markdown processing → `remark`, `unified`, `markdown-it`
 - Image optimization → `sharp`, `imagemin`
 
 ## Integration Points
 
 ### With planner agent
+
 The planner should invoke researcher before Phase 1 (Architecture Review):
+
 - Researcher identifies available tools
 - Planner incorporates them into the implementation plan
 - Avoids "reinventing the wheel" in the plan
 
 ### With architect agent
+
 The architect should consult researcher for:
+
 - Technology stack decisions
 - Integration pattern discovery
 - Existing reference architectures
 
 ### With iterative-retrieval skill
+
 Combine for progressive discovery:
+
 - Cycle 1: Broad search (npm, PyPI, MCP)
 - Cycle 2: Evaluate top candidates in detail
 - Cycle 3: Test compatibility with project constraints
@@ -125,7 +136,8 @@ Combine for progressive discovery:
 ## Examples
 
 ### Example 1: "Add dead link checking"
-```
+
+```text
 Need: Check markdown files for broken links
 Search: npm "markdown dead link checker"
 Found: textlint-rule-no-dead-link (score: 9/10)
@@ -134,7 +146,8 @@ Result: Zero custom code, battle-tested solution
 ```
 
 ### Example 2: "Add HTTP client wrapper"
-```
+
+```text
 Need: Resilient HTTP client with retries and timeout handling
 Search: npm "http client retry", PyPI "httpx retry"
 Found: got (Node) with retry plugin, httpx (Python) with built-in retry
@@ -143,7 +156,8 @@ Result: Zero custom code, production-proven libraries
 ```
 
 ### Example 3: "Add config file linter"
-```
+
+```text
 Need: Validate project config files against a schema
 Search: npm "config linter schema", "json schema validator cli"
 Found: ajv-cli (score: 8/10)
@@ -169,11 +183,12 @@ exists." Covers the 4-radius escalation (in-file → in-module
 adoption gate (license + CVE + maintenance + tests).
 
 **Negative scope** (NOT what this skill covers):
+
 - Authoring net-new code when the search comes up empty —
   that's the language-specific patterns skill
 - Authoring new rules — see `rule-authoring-global-vs-project.md`
 - Vendor selection at the org level — see `strategy-reviewer`
-  + `task-intake-due-diligence.md`
+  - `task-intake-due-diligence.md`
 
 ## When NOT to use
 
@@ -273,6 +288,7 @@ patterns rather than parallel home-rolled variants.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New component / function / module written without a codebase sweep first (sister `reuse-first.md` rule 1 violation)
 - Same conceptual unit implemented twice in same project (rule of three violated at occurrence 2)
 - Existing primitive copied + modified instead of extended via prop / option / parameter (forking anti-pattern)
@@ -282,6 +298,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Selection criteria skipped on a new OSS adoption (no license / maintenance / security gate)
 
 **Refinement candidates**:
+
 - New scoring axis when a recurring evaluation gap appears (e.g., bundle size, cold-start cost, accessibility built-in)
 - New OSS-vs-custom heuristic row when a recurring tradeoff class emerges
 - Tightening of the "rule of three" trigger threshold when twin implementations consistently drift

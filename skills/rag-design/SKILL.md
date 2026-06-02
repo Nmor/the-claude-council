@@ -94,7 +94,7 @@ data lifecycle), `audit-logging.md` (citation audit trail),
 
 ### Pattern 1: The seven-layer RAG stack
 
-```
+```text
 ┌─────────────────────────────────────────────────┐
 │  7. Evaluation + Observability                  │ RAGAS, traces, logs
 ├─────────────────────────────────────────────────┤
@@ -187,7 +187,7 @@ across models are NOT compatible.
 
 ### Pattern 5: Vector store choice
 
-```
+```text
 ┌──────────────┬──────────────────────┬──────────────────────────────┐
 │ Store        │ Best for             │ Notes                        │
 ├──────────────┼──────────────────────┼──────────────────────────────┤
@@ -529,12 +529,12 @@ shipped RAG evaluation.
 - **`~/.claude/rules/common/council-triggers.md`** (Division 15) — bias,
   fairness, dataset provenance, human-in-the-loop gates
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Chunking strategy chosen arbitrarily (fixed 512 tokens) without measuring retrieval quality
 - Single-vector retrieval without hybrid (BM25 + vector) — recall gap on rare terms
 - Reranking step absent on multi-document corpora (precision gap at top-k)
@@ -547,6 +547,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Stale chunks (source doc updated, index not refreshed) — staleness window unmonitored
 
 **Refinement candidates**:
+
 - New chunking-strategy row when a new domain (legal, code, medical) surfaces with specific needs
 - New cross-reference when a sister skill (prompt-engineering, mlops-patterns, fine-tuning-workflows, ml-model-selection) adds a RAG gate
 - New eval template when a new failure class (e.g., out-of-distribution query) recurs

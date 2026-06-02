@@ -100,6 +100,7 @@ scorecard is the internal definition of what success looks like in
 this role.
 
 A scorecard contains:
+
 - **Mission** — one paragraph: what this role exists to do
 - **Outcomes** — 3-7 measurable results the person must deliver in
   the first 6-12 months ("Ship the v2 billing platform end-to-end
@@ -221,6 +222,7 @@ team level.
 ### Calibration + Debrief
 
 Every interview produces a written scorecard with:
+
 - Strong yes / yes / neutral / no / strong no (5-point scale; some
   teams use 4-point to force a non-neutral position)
 - Specific evidence supporting the rating (quotes, code snippets,
@@ -229,6 +231,7 @@ Every interview produces a written scorecard with:
 - Explicit risks or caveats
 
 The debrief is a structured meeting:
+
 - Each interviewer presents independently BEFORE seeing others'
   scorecards (prevents anchoring)
 - Disagreements are surfaced and discussed with evidence
@@ -252,6 +255,7 @@ The debrief is a structured meeting:
 ### Offer + Closing
 
 The offer stage is where many strong candidates are lost. Patterns:
+
 - **Move fast** — top candidates have 2-3 active processes; a 5-day
   delay between final interview and offer doubles the loss rate
 - **Pre-close, don't surprise** — recruiter checks comp expectations
@@ -269,6 +273,7 @@ The offer stage is where many strong candidates are lost. Patterns:
 90 days. The onboarding is the rest of the hiring process; a great
 hire who's onboarded badly looks like a regretted hire by month 4.
 The skeleton:
+
 - **Week 1** — environment access, tooling, org overview, manager
   1:1, peer introductions, a small first commit / first deliverable
 - **Week 2-4** — shadowing, deeper context, structured reading list,
@@ -337,7 +342,7 @@ Below 80% triggers a validation review.
   0.26 — use as confirmation, not decision.
 - **Comp negotiation theatre.** Lowballing top candidates produces
   resentful hires or lost offers. Determine the pay band by market
-  + role + level + experience and offer a fair number.
+  - role + level + experience and offer a fair number.
 - **No "regret offer" review.** Lost offers should produce a review:
   why did the candidate go elsewhere? Often the answer is loop
   experience, comp, or speed — all fixable.
@@ -417,6 +422,7 @@ predictable, expensive ways:
   bias, the actual culture is the bias
 
 Conversely, when hiring is principal-grade:
+
 - The team is full of A-players who attract more A-players
 - Diversity outcomes match aspirations because the pipeline +
   process are engineered for them
@@ -455,7 +461,7 @@ talent is the limit.
 - **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
   engineering basis (when civil / structural scope)
 - **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  + digital coordination (when AEC scope)
+  - digital coordination (when AEC scope)
 - **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
   Matrix** — Systematic innovation methodology
 - **Stanford d.school + IDEO Field Guide** — Design thinking
@@ -471,7 +477,6 @@ talent is the limit.
   Management (Grove)** — People + culture frameworks
 - **Getting to Yes (Fisher + Ury) + Never Split the Difference
   (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
 
 ### Cross-cutting engineering standards
 
@@ -494,12 +499,12 @@ talent is the limit.
 - **CWE-1059** — Insufficient technical documentation (process
   workflows MUST be documented)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Unstructured interview (free-form chat) replacing structured rubric
 - Loop missing one role-type (no peer collaborator, no manager, no skip-level)
 - Scorecard absent or unused (gut-feel hiring)
@@ -512,6 +517,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Onboarding time-to-productivity unmeasured
 
 **Refinement candidates**:
+
 - New role-rubric row when a new function is added (e.g., ML engineer, RevOps)
 - New cross-reference when a sister skill (org-design, performance-management) adds a hiring gate
 - New diversity-hiring template when bias pattern recurs

@@ -21,6 +21,7 @@ fixes — recognise the signature before tuning.
 ### Failure mode A: Runner OOM-killer preempt
 
 **Symptoms**:
+
 - Step cancels at a consistent point (often ~5 minutes)
 - Post-cleanup steps report `skipped` (not `success`)
 - No FAIL line in the test log — just `##[error]The operation was
@@ -37,6 +38,7 @@ the process tree.
 ### Failure mode B: Worker thrash from over-aggressive idle limit
 
 **Symptoms**:
+
 - Step hits its `timeout-minutes` cap (e.g., 25-min step → 26-min
   job)
 - Post-cleanup steps report `success`
@@ -45,7 +47,8 @@ the process tree.
 - The completion time is genuinely longer, not preempted
 
 **Root cause**: `--workerIdleMemoryLimit=<N>` (Jest) tears down
-+ restarts workers whose RSS exceeds N between test files. If N
+
+- restarts workers whose RSS exceeds N between test files. If N
 is below normal heap, every test file pays the worker-boot cost
 (~60-90s including module re-resolution).
 
@@ -108,6 +111,7 @@ pnpm test -- --maxWorkers=1 --logHeapUsage 2>&1 | grep -E "^PASS.*MB heap"
 ```
 
 The output shows per-file peak heap. Set the limit to:
+
 - The 75th percentile of normal peaks, PLUS
 - 50% headroom for transient spikes
 
@@ -189,7 +193,7 @@ RAM exhaustion.
 
 ## Verification block
 
-```
+```text
 CI test memory tuning (this turn):
   - Mode: A (OOM preempt) — diagnosed via post-cleanup "skipped"
     + ~5min cancel pattern
@@ -213,6 +217,7 @@ CI test memory tuning (this turn):
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - CI test job cancelled at consistent ~5-min mark with post-cleanup `skipped` (Mode A: runner OOM preempt — diagnostic recipe applies)
 - CI test job hits its `timeout-minutes` cap with post-cleanup `success` (Mode B: worker thrash — `--workerIdleMemoryLimit` too aggressive)
 - `--max-old-space-size × --maxWorkers > 0.75 × runner_total_RAM` (OS headroom budget violated)
@@ -222,6 +227,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Verification block missing the before/after heap × workers math after a tuning change
 
 **Refinement candidates**:
+
 - New runner row in the RAM reference table when GitHub Actions ships a new runner size (e.g., 32 GB linux-large, M4 mac)
 - New per-framework tuning section when a new test runner adopts worker recycling (e.g., Vitest worker memory limits, pytest-xdist process recycling)
 - Tightening of the OS-headroom percentage when 75% proves too tight on a recurring stack

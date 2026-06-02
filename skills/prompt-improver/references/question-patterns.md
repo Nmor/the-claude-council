@@ -79,6 +79,7 @@ Before formulating questions, verify:
 ### Field Guidelines
 
 **question:**
+
 - Must end with `?`
 - Should be conversational and clear
 - Include context from research if helpful
@@ -88,6 +89,7 @@ Before formulating questions, verify:
   - "What scope should this refactoring cover?"
 
 **header:**
+
 - Maximum 12 characters (strict limit)
 - Acts as visual label/tag in UI
 - Should be noun or noun phrase
@@ -98,15 +100,18 @@ Before formulating questions, verify:
   - "Approach" (8 chars)
 
 **multiSelect:**
+
 - `false`: User selects exactly one option (default for most cases)
 - `true`: User can select multiple options (when choices aren't mutually exclusive)
 - Always explicitly specify (don't rely on defaults)
 
 **options:**
+
 - Minimum 2, maximum 4 options
 - Each must have `label` and `description`
 
 **label:**
+
 - 1-5 words typically
 - Specific and scannable
 - Examples:
@@ -115,6 +120,7 @@ Before formulating questions, verify:
   - "OAuth 2.0 integration"
 
 **description:**
+
 - Explain what this option means
 - Include trade-offs or implications
 - Provide context for decision-making
@@ -129,6 +135,7 @@ Before formulating questions, verify:
 **When:** Unclear which file, function, or component to modify
 
 **Template 1: File Selection**
+
 ```json
 {
   "question": "Which file should be modified?",
@@ -152,6 +159,7 @@ Before formulating questions, verify:
 ```
 
 **Template 2: Function/Method Selection**
+
 ```json
 {
   "question": "Which function needs the changes?",
@@ -179,6 +187,7 @@ Before formulating questions, verify:
 **When:** Target is clear, but implementation approach is ambiguous
 
 **Template 1: Technical Approach**
+
 ```json
 {
   "question": "Which authentication approach should we implement?",
@@ -202,6 +211,7 @@ Before formulating questions, verify:
 ```
 
 **Template 2: Architectural Pattern**
+
 ```json
 {
   "question": "How should the validation logic be organized?",
@@ -229,6 +239,7 @@ Before formulating questions, verify:
 **When:** Unclear how much work should be done
 
 **Template 1: Feature Scope**
+
 ```json
 {
   "question": "What scope should this refactoring cover?",
@@ -252,6 +263,7 @@ Before formulating questions, verify:
 ```
 
 **Template 2: Test Coverage Scope**
+
 ```json
 {
   "question": "What level of test coverage should be added?",
@@ -279,6 +291,7 @@ Before formulating questions, verify:
 **When:** Multiple tasks or unclear which to tackle first
 
 **Template 1: Task Priority**
+
 ```json
 {
   "question": "Which aspect should be addressed first?",
@@ -302,6 +315,7 @@ Before formulating questions, verify:
 ```
 
 **Template 2: Feature Ordering**
+
 ```json
 {
   "question": "In what order should these features be implemented?",
@@ -329,6 +343,7 @@ Before formulating questions, verify:
 **When:** Implementation requires configuration choices
 
 **Template 1: Library/Tool Selection**
+
 ```json
 {
   "question": "Which validation library should be used?",
@@ -352,6 +367,7 @@ Before formulating questions, verify:
 ```
 
 **Template 2: Configuration Values**
+
 ```json
 {
   "question": "What timeout value should be configured?",
@@ -379,11 +395,13 @@ Before formulating questions, verify:
 ### 1-2 Questions: Simple Clarification
 
 **Use when:**
+
 - Single point of ambiguity
 - Binary or ternary choice
 - Target identification only
 
 **Example:**
+
 ```json
 [
   {
@@ -398,11 +416,13 @@ Before formulating questions, verify:
 ### 3-4 Questions: Moderate Complexity
 
 **Use when:**
+
 - Multiple independent decisions needed
 - Approach and scope both unclear
 - Configuration plus implementation questions
 
 **Example:**
+
 ```json
 [
   {
@@ -426,6 +446,7 @@ Before formulating questions, verify:
 ### 5-6 Questions: Complex Scenarios
 
 **Use when:**
+
 - Major feature with multiple architectural decisions
 - Multiple aspects needing clarification
 - Configuration, approach, scope, and priority all unclear
@@ -433,6 +454,7 @@ Before formulating questions, verify:
 **Important:** Only use 5-6 questions when truly necessary. Most scenarios should use 1-4 questions.
 
 **Example:**
+
 ```json
 [
   {
@@ -468,6 +490,7 @@ Before formulating questions, verify:
 ### Grounding Options in Research
 
 **Bad (Assumption-Based):**
+
 ```json
 {
   "label": "Use MongoDB",
@@ -476,6 +499,7 @@ Before formulating questions, verify:
 ```
 
 **Good (Research-Grounded):**
+
 ```json
 {
   "label": "Use MongoDB",
@@ -486,6 +510,7 @@ Before formulating questions, verify:
 ### Providing Actionable Context
 
 **Bad (Vague):**
+
 ```json
 {
   "label": "Refactor approach",
@@ -494,6 +519,7 @@ Before formulating questions, verify:
 ```
 
 **Good (Specific):**
+
 ```json
 {
   "label": "Extract to service layer",
@@ -504,6 +530,7 @@ Before formulating questions, verify:
 ### Including Trade-offs
 
 **Bad (One-Sided):**
+
 ```json
 {
   "label": "Microservices architecture",
@@ -512,6 +539,7 @@ Before formulating questions, verify:
 ```
 
 **Good (Balanced):**
+
 ```json
 {
   "label": "Microservices architecture",
@@ -523,7 +551,7 @@ Before formulating questions, verify:
 
 **Research findings inform options:**
 
-```
+```text
 Research Results:
 - Found 3 API clients: src/api/rest-client.ts, src/api/graphql-client.ts, src/api/websocket-client.ts
 - rest-client.ts has timeout config (line 23: timeout: 30000)
@@ -532,6 +560,7 @@ Research Results:
 ```
 
 **Generated question:**
+
 ```json
 {
   "question": "Which API client needs timeout configuration?",
@@ -559,6 +588,7 @@ Research Results:
 ### Pitfall 1: Generic Options
 
 **Bad:**
+
 ```json
 {
   "label": "Best practice approach",
@@ -569,6 +599,7 @@ Research Results:
 **Why bad:** Not actionable, no clear guidance
 
 **Fix:**
+
 ```json
 {
   "label": "Repository pattern with dependency injection",
@@ -579,6 +610,7 @@ Research Results:
 ### Pitfall 2: Too Many Options
 
 **Bad:**
+
 ```json
 {
   "question": "Which approach?",
@@ -600,6 +632,7 @@ Research Results:
 ### Pitfall 3: Leading Questions
 
 **Bad:**
+
 ```json
 {
   "question": "Should we use the superior JWT approach?",
@@ -610,6 +643,7 @@ Research Results:
 **Why bad:** Biased question influences answer
 
 **Fix:**
+
 ```json
 {
   "question": "Which authentication mechanism should be implemented?",
@@ -629,6 +663,7 @@ Research Results:
 ### Pitfall 4: Compound Questions
 
 **Bad:**
+
 ```json
 {
   "question": "Which library and what configuration should be used?",
@@ -644,6 +679,7 @@ Research Results:
 **Why bad:** Mixing multiple decisions, exponential option growth
 
 **Fix:** Separate into two questions
+
 ```json
 [
   {
@@ -660,6 +696,7 @@ Research Results:
 ### Pitfall 5: Asking Without Research
 
 **Bad:**
+
 ```json
 {
   "question": "How should we implement authentication?",
@@ -673,7 +710,8 @@ Research Results:
 **Why bad:** Not grounded in codebase reality, generic options
 
 **Fix:** Research first
-```
+
+```text
 1. Explore codebase for existing auth patterns
 2. Check package.json for auth libraries
 3. Review similar implementations in repo

@@ -145,6 +145,7 @@ npx ecc-agentshield scan --opus --stream
 ```
 
 Runs the three-agent pipeline:
+
 1. **Attacker (Red Team)** — find attack vectors
 2. **Defender (Blue Team)** — propose hardening
 3. **Auditor (Final Verdict)** — synthesise both perspectives
@@ -156,6 +157,7 @@ npx ecc-agentshield init
 ```
 
 Scaffolds:
+
 - `settings.json` with scoped permissions + deny list
 - `CLAUDE.md` with security best practices
 - `mcp.json` placeholder
@@ -337,7 +339,7 @@ so adoption itself stays safe.
 - **NIST SP 800-115** — Technical guide to information security
   testing + assessment
 - **NIST SP 800-218 SSDF §PW.8 + §RV.1** — Test executable code
-  + identify + confirm vulnerabilities
+  - identify + confirm vulnerabilities
 - **CWE Top 25 (2026)** — Most dangerous software weaknesses
   reference
 - **ISO/IEC 27001:2022 Annex A.8.8 + A.8.29** — Management of
@@ -369,7 +371,6 @@ so adoption itself stays safe.
 - `~/.claude/rules-library/common/audit-logging.md` — scan results
   audit-logged
 
-
 ## Anti-Patterns
 
 | Pattern | Why bad | Correct alternative |
@@ -383,12 +384,12 @@ so adoption itself stays safe.
 | `gitleaks` allowlist with regex (`.*test.*`) | Misses real secrets in test files; false negatives | Per-finding suppression with hash + reason |
 | Scan results not in CI gating | Scans become advisory; nothing blocked | Gate per `security-controls-org-wide.md` 5-layer model |
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New `mcp.json` server added without an AgentShield scan in the
   same commit (rule "When to use" weakening)
 - Grade drops from A → B+ on a previously-clean config (something
@@ -407,6 +408,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
   (pattern 1 weakening)
 
 **Refinement candidates**:
+
 - New row in the "What it scans" table when AgentShield ships a
   new check class (e.g., subagent permission scan, plugin scan)
 - New "tool alternative" entry under "When NOT to use" when a

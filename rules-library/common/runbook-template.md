@@ -91,6 +91,7 @@ equivalent). The runbook entry explains what the code means +
 how to recover when the user-facing path is failing.
 
 ### 3. Every new failure mode introduces a runbook entry in
+
 the SAME PR
 
 When a PR adds an alert, a new failure mode, or a new
@@ -101,14 +102,16 @@ PR-blocker.
 ### 4. Diagnose steps name the SPECIFIC signal
 
 Wrong:
-```
+
+```text
 - Check the dashboard
 - Look at the logs
 - See if anything looks weird
 ```
 
 Right:
-```
+
+```text
 - Open https://grafana.example.com/d/auth-overview
 - Check `auth_login_duration_seconds` (p99 panel, top-right)
 - Run `aws logs tail /aws/lambda/auth-login --since 10m | jq 'select(.error_code)'`
@@ -124,7 +127,7 @@ around."
 
 Every fix step ends with the signal that confirms it worked:
 
-```
+```text
 1. Run `kubectl scale deployment/auth-service --replicas=10 -n auth`
 2. Wait for pods to be Ready: `kubectl rollout status deployment/auth-service -n auth`
 3. Verify: `auth_login_duration_seconds` p99 drops below 500ms
@@ -196,6 +199,7 @@ minutes) is repaid the first time on-call uses it.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New PagerDuty / Opsgenie alert created without a runbook URL in the payload (rule 1 violation)
 - `error_code` (per `error-codes.md`) added without a corresponding runbook entry (rule 2 weakening)
 - "Diagnose" steps say "check the dashboard" / "look at the logs" without naming the specific metric / query (rule 4 violation)
@@ -206,6 +210,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - On-call escalates an incident the runbook should have resolved without escalation (entry quality gap)
 
 **Refinement candidates**:
+
 - New row in the canonical incident-classes table when a recurring class (e.g., DNS-resolution flap, cert-rotation race, vector DB index-rebuild) emerges
 - Tightening of the "specific signal" requirement when on-call's queries reveal common ambiguity
 - New cross-reference when a sister rule (observability, error-codes, deploy-failures-become-checks) adds a metric / code the runbook must consume

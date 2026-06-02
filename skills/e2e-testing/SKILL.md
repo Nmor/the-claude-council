@@ -52,7 +52,7 @@ These five patterns apply at task-entry — choosing the right approach is more 
 
 Not every "test this page" task needs a browser. Route the work:
 
-```
+```text
 User task → Is the target STATIC HTML?
     ├─ YES → Read the HTML file directly to identify selectors
     │         ├─ Success → Write test using those selectors
@@ -70,7 +70,7 @@ Static-first saves 95% of test boot time + sidesteps the entire browser-flake su
 
 Helper scripts (`with_server.py`, `wait-for-port.sh`, `seed-test-data.py`, etc.) live in `tests/scripts/` or `tools/`. The rule:
 
-```
+```text
 ✅ DO: Run the script with --help; treat it as a CLI black box.
 ❌ DON'T: Read the script source into context unless --help genuinely doesn't cover what you need.
 ```
@@ -146,7 +146,7 @@ E2E is the slowest, most-brittle layer of the test pyramid. Use it for true cros
 
 ## Test File Organization
 
-```
+```text
 tests/
 ├── e2e/
 │   ├── auth/
@@ -298,6 +298,7 @@ npx playwright test tests/search.spec.ts --retries=3
 ### Common Causes & Fixes
 
 **Race conditions:**
+
 ```typescript
 // Bad: assumes element is ready
 await page.click('[data-testid="button"]')
@@ -307,6 +308,7 @@ await page.locator('[data-testid="button"]').click()
 ```
 
 **Network timing:**
+
 ```typescript
 // Bad: arbitrary timeout
 await page.waitForTimeout(5000)
@@ -316,6 +318,7 @@ await page.waitForResponse(resp => resp.url().includes('/api/data'))
 ```
 
 **Animation timing:**
+
 ```typescript
 // Bad: click during animation
 await page.click('[data-testid="menu-item"]')
@@ -539,7 +542,6 @@ This skill captures the decision-time patterns (the static-first decision tree, 
 - `~/.claude/rules/common/done-criteria.md` — E2E pass required
   before "done" claim
 
-
 ## Anti-Patterns
 
 | Pattern | Why bad | Correct alternative |
@@ -553,12 +555,12 @@ This skill captures the decision-time patterns (the static-first decision tree, 
 | Suite passes locally; fails in CI | Timezone / locale / viewport drift | CI mirrors local exactly: Docker image, browser version pinned |
 | Re-run failed tests until they pass | Hides real flakes; trains team to ignore failures | Quarantine flaky tests; investigate root cause; fix or delete |
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Critical user journey added without E2E coverage (sister `testing.md` rule)
 - Locator uses CSS classes / xpath / `:nth-child` instead of `data-testid` / role / text (brittle locator pattern)
 - `page.waitForTimeout(N)` used instead of `waitForResponse` / `waitForSelector` / `toBeVisible` (flaky timing)
@@ -569,6 +571,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - E2E pyramid inverted (more E2E than unit / integration tests — slow + brittle pyramid)
 
 **Refinement candidates**:
+
 - New journey class row when a recurring critical flow emerges (e.g., new auth modality, new payment provider)
 - Tightening of the locator standard when a new framework's testability API matures
 - New cross-reference when a sister skill (frontend-patterns, wcag-accessibility) adds an E2E-relevant gate

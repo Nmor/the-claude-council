@@ -59,7 +59,7 @@ the breaker is the mechanism that contains it.**
 
 ## State machine
 
-```
+```text
    ┌────────────┐  threshold of failures exceeded   ┌────────────┐
    │   CLOSED   │ ────────────────────────────────► │    OPEN    │
    │  (healthy) │                                   │  (failing) │
@@ -164,7 +164,7 @@ Breakers and retries interact:
 Bulkhead pattern — separate breakers per tenant when one
 tenant's heavy traffic can break the breaker for everyone:
 
-```
+```text
 breaker_per_tenant[tenant_id].fire(() => stripeCharge(req))
 ```
 
@@ -312,6 +312,7 @@ Insecure Design — system without resilience patterns).
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - External call wrapped in breaker but without timeout (rule 4 weakening — breaker can't measure failure)
 - Per-call-site breaker found instead of per-dependency (rule 3 violation — fragmented failure signal)
 - Breaker OPEN triggered silent success instead of fallback / error envelope (anti-pattern 4 violation)
@@ -322,6 +323,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Hand-rolled breaker found instead of canonical library (reuse-first weakening)
 
 **Refinement candidates**:
+
 - New per-language library row when a canonical option emerges
 - Tightening of default thresholds when chronic flapping or false-positive opens observed
 - New fallback-path pattern entry when a recurring degradation shape needs naming
@@ -370,6 +372,7 @@ Every product surface is categorised:
 | **P3 — Best-effort** | Nice-to-have | Fire-and-forget; never block on it |
 
 Example (e-commerce):
+
 - P0: Browse products, place an order, see order history
 - P1: Personalised recommendations, search ranking
 - P2: Real-time inventory levels, related-products carousel
@@ -541,7 +544,7 @@ Per `task-intake-due-diligence.md` Q14 (testing strategy). Tools:
 
 ### Pattern 1: Cache-aside with stale fallback
 
-```
+```text
 Read → Cache hit?  YES → Return cached
             NO    → Try fresh
                     Fresh OK?  YES → Update cache, return fresh
@@ -553,7 +556,7 @@ Use when: data changes slowly; user tolerates 1-hour-stale.
 
 ### Pattern 2: Outbox + worker
 
-```
+```text
 Request → Validate → Write to outbox + business state (same TX)
 Outbox worker → Pick up → Call external → Retry on failure
                                        → Move to DLQ after N attempts
@@ -564,7 +567,7 @@ confirmation can be "in progress."
 
 ### Pattern 3: Async pre-warm + fast read
 
-```
+```text
 Background job: pre-compute recommendations every hour, store in
                 cache.
 Request: read from cache. Fresh fetch is impossible without the
@@ -576,7 +579,7 @@ fallback while cache warms.
 
 ### Pattern 4: Hedged requests
 
-```
+```text
 Request → Call primary → If no response in 100ms → Call secondary in parallel
                     → First response wins
 ```
@@ -586,7 +589,7 @@ Use when: tail latency matters; redundant downstreams exist
 
 ### Pattern 5: Bulkhead isolation
 
-```
+```text
 Pool A (critical): 50 connections, dedicated to checkout
 Pool B (other):    50 connections, shared by everything else
 ```
@@ -676,6 +679,7 @@ product is slow today" and "the product is down today."
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Feature shipped without a criticality tier assigned (rule 1 weakening)
 - Degraded state shown without explicit UX surface (rule 4 weakening — silent degradation pattern)
 - Catch-all 500 wrapper found around handlers (anti-pattern 1 violation)
@@ -688,6 +692,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Periodic chaos test cycle skipped > 6 months (rule 10 weakening)
 
 **Refinement candidates**:
+
 - New criticality tier when a recurring class of feature doesn't fit P0/P1/P2/P3
 - New pattern entry when a canonical fallback shape emerges (e.g., hedged requests, request collapsing)
 - New row in the anti-patterns when a recurring degradation failure mode surfaces
@@ -1053,6 +1058,7 @@ first in, first out.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Flag created without owner / expiry / decision criteria (rule 1 weakening)
 - Flag at 100% rollout for > 14 days without cleanup PR (rule 10 weakening — flag spaghetti accumulating)
 - Flag evaluation buried in the data layer instead of at boundary (rule 3 violation)
@@ -1064,6 +1070,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Kill switch flipped for the first time during an incident (rule 8 weakening — not pre-tested)
 
 **Refinement candidates**:
+
 - New flag-category row when a recurring use case doesn't fit the current 5 categories
 - Tightening of the cleanup-by-D+14 SLA when stale flags accumulate
 - New cross-reference when a sister rule (graceful-degradation, audit-logging) defines the surface a flag depends on
@@ -1118,7 +1125,7 @@ consequence (e.g., "double-click submits twice").
 Every non-trivial POST / non-idempotent mutation accepts an
 `Idempotency-Key` request header (per Stripe's pattern):
 
-```
+```text
 POST /api/payments/intents HTTP/1.1
 Idempotency-Key: <client-generated UUID v4 or v7>
 Content-Type: application/json
@@ -1214,7 +1221,7 @@ against retry).
 
 State transitions that are idempotent:
 
-```
+```text
 draft → published   (idempotent: publishing a published doc = no-op)
 active → archived   (idempotent: archiving an archive = no-op)
 ```
@@ -1222,7 +1229,7 @@ active → archived   (idempotent: archiving an archive = no-op)
 State transitions that are NOT idempotent (need explicit
 guards):
 
-```
+```text
 balance + amount    (NOT idempotent — double-credits if retried)
 counter++           (NOT idempotent)
 publish-event       (NOT idempotent — fires the event twice)
@@ -1342,6 +1349,7 @@ exposure (PCI / financial-reporting).
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Webhook handler processed the same event twice (rule 3 weakening — event-id dedupe missing or broken)
 - Double-charge / double-email / double-insert observed in production (idempotency cache miss or TTL too short)
 - Retry storm caused by missing idempotency key (rule 2 not adopted on a non-trivial POST)
@@ -1351,6 +1359,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New external SDK adopted without idempotency primitive verified (rule 6 weakening)
 
 **Refinement candidates**:
+
 - New TTL row in the defaults table when a new mutation class needs a different window
 - New entry in the conditional-write pattern table when a new DB / queue technology surfaces
 - Tightening of the "test idempotency explicitly" rule when a new state-machine gap is observed
@@ -1431,7 +1440,7 @@ TTL pattern, or Lua script for atomic check-and-decrement.
 When the request is throttled, the response is `429 Too Many
 Requests` with:
 
-```
+```text
 HTTP/1.1 429 Too Many Requests
 Retry-After: 60                        # seconds OR HTTP-date
 RateLimit-Limit: 60                    # the cap
@@ -1491,7 +1500,7 @@ For operations with side-effects (sending email, charging a
 card, calling an expensive API), rate-limit on the OPERATION
 not just the HTTP request:
 
-```
+```text
 Endpoint: POST /api/send-email
 Rate limit:
   - 60 req/min per user (HTTP rate)
@@ -1542,6 +1551,7 @@ crypto). If the limit fires after `bcrypt.compare`, attackers
 exhaust CPU before the limit kicks in.
 
 ### Mistake 3: Rate-limit by API key only when the key is
+
 user-supplied
 
 If clients can rotate keys cheaply, per-key limits don't
@@ -1573,7 +1583,7 @@ implement different retry policies for 4xx vs 5xx.
 - **RFC 6585** — HTTP 429 status code
 - **RFC 7231 §6.5.3** — 4xx semantics
 - **draft-ietf-httpapi-ratelimit-headers** — modern Retry-After
-  + RateLimit-* header conventions
+  - RateLimit-* header conventions
 - **OWASP ASVS V11.1** — Rate Limiting
 - **OWASP API Security Top 10 — API4:2023** — Unrestricted
   Resource Consumption
@@ -1582,13 +1592,15 @@ implement different retry policies for 4xx vs 5xx.
 
 Without rate limits, every endpoint is a free DoS amplifier.
 The attack costs the attacker $0; defending costs you scaling
-+ incident response + customer trust. Without rate limits on
+
+- incident response + customer trust. Without rate limits on
 auth endpoints, credential stuffing succeeds. Without rate
 limits on email/SMS triggers, your service becomes a
 spam-amplification vector for attackers.
 
 Rate-limiting is mechanical: one Redis bucket + one middleware
-+ one response shape. The cost is small; the protection is
+
+- one response shape. The cost is small; the protection is
 large.
 
 ## Learning hooks
@@ -1596,6 +1608,7 @@ large.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Endpoint shipped without rate limiting (rule 1 weakening — every public endpoint needs limits)
 - Auth endpoint missing per-IP + per-account limits (rule 6 weakening — credential-stuffing exposure)
 - Rate limit applied only on success path (mistake 1 pattern)
@@ -1606,6 +1619,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Rate-limit headers not emitted per draft-ietf-httpapi-ratelimit-headers (rule 4 weakening)
 
 **Refinement candidates**:
+
 - New row in the per-endpoint defaults table when a new endpoint class needs its own limit
 - Tightening of the auth-endpoint defaults when credential-stuffing patterns evolve
 - New algorithm row when a new throttling pattern (e.g., hierarchical leaky-bucket) gains adoption
@@ -1676,7 +1690,7 @@ Pre-deploy checks target the **deploy-fail** class.
 3. Fail at a SOFT limit slightly below the documented cap to leave
    headroom for platform-managed reserved keys / template expansion.
 4. Print the offending resource name + computed size + documented cap
-   + a one-line "Fix:" hint pointing to the conventional remediation.
+   - a one-line "Fix:" hint pointing to the conventional remediation.
 5. Add the check to the project's local-pre-flight script. CI runs
    the same script.
 
@@ -1716,6 +1730,7 @@ the opposite and codify it.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Deploy failure on a documented platform limit + no pre-deploy check added in the SAME commit as the fix (core rule violation)
 - Same-shape failure recurs across deploys (codification never happened)
 - Pre-deploy check exists locally but not in CI (local-CI parity gap)
@@ -1725,6 +1740,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New platform / vendor adopted without canvassing its documented limits before first deploy
 
 **Refinement candidates**:
+
 - New row in the platform-limits table when a new vendor or service class adopted (e.g., new edge runtime, new K8s admission limit)
 - Tightening of the soft limit when the gap to the documented cap shrinks (e.g., from 90% headroom to 50%)
 - New cross-reference when a sister rule (done-criteria, no-overclaim, runbook-template) provides the verification surface

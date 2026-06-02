@@ -59,6 +59,7 @@ producers verify against them.
    is renegotiated
 
 This pattern is ideal when:
+
 - Producer can identify all its consumers (internal teams,
   paid customers with API keys)
 - Consumers can run a contract test step in their CI
@@ -67,6 +68,7 @@ This pattern is ideal when:
 ### Schema-Based Contracts — OpenAPI / GraphQL / Proto
 
 The schema is the contract. Tests verify:
+
 - Producer responses MATCH the published schema (no drift)
 - Consumer code COMPILES against the schema (generated clients)
 - Schema changes are SEMVER-tracked (per `api-versioning.md`)
@@ -76,6 +78,7 @@ Tools: **Dredd**, **Schemathesis**, **Spectral** for OpenAPI;
 Proto.
 
 Ideal when:
+
 - API is public + has unknown consumers
 - The schema is the canonical definition
 - Generated clients flow from the schema
@@ -179,6 +182,7 @@ update automatically.
 ### 9. Contracts are not load tests
 
 A passing contract test does NOT verify:
+
 - Performance under load
 - Concurrent behaviour
 - Long-running connection handling
@@ -291,7 +295,8 @@ graphql-inspector diff \
 ```
 
 Output:
-```
+
+```text
 ⚠️  Breaking changes:
   - Field "username" was removed from type "User"
   - Argument "limit" was added to field "User.orders" (required)
@@ -382,6 +387,7 @@ Without contract tests, the typical failure mode:
 7. On-call diagnoses; rollback or hotfix
 
 Contract tests catch this at step 2:
+
 - Backend's PR runs the verification step
 - The frontend's contract expects the OLD field name
 - The PR fails
@@ -395,6 +401,7 @@ broke us" production incidents.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - API change shipped but consumer contract test didn't fail (false-negative — contract was over-broad)
 - Producer deploy blocked but the change was actually backwards-compatible (false-positive — contract was over-narrow)
 - CDC broker (Pact / PactFlow / Apollo Studio) outage broke deploys (broker-dependency weakening)
@@ -405,6 +412,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Contract test wrapping the whole stack (anti-pattern 1 — really an e2e test)
 
 **Refinement candidates**:
+
 - New tooling row when a contract-test framework (consumer-driven OR schema-based) becomes the team's choice
 - Tightening of the "test the error cases too" requirement when production error paths consistently lack contracts
 - New cross-reference when a sister rule (api-versioning, schema-evolution) defines the surface that contracts test

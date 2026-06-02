@@ -13,7 +13,6 @@ paths:
 
 # sql-patterns
 
-
 <!-- ============================================================
      Section: sql/coding-style.md
      ============================================================ -->
@@ -215,6 +214,7 @@ explain analyze select ... from ...;
 ```
 
 Watch for:
+
 - `Seq Scan` on large tables (need index)
 - `Nested Loop` with high row counts (might need hash join)
 - High `loops=` on inner side (N+1 in disguise)
@@ -734,6 +734,7 @@ squawk migrations/*.sql            # Postgres migration safety analyser
 ```
 
 `squawk` warns on:
+
 - `ALTER TABLE ... ADD COLUMN ... NOT NULL DEFAULT` without volatile-fn
   trick (rewrites table)
 - `CREATE INDEX` without `CONCURRENTLY`
@@ -742,7 +743,7 @@ squawk migrations/*.sql            # Postgres migration safety analyser
 
 ## Verification block
 
-```
+```text
 SQL sweep (this turn):
   - sqlfluff lint: 0 issues
   - squawk migrations/: 0 warnings
@@ -999,6 +1000,7 @@ create table events_2026_02 partition of events
 ```
 
 Use when:
+>
 - > 100M rows in a single table
 - Time-based access patterns (drop old partitions cheaply)
 - Per-tenant isolation at the storage layer

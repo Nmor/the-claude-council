@@ -203,7 +203,7 @@ A.8.8 requires "timely identification, evaluation, and remediation of vulnerabil
 | Medium (CVSS 4.0-6.9) | Same | Patch within 30 days |
 | Low (CVSS 0.1-3.9) | Same | Patch within 90 days |
 | Internal pentest finding | Annual or quarterly pentest | Per severity above |
-| Customer-reported (responsible disclosure) | security@example.com | Acknowledge 1 day; per severity above |
+| Customer-reported (responsible disclosure) | <security@example.com> | Acknowledge 1 day; per severity above |
 
 Evidence: Snyk/Dependabot dashboards, remediation tickets with timestamps, exceptions register for accepted risks.
 
@@ -400,6 +400,7 @@ When the audit asks "how do you control privileged access?", the answer is the j
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New control class becomes applicable (e.g., AI controls in Annex A 2026 update) without uplift
 - SoA (Statement of Applicability) not updated when control scope changes
 - Risk register entry missing for an identified threat
@@ -412,6 +413,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Internal audit + management review not scheduled annually
 
 **Refinement candidates**:
+
 - New control mapping row when ISO updates Annex A (e.g., 2026 revision)
 - New cross-reference when a sister skill (soc2-readiness, gdpr-ccpa-compliance, owasp-asvs, pci-dss-patterns) adds a control gate
 - New evidence-template row when a recurring auditor request emerges

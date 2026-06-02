@@ -38,6 +38,7 @@ with learning scientists on assessment validity.
 ## Standards Cited
 
 **Interoperability (1EdTech / IMS Global)**
+
 - **LTI 1.3 + LTI Advantage** (Learning Tools Interoperability —
   1EdTech Final Spec) — OAuth 2.0 + OIDC + JWT-based launch,
   replaces LTI 1.1's shared-secret model; Names + Role Provisioning
@@ -60,6 +61,7 @@ with learning scientists on assessment validity.
   practical floor.
 
 **Experience tracking**
+
 - **xAPI 2.0 / IEEE 9274.1.1-2023** — Statement-based "Actor →
   Verb → Object" event model with LRS (Learning Record Store)
   backing; supersedes SCORM for tracking learning outside the
@@ -76,6 +78,7 @@ with learning scientists on assessment validity.
   external content.
 
 **Credentialing**
+
 - **Open Badges 3.0 / W3C Verifiable Credentials** (W3C
   Recommendation, 2023+ alignment) — Cryptographically signed
   credentials with JSON-LD; replaces Open Badges 2.0's
@@ -84,9 +87,10 @@ with learning scientists on assessment validity.
   (Comprehensive Learner Record).
 - **CLR Standard 2.0** (1EdTech) — Verifiable record of
   competencies + achievements; envelope for Open Badges + skill
-  + assertion data.
+  - assertion data.
 
 **Accessibility (learner-specific)**
+
 - **WCAG 2.2 AA + AAA** (W3C, Oct 2023) — Floor for any
   learning surface. AAA recommended for assessment paths (the
   educational record depends on the learner being able to
@@ -111,6 +115,7 @@ with learning scientists on assessment validity.
   28, 2025) — Mandates WCAG 2.1 AA for ed-tech sold to EU.
 
 **Pedagogy + Universal Design**
+
 - **UDL 3.0** (Universal Design for Learning — CAST) — Multiple
   means of engagement / representation / action + expression;
   the framework that turns "accessibility add-on" into
@@ -122,6 +127,7 @@ with learning scientists on assessment validity.
   cognitive-process dimension that learning objectives align to.
 
 **Proctoring / Integrity**
+
 - **NCME Standards for Educational + Psychological Testing** (AERA
   / APA / NCME, 2014 + supplements) — Validity + reliability +
   fairness floor.
@@ -131,6 +137,7 @@ with learning scientists on assessment validity.
 ## When to Fire
 
 **File globs**:
+
 - `**/lti/**`, `**/*lti*`, `**/launch.{ts,py,rb,go}`, `**/jwks*`
 - `**/scorm/**`, `**/imsmanifest.xml`, `**/cmi5*.json`
 - `**/xapi/**`, `**/*xapi*`, `**/lrs/**`, `**/statements/**`
@@ -149,6 +156,7 @@ with learning scientists on assessment validity.
 - Per-platform: `**/lti-tool-provider*`, `**/lti-platform*`
 
 **Keyword triggers** (in diff, ticket, or prompt):
+
 - "LTI", "LTI 1.3", "LTI Advantage", "Deep Linking",
   "Names and Roles", "Assignment and Grade Services",
   "NRPS", "AGS"
@@ -175,6 +183,7 @@ with learning scientists on assessment validity.
   analytics", "at-risk model"
 
 **Scope triggers**:
+
 - New integration with Canvas / Schoology / Moodle / Blackboard
   / D2L Brightspace / Google Classroom / Microsoft Teams for
   Education / Echo360 / Panopto
@@ -271,6 +280,7 @@ LTI Advantage builds three services on top of 1.3:
   selected items.
 
 For each service:
+
 1. Tool requests an access token from the platform's token
    endpoint using `client_credentials` + a signed
    `client_assertion` JWT (assertion JWT signed by the tool's
@@ -319,6 +329,7 @@ metadata.
 ```
 
 **Runtime API**:
+
 - SCORM 1.2: `LMSInitialize`, `LMSGetValue("cmi.core.lesson_status")`,
   `LMSSetValue`, `LMSCommit`, `LMSFinish`.
 - SCORM 2004: `Initialize`, `GetValue("cmi.completion_status")`,
@@ -326,6 +337,7 @@ metadata.
   (`cmi.exit`, `cmi.suspend_data`, `cmi.location`).
 
 Common pitfalls:
+
 - `suspend_data` ≤ 64 KB (SCORM 2004); content authors routinely
   exceed this on save → silent data loss. Compress + bound at
   the authoring tool level.
@@ -386,6 +398,7 @@ flow to a Learning Record Store (LRS) over HTTPS POST
 ```
 
 **xAPI 2.0 / IEEE 9274.1.1-2023 key changes from 1.0.3**:
+
 - `version` field MUST appear in statements.
 - IRI-based identifiers normalized (strict comparison).
 - Signed statements use JWS over the statement JSON.
@@ -412,6 +425,7 @@ listing AUs (Assignable Units); the LMS launches each AU with
 to the LRS.
 
 Minimum required statements per AU lifecycle:
+
 1. `launched` — when the LMS launches the AU.
 2. `initialized` — when the AU finishes loading.
 3. `passed` / `failed` — pass/fail per the AU's mastery score.
@@ -448,7 +462,8 @@ race / ethnicity / disability / English-learner status. Default
 visibility is OFF; granted only via explicit district consent.
 
 Reuse-first: every roster integration uses the OneRoster spec
-+ a battle-tested library (`@studentprivacy/oneroster-client`
+
+- a battle-tested library (`@studentprivacy/oneroster-client`
 for Node, `OneRosterPy` for Python) rather than hand-rolled
 parsing.
 
@@ -460,6 +475,7 @@ GradeEvent, MessageEvent, etc.) with strict schemas. Vendors
 emit Caliper events via a Sensor SDK to an Event Store.
 
 When to choose Caliper over xAPI:
+
 - The data consumers are exclusively LMSs / LMS analytics → Caliper
   (interop with Canvas Data, Schoology Learning Analytics).
 - The data consumers include workplace learning, simulations,
@@ -471,6 +487,7 @@ When to choose Caliper over xAPI:
 
 QTI 3.0 (2022 release) is the modern format for portable
 assessment content. An item is XML defining:
+
 - `<itemBody>` — the prompt (rich HTML + MathML + media).
 - `<responseDeclaration>` — the expected response type
   (choice / textEntry / inlineChoice / order / match / hotspot /
@@ -543,6 +560,7 @@ to employers, transfer institutions, and credential aggregators
 ### Pattern 10: AccessForAll + UDL — accommodations as a first-class capability
 
 UDL (CAST) frames accessibility as three planes:
+
 1. **Multiple means of engagement** — recruit + sustain interest;
    self-regulation; choice; relevance.
 2. **Multiple means of representation** — perception; language +
@@ -561,6 +579,7 @@ slow`, `signing: ASL`, `input: switch-control`.
 
 For assessment specifically, ALL accommodations from the IEP /
 504 Plan MUST be honored:
+
 - Extended time (1.5×, 2×, unlimited)
 - Read-aloud (screen reader OR human reader)
 - Scribe (typing assistance)
@@ -570,6 +589,7 @@ For assessment specifically, ALL accommodations from the IEP /
 - Magnification, color overlay, large print
 
 Hard rules:
+
 - Accommodation flags are stored ON the learner's profile, NOT
   in the assessment URL.
 - Accommodation determination is the school's responsibility,
@@ -600,9 +620,10 @@ Response Theory** (Rasch / 2PL / 3PL):
   item count is reached.
 
 CAT (Computerized Adaptive Testing) requires:
+
 - A calibrated item bank (typically 5-10× the test length;
   items calibrated via field-testing with classical statistics
-  + IRT).
+  - IRT).
 - Content balancing (the algorithm prefers high-information
   items, but the test still needs to cover the blueprint).
 - Exposure control (Sympson-Hetter; randomesque) so popular
@@ -617,6 +638,7 @@ assessment, IRT is the floor.
 ### Pattern 12: Proctoring — minimize, never weaponize
 
 Remote proctoring routinely produces these harms:
+
 - **Bias against non-white learners** (face-detection models
   perform worse on darker skin tones; flagged for "looking
   away" disproportionately).
@@ -632,6 +654,7 @@ Remote proctoring routinely produces these harms:
   Biometric Information Privacy Act lawful basis).
 
 Hard rules:
+
 - Default to NO proctoring. Pivot to project-based assessment,
   open-book exams, oral defense, formative assessment, where
   feasible.
@@ -675,6 +698,7 @@ learners are deployed widely. Hard rules:
 ## Anti-Patterns
 
 ### Anti-Pattern 1: Shipping LTI 1.1 in 2026
+
 The OAuth 1.0 HMAC-SHA1 model is end-of-life; tools that
 require it will fail platform certification + lose customers as
 LMSs deprecate 1.1 support (Canvas + Brightspace already
@@ -682,6 +706,7 @@ discourage; Moodle 4.x prefers 1.3+; Blackboard Ultra is
 1.3-only). New tools MUST be 1.3+ from day one.
 
 ### Anti-Pattern 2: SCORM scoring drift across LMSs
+
 The same SCORM 1.2 package scoring differently in different
 LMSs is the most common bug. Causes: `cmi.core.lesson_status`
 ambiguity between "completed" and "passed"; LMSs treating
@@ -691,6 +716,7 @@ success status in 2004; test against the Rustici Cloud SCORM
 Engine for canonical behavior.
 
 ### Anti-Pattern 3: xAPI statements pointing at user-typed
+
 identifiers
 `actor.mbox = mailto:user@example.com` works but leaks PII
 across the wire. Use `actor.account` with a stable opaque
@@ -699,6 +725,7 @@ single-LMS deployments where the LRS is inside the FERPA
 boundary.
 
 ### Anti-Pattern 4: Roster sync via direct DB access
+
 SIS vendors sometimes offer "direct DB credentials" as a
 faster path than OneRoster. NEVER take this path: it produces
 zero schema stability, zero authorization controls, zero audit
@@ -707,6 +734,7 @@ including fields no one consented to share." Use OneRoster
 1.2 REST OR Clever/ClassLink-mediated provisioning.
 
 ### Anti-Pattern 5: AI tutor / AI grader without dataset
+
 provenance
 Building a tutor or grader on a foundation model with no
 clarity on what training data the model saw fails on two
@@ -719,6 +747,7 @@ let the AI grader's score be the SOLE basis of a grade — always
 require human review per `ai-ethics` veto.
 
 ### Anti-Pattern 6: Generic "early warning" dashboard with no
+
 intervention pathway
 Dashboards that flag learners as "at risk" without naming WHO
 intervenes, WHAT the intervention is, and HOW the learner can
@@ -727,6 +756,7 @@ EWS implementation MUST have a closed intervention loop +
 audit log of actions taken per flag.
 
 ### Anti-Pattern 7: Adaptive assessment with no validity evidence
+
 "Our algorithm picks easier questions when you get one wrong"
 is not adaptive assessment; it's a guessing-friendly UX.
 Validated CAT requires a calibrated item bank, IRT modeling,
@@ -736,6 +766,7 @@ contribute to academic records, and MUST be labeled "for
 practice only."
 
 ### Anti-Pattern 8: Proctoring without accommodation support
+
 Proctoring vendors that don't expose accommodation flags
 (extended time, frequent breaks, separate setting, scribe,
 read-aloud) at the session level are not deployable in
@@ -743,6 +774,7 @@ American K-12 or higher-ed. The IEP / 504 / OCR audit trail
 WILL find them.
 
 ### Anti-Pattern 9: Caliper + xAPI emitted from the same handler
+
 without bridge
 Running two parallel event pipelines, one for each
 specification, produces drift: event counts differ between
@@ -753,6 +785,7 @@ source-of-truth event with a contract test that ensures
 field-level parity.
 
 ### Anti-Pattern 10: Treating MOOCs as exempt from accessibility
+
 "It's a free course on the open web, so accessibility is
 nice-to-have." DOJ Title II Final Rule (April 2024) explicitly
 applies to public-college MOOCs; ADA Title III applies to
@@ -762,6 +795,7 @@ extends to AT-rendered video transcripts, captions, audio
 description, MathML for STEM content, and PDF tagging.
 
 ### Anti-Pattern 11: Hardcoded grade scales + locale assumptions
+
 "A is 90+" works in the US, not in Germany (1.0-5.0 inverted),
 not in the UK (degree classifications), not in IB (1-7), not
 in China (100-point with passing thresholds varying by school
@@ -770,6 +804,7 @@ type). Grade representation MUST be a typed
 freeform string assumed to be "A-F."
 
 ### Anti-Pattern 12: COPPA non-compliance via "school as agent"
+
 without DPA
 A vendor relying on the school-as-agent VPC exception (per
 `ferpa-coppa-compliance` Pattern 4) WITHOUT a signed DPA that
@@ -849,7 +884,7 @@ When this skill activates, verify:
 - `~/.claude/skills/ferpa-coppa-compliance/SKILL.md` — student-
   privacy regulation; always paired with this skill for K-12
 - `~/.claude/skills/wcag-accessibility/SKILL.md` — WCAG 2.2 AA
-  + AAA implementation
+  - AAA implementation
 - `~/.claude/skills/gdpr-ccpa-compliance/SKILL.md` — when EU /
   CA minors are learners
 - `~/.claude/skills/interaction-design/SKILL.md` — learning
@@ -866,7 +901,7 @@ When this skill activates, verify:
   signature verification, JWT validation, OAuth client-credential
   rotation
 - `~/.claude/skills/observability-patterns/SKILL.md` — Caliper
-  + xAPI event pipelines
+  - xAPI event pipelines
 - `~/.claude/skills/api-design/SKILL.md` — designing additional
   REST endpoints alongside standards-mandated ones
 - `~/.claude/skills/research-methods/SKILL.md` — validity +
@@ -881,7 +916,7 @@ When this skill activates, verify:
 - `~/.claude/agents/accessibility-reviewer.md` — pairs on UI /
   assessment a11y review
 - `~/.claude/agents/ai-ethics-reviewer.md` — AI tutor + grader
-  + EWS bias review
+  - EWS bias review
 
 ## Why This Skill Exists
 
@@ -943,6 +978,7 @@ or capability.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - LTI 1.1 / 1.2 integration shipped in new code (rule 1 violation — LTI 1.3+ floor)
 - LTI launch handler missing nonce one-time-use store (replay attack vector)
 - LTI launch handler skipping JWKS verification + caching (key rotation + signature validation gap)
@@ -967,6 +1003,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Caliper + xAPI emitted in parallel without contract test (Anti-Pattern 9 — drift)
 
 **Refinement candidates**:
+
 - New row in Standards Cited when 1EdTech publishes a new spec
   major version (LTI 2.0, QTI 4.0, OneRoster 1.3, Caliper 2.0)
 - Tightening of accommodation-passthrough verification when

@@ -732,6 +732,7 @@ Remember: Tests are documentation. Good tests explain how your code should work.
 Principal-level Django test methodology: pytest-django + factory_boy + freezegun + pytest-mock + responses; transaction isolation via `pytest.mark.django_db`; reusable fixtures via session scope; DRF APIClient patterns; coverage gates.
 
 **Negative scope** (NOT what this skill covers):
+
 - Django architecture under test — see `django-patterns`
 - Security testing patterns — see `django-security`
 - Deployment / coverage / build gates — see `django-verification`
@@ -818,6 +819,7 @@ Django tests can become unusable through three predictable failures: mocking the
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - View tested by mocking ORM instead of using `pytest-django` + factory_boy (mock-heavy weakening)
 - Fixture re-creating DB state from scratch when shared `@pytest.fixture(scope="session")` would suffice (test runtime balloon)
 - Test calling external API directly (network in tests — `responses` / `vcr` weakening)
@@ -828,6 +830,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - E2E browser test using direct DB writes instead of going through API (test isolation weakening)
 
 **Refinement candidates**:
+
 - New factory_boy pattern when a new model relationship emerges
 - New cross-reference when a sister skill (django-patterns, django-verification, tdd-workflow) adds a TDD gate
 - New fixture template when a recurring test-setup pattern emerges

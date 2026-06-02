@@ -135,7 +135,7 @@ principal-engineer level, and ships a cross-platform install surface
 #### Phase 2 — Rule consolidation + deepening
 
 - `no-discards.md` umbrella consolidates `no-silent-failures.md`
-  + `no-silent-drops.md`-class patterns at the canonical home
+  and `no-silent-drops.md`-class patterns at the canonical home
 - `security.md` promoted to an OWASP Top 10 + ASVS-mapped umbrella
 - `hooks.md` umbrella consolidates per-language hook subfiles
 - 25 shallow rules deepened with rationale, anti-patterns, examples,
@@ -259,7 +259,7 @@ principal-engineer level, and ships a cross-platform install surface
 #### Phase 11 — Project-scoped artifacts
 
 - New rule `project-scoped-artifacts.md` — first-touch detection
-  + workspace `.claude/` scaffold
+  and workspace `.claude/` scaffold
 - New template `templates/project-claude-scaffold/` shipped
 - Tech-stack auto-detection table (Node / Go / Python / Ruby /
   Rust / Java / Kotlin / .NET / Swift / Dart / Solidity / IaC)
@@ -298,7 +298,7 @@ principal-engineer level, and ships a cross-platform install surface
 - `tests/verify-link-integrity.sh`, `verify-no-orphans.sh`,
   `verify-standards-citations.sh`
 - `.github/workflows/ci.yml` — runs all three verifiers on push
-  + pull request
+  and pull request
 - `.github/PULL_REQUEST_TEMPLATE.md` + `.github/ISSUE_TEMPLATE/`
 
 #### Phase 15 — Per-IDE templates

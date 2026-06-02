@@ -21,7 +21,7 @@ the breaker is the mechanism that contains it.**
 
 ## State machine
 
-```
+```text
    ┌────────────┐  threshold of failures exceeded   ┌────────────┐
    │   CLOSED   │ ────────────────────────────────► │    OPEN    │
    │  (healthy) │                                   │  (failing) │
@@ -126,7 +126,7 @@ Breakers and retries interact:
 Bulkhead pattern — separate breakers per tenant when one
 tenant's heavy traffic can break the breaker for everyone:
 
-```
+```text
 breaker_per_tenant[tenant_id].fire(() => stripeCharge(req))
 ```
 
@@ -274,6 +274,7 @@ Insecure Design — system without resilience patterns).
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - External call wrapped in breaker but without timeout (rule 4 weakening — breaker can't measure failure)
 - Per-call-site breaker found instead of per-dependency (rule 3 violation — fragmented failure signal)
 - Breaker OPEN triggered silent success instead of fallback / error envelope (anti-pattern 4 violation)
@@ -284,6 +285,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Hand-rolled breaker found instead of canonical library (reuse-first weakening)
 
 **Refinement candidates**:
+
 - New per-language library row when a canonical option emerges
 - Tightening of default thresholds when chronic flapping or false-positive opens observed
 - New fallback-path pattern entry when a recurring degradation shape needs naming

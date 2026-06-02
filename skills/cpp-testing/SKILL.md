@@ -326,6 +326,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 Principal-level C++ test methodology: GoogleTest fixtures + parameterised tests, CTest integration, sanitiser-instrumented runs in CI, fuzz testing for parser/serializer paths, benchmark harness (Google Benchmark), code coverage via gcov / llvm-cov.
 
 **Negative scope** (NOT what this skill covers):
+
 - C++ language idioms — see `cpp-coding-standards`
 - Build configuration — see `deployment-patterns`
 - Cross-language testing concepts — see `tdd-workflow`
@@ -410,6 +411,7 @@ C++ tests that don't run with AddressSanitizer + UBSan are passing tests with hi
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - AddressSanitizer disabled in CI (use-after-free / heap-overflow caught at runtime)
 - UndefinedBehaviorSanitizer disabled in CI (signed-overflow / null-deref escapes)
 - ThreadSanitizer skipped on concurrent code (data race undetected)
@@ -422,6 +424,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Test using `sleep(N)` instead of synchronization primitive (flaky)
 
 **Refinement candidates**:
+
 - New sanitizer row when a new compiler sanitizer ships (e.g., MemorySanitizer on Clang)
 - New cross-reference when a sister skill (cpp-coding-standards, tdd-workflow, security-review) adds a C++ test gate
 - New mocking template when a recurring shape emerges (e.g., GMock for callback interfaces)

@@ -102,7 +102,7 @@ code, the fix is part of the work — do not leave it:
 
 1. Identify the data being persisted.
 2. Pick the right replacement from the table above (most often: S3
-   + in-memory buffer for exports; object storage + signed URLs for
+   - in-memory buffer for exports; object storage + signed URLs for
    uploads).
 3. Stream where possible — pipe `io.Reader` → S3 PutObject with
    multipart, not load-all-then-write. Memory is also bounded.
@@ -183,6 +183,7 @@ Sister failure modes worth naming:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `os.Create` / `os.WriteFile` / `fs.writeFile` / `open(path, "w")` introduced in production source (Hard rules 1-4 violation)
 - Generated artifact (CSV, PDF, image) written to local FS instead of streamed / object-store-uploaded (use-case mapping violation)
 - Local cache directory created without request-scoped TTL + cleanup (allowed-exception 1 weakening)
@@ -193,6 +194,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Sticky-session affinity required because of local FS state (horizontal-scaling block introduced)
 
 **Refinement candidates**:
+
 - New row in the "where to write instead" table when a new artifact class recurs (e.g., generated PDFs needing fonts cache, ML inference temp files)
 - Tightening of the allowlist-exception criteria when transient request-scoped writes prove load-bearing
 - New language entry in the Hard rules when a new ecosystem appears (e.g., Bun's filesystem APIs, Deno's permissions model)

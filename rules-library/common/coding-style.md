@@ -4,7 +4,7 @@
 
 ALWAYS create new objects, NEVER mutate existing ones:
 
-```
+```text
 // Pseudocode
 WRONG:  modify(original, field, value) → changes original in-place
 CORRECT: update(original, field, value) → returns new copy with change
@@ -15,6 +15,7 @@ Rationale: Immutable data prevents hidden side effects, makes debugging easier, 
 ## File Organization
 
 MANY SMALL FILES > FEW LARGE FILES:
+
 - High cohesion, low coupling
 - 200-400 lines typical, 800 max
 - Extract utilities from large modules
@@ -23,6 +24,7 @@ MANY SMALL FILES > FEW LARGE FILES:
 ## Error Handling
 
 ALWAYS handle errors comprehensively:
+
 - Handle errors explicitly at every level
 - Provide user-friendly error messages in UI-facing code
 - Log detailed error context on the server side
@@ -31,6 +33,7 @@ ALWAYS handle errors comprehensively:
 ## Input Validation
 
 ALWAYS validate at system boundaries:
+
 - Validate all user input before processing
 - Use schema-based validation where available
 - Fail fast with clear error messages
@@ -39,6 +42,7 @@ ALWAYS validate at system boundaries:
 ## Code Quality Checklist
 
 Before marking work complete:
+
 - [ ] Code is readable and well-named
 - [ ] Functions are small (<50 lines)
 - [ ] Files are focused (<800 lines)
@@ -54,6 +58,7 @@ constraints, subtle invariants, surprising shape choices, workarounds for
 specific bugs.
 
 Comments DO NOT contain:
+
 - The current task, fix, or callers ("used by X", "added for the Y flow",
   "handles the case from issue #123") — those belong in the PR description.
 - External tracker pointers: plan IDs (`plan B2`, `Initiative I10`,
@@ -140,6 +145,7 @@ DO NOT WRITE:
   every value Go returns is part of the contract and must be bound.
 - `defer file.Close()` and `defer func() { _ = x.Close() }()` —
   Close errors must be logged. Correct shape:
+
   ```go
   defer func() {
       if err := file.Close(); err != nil {
@@ -147,6 +153,7 @@ DO NOT WRITE:
       }
   }()
   ```
+
 - Comparing errors with `==` instead of `errors.Is` / `errors.As`.
   Wrapped errors do not pass `==`. The Go `errorlint` linter rejects
   every `==` against a sentinel.
@@ -194,6 +201,7 @@ Operator override (humans only, never the agent):
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Mutation on an existing object instead of returning a new copy (Immutability rule violation)
 - Files past 800 LOC introduced (file-organization warning)
 - Functions > 50 lines / files > 800 lines created (size discipline weakening)
@@ -207,6 +215,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Raw color literal added to UI source (hook blocked: hex / rgb / hsl / oklch)
 
 **Refinement candidates**:
+
 - New row in the "banned vocabulary" comment table when a new refactor-history phrasing recurs
 - Tightening of the file-LOC warning threshold (currently 800) when small files consistently produce cleaner reviews
 - New cross-reference when a sister rule (no-discards, no-silent-failures, no-silent-drops) provides the canonical home for a banned pattern

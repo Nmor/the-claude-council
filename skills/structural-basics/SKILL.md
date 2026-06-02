@@ -492,6 +492,7 @@ inspection, peer review, and competent engineering all
 matter.
 
 Daily structural decisions are far smaller stakes:
+
 - Can this slab carry an MRI room (3-5 tons concentrated
   load)?
 - Can we remove this column to open the floor plate?
@@ -530,7 +531,7 @@ SEOR earlier rather than later is minor by comparison.
 - **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
   engineering basis (when civil / structural scope)
 - **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  + digital coordination (when AEC scope)
+  - digital coordination (when AEC scope)
 - **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
   Matrix** — Systematic innovation methodology
 - **Stanford d.school + IDEO Field Guide** — Design thinking
@@ -546,7 +547,6 @@ SEOR earlier rather than later is minor by comparison.
   Management (Grove)** — People + culture frameworks
 - **Getting to Yes (Fisher + Ury) + Never Split the Difference
   (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
 
 ### Cross-cutting engineering standards
 
@@ -569,12 +569,12 @@ SEOR earlier rather than later is minor by comparison.
 - **CWE-1059** — Insufficient technical documentation (process
   workflows MUST be documented)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Load path not explicitly verified end-to-end (gravity + lateral)
 - Soft-storey detected in lateral system without remediation
 - Diaphragm rigidity assumption used where actual behaviour is flexible
@@ -587,6 +587,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Existing structure modification without forensic assessment of as-built
 
 **Refinement candidates**:
+
 - New code-edition row when Eurocode / AISC / ACI ships major update
 - New cross-reference when a sister skill (mep-coordination) adds a structural gate
 - New connection-template row when a recurring detail emerges

@@ -26,6 +26,7 @@ Health Connect), and the ONC information-blocking + Cures Act
 API mandates.
 
 **Out of scope (deliberate)**:
+
 - HIPAA regulation + BAAs + breach + audit — covered by
   `hipaa-compliance`
 - Generic security baseline — covered by `security` + `owasp-asvs`
@@ -80,6 +81,7 @@ API mandates.
 ## When to Fire
 
 File path triggers:
+
 - `**/fhir/**`, `**/hl7/**`, `**/cda/**`, `**/ccda/**`,
   `**/dicom/**`, `**/clinical/**`, `**/ehr/**`, `**/emr/**`,
   `**/patient-record/**`, `**/observation/**`, `**/medication/**`,
@@ -94,6 +96,7 @@ File path triggers:
   `oauth2-smart-on-fhir`
 
 Keyword triggers:
+
 - "FHIR", "HL7", "CDA", "CCDA", "DICOM", "USCDI", "SMART on FHIR",
   "Bulk FHIR", "Patient", "Encounter", "Observation",
   "MedicationRequest", "AllergyIntolerance", "Condition",
@@ -102,6 +105,7 @@ Keyword triggers:
   "HealthKit", "Health Connect", "ADT", "ORU", "telehealth"
 
 Change-scope triggers:
+
 - New clinical data ingestion (EHR feed, lab feed, imaging,
   device)
 - New clinical data export / API endpoint
@@ -121,7 +125,7 @@ current normative release but adoption lags 3-5 years. The
 right pattern: expose BOTH R4 and R5 endpoints during
 transition. Per `api-versioning.md`:
 
-```
+```text
 GET /fhir/R4/Patient/123
 GET /fhir/R5/Patient/123
 ```
@@ -158,6 +162,7 @@ not interoperable.
 
 USCDI v4 (effective Jan 1, 2026) defines the minimum data set
 that ONC-certified Health IT MUST exchange. Categories:
+
 - Patient Demographics + Identifiers
 - Allergies + Intolerances
 - Assessment + Plan of Treatment
@@ -189,6 +194,7 @@ baseline for what consumers expect.
 ### Pattern 4: SMART on FHIR launch contexts
 
 Two launch types:
+
 - **EHR Launch** — clinician clicks app from inside EHR; EHR
   provides launch context (patient, encounter, user). OAuth 2.0
   authorization with `launch` scope.
@@ -197,6 +203,7 @@ Two launch types:
   has prior context via refresh token).
 
 Scopes follow SMART syntax:
+
 - `patient/Observation.r` — read patient's observations
 - `patient/*.cruds` — full access in patient context
 - `user/Patient.r` — user-level access to patients in their
@@ -216,7 +223,7 @@ For payer-to-payer (CMS-9115-F), public health, research,
 quality reporting — single-resource API is too chatty. Use
 Bulk FHIR async export:
 
-```
+```text
 GET /fhir/Group/[id]/$export?_type=Patient,Observation,Condition&_since=2026-01-01
 ```
 
@@ -278,6 +285,7 @@ DICOM files contain PHI in the metadata header (PatientName,
 PatientID, AccessionNumber, InstitutionName, study date,
 referring physician, etc.). The pixel data often contains
 "burned-in" PHI in radiograph corners. Two patterns:
+
 - **De-identification**: strip / pseudonymize headers per DICOM
   PS3.15 Annex E. Tools: dcm4che `Anon`, gdcm `gdcmanon`,
   pydicom `Deid`. Verify "burned-in PHI" header (0028,0301) +
@@ -294,6 +302,7 @@ encounter), DEA registration for controlled-substance
 prescribing (Ryan Haight Act / DEA in-person exception via 2023
 final rule), and informed consent per state law. Technical
 layer:
+
 - WebRTC for video + audio (DTLS-SRTP encryption)
 - HIPAA-eligible video providers (Zoom Healthcare, Doxy.me,
   Twilio Video Healthcare, AWS Chime SDK with BAA)
@@ -308,6 +317,7 @@ ATA (American Telemedicine Association) Practice Guidelines
 ### Pattern 10: mHealth — HealthKit / Health Connect
 
 Mobile health platforms integrate with:
+
 - **iOS HealthKit** — read user-granted samples; cannot read
   without explicit per-type permission; cannot back up to
   iCloud without user consent
@@ -333,7 +343,8 @@ representation; free text is a backup, not the truth.
 
 Inventing your own `Observation` extension without a published
 Implementation Guide breaks every consumer. Either use US Core
-+ existing IGs (CARIN BB, Da Vinci, IPS, Argonaut) OR publish
+
+- existing IGs (CARIN BB, Da Vinci, IPS, Argonaut) OR publish
 a formal IG with profile + value sets + examples on
 simplifier.net / FHIR registry.
 
@@ -349,7 +360,8 @@ hand-roll the parser.
 Sharing a DICOM study with research / vendor without
 de-identification leaks PatientName, ReferringPhysician,
 StudyDate, etc. Always run de-identification per DICOM PS3.15
-+ visual review for burned-in PHI before share.
+
+- visual review for burned-in PHI before share.
 
 ### Anti-pattern 5: SMART on FHIR scopes too broad
 
@@ -358,6 +370,7 @@ scope to use case: `patient/Observation.r` for a vitals app,
 `patient/MedicationRequest.r` for a medication-list app.
 
 ### Anti-pattern 6: FHIR resources stored as opaque JSON
+
 blobs
 
 Storing the entire `Observation` as a JSON column means you
@@ -375,6 +388,7 @@ A patient ID without the system that issued it is ambiguous.
 identifiers.
 
 ### Anti-pattern 8: Bulk FHIR export without rate-limit +
+
 async
 
 A naive bulk export of a 100K-patient cohort over the
@@ -413,7 +427,7 @@ FHIR data-absent-reason extension).
 - [ ] JWT validation: signature via JWKS, `aud` claim, scope claim
 - [ ] Refresh tokens rotate on use
 - [ ] Bulk FHIR `$export` implemented async with status polling
-  + signed URL for download (24h TTL)
+  - signed URL for download (24h TTL)
 - [ ] HL7 v2 parsing via HAPI / `hl7` / `simple-hl7`, NOT
   hand-rolled
 - [ ] MLLP over TLS for v2 transport
@@ -461,6 +475,7 @@ FHIR data-absent-reason extension).
 ## Why This Skill Exists
 
 Clinical data interoperability is mature but fragmented:
+
 - **CMS-9115-F** (Patient Access + Provider Directory APIs):
   effective since Jul 2021; enforcement increasing
 - **CMS-0057-F** (Prior Authorization API): effective Jan 2026
@@ -473,6 +488,7 @@ Clinical data interoperability is mature but fragmented:
 
 A health-tech system without principal-level interoperability
 discipline:
+
 - Cannot connect to Epic / Cerner / athenahealth (which own
   60%+ of US ambulatory + inpatient EHR market)
 - Cannot satisfy ONC certification for federal funding
@@ -499,6 +515,7 @@ counsel.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New clinical data ingested without FHIR mapping (free-text strings, opaque codes)
 - US Core profile validation absent from CI for FHIR resources (Pattern 2 weakening)
 - USCDI v4 element silently dropped through pipeline (Pattern 3 violation + ONC enforcement exposure)
@@ -515,6 +532,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Code release versions stale > 18 months
 
 **Refinement candidates**:
+
 - New FHIR resource row when US Core IG publishes new profile (STU 8.0 expected 2026-2027)
 - USCDI version row when ONC publishes v5+ (v4 effective Jan 2026; v5 likely 2027)
 - Bulk Data IG version row when ONC publishes v2.1+

@@ -286,7 +286,7 @@ Require:
 
 Every Council-mediated task ends with a verification block:
 
-```
+```text
 Council (this turn):
   - Division 1 (Architecture): <position>
   - Division 2 (Implementation): <position>

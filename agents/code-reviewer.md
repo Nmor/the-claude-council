@@ -179,7 +179,7 @@ const usersWithPosts = await db.query(`
 
 Organize findings by severity. For each issue:
 
-```
+```text
 [CRITICAL] Hardcoded API key in source
 File: src/api/client.ts:42
 Issue: API key "sk-abc..." exposed in source code. This will be committed to git history.
@@ -193,7 +193,7 @@ Fix: Move to environment variable and add to .gitignore/.env.example
 
 End every review with:
 
-```
+```text
 ## Review Summary
 
 | Severity | Count | Status |
@@ -299,6 +299,7 @@ Adapt your review to the project's established patterns. When in doubt, match wh
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Same SonarLint / lint rule fired and dismissed across multiple PRs in 30 days (rule needs better surfaced)
 - Pre-existing-issues sweep (Rule 5) consistently skipped (review discipline weakening)
 - CRITICAL finding disputed by author and the author was right (severity rubric needs sharpening)
@@ -308,6 +309,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Class of bug appearing in 2+ services post-merge (review checklist row missing)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed dimension appears in retrospect across 2+ PRs
 - New anti-pattern entry when an author-side shortcut recurs across 2+ PRs
 - Tightening of severity classification when chronic disputes observed

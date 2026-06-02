@@ -261,7 +261,7 @@ ErrorProne: `FutureReturnValueIgnored`.
 
 ## Verification block
 
-```
+```text
 Java build (this turn):
   - mvn verify: 0 warnings, 0 errors
   - ErrorProne (with NullAway): 0 issues

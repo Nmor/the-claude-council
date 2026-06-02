@@ -22,7 +22,7 @@ Production deployment workflows and CI/CD best practices.
 
 Replace instances gradually — old and new versions run simultaneously during rollout.
 
-```
+```text
 Instance 1: v1 → v2  (update first)
 Instance 2: v1        (still running v1)
 Instance 3: v1        (still running v1)
@@ -44,7 +44,7 @@ Instance 3: v1 → v2  (update last)
 
 Run two identical environments. Switch traffic atomically.
 
-```
+```text
 Blue  (v1) ← traffic
 Green (v2)   idle, running new version
 
@@ -61,7 +61,7 @@ Green (v2) ← traffic
 
 Route a small percentage of traffic to the new version first.
 
-```
+```text
 v1: 95% of traffic
 v2:  5% of traffic  (canary)
 
@@ -166,7 +166,7 @@ CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers
 
 ### Docker Best Practices
 
-```
+```text
 # GOOD practices
 - Use specific version tags (node:22-alpine, not node:latest)
 - Multi-stage builds to minimize image size
@@ -252,7 +252,7 @@ jobs:
 
 ### Pipeline Stages
 
-```
+```text
 PR opened:
   lint → typecheck → unit tests → integration tests → preview deploy
 
@@ -393,6 +393,7 @@ npx prisma migrate resolve --rolled-back <migration-name>
 Before any production deployment:
 
 ### Application
+
 - [ ] All tests pass (unit, integration, E2E)
 - [ ] No hardcoded secrets in code or config files
 - [ ] Error handling covers all edge cases
@@ -400,6 +401,7 @@ Before any production deployment:
 - [ ] Health check endpoint returns meaningful status
 
 ### Infrastructure
+
 - [ ] Docker image builds reproducibly (pinned versions)
 - [ ] Environment variables documented and validated at startup
 - [ ] Resource limits set (CPU, memory)
@@ -407,12 +409,14 @@ Before any production deployment:
 - [ ] SSL/TLS enabled on all endpoints
 
 ### Monitoring
+
 - [ ] Application metrics exported (request rate, latency, errors)
 - [ ] Alerts configured for error rate > threshold
 - [ ] Log aggregation set up (structured logs, searchable)
 - [ ] Uptime monitoring on health endpoint
 
 ### Security
+
 - [ ] Dependencies scanned for CVEs
 - [ ] CORS configured for allowed origins only
 - [ ] Rate limiting enabled on public endpoints
@@ -420,6 +424,7 @@ Before any production deployment:
 - [ ] Security headers set (CSP, HSTS, X-Frame-Options)
 
 ### Operations
+
 - [ ] Rollback plan documented and tested
 - [ ] Database migration tested against production-sized data
 - [ ] Runbook for common failure scenarios
@@ -436,6 +441,7 @@ deployment audit + traceability, and the migration-deploy decoupling
 that turns schema changes from outage candidates into routine.
 
 **Negative scope** (NOT what this skill covers):
+
 - Application code patterns — see `backend-patterns` /
   `frontend-patterns`
 - Container image construction — see `docker-patterns`
@@ -532,6 +538,7 @@ hum.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Deploy without rollback path tested in staging (per `~/.claude/rules-library/common/deploy-failures-become-checks.md`)
 - Canary stage skipped on a high-risk change (blast-radius weakening — Division 11 Risk concern)
 - Pre-deploy gate (CVE scan, license gate, schema migration dry-run) bypassed (per `~/.claude/rules-library/common/security-controls-org-wide.md`)
@@ -544,6 +551,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Rollback drill not run on a quarterly cadence (muscle-memory atrophy)
 
 **Refinement candidates**:
+
 - New deploy-strategy row when a new pattern emerges (e.g., progressive delivery via service mesh)
 - Tightening of the canary metrics / bake time when a deploy-related incident recurs
 - New cross-reference when a sister skill (aws-serverless-patterns, docker-patterns, ops-reviewer) adds a deploy gate

@@ -28,6 +28,7 @@ Per `council-triggers.md` Division 14:
 ## Veto authority
 
 **NO** (advisory). Escalates to user / Strategy when:
+
 - Region choice has material carbon-intensity delta (> 50% difference between regions used)
 - Supplier choice would violate published net-zero commitment or SBTi targets
 - ESG public claim (marketing / report) lacks auditable basis (greenwashing risk)
@@ -57,7 +58,7 @@ For every triggered task:
 
 ## Output shape
 
-```
+```text
 Sustainability + ESG review (Division 14):
 
 Carbon footprint:
@@ -145,6 +146,7 @@ Verdict: APPROVED / CHANGES_REQUIRED / ESCALATE_TO_STRATEGY
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Region carbon-intensity data drift (provider PUE / RE100 disclosures change annually — needs refresh cadence)
 - Always-on workloads that could scale-to-zero discovered post-deploy (workload-classification rubric needs sharpening)
 - ESG claims in marketing that drift from auditable basis (claim-auditability discipline is weak)
@@ -155,6 +157,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Right-sizing recommendations ignored repeatedly (cost-vs-carbon trade-off communication is weak)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed sustainability dimension appears in retrospect
 - New anti-pattern entry when a greenwashing-class claim recurs
 - New auto-fire trigger when a recurring sustainability decision pattern surfaces

@@ -144,6 +144,7 @@ Below the age of digital consent, parental consent required. Above, the child ca
 FERPA defines two record classes:
 
 **Educational records** (FERPA-protected, requires consent):
+
 - Grades, transcripts, GPA, class rank
 - Disciplinary records
 - Attendance records
@@ -152,6 +153,7 @@ FERPA defines two record classes:
 - Test scores (state assessment, AP, SAT — exception: ETS as test publisher has own status)
 
 **Directory information** (FERPA-permitted disclosure WITHOUT consent if the institution has properly designated + notified):
+
 - Name, address, telephone, email
 - Date + place of birth
 - Major field of study
@@ -345,6 +347,7 @@ Engineering's job: encode the regulatory shape in the data model + access contro
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Edtech vendor begins collecting student data without DPA signed — Pattern 7 violation; ED + state-AG exposure
 - "Directed to children" service ships without VPC workflow — COPPA §312.5 violation
 - Age-gate retried after rejection (user re-submits older DOB) without IP/cookie prevention — Pattern 8 weakening
@@ -362,6 +365,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - COPPA 2025 retention review not performed — Pattern 3 weakening
 
 **Refinement candidates**:
+
 - New state-law row when a new state passes student-privacy legislation (NJ A1493, MA H.4154, IL SB1463 currently in flight)
 - New AI-in-education guidance row when ED OPP / FTC issues policy clarification on AI tutoring + student data
 - New consent-method row when FTC approves a new VPC mechanism

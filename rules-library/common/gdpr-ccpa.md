@@ -381,6 +381,7 @@ code.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New collection point shipped without a lawful-basis annotation (rule 1 weakening)
 - RoPA not updated in the SAME PR that adds a new processor / new field (rule 2 weakening)
 - DSAR endpoint missing rate limiting or re-authentication (rule 3 / mistake 7 weakening)
@@ -392,6 +393,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Special-category data (Article 9) stored without field-level encryption (rule 4 + rule 8 weakening)
 
 **Refinement candidates**:
+
 - New jurisdiction entry when a regulator adds a national-law variant (e.g., PIPEDA, LGPD update)
 - New row in the RoPA template when a new processor class becomes common
 - Tightening of consent UI requirements when a CJEU / supervisory-authority ruling adds a new constraint

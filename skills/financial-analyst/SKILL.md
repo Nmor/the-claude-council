@@ -41,7 +41,7 @@ This skill governs the analyst's daily work: maintaining the coverage model, pro
 
 ### Pattern 1: Quarterly earnings workflow
 
-```
+```text
 T-7 days: PRE-PRINT
   - Update model with latest channel checks
   - Refresh segment KPI panel
@@ -224,7 +224,7 @@ M-Score above -1.78 is not proof of manipulation — it's a signal to deepen for
 
 ### Pattern 5: DuPont decomposition
 
-```
+```text
 ROE = (Net Income / Sales) × (Sales / Assets) × (Assets / Equity)
     = Profit Margin × Asset Turnover × Equity Multiplier
 
@@ -410,6 +410,7 @@ Edge comes from the patience to do the work that others skip.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Earnings model not updated within 48h of company filing (model-staleness)
 - Channel check qualitative only, never quantified (vague "saw growth")
 - Ratio analysis without peer-group benchmarking (context-free numbers)
@@ -422,6 +423,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Position-sizing inconsistent with conviction level
 
 **Refinement candidates**:
+
 - New ratio template when a new sector becomes coverage (e.g., crypto-native, AI-infra)
 - New cross-reference when a sister skill (valuation-models, investment-research, portfolio-theory) adds an analyst gate
 - Tightening of the catalyst-discipline rule when soft-recommendation regression recurs

@@ -349,6 +349,7 @@ mode.
 
 A Jira board with "To Do / In Progress / Done" columns and no
 WIP limits is NOT kanban. Real kanban requires:
+
 - Visualised work
 - Limited WIP at each stage
 - Pull (downstream signals upstream)
@@ -505,7 +506,7 @@ counterfeit — and act accordingly.
 - **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
   engineering basis (when civil / structural scope)
 - **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  + digital coordination (when AEC scope)
+  - digital coordination (when AEC scope)
 - **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
   Matrix** — Systematic innovation methodology
 - **Stanford d.school + IDEO Field Guide** — Design thinking
@@ -521,7 +522,6 @@ counterfeit — and act accordingly.
   Management (Grove)** — People + culture frameworks
 - **Getting to Yes (Fisher + Ury) + Never Split the Difference
   (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
 
 ### Cross-cutting engineering standards
 
@@ -544,12 +544,12 @@ counterfeit — and act accordingly.
 - **CWE-1059** — Insufficient technical documentation (process
   workflows MUST be documented)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Value-stream map > 12 months stale and still cited as current state
 - Kanban WIP limits ignored (push-system regression)
 - 5S audit reduced to "tidy up before the visitor" theatre
@@ -562,6 +562,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Lean implementation owned by consultants instead of operators
 
 **Refinement candidates**:
+
 - New tool row when a new lean technique becomes domain-applicable
 - New cross-reference when a sister skill (six-sigma, supply-chain-patterns) adds a lean gate
 - Tightening of the kaizen follow-through rule when one-shot pattern recurs

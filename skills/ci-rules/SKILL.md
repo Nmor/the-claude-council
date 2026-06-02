@@ -36,7 +36,6 @@ paths:
 - **Conventional Commits 1.0** (conventionalcommits.org) — commit-message contract for downstream changelog / semver automation
 - **Semantic Versioning 2.0** (semver.org) — version-bump rules the CI release pipeline encodes
 
-
 ## Source files migrated
 
 - `rules-library/common/ci-test-memory-tuning.md`
@@ -72,6 +71,7 @@ fixes — recognise the signature before tuning.
 ### Failure mode A: Runner OOM-killer preempt
 
 **Symptoms**:
+
 - Step cancels at a consistent point (often ~5 minutes)
 - Post-cleanup steps report `skipped` (not `success`)
 - No FAIL line in the test log — just `##[error]The operation was
@@ -88,6 +88,7 @@ the process tree.
 ### Failure mode B: Worker thrash from over-aggressive idle limit
 
 **Symptoms**:
+
 - Step hits its `timeout-minutes` cap (e.g., 25-min step → 26-min
   job)
 - Post-cleanup steps report `success`
@@ -96,7 +97,8 @@ the process tree.
 - The completion time is genuinely longer, not preempted
 
 **Root cause**: `--workerIdleMemoryLimit=<N>` (Jest) tears down
-+ restarts workers whose RSS exceeds N between test files. If N
+
+- restarts workers whose RSS exceeds N between test files. If N
 is below normal heap, every test file pays the worker-boot cost
 (~60-90s including module re-resolution).
 
@@ -159,6 +161,7 @@ pnpm test -- --maxWorkers=1 --logHeapUsage 2>&1 | grep -E "^PASS.*MB heap"
 ```
 
 The output shows per-file peak heap. Set the limit to:
+
 - The 75th percentile of normal peaks, PLUS
 - 50% headroom for transient spikes
 
@@ -240,7 +243,7 @@ RAM exhaustion.
 
 ## Verification block
 
-```
+```text
 CI test memory tuning (this turn):
   - Mode: A (OOM preempt) — diagnosed via post-cleanup "skipped"
     + ~5min cancel pattern
@@ -264,6 +267,7 @@ CI test memory tuning (this turn):
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - CI test job cancelled at consistent ~5-min mark with post-cleanup `skipped` (Mode A: runner OOM preempt — diagnostic recipe applies)
 - CI test job hits its `timeout-minutes` cap with post-cleanup `success` (Mode B: worker thrash — `--workerIdleMemoryLimit` too aggressive)
 - `--max-old-space-size × --maxWorkers > 0.75 × runner_total_RAM` (OS headroom budget violated)
@@ -273,6 +277,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Verification block missing the before/after heap × workers math after a tuning change
 
 **Refinement candidates**:
+
 - New runner row in the RAM reference table when GitHub Actions ships a new runner size (e.g., 32 GB linux-large, M4 mac)
 - New per-framework tuning section when a new test runner adopts worker recycling (e.g., Vitest worker memory limits, pytest-xdist process recycling)
 - Tightening of the OS-headroom percentage when 75% proves too tight on a recurring stack
@@ -326,6 +331,7 @@ recovery logic runs.
 ```
 
 Alternatives:
+
 - Append `|| true` to the pipe: `osv-scanner ... | tee scan.log || true`
 - Capture exit code separately: `osv-scanner ... > scan.log; rc=$?`
 
@@ -504,6 +510,7 @@ peak heap — aim for ~12 GB (leaves 4 GB for OS, Docker daemon,
 runner agent, framework overhead).
 
 For Jest:
+
 ```yaml
 env:
   NODE_OPTIONS: --max-old-space-size=6144  # 6 GB per worker
@@ -574,7 +581,7 @@ the documented arbitrary-code-execution vector (Tj-actions etc.).
 When CI tuning lands, the PR's verification block should explicitly
 name which gotchas were addressed:
 
-```
+```text
 GitHub Actions tuning (this turn):
   - Gotcha 1 (bash -e + pipefail): added `shell:` override on
     osv-scanner step so the LOW-filter grep can run.
@@ -598,6 +605,7 @@ GitHub Actions tuning (this turn):
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Pipe + recovery logic shipped with default `bash -eo pipefail` shell (Gotcha 1 recurrence)
 - `run:` block hitting the 21,000-char expression limit (Gotcha 2 — needs split)
 - Required workflow accesses consumer-repo files directly (Gotcha 3 violation)
@@ -611,6 +619,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `pull_request_target` used to RUN code from a fork's PR (Gotcha 13 — RCE class)
 
 **Refinement candidates**:
+
 - New numbered gotcha when a recurring CI-platform surprise surfaces (e.g., new GitHub limit, new action deprecation cycle)
 - Tightening of the SHA-pin enforcement when a recurring third-party action proves volatile
 - New cross-reference when a sister rule (deploy-failures-become-checks, security-controls-org-wide) adds a CI-side gate
@@ -846,6 +855,7 @@ questions.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New rule shipped without corresponding hook enforcement when mechanical enforcement is feasible (drift toward "guideline-only")
 - PostToolUse hook bypassed via `CLAUDE_NO_DISCARDS_HOOK=off` by the agent (operator-only override misused)
 - New language adopted without its PostToolUse gate wired (per-language hook gap)
@@ -856,6 +866,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Stop hook surfaces uncommitted changes but the agent proceeds to next task anyway (Stop hook ignored)
 
 **Refinement candidates**:
+
 - New row in the lifecycle table when a new hook event surfaces (e.g., new IDE plugin event, new MCP gateway hook)
 - New per-language gate row when a new stack adopts (e.g., new build system, new test runner)
 - Tightening of the auto-accept policy when a destructive false-positive recurs

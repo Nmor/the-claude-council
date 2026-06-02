@@ -139,7 +139,7 @@ end
 
 ## Required tooling
 
-```
+```text
 .rubocop.yml           # rubocop config (see below)
 .rubocop-todo.yml      # generated; tracked + decreasing
 Gemfile.lock           # committed

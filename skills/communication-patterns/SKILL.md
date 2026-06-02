@@ -212,7 +212,7 @@ an audience.
 Minto's framework, used universally at top consulting firms +
 increasingly across tech. The structure:
 
-```
+```text
         Governing thought (the answer)
        /              |              \
    Argument 1     Argument 2     Argument 3
@@ -403,7 +403,8 @@ all six; should hit at least 3-4.
 
 When the stakes are high, opinions differ, and emotions run
 strong, default communication breaks down. The Patterson + Grenny
-+ McMillan + Switzler framework:
+
+- McMillan + Switzler framework:
 
 1. **Start with heart.** What do you really want for yourself,
    for the other party, for the relationship? Not "win" but
@@ -693,7 +694,8 @@ fixing it + preventing recurrence."
 
 Treating questions as attacks; pre-empting criticism with
 defensive framing. Signals you're not confident in the content
-+ invites more aggressive questioning.
+
+- invites more aggressive questioning.
 
 **Correction**: receive questions as gifts. "Great question.
 Let me think." Or "I don't know — let me find out + come back."
@@ -707,6 +709,7 @@ fact that the audience doesn't share your context.
 outside your bubble. Listen to where they stumble.
 
 ### Anti-Pattern 15: Telling People What to Think Instead of
+
 Helping Them See
 
 Skipping the SCQA setup that lets the audience reach your
@@ -875,7 +878,7 @@ Standards cited grounding (verbatim, with editions):
 - Heath + Heath, *Made to Stick* (2007) — SUCCESs framework.
 - Heath + Heath, *Switch* (2010) — change communication.
 - Duarte, *Resonate* (2010) + *Slide:ology* (2008) — presentation
-  + slides.
+  - slides.
 - Reynolds, *Presentation Zen* (3rd ed 2019) — simplicity.
 - Tufte, *The Visual Display of Quantitative Information* (2nd
   ed 2001) + *Beautiful Evidence* (2006) — data viz.
@@ -915,7 +918,7 @@ instinct.
 - **GRADE working group framework** — Evidence quality grading
   (High / Moderate / Low / Very Low)
 - **OECD Frascati Manual 2015** — Standard practice for research
-  + experimental development
+  - experimental development
 - **AHA + APA + MLA citation styles** — Discipline-specific
   citation formats
 - **Pyramid Principle (Barbara Minto)** — Top-down structured
@@ -929,7 +932,6 @@ instinct.
 - **W3C WAI Research Methods** — Inclusive research practices
 - **CWE-1426** — Improper validation of generative AI output
   (applies when AI assists synthesis)
-
 
 ### Cross-cutting research + documentation standards
 
@@ -951,12 +953,12 @@ instinct.
 - **CWE-1295** — Debug messages revealing unnecessary information
   (applies to research dump-files + intermediate artefacts)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Document leads with context/method rather than conclusion (Pyramid Principle inverted — exec readers tune out)
 - Audience analysis skipped — same deck shown to engineers + execs + customers (mode-selection weakening)
 - Long meeting that should have been a doc (or vice-versa — async vs sync mode mismatch)
@@ -967,6 +969,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Crisis comms drafted without sign-off chain (Compliance + Legal + Leadership review skipped)
 
 **Refinement candidates**:
+
 - New pattern when a recurring artifact class (e.g., RFC, incident review, board memo) needs codified structure
 - Update to medium-selection matrix when team adopts new tooling (e.g., Loom for async video, Notion for living docs)
 - Cross-cultural addendum when team adds members from previously-untouched cultural contexts

@@ -45,6 +45,7 @@ paths:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Single-stage Dockerfile shipped (multi-stage rule weakening — image bloat)
 - `USER root` in production image (non-root requirement violated)
 - Secrets baked into image layer (`ENV API_KEY=...`, COPY of `.env`) — sister `secrets-management.md` weakening
@@ -57,6 +58,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Non-zero-downtime deploy pattern adopted on a customer-facing service (rollout / canary skipped)
 
 **Refinement candidates**:
+
 - New row in the Docker checklist when a recurring image-bloat / supply-chain class emerges (e.g., missing `SBOM` generation, missing `LABEL` metadata)
 - Tightening of the deployment checklist when a recurring rollout failure class recurs (e.g., DB migration races, feature-flag desync)
 - New cross-reference when a sister rule (docker-localhost-binding, deploy-failures-become-checks, github-actions-gotchas) provides a deploy-time gate

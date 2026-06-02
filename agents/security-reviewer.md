@@ -43,10 +43,12 @@ npx eslint . --plugin security
 ## Review Workflow
 
 ### 1. Initial Scan
+
 - Run `npm audit`, `eslint-plugin-security`, search for hardcoded secrets
 - Review high-risk areas: auth, API endpoints, DB queries, file uploads, payments, webhooks
 
 ### 2. OWASP Top 10 Check
+
 1. **Injection** — Queries parameterized? User input sanitized? ORMs used safely?
 2. **Broken Auth** — Passwords hashed (bcrypt/argon2)? JWT validated? Sessions secure?
 3. **Sensitive Data** — HTTPS enforced? Secrets in env vars? PII encrypted? Logs sanitized?
@@ -59,6 +61,7 @@ npx eslint . --plugin security
 10. **Insufficient Logging** — Security events logged? Alerts configured?
 
 ### 3. Code Pattern Review
+
 Flag these patterns immediately:
 
 | Pattern | Severity | Fix |
@@ -102,6 +105,7 @@ Flag these patterns immediately:
 ## Emergency Response
 
 If you find a CRITICAL vulnerability:
+
 1. Document with detailed report
 2. Alert project owner immediately
 3. Provide secure code example
@@ -182,6 +186,7 @@ For detailed vulnerability patterns, code examples, report templates, and PR rev
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Same CVE class recurring across services (override / pin discipline weak — promote pattern to `dependency-overrides-not-exceptions.md`)
 - Secret detected in source despite hook (hook coverage gap — surface to `no-discards.md`)
 - Missing rate-limit on auth endpoint class (review checklist row enforcement weak)
@@ -194,6 +199,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Same OWASP Top 10 class shipping despite multiple reviews (review checklist row needs sharpening)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed security dimension appears in retrospect
 - New anti-pattern entry when a security shortcut recurs across 2+ services
 - Tightening of severity classification when chronic incident class observed

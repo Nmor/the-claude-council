@@ -94,6 +94,7 @@ acceptance criteria for "use this OSS instead":
 If a qualifying OSS option exists, the default is to use it (per
 `reuse-first.md` rule 7 radius escalation). Custom code is the
 last resort when:
+
 - No qualifying OSS option exists, OR
 - The OSS option requires more integration glue than re-
   implementation, OR
@@ -148,7 +149,7 @@ specific OSS options considered and rejected.
 - What's the rollback shape — if this needs to revert, what's
   the safe procedure and who else does it affect?
 - What's the observability shape — what metrics + logs + traces
-  + alerts let on-call know if this is healthy?
+  - alerts let on-call know if this is healthy?
 - What's the documentation footprint — which `docs/`, `README`,
   runbook, ADR, landing-page entries change (per
   `docs-sync-with-code.md`)?
@@ -243,7 +244,7 @@ Per WCAG 2.2 (W3C Recommendation):
 - **Compliance level**: AA (the global default) or AAA (when
   user-set higher bar applies)?
 - **Keyboard navigation**: every interactive element reachable
-  + actionable without mouse?
+  - actionable without mouse?
 - **Screen reader**: ARIA labels + roles + live regions wired
   for every component?
 - **Color contrast**: text 4.5:1, large text 3:1, non-text UI
@@ -508,7 +509,7 @@ When the change involves AI / ML / generative-AI features:
 - **Escalation path**: who to call when on-call can't
   resolve; what their escalation path looks like.
 - **Vendor contacts**: for new integrations, support contact
-  + SLA + escalation procedure named.
+  - SLA + escalation procedure named.
 
 ### 27. What to do?
 
@@ -618,6 +619,7 @@ the affected line so the next contributor knows the original
 intent).
 
 Abbreviated intake for trivial work:
+
 - Q1 + Q2 + Q8 (Action plan) only (1-2 sentences each)
 - The remaining questions marked N/A with a one-line reason
 
@@ -652,6 +654,7 @@ directly.
 
 Without a structured intake, tasks default to "start coding
 based on the user's description" — which reliably misses:
+
 - Existing primitives (rediscovered as duplicates per
   `reuse-first.md` post-mortems)
 - Better techniques published in the past year
@@ -676,6 +679,7 @@ online."**
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Task shipped without the 29-question intake (rule violation pattern)
 - Intake question consistently answered "N/A" across many tasks (question may need re-scoping OR may genuinely not apply to a task class)
 - Intake question that proved load-bearing in post-mortem was answered superficially (depth needs reinforcement)
@@ -686,6 +690,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Scalability (Q6) inflection point hit earlier than predicted (heuristic miss)
 
 **Refinement candidates**:
+
 - New question when a missed dimension shows up in 2+ retrospectives
 - Tightening of "skipping the intake" abbreviated form when trivial-classified work later proved non-trivial
 - New compact-table row when a question consistently produces structured output that the current row doesn't capture

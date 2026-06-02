@@ -38,6 +38,7 @@ When determining which package manager to use, the following order is checked:
 ## Configuration Files
 
 ### Global Configuration
+
 ```json
 // ~/.claude/package-manager.json
 {
@@ -46,6 +47,7 @@ When determining which package manager to use, the following order is checked:
 ```
 
 ### Project Configuration
+
 ```json
 // .claude/package-manager.json
 {
@@ -54,6 +56,7 @@ When determining which package manager to use, the following order is checked:
 ```
 
 ### package.json
+
 ```json
 {
   "packageManager": "pnpm@8.6.0"

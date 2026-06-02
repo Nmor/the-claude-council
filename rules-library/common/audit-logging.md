@@ -193,7 +193,7 @@ Each event references the hash of the previous event for the same
 tenant + event_type stream. Tampering with any event invalidates
 the chain for every later event in that stream:
 
-```
+```text
 event N:
   prev_event_hash = sha256(canonical_json(event N-1))
   event_hash = sha256(canonical_json(event N))
@@ -408,6 +408,7 @@ cannot defend.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Audit event emitted on success but not on failure (rule 5 weakening — failed actions are often the most important)
 - PII surfacing in audit fields (rule 4 PII-handling violation)
 - Audit event not in the same DB transaction as the business write (rule 1 weakening — audit becomes a lie when txn rolls back)
@@ -418,6 +419,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Clock drift > 1 second tolerated (chain-of-custody risk)
 
 **Refinement candidates**:
+
 - New event class in the catalog when a new security-relevant operation emerges
 - New required field when forensics consistently needs a dimension the canonical shape lacks
 - Tightening of retention minimums when a regulation update lengthens the floor

@@ -19,6 +19,7 @@ A formal evaluation framework for Claude Code sessions, implementing eval-driven
 ## Philosophy
 
 Eval-Driven Development treats evals as the "unit tests of AI development":
+
 - Define expected behavior BEFORE implementation
 - Run evals continuously during development
 - Track regressions with each change
@@ -27,7 +28,9 @@ Eval-Driven Development treats evals as the "unit tests of AI development":
 ## Eval Types
 
 ### Capability Evals
+
 Test if Claude can do something it couldn't before:
+
 ```markdown
 [CAPABILITY EVAL: feature-name]
 Task: Description of what Claude should accomplish
@@ -39,7 +42,9 @@ Expected Output: Description of expected result
 ```
 
 ### Regression Evals
+
 Ensure changes don't break existing functionality:
+
 ```markdown
 [REGRESSION EVAL: feature-name]
 Baseline: SHA or checkpoint name
@@ -53,7 +58,9 @@ Result: X/Y passed (previously Y/Y)
 ## Grader Types
 
 ### 1. Code-Based Grader
+
 Deterministic checks using code:
+
 ```bash
 # Check if file contains expected pattern
 grep -q "export function handleAuth" src/auth.ts && echo "PASS" || echo "FAIL"
@@ -66,7 +73,9 @@ npm run build && echo "PASS" || echo "FAIL"
 ```
 
 ### 2. Model-Based Grader
+
 Use Claude to evaluate open-ended outputs:
+
 ```markdown
 [MODEL GRADER PROMPT]
 Evaluate the following code change:
@@ -80,7 +89,9 @@ Reasoning: [explanation]
 ```
 
 ### 3. Human Grader
+
 Flag for manual review:
+
 ```markdown
 [HUMAN REVIEW REQUIRED]
 Change: Description of what changed
@@ -91,13 +102,17 @@ Risk Level: LOW/MEDIUM/HIGH
 ## Metrics
 
 ### pass@k
+
 "At least one success in k attempts"
+
 - pass@1: First attempt success rate
 - pass@3: Success within 3 attempts
 - Typical target: pass@3 > 90%
 
 ### pass^k
+
 "All k trials succeed"
+
 - Higher bar for reliability
 - pass^3: 3 consecutive successes
 - Use for critical paths
@@ -105,6 +120,7 @@ Risk Level: LOW/MEDIUM/HIGH
 ## Eval Workflow
 
 ### 1. Define (Before Coding)
+
 ```markdown
 ## EVAL DEFINITION: feature-xyz
 
@@ -124,9 +140,11 @@ Risk Level: LOW/MEDIUM/HIGH
 ```
 
 ### 2. Implement
+
 Write code to pass the defined evals.
 
 ### 3. Evaluate
+
 ```bash
 # Run capability evals
 [Run each capability eval, record PASS/FAIL]
@@ -138,6 +156,7 @@ npm test -- --testPathPattern="existing"
 ```
 
 ### 4. Report
+
 ```markdown
 EVAL REPORT: feature-xyz
 ========================
@@ -164,27 +183,34 @@ Status: READY FOR REVIEW
 ## Integration Patterns
 
 ### Pre-Implementation
-```
+
+```text
 /eval define feature-name
 ```
+
 Creates eval definition file at `.claude/evals/feature-name.md`
 
 ### During Implementation
-```
+
+```text
 /eval check feature-name
 ```
+
 Runs current evals and reports status
 
 ### Post-Implementation
-```
+
+```text
 /eval report feature-name
 ```
+
 Generates full eval report
 
 ## Eval Storage
 
 Store evals in project:
-```
+
+```text
 .claude/
   evals/
     feature-xyz.md      # Eval definition
@@ -243,6 +269,7 @@ tries reliably?). Without eval-harness, "this prompt feels
 better" is the only signal; with it, ship/no-ship is a number.
 
 **Negative scope** (NOT what this skill covers):
+
 - Manual UX testing — see `e2e-runner` agent / `e2e-testing`
   skill for browser-driven flows
 - Unit tests of code — see `tdd-workflow`
@@ -331,7 +358,8 @@ mode of prompt engineering. Without a number, every change
 ships on vibes; regressions are detected by customer
 complaints; iteration speed is bounded by manual judgment.
 Eval-harness puts a number on it: capability (does it work?)
-+ regression (does it keep working?). Once a team has eval
+
+- regression (does it keep working?). Once a team has eval
 infrastructure, the question becomes "did the metric move"
 instead of "did it feel better" — and that turns
 LLM-shipping from an art into engineering.
@@ -341,6 +369,7 @@ LLM-shipping from an art into engineering.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Skill / rule / agent shipped without a capability eval (no pass@k baseline)
 - Regression suite missing for a previously-shipped capability (regression coverage gap)
 - pass@k computed on n=1 sample (statistical-significance theatre — need n≥3 typically, n≥10 for high-stakes)
@@ -351,6 +380,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Eval rubric assesses surface form (string match) instead of semantic correctness
 
 **Refinement candidates**:
+
 - New eval class when a recurring capability surfaces that needs its own pass@k baseline (e.g., security-fix eval, refactor-safety eval)
 - Rubric tightening when capability evals plateau at 100% but real-world performance shows residual gaps
 - Regression suite expansion when a shipped change causes user-reported regression (add the failure case to the suite)

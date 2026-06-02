@@ -416,7 +416,7 @@ documented test matrix.
 
 ## Verification block
 
-```
+```text
 Dependency pinning (this turn):
   - Lockfile present + committed: pnpm-lock.yaml
   - CI runs `pnpm install --frozen-lockfile`: yes
@@ -477,6 +477,7 @@ dependencies: irreproducible bugs, supply-chain incidents,
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `"*"` or `"latest"` as version string in `package.json` / `requirements.txt` (rule 1 violation)
 - Container `FROM` line with floating tag (no `@sha256:...` digest) — rule 3 violation
 - GitHub Actions used by tag (`@v4`) instead of full SHA — rule 3 violation, supply-chain risk
@@ -489,6 +490,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Verification block shows un-pinned deps but PR merged anyway (CI gate weakening)
 
 **Refinement candidates**:
+
 - New ecosystem row in the range-syntax table when a new package manager emerges (e.g., `bun`, `deno`, new Python tools)
 - Tightening of the auto-merge policy when minor / patch auto-merges break consumers
 - New cross-reference when a sister rule (dependency-overrides-not-exceptions, license-allowlist-gate, install-allowlist) tightens the pinning contract
@@ -639,7 +641,7 @@ trivy image --severity HIGH,CRITICAL --exit-code 1 myapp:pr-${SHA}
 Every scan produces a verification block the developer / reviewer
 reads:
 
-```
+```text
 Dependency vulnerability scan (this turn):
   pnpm audit:        0 HIGH, 0 CRITICAL (3 MEDIUM tracked in docs/security-advisories.md)
   govulncheck:       0 findings
@@ -650,7 +652,7 @@ Status: PASS
 
 A failing block looks like:
 
-```
+```text
 Dependency vulnerability scan (this turn):
   pnpm audit:        1 HIGH (CVE-2025-XXXXX in lodash@4.17.20 → upgrade to 4.17.21)
 
@@ -800,6 +802,7 @@ hours each.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - CVE published in a dep the project uses but no PR opened within 7 days (Renovate / Dependabot misconfigured)
 - HIGH / MODERATE finding suppressed via `audit-ignore` / per-line comment (rule 1 weakening)
 - MODERATE backlog growing > 5 entries in `docs/security-advisories.md` (rule 8 weakening — exception drift)
@@ -810,6 +813,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Deploy reached production with a CRITICAL CVE in the dep graph (5-layer enforcement weakening)
 
 **Refinement candidates**:
+
 - New scanner row when a new ecosystem ships (e.g., new Wasm registry, new mobile SDK store) and OSV-Scanner / npm-audit coverage gap
 - Tightening of the MODERATE floor when a recurring CVE class shows MODERATE underestimates real exploitability
 - New cross-reference when a sister rule (dependency-overrides-not-exceptions, install-allowlist, license-allowlist-gate) provides the toolkit to close a finding
@@ -941,8 +945,9 @@ boundary the parent doesn't tolerate. Symptoms: build errors,
 runtime crashes, broken APIs.
 
 Decision tree:
+
 1. **Is the parent abandoned?** Replace the parent. Bad transitive
-   + abandoned parent = upstream isn't coming back; fork or swap.
+   - abandoned parent = upstream isn't coming back; fork or swap.
 2. **Is the broken behaviour exercised in your code?** Run the
    integration tests / e2e flow that touches it. If green, ship
    the override.
@@ -989,6 +994,7 @@ Three legitimate cases:
    deployment-flow proof.
 
 Every exception:
+
 - Lives in the org's `docs/security-advisories.md` (NOT consumer).
 - Carries the package + version + finding ID + reviewer + date +
   expiry.
@@ -1029,6 +1035,7 @@ the override fixes the tree.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Exception added to `docs/security-exceptions.json` without first trying override path (escalation order violated)
 - `pnpm.overrides` / `resolutions` / Go `replace` directive not attempted on a transitive CVE / license finding
 - Override version pinned exactly (`X.Y.Z`) instead of forward-compatible (`>=X.Y.Z`) — rule 5 violation
@@ -1039,6 +1046,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Exception added without expiry date (drift toward permanent state)
 
 **Refinement candidates**:
+
 - New row in the abandoned-consumer replacement table when a recurring class emerges (e.g., `formidable`, `multer`, new Go HTTP libs)
 - Tightening of the override-vs-exception decision tree when a new framework's overrides syntax appears (e.g., `bun` overrides, `pnpm` v11 changes)
 - New cross-reference when a sister rule (updated-frameworks, install-allowlist) provides a replacement target
@@ -1094,12 +1102,14 @@ gate lives in `security-controls-org-wide.md` (5-layer enforcement).
 
 3. **Default-safe SPDX allowlist** (start here; extend with org
    counsel sign-off):
-   ```
+
+   ```text
    MIT, MIT-0, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC,
    MPL-2.0, CC0-1.0, CC-BY-4.0, CC-BY-SA-4.0, Unlicense, 0BSD,
    Zlib, BlueOak-1.0.0, Python-2.0, PSF-2.0, PostgreSQL,
    LGPL-3.0-only, LGPL-3.0-or-later, WTFPL
    ```
+
    Notably **NOT** on the safe-by-default list (require legal review
    before adding): GPL-2.0, GPL-3.0, AGPL-*, SSPL, BUSL, Commons
    Clause, Elastic License, Confluent Community License.
@@ -1151,7 +1161,7 @@ gate lives in `security-controls-org-wide.md` (5-layer enforcement).
 
 A passing scan reports counted SPDX values + the cross-check resolutions:
 
-```
+```text
 ── License-allowlist scan (osv-scanner) ───────────────────────
 +------------------------------------------+-------+
 | LICENSE                                  | COUNT |
@@ -1183,7 +1193,7 @@ A passing scan reports counted SPDX values + the cross-check resolutions:
 
 A failing scan names the package + the failure path:
 
-```
+```text
 ✗ License-allowlist gate FAILED — 1 violation(s) outside allowlist:
   - npm buffers@0.1.1: UNKNOWN — npm license=""; GitHub probe-failed
     (substack/node-buffers archived)
@@ -1218,7 +1228,7 @@ osv-scanner scan source \
 ## Cross-references
 
 - `security-controls-org-wide.md` — 5-layer non-bypassable enforcement
-  + centralize-in-org principle.
+  - centralize-in-org principle.
 - `dependency-vulnerabilities.md` — sister gate for CVE enforcement.
 - `updated-frameworks.md` — replace abandoned/unmaintained deps
   rather than adding exceptions.
@@ -1230,6 +1240,7 @@ osv-scanner scan source \
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Non-allowlisted SPDX shipped (gate weakening — exception added instead of dep replaced)
 - "UNKNOWN" / "non-standard" license carve-out without Trove / GitHub License API cross-check (rule 5 weakening)
 - Per-consumer license-exceptions file found (rule 2 violation — must live in org repo)
@@ -1239,6 +1250,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Cross-check script not run in CI (rule 5 — manual judgement re-emerged)
 
 **Refinement candidates**:
+
 - New SPDX row when a new permissive license gains adoption
 - New deny-list entry when a viral / restrictive license emerges
 - Tightening of the cross-check when "UNKNOWN" carve-outs prove load-bearing more often than expected
@@ -1401,7 +1413,7 @@ person's npm/marketplace credentials.
 
 ## What to do when the rule fires
 
-### "User asked me to install <X>"
+### "User asked me to install `<X>`"
 
 1. **Look up the publisher** in the allowlist above.
 2. **If allowed**: proceed; immediately after install, run the
@@ -1416,7 +1428,7 @@ person's npm/marketplace credentials.
    prompt sounded urgent. The 30 seconds of approval friction is the
    product, not the bug.
 
-### "Renovate / Dependabot opened a PR bumping <X>"
+### "Renovate / Dependabot opened a PR bumping `<X>`"
 
 1. Read the changelog of the bump. If it crosses a major version,
    surface the breaking changes.
@@ -1482,6 +1494,7 @@ Already applied in `~/.claude/settings.local.json`:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Auto-run install (`npx -y`, `pnpm dlx`, `curl … | sh`) attempted (rule 2 / 3 violation)
 - Unknown-publisher VS Code / Cursor extension installed without ask (publisher allowlist breach)
 - New MCP server registered without source review (rule 5 weakening)
@@ -1491,6 +1504,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Post-install CVE scan skipped (rule 7 weakening)
 
 **Refinement candidates**:
+
 - New package on the DO-NOT-INSTALL list when a supply-chain compromise emerges
 - New verified publisher row when an org maintainer proves trustworthy across multiple extensions
 - Tightening of the MCP publisher check when a new MCP-specific attack surface (binary substitution, etc.) is observed

@@ -28,11 +28,13 @@ Each example follows this structure:
 ### Example 1: Generic Bug Fix
 
 **Original Prompt:**
-```
+
+```text
 fix the bug
 ```
 
 **Evaluation:**
+
 - Target: ❌ (no file, function, or bug specified)
 - Action: ❌ (what needs fixing?)
 - Criteria: ~ (bug fixed, but which bug?)
@@ -44,7 +46,8 @@ No recent error messages, no file viewing context.
 **Decision:** RESEARCH REQUIRED
 
 **Research Plan:**
-```
+
+```text
 1. Search for TODO/FIXME comments indicating known bugs
 2. Check for failing tests
 3. Look for recent git commits mentioning "fix" or "bug"
@@ -52,6 +55,7 @@ No recent error messages, no file viewing context.
 ```
 
 **Research Execution:**
+
 ```bash
 # Step 1
 Grep: "TODO|FIXME|BUG"
@@ -72,12 +76,14 @@ Results: Error logged in auth.ts:145 "Invalid token"
 ```
 
 **Research Findings:**
+
 - FIXME in auth.ts:89: "FIXME: Token validation is broken"
 - 2 failing tests related to token validation
 - Recent fix attempt for login redirect
 - Error logging at auth.ts:145 for invalid tokens
 
 **Questions Asked:**
+
 ```json
 {
   "questions": [
@@ -115,11 +121,13 @@ Fix token validation in auth.ts:89, run tests to verify fix resolves the 2 faili
 ### Example 2: Generic Refactoring Request
 
 **Original Prompt:**
-```
+
+```text
 refactor the code to be better
 ```
 
 **Evaluation:**
+
 - Target: ❌ (what code?)
 - Action: ❌ ("better" is subjective)
 - Criteria: ❌ (what defines "better"?)
@@ -129,7 +137,8 @@ refactor the code to be better
 User recently opened src/api/users.ts
 
 **Research Plan:**
-```
+
+```text
 1. Read src/api/users.ts to understand current state
 2. Search for code quality issues (long functions, duplication)
 3. Check for established patterns in similar files
@@ -137,6 +146,7 @@ User recently opened src/api/users.ts
 ```
 
 **Research Execution:**
+
 ```bash
 # Step 1
 Read: src/api/users.ts
@@ -162,12 +172,14 @@ Finding: Service layer pattern, repository pattern common
 ```
 
 **Research Findings:**
+
 - users.ts is 450 lines, all logic in one file
 - Other APIs (products) use service layer separation
 - Industry pattern: Controller → Service → Repository
 - Current code mixes validation, business logic, data access
 
 **Questions Asked:**
+
 ```json
 {
   "questions": [
@@ -210,6 +222,7 @@ Finding: Service layer pattern, repository pattern common
 ```
 
 **User Answers:**
+
 1. "Extract service layer"
 2. "Yes, match ProductService"
 
@@ -221,18 +234,21 @@ Extract UserService class following ProductService pattern, move business logic 
 ### Example 3: Ambiguous Feature Request
 
 **Original Prompt:**
-```
+
+```text
 add authentication
 ```
 
 **Evaluation:**
+
 - Target: ~ (app-wide feature)
 - Action: ✅ (add authentication)
 - Criteria: ❌ (what type? what approach?)
 - Context: Check project state
 
 **Research Plan:**
-```
+
+```text
 1. Check if any auth exists currently
 2. Review package.json for auth libraries
 3. Explore project architecture
@@ -241,6 +257,7 @@ add authentication
 ```
 
 **Research Execution:**
+
 ```bash
 # Step 1
 Grep: "auth|login|session|jwt"
@@ -265,6 +282,7 @@ Findings: "Must support mobile app" mentioned
 ```
 
 **Research Findings:**
+
 - No existing authentication
 - Express.js backend with REST API
 - MongoDB database available
@@ -273,6 +291,7 @@ Findings: "Must support mobile app" mentioned
 - JWT is industry standard for this stack
 
 **Questions Asked:**
+
 ```json
 {
   "questions": [
@@ -342,6 +361,7 @@ Findings: "Must support mobile app" mentioned
 ```
 
 **User Answers:**
+
 1. "JWT with refresh tokens"
 2. "Both (web and mobile)"
 3. ["Login/register endpoints", "Role-based access control"]
@@ -356,11 +376,13 @@ Implement JWT authentication with refresh tokens, support both HttpOnly cookies 
 ### Example 4: Specific File and Action
 
 **Original Prompt:**
-```
+
+```text
 Refactor the getUserById function in src/api/users.ts to use async/await instead of promise chains
 ```
 
 **Evaluation:**
+
 - Target: ✅ (getUserById in src/api/users.ts)
 - Action: ✅ (refactor to async/await)
 - Criteria: ✅ (no promise chains, use async/await)
@@ -369,6 +391,7 @@ Refactor the getUserById function in src/api/users.ts to use async/await instead
 **Decision:** PROCEED IMMEDIATELY (no research or questions)
 
 **Execution:**
+
 ```javascript
 // Before
 function getUserById(id) {
@@ -400,11 +423,13 @@ async function getUserById(id) {
 ### Example 5: Specific Bug with Context
 
 **Original Prompt:**
-```
+
+```text
 Fix the TypeError at line 145 in src/auth/login.ts where user.profile.name is undefined
 ```
 
 **Evaluation:**
+
 - Target: ✅ (login.ts:145)
 - Action: ✅ (fix TypeError for user.profile.name)
 - Criteria: ✅ (no TypeError, safe access)
@@ -413,6 +438,7 @@ Fix the TypeError at line 145 in src/auth/login.ts where user.profile.name is un
 **Decision:** PROCEED IMMEDIATELY
 
 **Execution:**
+
 ```typescript
 // Before (line 145)
 const displayName = user.profile.name;
@@ -426,7 +452,8 @@ const displayName = user?.profile?.name ?? 'Anonymous';
 ### Example 6: Clear Feature with Details
 
 **Original Prompt:**
-```
+
+```text
 Add input validation to the registration form using Joi schema. Validate:
 - Email (required, valid format)
 - Password (required, min 8 characters, must include number and special char)
@@ -434,6 +461,7 @@ Add input validation to the registration form using Joi schema. Validate:
 ```
 
 **Evaluation:**
+
 - Target: ✅ (registration form)
 - Action: ✅ (add Joi validation)
 - Criteria: ✅ (specific validation rules listed)
@@ -442,6 +470,7 @@ Add input validation to the registration form using Joi schema. Validate:
 **Decision:** PROCEED IMMEDIATELY
 
 **Execution:**
+
 ```javascript
 const Joi = require('joi');
 
@@ -485,7 +514,8 @@ const registrationSchema = Joi.object({
 ### Example 7: Asterisk Bypass
 
 **Original Prompt:**
-```
+
+```text
 * just add a quick comment explaining this function
 ```
 
@@ -503,7 +533,8 @@ Add comment without any evaluation or questions.
 ### Example 8: Slash Command
 
 **Original Prompt:**
-```
+
+```text
 /commit
 ```
 
@@ -521,7 +552,8 @@ Slash command system handles the request.
 ### Example 9: Hash Prefix (Memory)
 
 **Original Prompt:**
-```
+
+```text
 # remember to use TypeScript strict mode for all new files
 ```
 
@@ -541,16 +573,19 @@ Memory system stores the note.
 ### Example 10: File Viewing Context Makes Clear
 
 **Context:**
-```
+
+```text
 [System: User opened src/components/LoginForm.tsx]
 ```
 
 **Prompt:**
-```
+
+```text
 refactor this to use hooks
 ```
 
 **Evaluation:**
+
 - Target: ✅ (LoginForm.tsx from file view context)
 - Action: ✅ (refactor to hooks)
 - Criteria: ✅ (convert class component to hooks)
@@ -566,17 +601,20 @@ Refactor LoginForm.tsx from class component to functional component with hooks.
 ### Example 11: Recent Error Provides Context
 
 **Previous Message:**
-```
+
+```text
 Error: ECONNREFUSED: Connection refused at 127.0.0.1:5432
   at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1148:16)
 ```
 
 **Current Prompt:**
-```
+
+```text
 fix this connection error
 ```
 
 **Evaluation:**
+
 - Target: ✅ (database connection from error)
 - Action: ✅ (fix connection refused)
 - Criteria: ✅ (successful connection to localhost:5432)
@@ -585,6 +623,7 @@ fix this connection error
 **Decision:** PROCEED IMMEDIATELY
 
 **Research (quick check):**
+
 - Port 5432 is PostgreSQL standard port
 - ECONNREFUSED means service not running or wrong config
 
@@ -596,18 +635,21 @@ Check if PostgreSQL is running, verify connection config, start service if neede
 ### Example 12: Ongoing Discussion Provides Context
 
 **Message History:**
-```
+
+```text
 User: "Should I use Prisma or TypeORM for the database?"
 Assistant: "Prisma has better TypeScript support and migration tooling..."
 User: "ok let's go with Prisma"
 ```
 
 **Current Prompt:**
-```
+
+```text
 set it up
 ```
 
 **Evaluation:**
+
 - Target: ~ (Prisma setup)
 - Action: ✅ (set up Prisma)
 - Criteria: ~ (working Prisma configuration)
@@ -625,18 +667,21 @@ Install Prisma, initialize, configure database connection, create initial schema
 ### Example 13: Major Feature with Multiple Unknowns
 
 **Original Prompt:**
-```
+
+```text
 implement caching
 ```
 
 **Evaluation:**
+
 - Target: ❌ (cache what?)
 - Action: ❌ (how to cache?)
 - Criteria: ❌ (what performance target?)
 - Context: Check project
 
 **Research Plan:**
-```
+
+```text
 1. Explore current performance bottlenecks
 2. Check for existing caching
 3. Review caching libraries available
@@ -645,6 +690,7 @@ implement caching
 ```
 
 **Research Findings:**
+
 - No current caching
 - Slow endpoints: /api/products (500ms avg), /api/users (200ms avg)
 - Redis installed but not configured
@@ -652,6 +698,7 @@ implement caching
 - User data changes frequently (poor cache candidate)
 
 **Questions Asked:**
+
 ```json
 {
   "questions": [
@@ -717,6 +764,7 @@ implement caching
 ```
 
 **User Answers:**
+
 1. ["Product catalog (/api/products)", "User profiles (/api/users/:id)"]
 2. "Redis with TTL"
 3. "1 minute"
@@ -728,21 +776,24 @@ Implement Redis caching for product catalog and user profiles with 1-minute TTL,
 
 ## Summary: Decision Patterns
 
-### Proceed Immediately If:
+### Proceed Immediately If
+
 - Specific file and function mentioned with clear action
 - Error message provides full context
 - File viewing context clarifies ambiguous "this"
 - Recent conversation establishes clear decisions
 - All 4 evaluation criteria pass
 
-### Research and Ask If:
+### Research and Ask If
+
 - Generic action verbs ("fix", "improve", "refactor") without target
 - No file or component mentioned
 - Multiple valid approaches
 - Architectural decisions needed
 - Configuration choices required
 
-### Pass Through If:
+### Pass Through If
+
 - Bypass prefix detected (`*`, `/`, `#`)
 - User explicitly opted out of evaluation
 

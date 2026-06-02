@@ -109,7 +109,7 @@ Per global `code-reviewer` shape: BLOCKER / CRITICAL / MAJOR / MINOR / SUGGESTIO
 
 ## Output shape
 
-```
+```text
 Mobile review (Division 3 — mobile):
 
 Platform(s): [iOS / Android / Flutter / RN / cross]
@@ -159,6 +159,7 @@ Verdict: APPROVED / CHANGES_REQUIRED
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Crash-free-session SLO breaches (sample / monitor rule needs strengthening)
 - App Store / Play Store rejections (review-cycle delays → checklist needs sharpening)
 - Privacy nutrition label mismatches with actual data collection (compliance gap)
@@ -169,6 +170,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Native crash on launch after dependency bump (compatibility-testing gap)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed mobile dimension appears in retrospect
 - New anti-pattern entry when a mobile shortcut recurs across 2+ releases
 - New auto-fire trigger when a recurring mobile-platform pattern surfaces

@@ -423,6 +423,7 @@ Ambient globals cause failures that are HARD to debug:
    tracing every global it transitively reads/writes
 
 Injection-based code is:
+
 - Testable in isolation (mock the deps)
 - Parallel-safe (no shared state)
 - Self-documenting (signature shows the dependencies)
@@ -436,6 +437,7 @@ debuggable, testable, scalable code.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New module-level mutable state introduced (singleton cache, shared dict, lazy-init holder) — rule 1 weakening
 - `process.env` / `os.environ` read deep in the call stack instead of at startup (rule 2 violation)
 - `init()` (Go) / `__init__.py` with side effects beyond pure assignment — rule 3 violation
@@ -448,6 +450,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `gochecknoglobals` / `gochecknoinits` lint disabled in golangci-lint config
 
 **Refinement candidates**:
+
 - New per-language DI pattern row when a new framework's idiom emerges (e.g., new async-local-storage shape, new effect system)
 - Tightening of the test-shuffle gate when randomised order isn't enforced in CI
 - New cross-reference when a sister rule (no-discards, local-testability, idempotency) depends on DI for verification

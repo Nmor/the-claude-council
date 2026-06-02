@@ -425,7 +425,7 @@ show_missing = true
 
 ## Verification block (Python-side)
 
-```
+```text
 Python lint sweep (this turn):
   - ruff check . --select=ALL: 0 issues
   - ruff format --check: clean

@@ -231,6 +231,7 @@ squawk migrations/*.sql            # Postgres migration safety analyser
 ```
 
 `squawk` warns on:
+
 - `ALTER TABLE ... ADD COLUMN ... NOT NULL DEFAULT` without volatile-fn
   trick (rewrites table)
 - `CREATE INDEX` without `CONCURRENTLY`
@@ -239,7 +240,7 @@ squawk migrations/*.sql            # Postgres migration safety analyser
 
 ## Verification block
 
-```
+```text
 SQL sweep (this turn):
   - sqlfluff lint: 0 issues
   - squawk migrations/: 0 warnings

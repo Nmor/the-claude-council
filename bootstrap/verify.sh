@@ -71,7 +71,7 @@ printf '\n== Phase B: Inventory floors ==\n'
 # skill paths: triggers + skill body references — never auto-walked.
 RULES_FLOOR=$(find "${PREFIX}/rules/common" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
 LIBRARY_COMMON=$(find "${PREFIX}/rules-library/common" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
-LIBRARY_LANG_DIRS=$(find "${PREFIX}/rules-library" -maxdepth 1 -mindepth 1 -type d 2>/dev/null | grep -v '/common$' | wc -l | tr -d ' ')
+LIBRARY_LANG_DIRS=$(find "${PREFIX}/rules-library" -maxdepth 1 -mindepth 1 -type d 2>/dev/null | grep -cv '/common$')
 LIBRARY_TOTAL=$(find "${PREFIX}/rules-library" -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
 SKILLS=$(find "${PREFIX}/skills" -maxdepth 1 -mindepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
 SKILLS_WITH_PATHS=0

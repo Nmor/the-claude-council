@@ -26,7 +26,7 @@ $ARGUMENTS
 
 **Call Syntax** (parallel: use `run_in_background: true`):
 
-```
+```text
 Bash({
   command: "~/.claude/bin/codeagent-wrapper {{LITE_MODE_FLAG}}--backend <codex|gemini> {{GEMINI_MODEL_FLAG}}- \"$PWD\" <<'EOF'
 ROLE_FILE: <role prompt path>
@@ -43,6 +43,7 @@ EOF",
 ```
 
 **Model Parameter Notes**:
+
 - `{{GEMINI_MODEL_FLAG}}`: When using `--backend gemini`, replace with `--gemini-model gemini-3-pro-preview` (note trailing space); use empty string for codex
 
 **Role Prompts**:
@@ -56,11 +57,12 @@ EOF",
 
 **Wait for Background Tasks** (max timeout 600000ms = 10 minutes):
 
-```
+```text
 TaskOutput({ task_id: "<task_id>", block: true, timeout: 600000 })
 ```
 
 **IMPORTANT**:
+
 - Must specify `timeout: 600000`, otherwise default 30 seconds will cause premature timeout
 - If still incomplete after 10 minutes, continue polling with `TaskOutput`, **NEVER kill the process**
 - If waiting is skipped due to timeout, **MUST call `AskUserQuestion` to ask user whether to continue waiting or kill task**
@@ -79,7 +81,7 @@ TaskOutput({ task_id: "<task_id>", block: true, timeout: 600000 })
 
 **MUST call `mcp__ace-tool__enhance_prompt` tool**:
 
-```
+```text
 mcp__ace-tool__enhance_prompt({
   prompt: "$ARGUMENTS",
   conversation_history: "<last 5-10 conversation turns>",
@@ -93,7 +95,7 @@ Wait for enhanced prompt, **replace original $ARGUMENTS with enhanced result** f
 
 **Call `mcp__ace-tool__search_context` tool**:
 
-```
+```text
 mcp__ace-tool__search_context({
   query: "<semantic query based on enhanced requirement>",
   project_root_path: "$PWD"
@@ -209,9 +211,10 @@ Synthesize both analyses, generate **Step-by-step Implementation Plan**:
    - **Modify plan**: Tell me what needs adjustment, I'll update the plan
    - **Execute plan**: Copy the following command to a new session
 
-   ```
+   ```text
    /ccg:execute .claude/plan/actual-feature-name.md
    ```
+
    ---
 
    **NOTE**: The `actual-feature-name.md` above MUST be replaced with the actual saved filename!
@@ -219,6 +222,7 @@ Synthesize both analyses, generate **Step-by-step Implementation Plan**:
 4. **Immediately terminate current response** (Stop here. No more tool calls.)
 
 **ABSOLUTELY FORBIDDEN**:
+
 - Ask user "Y/N" then auto-execute (execution is `/ccg:execute`'s responsibility)
 - Any write operations to production code
 - Automatically call `/ccg:execute` or any implementation actions

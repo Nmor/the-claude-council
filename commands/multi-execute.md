@@ -26,7 +26,7 @@ $ARGUMENTS
 
 **Call Syntax** (parallel: use `run_in_background: true`):
 
-```
+```text
 # Resume session call (recommended) - Implementation Prototype
 Bash({
   command: "~/.claude/bin/codeagent-wrapper {{LITE_MODE_FLAG}}--backend <codex|gemini> {{GEMINI_MODEL_FLAG}}resume <SESSION_ID> - \"$PWD\" <<'EOF'
@@ -60,7 +60,7 @@ EOF",
 
 **Audit Call Syntax** (Code Review / Audit):
 
-```
+```text
 Bash({
   command: "~/.claude/bin/codeagent-wrapper {{LITE_MODE_FLAG}}--backend <codex|gemini> {{GEMINI_MODEL_FLAG}}resume <SESSION_ID> - \"$PWD\" <<'EOF'
 ROLE_FILE: <role prompt path>
@@ -84,6 +84,7 @@ EOF",
 ```
 
 **Model Parameter Notes**:
+
 - `{{GEMINI_MODEL_FLAG}}`: When using `--backend gemini`, replace with `--gemini-model gemini-3-pro-preview` (note trailing space); use empty string for codex
 
 **Role Prompts**:
@@ -97,11 +98,12 @@ EOF",
 
 **Wait for Background Tasks** (max timeout 600000ms = 10 minutes):
 
-```
+```text
 TaskOutput({ task_id: "<task_id>", block: true, timeout: 600000 })
 ```
 
 **IMPORTANT**:
+
 - Must specify `timeout: 600000`, otherwise default 30 seconds will cause premature timeout
 - If still incomplete after 10 minutes, continue polling with `TaskOutput`, **NEVER kill the process**
 - If waiting is skipped due to timeout, **MUST call `AskUserQuestion` to ask user whether to continue waiting or kill task**
@@ -146,7 +148,7 @@ TaskOutput({ task_id: "<task_id>", block: true, timeout: 600000 })
 
 Based on "Key Files" list in plan, call `mcp__ace-tool__search_context`:
 
-```
+```text
 mcp__ace-tool__search_context({
   query: "<semantic query based on plan content, including key files, modules, function names>",
   project_root_path: "$PWD"
@@ -154,12 +156,14 @@ mcp__ace-tool__search_context({
 ```
 
 **Retrieval Strategy**:
+
 - Extract target paths from plan's "Key Files" table
 - Build semantic query covering: entry files, dependency modules, related type definitions
 - If results insufficient, add 1-2 recursive retrievals
 - **NEVER** use Bash + find/ls to manually explore project structure
 
 **After Retrieval**:
+
 - Organize retrieved code snippets
 - Confirm complete context for implementation
 - Proceed to Phase 3

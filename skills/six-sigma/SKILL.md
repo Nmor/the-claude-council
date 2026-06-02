@@ -192,6 +192,7 @@ Capability indices measure how well a process meets spec:
   variation
 
 Targets:
+
 - Cpk ≥ 1.33 — capable
 - Cpk ≥ 1.67 — highly capable (automotive standard)
 - Cpk ≥ 2.0 — six sigma capable
@@ -268,6 +269,7 @@ For each failure mode of a process / product:
 - **RPN = S × O × D** — Risk Priority Number
 
 Highest RPNs go first. Two flavours:
+
 - **Design FMEA (DFMEA)** — failure modes during product use
 - **Process FMEA (PFMEA)** — failure modes during the
   production / service process
@@ -315,6 +317,7 @@ principles with Six Sigma's variation reduction. Best when:
 - Six Sigma addresses defects / variation / capability
 
 Worst when:
+
 - Six Sigma's project rigidity kills lean's daily kaizen
   habit
 - Lean tools get reframed as "Six Sigma tools" and lose
@@ -342,6 +345,7 @@ problems with COPQ data — not bottom-up from "I have an idea
 for a project."
 
 ### Statistical tools applied without measurement system
+
 validation
 
 Capability analysis on data whose Gauge R&R was never
@@ -497,7 +501,7 @@ brand.
 - **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
   engineering basis (when civil / structural scope)
 - **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  + digital coordination (when AEC scope)
+  - digital coordination (when AEC scope)
 - **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
   Matrix** — Systematic innovation methodology
 - **Stanford d.school + IDEO Field Guide** — Design thinking
@@ -513,7 +517,6 @@ brand.
   Management (Grove)** — People + culture frameworks
 - **Getting to Yes (Fisher + Ury) + Never Split the Difference
   (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
 
 ### Cross-cutting engineering standards
 
@@ -536,12 +539,12 @@ brand.
 - **CWE-1059** — Insufficient technical documentation (process
   workflows MUST be documented)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - DMAIC project chartered without baseline measurement (skipping Measure phase)
 - Cp / Cpk reported without verifying process is in statistical control (control-chart skipped)
 - Defect definition not operationalised (different operators classify differently)
@@ -554,6 +557,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Belt certification taken as competency proxy instead of project results
 
 **Refinement candidates**:
+
 - New tool row when a new statistical method becomes broadly applicable
 - New cross-reference when a sister skill (lean-manufacturing, supply-chain-patterns, mlops-patterns) adds a Six Sigma gate
 - Tightening of the MSA-first policy when measurement-quality regression recurs

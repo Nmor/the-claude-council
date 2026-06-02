@@ -43,7 +43,7 @@ Trivial work uses inherited global rules only.
 
 ## The canonical scaffold
 
-```
+```text
 <workspace>/.claude/
 ├── CLAUDE.md                  # workspace-level rules + vendor table
 ├── README.md                  # how this .claude/ is organised

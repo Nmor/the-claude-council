@@ -271,6 +271,7 @@ defineModel for v-model, TypeScript + Volar for type safety, and
 the SSR + hydration discipline (Nuxt 3 / Vite SSR).
 
 **Negative scope** (NOT what this skill covers):
+
 - Generic frontend patterns — see `frontend-patterns`
 - Visual design quality (typography, colour, motion) — see
   `frontend-patterns` design section
@@ -350,7 +351,7 @@ the SSR + hydration discipline (Nuxt 3 / Vite SSR).
 - `~/.claude/rules-library/common/no-discards.md` — Vue-specific S6299
   (no-bypass-sanitization) ban
 - `~/.claude/rules-library/common/extreme-lint-policy.md` — eslint-plugin-vue
-  + sonarjs strict
+  - sonarjs strict
 - `~/.claude/agents/code-reviewer.md` — Council Division 3
 - `~/.claude/agents/ux-reviewer.md` — Council Division 7
 - Vue 3 Style Guide (vuejs.org/style-guide)
@@ -373,6 +374,7 @@ hides behind interactive UIs.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Options API used in new code where Composition API + `<script setup>` is the canonical baseline
 - `ref` / `reactive` misuse (e.g., destructuring reactive object loses reactivity — silent bug)
 - `watchEffect` used where `watch` with explicit deps would be clearer
@@ -385,6 +387,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Reactivity gotcha: mutating a `readonly` prop / mutating arrays / Maps without `.value`
 
 **Refinement candidates**:
+
 - New idiom row when Vue ships a new release (e.g., Vapor mode, new macros)
 - Tightening of the `<script setup>` enforcement when Options API recurs in new code
 - New cross-reference when a sister skill (frontend-patterns, typescript-patterns, accessible-forms) adds a Vue-relevant gate

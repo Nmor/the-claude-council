@@ -104,7 +104,7 @@ Before writing a single tool definition:
 
 #### Project structure
 
-```
+```text
 my-mcp-server/
 ├── README.md
 ├── package.json (or pyproject.toml)
@@ -359,7 +359,7 @@ mean a new server name (e.g., `shop-v2`), not a renamed tool.
 
 ## Verification checklist
 
-```
+```text
 MCP server build (this turn):
   - MCP spec read for target version + cited in docs/provider-research/mcp.md
   - Transport selected + rationale documented (stdio | streamable HTTP)
@@ -484,7 +484,7 @@ new ways to misuse the loose surface.
 - **NIST SP 800-218 SSDF §PW.4** — Reuse + third-party software
   considerations (MCP server is a supply-chain attachment)
 - **NIST SP 800-53 Rev 5 §AC-6** — Least privilege (tool scope
-  + capability negotiation enforce this)
+  - capability negotiation enforce this)
 - **CWE-1059** — Insufficient technical documentation (tool
   descriptions are the LLM's only context)
 - **CWE-1284** — Improper validation of specified quantity in
@@ -508,7 +508,6 @@ new ways to misuse the loose surface.
 - `~/.claude/rules-library/common/error-handling-with-context.md` — MCP
   error envelope shape
 
-
 ## Anti-Patterns
 
 | Pattern | Why bad | Correct alternative |
@@ -523,12 +522,12 @@ new ways to misuse the loose surface.
 | Logs tool inputs in plaintext | Sensitive PII / secrets leak | Redact per `log-levels.md`; structured fields only |
 | New MCP installed without source review | Supply-chain attack surface | Publisher allowlist per `install-allowlist.md` |
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New MCP server shipped without an `evals/` directory + 10-question eval set (Phase 4 weakening)
 - Tool name without server-identity prefix (`create_user` instead of `shop_create_user`) — collision risk when multiple MCPs loaded
 - Tool description > 3 sentences OR generic ("Get user info") — LLM-selection ambiguity
@@ -542,6 +541,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Same eval question fails > 3 times across iterations — tool surface is genuinely too hard for the LLM
 
 **Refinement candidates**:
+
 - New transport row when MCP gains an additional canonical transport beyond stdio + streamable HTTP
 - New annotation entry when the MCP spec adds further hint fields (e.g., cost / latency / scope hints)
 - New pattern entry when a recurring failure mode emerges (e.g., agent retry storms, context-budget blowups)

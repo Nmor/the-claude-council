@@ -64,6 +64,7 @@ Add a freshness header to each codemap:
 ## Step 5: Save Analysis Report
 
 Write a summary to `.reports/codemap-diff.txt`:
+
 - Files added/removed/modified since last scan
 - New dependencies detected
 - Architecture changes (new routes, new services, etc.)

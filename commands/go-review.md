@@ -19,6 +19,7 @@ This command invokes the **go-reviewer** agent for comprehensive Go-specific cod
 ## When to Use
 
 Use `/go-review` when:
+
 - After writing or modifying Go code
 - Before committing Go changes
 - Reviewing pull requests with Go code
@@ -28,6 +29,7 @@ Use `/go-review` when:
 ## Review Categories
 
 ### CRITICAL (Must Fix)
+
 - SQL/Command injection vulnerabilities
 - Race conditions without synchronization
 - Goroutine leaks
@@ -36,6 +38,7 @@ Use `/go-review` when:
 - Ignored errors in critical paths
 
 ### HIGH (Should Fix)
+
 - Missing error wrapping with context
 - Panic instead of error returns
 - Context not propagated
@@ -44,6 +47,7 @@ Use `/go-review` when:
 - Missing mutex protection
 
 ### MEDIUM (Consider)
+
 - Non-idiomatic code patterns
 - Missing godoc comments on exports
 - Inefficient string concatenation
@@ -94,8 +98,10 @@ var cache = map[string]*Session{}  // Concurrent access!
 func GetSession(id string) *Session {
     return cache[id]  // Race condition
 }
-```
+```text
+
 Fix: Use sync.RWMutex or sync.Map
+
 ```go
 var (
     cache   = map[string]*Session{}
@@ -107,25 +113,30 @@ func GetSession(id string) *Session {
     defer cacheMu.RUnlock()
     return cache[id]
 }
-```
+```text
 
 [HIGH] Missing Error Context
 File: internal/handler/user.go:28
 Issue: Error returned without context
+
 ```go
 return err  // No context
-```
+```text
+
 Fix: Wrap with context
+
 ```go
 return fmt.Errorf("get user %s: %w", userID, err)
-```
+```text
 
 ## Summary
+
 - CRITICAL: 1
 - HIGH: 1
 - MEDIUM: 0
 
 Recommendation: ❌ Block merge until CRITICAL issue is fixed
+
 ```
 
 ## Approval Criteria

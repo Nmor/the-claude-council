@@ -238,6 +238,7 @@ or objects."**
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Parallel implementation of an existing primitive shipping (sweep step skipped — rule violation pattern)
 - Same primitive appearing in 2+ projects (rule-of-three trigger — promote to global shared package)
 - Fork of a shared primitive instead of extend-with-prop (rule violation — log + reinforce)
@@ -247,6 +248,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - "Cleanup PR" deletes a primitive without migrating call sites (silent-drop class — surface to `no-silent-drops.md`)
 
 **Refinement candidates**:
+
 - New canonical-radius row when a new shared layer emerges (workspace package, monorepo internal lib)
 - New anti-pattern entry when a duplication shortcut recurs across 2+ PRs
 - Tightening of the rule-of-three trigger when duplicates accumulate before extraction

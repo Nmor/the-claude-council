@@ -13,7 +13,7 @@ traits (concrete first, generic later).**
 
 ## Module + workspace layout
 
-```
+```text
 my-app/
 ├── Cargo.toml                # workspace root
 ├── crates/

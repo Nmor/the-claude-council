@@ -40,7 +40,7 @@ support.
 
 ### 1. Codes are snake_case + stable
 
-```
+```text
 wrong_cell
 wallet_insufficient_funds
 auth_invalid_token
@@ -113,7 +113,7 @@ Adding a code is a contract change. The PR adds:
 - The client-side UX handler (per `useApiError` composable
   pattern or equivalent)
 - Tests that assert the code at the boundary (BE returns it
-  + FE handles it per spec)
+  - FE handles it per spec)
 
 ### 6. Codes never carry sensitive data
 
@@ -145,6 +145,7 @@ expect(err.details?.required).toBe(5000);
 Copy iterates frequently; the code is the contract.
 
 ### 8. Deprecation lifecycle (per `deprecation-lifecycle`
+
 rule, when authored)
 
 When a code is deprecated:
@@ -156,7 +157,7 @@ When a code is deprecated:
    clients still requesting old code get a new
    `code_deprecated` error pointing at the replacement.
 4. **Remove** — the code is removed from the registry +
-   runbook (with a "Superseded by <new code>" link).
+   runbook (with a "Superseded by `<new code>`" link).
 
 Each step has a calendar minimum; clients need time to
 update.
@@ -176,7 +177,8 @@ The error envelope is implemented once per platform:
 Per `reuse-first.md` — ONE class / type / hook per concept.
 No duplicate error envelopes across handlers.
 
-### 10. Codes are the integration point between BE, FE, ops,
+### 10. Codes are the integration point between BE, FE, ops
+
 support
 
 When a customer reports a problem with `request_id` X:
@@ -221,7 +223,8 @@ stable codes:
   path
 
 The cost of adding the code at write time is one extra string
-+ one registry entry. The cost of debugging without codes is
+
+- one registry entry. The cost of debugging without codes is
 hours per incident.
 
 ## Learning hooks
@@ -229,6 +232,7 @@ hours per incident.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New code shipped without an entry in `docs/error-codes.md` registry (rule 4 violation)
 - Same `error_code` reused with different semantics across services (taxonomy drift)
 - Code spelling changed after publication (rule 1 violation — codes are stable)
@@ -238,6 +242,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New code introduced without UX behaviour + i18n key + runbook entry simultaneously (rule 4 weakening)
 
 **Refinement candidates**:
+
 - New code class entry when a recurring failure shape needs a stable code
 - New row in the HTTP-status-to-code class table when a new RFC status gains common use
 - Tightening of the deprecation lifecycle steps when soft / hard windows prove too short in practice

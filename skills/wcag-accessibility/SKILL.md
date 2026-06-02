@@ -307,6 +307,7 @@ The patterns in this skill cover ≥ 80% of WCAG 2.2 AA conformance. The remaini
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `<div onClick>` / `<span onClick>` instead of `<button>` (WCAG 2.1.1 keyboard + 4.1.2 name/role/value)
 - `<img>` without `alt` attribute (1.1.1 non-text content)
 - Color contrast < 4.5:1 for body / < 3:1 for large text (1.4.3)
@@ -322,6 +323,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Required `data-testid` for axe-core E2E missing on new component
 
 **Refinement candidates**:
+
 - New row in checklist when WCAG ships new SC (e.g., WCAG 3.0)
 - New cross-reference when a sister skill (accessible-forms, interaction-design, frontend-patterns) adds an a11y gate
 - New automated-test rule row when axe-core ships a new rule
@@ -348,7 +350,8 @@ The following rules were migrated from `~/.claude/rules/common/` into this skill
 > Auto-fires on every file. Sister to `security.md`,
 > `task-intake-due-diligence.md` Q12 (a11y commitment),
 > `frontend-patterns` skill (which owns visual design quality
-> + component patterns).
+>
+> - component patterns).
 > Standards: **WCAG 2.2 (W3C Recommendation, Oct 2023)**,
 > **ARIA 1.2 (W3C Recommendation)**, **Section 508** (US),
 > **EAA — European Accessibility Act** (effective Jun 2025),
@@ -602,6 +605,7 @@ a retrofit + legal exposure is huge.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - WCAG 2.2 NEW success criterion (2.4.11 / 2.5.7 / 2.5.8 / 3.2.6 / 3.3.7 / 3.3.8) missed on a UI surface (rule 1 weakening)
 - ARIA used where semantic HTML would have worked (rule 3 violation — "First Rule of ARIA")
 - Custom widget shipped without the expected keyboard interaction model (rule 4 weakening)
@@ -613,6 +617,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - EAA / ADA / AODA scope expanded but accessibility-statement not updated
 
 **Refinement candidates**:
+
 - New required-criterion row when WCAG releases a new SC
 - New "critical paths" entry when a new auth / payment / account flow gains regulatory criticality
 - Tightening of the AAA list when a recurring regulatory finding suggests AA is insufficient for a path

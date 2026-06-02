@@ -43,6 +43,7 @@ public class MarketEntity {
 ```
 
 Enable auditing:
+
 ```java
 @Configuration
 @EnableJpaAuditing
@@ -76,6 +77,7 @@ public interface MarketRepository extends JpaRepository<MarketEntity, Long> {
 ```
 
 - Use projections for lightweight queries:
+
 ```java
 public interface MarketSummary {
   Long getId();
@@ -120,7 +122,8 @@ For cursor-like pagination, include `id > :lastId` in JPQL with ordering.
 ## Connection Pooling (HikariCP)
 
 Recommended properties:
-```
+
+```text
 spring.datasource.hikari.maximum-pool-size=20
 spring.datasource.hikari.minimum-idle=5
 spring.datasource.hikari.connection-timeout=30000
@@ -128,7 +131,8 @@ spring.datasource.hikari.validation-timeout=5000
 ```
 
 For PostgreSQL LOB handling, add:
-```
+
+```text
 spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 ```
 
@@ -154,6 +158,7 @@ spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 Principal-level JPA / Hibernate patterns: entity modelling, association fetching strategies (N+1 prevention), Criteria + JPQL query design, projections, second-level cache, transaction scoping, schema migration discipline.
 
 **Negative scope** (NOT what this skill covers):
+
 - Spring Boot wiring around the persistence layer — see `springboot-patterns`
 - Raw SQL optimisation outside JPA — see `postgres-patterns`
 - Schema migration safety (squawk, expand-contract) — see `schema-evolution.md` + `database-migrations`
@@ -239,6 +244,7 @@ JPA's "object-relational mapping" abstraction is leaky in two directions: develo
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - N+1 query pattern (`@OneToMany` accessed in loop without `JOIN FETCH`)
 - `FetchType.EAGER` on `@OneToMany` / `@ManyToMany` (default-eager weakening)
 - Entity returned from controller (entity-vs-DTO leakage; serialization triggers lazy-load LazyInitializationException)
@@ -251,6 +257,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Optimistic locking (`@Version`) not used on concurrent-edit entities
 
 **Refinement candidates**:
+
 - New entity-relation pattern row when a new modeling shape recurs
 - New cross-reference when a sister skill (postgres-patterns, database-migrations, springboot-patterns) adds a JPA gate
 - Tightening of the fetch-strategy default when N+1 incidents recur

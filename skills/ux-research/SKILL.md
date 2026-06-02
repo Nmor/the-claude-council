@@ -96,7 +96,7 @@ Pairs with `interaction-design` (informs design decisions),
 
 ### Pattern 1: Method-to-question matching
 
-```
+```text
 ┌──────────────────────────────────┬─────────────────────────────────┐
 │ Research question                │ Appropriate method              │
 ├──────────────────────────────────┼─────────────────────────────────┤
@@ -279,7 +279,7 @@ Report quantitative results with **confidence intervals** and
 
 **Personas** (research-grounded, not invented):
 
-```
+```text
 # Persona: "Maya the Migrating Manager"
 
 Source: 12 generative interviews, segment "mid-market ops
@@ -309,13 +309,13 @@ Quotes: <3 verbatim>
 
 **JTBD statements** follow the Christensen pattern:
 
-```
+```text
 When [SITUATION], I want to [MOTIVATION], so I can [EXPECTED OUTCOME].
 ```
 
 **Journey maps**:
 
-```
+```text
 Stage:        | Awareness | Consideration | Onboarding | Habit | Renewal
 Goal:         | ...       | ...           | ...        | ...   | ...
 Action:       | ...       | ...           | ...        | ...   | ...
@@ -331,7 +331,7 @@ Operational discipline so research stops being "the one
 researcher's heroic effort":
 
 - **Participant database** with consent metadata + last-contacted
-  + privacy-tier metadata
+  - privacy-tier metadata
 - **Recruitment SLA** (X days from request → Y participants)
 - **Study templates** (screeners, guides, consent forms)
 - **Insight repository**: every finding tagged with persona,
@@ -513,7 +513,7 @@ data instead of opinion.
 - **GRADE working group framework** — Evidence quality grading
   (High / Moderate / Low / Very Low)
 - **OECD Frascati Manual 2015** — Standard practice for research
-  + experimental development
+  - experimental development
 - **AHA + APA + MLA citation styles** — Discipline-specific
   citation formats
 - **Pyramid Principle (Barbara Minto)** — Top-down structured
@@ -528,12 +528,12 @@ data instead of opinion.
 - **CWE-1426** — Improper validation of generative AI output
   (applies when AI assists synthesis)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Feature decision made without research evidence (opinion-led product weakening)
 - Persona / journey map > 12 months stale and still cited
 - Research sample sized below statistical power (under-powered study claiming significance)
@@ -546,6 +546,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Stakeholder pressure to ship despite red-flag findings (research-vs-roadmap conflict)
 
 **Refinement candidates**:
+
 - New method-selection row when a new research method becomes appropriate (e.g., diary studies for long-tail behaviour)
 - New cross-reference when a sister skill (interaction-design, design-thinking, design-systems) adds a research gate
 - New synthesis template when a recurring shape emerges (e.g., affinity diagram → JTBD map)

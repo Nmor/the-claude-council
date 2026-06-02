@@ -8,7 +8,8 @@ description: Transforms vague or under-specified prompts into actionable, resear
 > Sister to: `~/.claude/rules/common/task-intake-due-diligence.md`
 > (the 29-question intake), `~/.claude/rules-library/common/reuse-first.md`
 > (Q1 sweep), `~/.claude/rules/common/official-docs-first.md` (Q3
-> + Q29), the Council Protocol Phase 0 in `~/.claude/CLAUDE.md`,
+>
+> - Q29), the Council Protocol Phase 0 in `~/.claude/CLAUDE.md`,
 > `~/.claude/rules/common/plan-task-breakdown.md` (Q27 output),
 > `~/.claude/rules/common/plan-execution-progress.md` (intake is
 > the first progress update). The hook lives at
@@ -115,7 +116,7 @@ Question count:
 - **1-2 questions** — simple ambiguity (which file, which
   approach)
 - **3-4 questions** — moderate complexity (scope + approach
-  + validation)
+  - validation)
 - **5-6 questions** — complex (major feature with multiple
   decision points)
 
@@ -218,7 +219,7 @@ After the intake:
 
 Wrong:
 
-```
+```text
 Q: Which approach do you want?
 - Approach A
 - Approach B
@@ -227,7 +228,7 @@ Q: Which approach do you want?
 
 Right:
 
-```
+```text
 Q: How should `getUserById` handle missing users?
 - Return `null` (matches existing `getOrgById` shape at lib/org.ts:42)
 - Throw `NotFoundError` (matches new error policy in PR #142)
@@ -389,7 +390,6 @@ prompt gets the full 29-question intake.
 - **`~/.claude/rules/common/council-triggers.md`** (Division 15) — bias,
   fairness, dataset provenance, human-in-the-loop gates
 
-
 ## Anti-Patterns
 
 | Pattern | Why bad | Correct alternative |
@@ -412,12 +412,12 @@ prompt gets the full 29-question intake.
 - `iterative-retrieval` skill — phase-1 codebase research uses this pattern
 - `search-first` skill — also engaged during prompt research
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Vague prompt slipped past the hook and reached implementation without clarification (router heuristic gap)
 - Clear-but-non-trivial prompt skipped Mode 2 intake (rule weakening — sister `task-intake-due-diligence.md`)
 - Generic option offered to user instead of research-grounded option (anti-pattern 1 recurrence)
@@ -429,6 +429,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Trivial-mode used for a task that touched user-visible behaviour / security / data shape (router miscategorisation)
 
 **Refinement candidates**:
+
 - New row in the routing table when a recurring prompt shape doesn't fit current modes
 - New anti-pattern entry when a question-style failure recurs across 2+ sessions
 - Tightening of the trivial-mode definition when "small" prompts later prove non-trivial

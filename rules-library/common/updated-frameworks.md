@@ -146,6 +146,7 @@ package names a given codebase has burned on.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Archived / deprecated package added or kept on first-touch (Hard rule 1 violation)
 - EOL runtime (Go ≤ 1.21, Node ≤ 18, Python ≤ 3.9) targeted by new code (Hard rule 2 violation)
 - HIGH / CRITICAL CVE present in pinned version (Hard rule 3 violation — sister `dependency-vulnerabilities.md` gate weakening)
@@ -156,6 +157,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - "We'll bump it later" markers introduced (deferred-bump anti-pattern)
 
 **Refinement candidates**:
+
 - New row in the abandoned-deps table when a new archive surfaces (e.g., `node-postgres` ↔ `pg`, new SDK retirements)
 - Tightening of the "one major behind maximum" cap when N-1 versions consistently carry security debt
 - New cross-reference when a sister rule (dependency-overrides-not-exceptions, install-allowlist) provides the replacement workflow

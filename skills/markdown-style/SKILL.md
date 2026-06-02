@@ -12,7 +12,6 @@ paths:
 
 # markdown-style
 
-
 <!-- ============================================================
      Section: markdown/coding-style.md
      ============================================================ -->
@@ -147,7 +146,8 @@ explicitly rather than dropping the language.
 The dash is the markdownlint default; consistency across the
 codebase matters more than the choice itself.
 
-### 3. Blank line above and below headings, lists, code,
+### 3. Blank line above and below headings, lists, code
+
 tables (MD022 + MD031 + MD032 + MD058)
 
 ```markdown
@@ -244,7 +244,7 @@ readable.
 - Inline code: `` `variableName` `` → `variableName`
 - Block code: triple-backtick fence with a language tag
 - Code containing backticks: use double backticks for the
-  inline span — `` `` `code with `backticks` inside` `` ``
+  inline span — `` `` `code with`backticks`inside` `` ``
 
 ### 10. Frontmatter is YAML, fenced with `---`
 
@@ -385,6 +385,7 @@ Content.
 Always increment by one.
 
 ### Anti-pattern 6: Trailing whitespace + hidden line-break
+
 spaces
 
 A line ending in two-or-more spaces forces a `<br>` in

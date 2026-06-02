@@ -253,7 +253,7 @@ is preceded by the actual audit running THIS turn — never
 inferred from "we wrote it carefully." The verification block
 for any rebuild / consolidation claim shows the sweep counts:
 
-```
+```text
 Principal-level audit (this turn):
   - Agents with all required sections: 22/22
   - Agents with project contamination: 0
@@ -308,6 +308,7 @@ principal level"**.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New agent file written without all required body sections (depth-floor violation)
 - New skill SKILL.md < 500 words (shallow-stub floor breached)
 - Skill missing standards citations with version + section (rule "Standards Cited" weakening)
@@ -320,6 +321,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Redirect stub left undocumented as such (implicit shallowness)
 
 **Refinement candidates**:
+
 - New required section in the agent / skill template when a recurring depth gap surfaces (e.g., new "Cost model" section, new "Rollback signal" section)
 - Tightening of the word-count floor when 500-word skills consistently produce thin outputs
 - New banned vocabulary entry when a non-cited claim shape recurs

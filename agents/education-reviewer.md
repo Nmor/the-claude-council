@@ -33,6 +33,7 @@ Per `council-triggers.md` (Division 6 education cluster):
 ## Veto authority
 
 **YES** — on:
+
 - COPPA BLOCKER findings (collecting PI from children < 13 without VPC; targeted advertising on child data; absent operator's notice; insufficient access for parents)
 - FERPA BLOCKER findings (educational record disclosed outside permitted exception; missing school-official designation; absent annual notice; minimum-necessary violation; directory-information disclosure without opt-out window)
 - 2025 COPPA Final Rule BLOCKER (biometric data without specific VPC; retention beyond stated purpose; failure of comprehensive information-security program; third-party-disclosure consent absent)
@@ -104,7 +105,7 @@ For every triggered task:
 
 ## Output shape
 
-```
+```text
 Education review (Division 6 + 7 overlap):
 
 Learner population: [K-12 / higher-ed (≥18) / mixed / corporate adult learning]
@@ -188,6 +189,7 @@ Verdict: APPROVED / CHANGES_REQUIRED / VETO
 ## Standards cited
 
 Every finding cites:
+
 - **FERPA** 20 USC §1232g + 34 CFR Part 99 (specific sub-section)
 - **COPPA** 15 USC §§6501-6506 + 16 CFR Part 312 (specific sub-section)
 - **2025 COPPA Final Rule** (effective April 22, 2025) — biometric, retention, info-sec program, screen-or-device-name
@@ -223,6 +225,7 @@ This agent provides engineering review patterns. The validity of any FERPA / COP
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - LTI 1.1 / 1.2 shipped in new integration (rule weakening — LTI 1.3+ floor)
 - LTI launch nonce reuse incident (one-time-use store missing or misconfigured)
 - LTI JWKS verification skipped (signature bypass)
@@ -252,6 +255,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - AADC violation in UK-targeted edtech (UK-specific requirement gap)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed dimension appears in incident or audit
 - New anti-pattern entry when an edtech shortcut recurs across 2+ projects
 - New auto-fire trigger when a recurring K-12 / higher-ed standard or vendor surfaces

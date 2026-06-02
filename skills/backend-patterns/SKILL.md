@@ -899,6 +899,7 @@ Cost of the layered + structured-logger + idempotent + bounded-middleware patter
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Fire-and-forget side effect without `.catch` / structured failure log (sister `no-silent-failures.md` violation)
 - Handler shape duplicates middleware logic that already exists (reuse-first weakening)
 - Connection pool created per-request instead of injected from the application root
@@ -910,6 +911,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Content-hash cache used as a write-through path without corruption-as-miss handling
 
 **Refinement candidates**:
+
 - New pattern row when a recurring backend shape emerges (e.g., outbox + transactional events, CQRS read model, materialized view refresh)
 - New cross-reference when a sister rule (idempotency, observability, error-handling-with-context) adds a server-side gate
 - Tightening of the fire-and-forget pattern when async errors slip past structured logging

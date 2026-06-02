@@ -291,6 +291,7 @@ user-experience layer.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - False-positive success toast where the optional sub-step actually failed (rule 1 violation pattern)
 - Async op left in "pending forever" terminal state (rule 2 violation)
 - Optimistic UI update without rollback on failure (rule 3 weakening)
@@ -305,6 +306,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Server controller `throw` without centralised exception-mapping middleware turning into a generic 500 (rule 7 server-side weakening)
 
 **Refinement candidates**:
+
 - New rule when a new false-positive success shape appears in 2+ incidents
 - New cross-reference when a sister rule (no-discards, error-handling-with-context) covers a pattern previously thought unique to this rule
 - Tightening of the "every async op has a known status" rule when a new state-machine gap is observed

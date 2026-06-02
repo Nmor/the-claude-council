@@ -85,6 +85,7 @@ go clean -modcache && go mod download  # Fix checksum issues
 ## Stop Conditions
 
 Stop and report if:
+
 - Same error persists after 3 fix attempts
 - Fix introduces more errors than it resolves
 - Error requires architectural changes beyond scope
@@ -131,6 +132,7 @@ For detailed Go error patterns and code examples, see `skill: golang-patterns`.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Same `go vet` / `staticcheck` warning class recurring across packages (config + lint rule needs review)
 - Module dep upgrade breakage from a single transitive (override discipline needs reinforcement)
 - `//nolint` attempts (rule violation — log + reinforce proper-fix discipline)
@@ -139,6 +141,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `errcheck` / `errorlint` finding suppressed instead of wrapped (regression — `error-handling-with-context.md` rule needs sharpening)
 
 **Refinement candidates**:
+
 - New common-fix entry when a Go error class recurs across 2+ services
 - New anti-pattern entry when a Go shortcut recurs
 - Tightening of `golangci-lint` config when chronic class observed

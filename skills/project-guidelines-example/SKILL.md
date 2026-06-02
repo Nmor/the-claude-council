@@ -21,11 +21,11 @@ description: Template for authoring a project-specific skill in `<workspace>/.cl
 A workspace-specific skill captures:
 
 - The project's tech stack (runtime + language + framework + DB
-  + queue + cache + CDN + auth provider) at PINNED versions
+  - queue + cache + CDN + auth provider) at PINNED versions
 - The project's file layout
 - Project-specific code patterns + reuse-first primitives
 - Testing requirements that EXTEND global (`extreme-lint-policy.md`
-  + `testing.md`) with project-specific thresholds
+  - `testing.md`) with project-specific thresholds
 - Deployment workflow + env vars
 - Critical rules that EXTEND global (never relax)
 - Cross-references to the project's `CLAUDE.md` + sister
@@ -86,7 +86,7 @@ intentional reminders to substitute.
 
 **Services (illustrative diagram):**
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                         Frontend                            │
 │  Next.js (current LTS) + TypeScript (strict) + Tailwind     │
@@ -110,7 +110,7 @@ intentional reminders to substitute.
 
 ### File structure (illustrative)
 
-```
+```text
 <workspace>/
 ├── frontend/
 │   └── src/
@@ -594,7 +594,6 @@ spawning its workspace skill on first significant work.
 - `~/.claude/rules-library/common/extreme-lint-policy.md` — strictness
   baseline a project guidelines example illustrates
 
-
 ## Anti-Patterns
 
 | Pattern | Why bad | Correct alternative |
@@ -608,12 +607,12 @@ spawning its workspace skill on first significant work.
 | Project-specific vendor list in global `CLAUDE.md` | Pollutes global; other projects see irrelevant context | Vendor list in `<workspace>/.claude/CLAUDE.md` |
 | Project guidelines not version-controlled with code | Out-of-sync with codebase; review-bypass | Guidelines live in repo; reviewed in PRs |
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New workspace `.claude/skills/` created without using this
   template (template adoption gap — surface to surface the
   scaffold flow per `project-scoped-artifacts.md`)
@@ -632,6 +631,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
   the global rules catalogue
 
 **Refinement candidates**:
+
 - New illustrative section when a recurring stack shape emerges
   across 3+ workspaces (e.g., Tauri desktop, Solidity contracts,
   Flutter mobile, Electron + Rust core)

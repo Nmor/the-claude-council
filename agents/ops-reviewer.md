@@ -81,7 +81,7 @@ For every alert / failure mode:
 
 ## Output shape
 
-```
+```text
 Operations review (Division 8):
 
 SLO impact: [latency / error-rate / availability — by how much]
@@ -127,6 +127,7 @@ Standards-cited references in every finding (Google SRE book chapters, OpenTelem
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Pages without runbook entries (runbook-coverage gap)
 - Mean-time-to-resolution drift (runbook quality eroding OR system complexity outgrowing docs)
 - Alert noise (alert-to-page ratio increasing → SLO definitions need review)
@@ -137,6 +138,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - SLO breaches without burn-rate alert firing first (alert calibration is wrong)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed ops dimension appears in retrospect
 - New auto-fire trigger when a recurring ops-impacting change pattern surfaces
 - New pre-deploy check when a deploy failure class recurs

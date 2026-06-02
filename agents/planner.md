@@ -31,6 +31,7 @@ This agent operates within the global rule set under `~/.claude/rules/common/`. 
 ## Planning Process
 
 ### 1. Requirements Analysis
+
 - Understand the feature request completely
 - Ask clarifying questions if needed
 - Identify success criteria
@@ -47,13 +48,16 @@ This agent operates within the global rule set under `~/.claude/rules/common/`. 
   follow-up.
 
 ### 2. Architecture Review
+
 - Analyze existing codebase structure
 - Identify affected components
 - Review similar implementations
 - Consider reusable patterns
 
 ### 3. Step Breakdown
+
 Create detailed steps with:
+
 - Clear, specific actions
 - File paths and locations
 - Dependencies between steps
@@ -61,6 +65,7 @@ Create detailed steps with:
 - Potential risks
 
 ### 4. Implementation Order
+
 - Prioritize by dependencies
 - Group related changes
 - Minimize context switching
@@ -291,6 +296,7 @@ Each phase should be mergeable independently. Avoid plans that require all phase
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Plan tasks consistently sized too coarse (phase headers without atomic-task breakdown) — refine `plan-task-breakdown.md` examples
 - Phases skipped or reordered silently during execution (signals the original sizing was wrong)
 - Missed dependencies surfaced mid-execution (the dependency analysis upfront was incomplete)
@@ -301,6 +307,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Commit-policy decision repeatedly defaulted without surfacing options (rule needs sharpening)
 
 **Refinement candidates**:
+
 - New plan-template variant when a task class consistently needs a non-default structure
 - New verification-gate type when post-phase gaps recur
 - New anti-pattern entry when a planning shortcut recurs across 2+ plans

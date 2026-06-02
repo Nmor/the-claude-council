@@ -18,4 +18,4 @@
 
 | Rule | Extends global | Purpose |
 | --- | --- | --- |
-| <rule.md> | <global rule.md> | <one-line> |
+| `<rule.md>` | `<global rule.md>` | `<one-line>` |

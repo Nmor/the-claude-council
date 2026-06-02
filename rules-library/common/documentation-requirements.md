@@ -85,6 +85,7 @@ similar surfaces can live elsewhere — but technical docs are in
 the repo.)
 
 Reasons:
+
 - Docs version with code (a v1 doc is the v1 codebase's doc)
 - PR review covers docs (no "I'll do the docs later" — see
   `docs-sync-with-code.md`)
@@ -127,7 +128,7 @@ A paragraph explaining what the project does + who it's for.
 git clone ...
 pnpm install
 pnpm dev
-```
+```text
 
 ## Documentation
 
@@ -143,6 +144,7 @@ What's stable, what's beta, what's experimental.
 ## License
 
 SPDX identifier + LICENSE link.
+
 ```
 
 The reader decides in 30 seconds whether to use the project.
@@ -314,6 +316,7 @@ needs structure beyond lists.
 ### Anti-pattern 3: Outdated screenshots
 
 Every UI screenshot is a snapshot that goes stale. Either:
+
 - Generate screenshots in CI on a baseline UI
 - Use animated GIFs for complex flows (with text describing
   every step for accessibility)
@@ -398,6 +401,7 @@ things forever.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Feature shipped without a doc page (docs-sync-with-code.md violation — feature is not done)
 - Diátaxis quadrants mixed in a single artifact (tutorial pivots into reference, etc.) — rule 1 weakening
 - Reference doc hand-written instead of generated (rule 3 violation — drift inevitable)
@@ -409,6 +413,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Broken-link count rises in CI (rule 10 metric drift)
 
 **Refinement candidates**:
+
 - New required README section when a recurring user need surfaces as a question on day one
 - Tightening of the "examples are tested" enforcement when documentation rot is observed
 - New cross-reference when a sister rule (adr-template, runbook-template) defines an artifact this rule references

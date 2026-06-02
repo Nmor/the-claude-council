@@ -260,7 +260,7 @@ line_length:
 
 ## Verification block
 
-```
+```text
 Swift build (this turn):
   - swift build -Xswiftc -warnings-as-errors: 0 warnings
   - swiftlint lint --strict: 0 violations

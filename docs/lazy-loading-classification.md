@@ -123,8 +123,6 @@ sibling skill is present.
 
 ### Genuinely NEW domain skills (no existing skill covers)
 
-
-
 Each domain skill bundles tightly-related rules from `rules/
 common/`. The skill's `paths:` frontmatter matches the file
 types that trigger the domain.

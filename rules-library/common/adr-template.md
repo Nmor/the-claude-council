@@ -36,7 +36,7 @@ Decisions that warrant an ADR:
 - Migration approach (e.g., "dual-write for 30 days then
   cutover")
 - Compliance choice (e.g., "GDPR data deletion via DDB TTL
-  + DB column tombstone")
+  - DB column tombstone")
 - Tooling / build / deploy (e.g., "pnpm not npm; serverless-
   framework not SAM")
 
@@ -202,7 +202,7 @@ Council divisions 1 (Architecture) + 4 (Security) + 6
 
 ### 8. Repository layout
 
-```
+```text
 docs/
 ├── adr/
 │   ├── README.md           # index + acceptance process
@@ -271,6 +271,7 @@ answer that contradicts the original (causing thrash).
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Architectural decision made without an ADR landing in the same PR (rule 3 weakening)
 - ADR amended after acceptance (rule 4 violation — body is immutable; supersede instead)
 - ADR not referenced from the code path that implements it (rule 5 weakening — discoverability gap)
@@ -281,6 +282,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Council Phase 0 architectural output not crystallised into an ADR (council-default.md weakening)
 
 **Refinement candidates**:
+
 - New required-section row when an ADR class consistently lacks a load-bearing dimension
 - Tightening of the "Considered options" requirement when ADRs ship with only one option compared
 - New cross-reference when a sister rule (runbook-template, docs-sync-with-code) prescribes companion artifacts

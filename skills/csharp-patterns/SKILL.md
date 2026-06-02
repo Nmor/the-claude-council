@@ -37,9 +37,11 @@ paths:
 
 ---
 paths:
-  - "**/*.cs"
-  - "**/*.csproj"
-  - "**/*.xaml"
+
+- "**/*.cs"
+- "**/*.csproj"
+- "**/*.xaml"
+
 ---
 
 # C# Coding Style
@@ -285,7 +287,7 @@ uses the lockfile strictly; lockfile drift fails the build.
 
 Maintain at `nuget-banned.txt` (audited via CODEOWNERS):
 
-```
+```text
 # Abandoned / replaced
 Newtonsoft.Json          # prefer System.Text.Json
 RestSharp                # prefer HttpClient + System.Text.Json
@@ -532,7 +534,7 @@ dotnet_diagnostic.CA2016.severity = error    # forward CancellationToken
 
 ## Verification block
 
-```
+```text
 .NET build (this turn):
   - dotnet build /warnaserror: 0 warnings, 0 errors
   - dotnet format --verify-no-changes: clean
@@ -583,7 +585,7 @@ not needed; DI via the built-in `Microsoft.Extensions.DependencyInjection`;
 
 ## Project layout
 
-```
+```text
 src/
 ├── MyApp.Domain/              # POCOs, value objects, domain logic
 │   ├── Order.cs
@@ -846,7 +848,9 @@ Per `~/.claude/rules-library/common/reuse-first.md`.
 
 ---
 paths:
-  - "**/*.cs"
+
+- "**/*.cs"
+
 ---
 
 # C# Security
@@ -881,9 +885,11 @@ Enable anti-forgery tokens for MVC forms. API endpoints use bearer tokens (CSRF-
 
 ---
 paths:
-  - "**/*Tests.cs"
-  - "**/*Test.cs"
-  - "**/Tests/**/*.cs"
+
+- "**/*Tests.cs"
+- "**/*Test.cs"
+- "**/Tests/**/*.cs"
+
 ---
 
 # C# Testing

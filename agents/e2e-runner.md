@@ -60,11 +60,13 @@ npx playwright show-report                 # View HTML report
 ## Workflow
 
 ### 1. Plan
+
 - Identify critical user journeys (auth, core features, payments, CRUD)
 - Define scenarios: happy path, edge cases, error cases
 - Prioritize by risk: HIGH (financial, auth), MEDIUM (search, nav), LOW (UI polish)
 
 ### 2. Create
+
 - Use Page Object Model (POM) pattern
 - Prefer `data-testid` locators over CSS/XPath
 - Add assertions at key steps
@@ -72,6 +74,7 @@ npx playwright show-report                 # View HTML report
 - Use proper waits (never `waitForTimeout`)
 
 ### 3. Execute
+
 - Run locally 3-5 times to check for flakiness
 - Quarantine flaky tests with `test.fixme()` or `test.skip()`
 - Upload artifacts to CI
@@ -146,6 +149,7 @@ For detailed Playwright patterns, Page Object Model examples, configuration temp
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Flaky test rate creeping above 5% (root-cause investigation discipline weak)
 - `waitForTimeout` reintroduced (state-based-wait rule needs reinforcement)
 - E2E test asserting against mocked services (defeats-the-point pattern — review needs to flag)
@@ -158,6 +162,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Production-vs-staging drift breaking E2E (production-mirror discipline weak)
 
 **Refinement candidates**:
+
 - New E2E-pattern entry when a missed journey class appears in retrospect
 - New anti-pattern entry when a shortcut recurs across 2+ test runs
 - Tightening of stability + duration thresholds when chronic miss observed

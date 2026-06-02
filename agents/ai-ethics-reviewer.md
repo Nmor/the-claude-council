@@ -30,6 +30,7 @@ Per `council-triggers.md` Division 15:
 ## Veto authority
 
 **YES** — on AI safety / fairness / bias findings. Blocks merge until:
+
 1. Bias evaluation across demographic axes (gender, race, age, geography, language) meets defined fairness threshold OR documented bias is accepted by named owner (CTO / Head of AI / equivalent) with mitigation timeline, OR
 2. Human-in-the-loop is wired for high-impact automated decisions, OR
 3. Model card + datasheet are published, OR
@@ -62,7 +63,7 @@ For every triggered task:
 
 ## Output shape
 
-```
+```text
 AI Ethics review (Division 15):
 
 Use case classification:
@@ -140,6 +141,7 @@ Verdict: APPROVED / CHANGES_REQUIRED / VETO
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Bias-evaluation gaps surfacing post-launch (each gap → checklist needs new protected-attribute coverage)
 - Hallucination incidents in production (each incident → grounding rule needs tightening)
 - Prompt-injection attacks succeeding (each success → defense layer missing from checklist)
@@ -150,6 +152,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Adversarial-robustness failures (each failure → test suite needs expansion)
 
 **Refinement candidates**:
+
 - New fairness-metric threshold when current threshold proves too permissive in retrospect
 - New auto-fire trigger when a recurring AI failure pattern surfaces
 - New review-checklist row when a missed risk appears in post-mortem

@@ -242,6 +242,7 @@ public <T> T withRetry(Supplier<T> supplier, int maxRetries) {
 
 **Security Note**: The `X-Forwarded-For` header is untrusted by default because clients can spoof it.
 Only use forwarded headers when:
+
 1. Your app is behind a trusted reverse proxy (nginx, AWS ALB, etc.)
 2. You have registered `ForwardedHeaderFilter` as a bean
 3. You have configured `server.forward-headers-strategy=NATIVE` or `FRAMEWORK` in application properties
@@ -325,6 +326,7 @@ Use Spring’s `@Scheduled` or integrate with queues (e.g., Kafka, SQS, RabbitMQ
 Principal-level Spring Boot architecture: layered separation (controller / service / repository), constructor injection, transactional boundaries, centralised exception handling, observability, caching, and async boundaries.
 
 **Negative scope** (NOT what this skill covers):
+
 - Spring Boot AUTH / security flows — see `springboot-security`
 - Spring Boot TEST methodology — see `springboot-tdd`
 - JPA entity modelling + queries — see `jpa-patterns`
@@ -395,6 +397,7 @@ Spring Boot's "convention over configuration" + auto-config saves time at the co
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Field injection via `@Autowired` on private field (constructor injection weakening — testability cost)
 - Fat controller (business logic in `@RestController` instead of `@Service`)
 - `@Transactional` on public method called via `this.method()` (proxy bypass — TX not applied)
@@ -407,6 +410,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Reactive (`Mono`/`Flux`) mixed with blocking JDBC in same chain (thread-pool starvation)
 
 **Refinement candidates**:
+
 - New pattern row when Spring Boot ships a new feature (e.g., Spring Boot 4 GraalVM AOT)
 - New cross-reference when a sister skill (springboot-security, springboot-tdd, jpa-patterns) adds a related pattern
 - Tightening of the `@Transactional` guidance when a recurring TX-bypass incident emerges

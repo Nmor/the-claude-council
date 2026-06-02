@@ -16,7 +16,7 @@ not needed; DI via the built-in `Microsoft.Extensions.DependencyInjection`;
 
 ## Project layout
 
-```
+```text
 src/
 ├── MyApp.Domain/              # POCOs, value objects, domain logic
 │   ├── Order.cs

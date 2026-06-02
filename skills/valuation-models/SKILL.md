@@ -56,7 +56,7 @@ Output is a "football field" chart: each method produces a range; the overlap zo
 
 ### Pattern 2: DCF — disciplined structure
 
-```
+```text
 Enterprise Value (EV) =
   Σ [FCFF_t / (1 + WACC)^t]    for t = 1 to T (explicit forecast)
   + Terminal Value / (1 + WACC)^T
@@ -81,7 +81,7 @@ Equity Value = EV - Net Debt - Minority Interest - Preferred Equity
 
 **WACC composition (Koller §11)**:
 
-```
+```text
 WACC = (E/V) × Re + (D/V) × Rd × (1 - t)
 
 Re (cost of equity) via CAPM = Rf + β × ERP + country_risk
@@ -181,7 +181,7 @@ Sponsors care about IRR + MOIC (multiple of invested capital). Strategic buyers 
 
 ### Pattern 5: Venture capital method (pre-revenue startups)
 
-```
+```text
 Exit Value = Exit Multiple × Exit Revenue (or EBITDA)
 Present Value = Exit Value / (1 + IRR_target)^years_to_exit
 Post-money Valuation = Present Value
@@ -316,6 +316,7 @@ The discipline of triangulation + sensitivity + scenario + documentation is what
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - DCF model with single point estimate instead of range / sensitivity
 - WACC assumed without documented basis (risk-free rate, ERP, beta source)
 - Terminal-value > 75% of enterprise value (model brittleness — assumption-domination)
@@ -328,6 +329,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Currency mismatch in multi-jurisdiction valuation (FX assumption hidden)
 
 **Refinement candidates**:
+
 - New methodology row when a new approach becomes standard (e.g., real-options for early-stage)
 - New cross-reference when a sister skill (financial-analyst, investment-research, ifrs-gaap-reporting) adds a valuation gate
 - Tightening of the sensitivity-table requirement when single-point-estimate regression recurs

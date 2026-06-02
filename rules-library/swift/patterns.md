@@ -17,7 +17,7 @@ dependency injection via protocol composition.**
 
 ## Project layout
 
-```
+```text
 MyApp/
 ├── Package.swift                      # SwiftPM manifest
 ├── Sources/
@@ -66,6 +66,7 @@ final class OrderViewModel: ObservableObject {
 ```
 
 Default: `struct`. Reach for `class` only when:
+
 - Identity matters (`===` comparison)
 - Deinitializer needed (resource cleanup)
 - Reference semantics required (shared mutable state)

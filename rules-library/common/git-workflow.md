@@ -25,7 +25,7 @@ project org, client orgs), the canonical shape is:
 
 ## Commit Message Format
 
-```
+```text
 <type>: <description>
 
 <optional body>
@@ -38,6 +38,7 @@ Note: Attribution disabled globally via ~/.claude/settings.json.
 ## Pull Request Workflow
 
 When creating PRs:
+
 1. Analyze full commit history (not just latest commit)
 2. Use `git diff [base-branch]...HEAD` to see all changes
 3. Draft comprehensive PR summary
@@ -72,6 +73,7 @@ When creating PRs:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Commit authored with wrong identity for the target org (per-org `includeIf` block missing or misconfigured)
 - Commit unsigned when the repo's policy requires signing (signing-key not registered for that org's identity)
 - First-touch protocol skipped — agent commits before verifying `git config user.email` matches the org (rule "First-touch protocol" weakening)
@@ -82,6 +84,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Conventional-commits type misused (e.g., `feat:` for a pure refactor; `fix:` for a feature)
 
 **Refinement candidates**:
+
 - New conventional-commit type row when a recurring change class needs distinct labelling (e.g., `revert:`, `deps:`, `i18n:`)
 - Tightening of the per-org first-touch check when identity mismatches recur in retrospectives
 - New cross-reference when a sister rule (plan-completion-before-push, no-overclaim) provides a pre-push gate

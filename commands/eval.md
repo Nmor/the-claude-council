@@ -37,7 +37,7 @@ Created: $(date)
 - pass^3 = 100% for regression evals
 ```
 
-2. Prompt user to fill in specific criteria
+1. Prompt user to fill in specific criteria
 
 ## Check Evals
 
@@ -56,7 +56,7 @@ Run evals for a feature:
    - Record PASS/FAIL
 4. Report current status:
 
-```
+```text
 EVAL CHECK: feature-name
 ========================
 Capability: X/Y passing
@@ -70,7 +70,7 @@ Status: IN PROGRESS / READY
 
 Generate comprehensive eval report:
 
-```
+```text
 EVAL REPORT: feature-name
 =========================
 Generated: $(date)
@@ -108,7 +108,7 @@ RECOMMENDATION
 
 Show all eval definitions:
 
-```
+```text
 EVAL DEFINITIONS
 ================
 feature-auth      [3/5 passing] IN PROGRESS
@@ -119,6 +119,7 @@ feature-export    [0/4 passing] NOT STARTED
 ## Arguments
 
 $ARGUMENTS:
+
 - `define <name>` - Create new eval definition
 - `check <name>` - Run and check evals
 - `report <name>` - Generate full report

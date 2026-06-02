@@ -133,6 +133,7 @@ type ConsentRecord = {
 ```
 
 Required:
+
 - **Granular** — separate toggles per scope (not "I agree to everything")
 - **Opt-in** — default OFF; pre-ticked checkboxes are illegal in EU (CJEU Planet49 ruling)
 - **Revocable** — withdrawing is as easy as granting (one-click unsubscribe, settings toggle)
@@ -141,7 +142,7 @@ Required:
 
 ### Cookie banner — CJEU-compliant
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │  Cookie preferences                                      │
 │                                                          │
@@ -192,6 +193,7 @@ async function handleDsar(req: Request) {
 ```
 
 The DSAR worker:
+
 - Collects from all stores (DB, blob, cache, search index, analytics warehouse, processors)
 - Generates the export package (signed URL, expires 7 days)
 - Cascades deletion (per `data-retention.md`)
@@ -214,6 +216,7 @@ For US transfers post-Schrems II: SCCs + supplementary measures (encryption at r
 ### Data Protection Impact Assessment (DPIA — Article 35)
 
 Required when processing is "likely to result in high risk":
+
 - New technology (LLM-powered features, biometric auth)
 - Large-scale special-category processing (health, religious, political)
 - Systematic monitoring (employee, public-space)
@@ -255,6 +258,7 @@ GDPR Article 34: notify affected subjects "without undue delay" when high risk t
 CCPA: notify "in the most expedient time possible and without unreasonable delay."
 
 Runbook (per `~/.claude/rules-library/common/runbook-template.md`) names:
+
 - The 72-hour clock + DPO
 - The "affected users" query (pre-built, not invented during incident)
 - Notification templates per channel (email, status page, regulator submission)
@@ -335,6 +339,7 @@ Treat every collection point as if a regulator is reading the code, because even
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New data-collection point without entry in RoPA (Article 30 weakening)
 - Consent obtained via pre-ticked checkbox (CJEU Planet49 violation)
 - "Do Not Sell" link absent on US homepage when CCPA scope applies
@@ -348,6 +353,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Right-to-be-forgotten executed via soft-delete only (incomplete erasure — Article 17)
 
 **Refinement candidates**:
+
 - New regulation row when a new privacy law passes (LGPD / POPIA / India DPDPA / state laws)
 - New cross-reference when a sister skill (iso27001-controls, soc2-readiness, security-review) adds a privacy gate
 - New DSAR workflow row when a new data category becomes subject to access right
@@ -753,6 +759,7 @@ code.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New collection point shipped without a lawful-basis annotation (rule 1 weakening)
 - RoPA not updated in the SAME PR that adds a new processor / new field (rule 2 weakening)
 - DSAR endpoint missing rate limiting or re-authentication (rule 3 / mistake 7 weakening)
@@ -764,6 +771,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Special-category data (Article 9) stored without field-level encryption (rule 4 + rule 8 weakening)
 
 **Refinement candidates**:
+
 - New jurisdiction entry when a regulator adds a national-law variant (e.g., PIPEDA, LGPD update)
 - New row in the RoPA template when a new processor class becomes common
 - Tightening of consent UI requirements when a CJEU / supervisory-authority ruling adds a new constraint
@@ -888,7 +896,8 @@ The privacy notice MUST state the backup-deletion lag (commonly
   individual contributions are undetectable
 
 For most analytics use cases: aggregate to cohorts (>1000 users)
-+ remove direct identifiers + drop high-cardinality quasi-
+
+- remove direct identifiers + drop high-cardinality quasi-
 identifiers (precise location, device IDs).
 
 ### 6. DSAR deletion has SLAs
@@ -1038,7 +1047,7 @@ anonymisation needs k-anonymity verification.
 
 ## Verification block
 
-```
+```text
 Data retention (this turn):
   - users.last_login retention: 24 months (was 5y) — aligned with EU norms
   - audit_log: 7 years (SOX) — partition by month + auto-archive after 6y
@@ -1088,6 +1097,7 @@ Data retention failures hurt twice:
    with the number of records affected
 
 Common real-world incidents:
+
 - Customer-support tools storing chat logs from 2015 still in
   production in 2026 — breach exposes a decade of PII
 - ML training corpora that contain deleted-account data because
@@ -1108,6 +1118,7 @@ incident report.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New table introduced without retention metadata in `docs/data-classification.md` (rule 1 violation)
 - TTL column / scheduled deletion job missing on a personal-data table (rule 2 weakening)
 - Soft-delete state persisting past the documented grace period without hard-delete cascade (rule 3 weakening)
@@ -1120,6 +1131,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Tax / SOX / HIPAA-bound records pruned before the longest applicable retention (regulation-driven floor violated)
 
 **Refinement candidates**:
+
 - New regulation row in the retention quick-reference when a new framework emerges (e.g., new EU sector-specific law, US state privacy law)
 - Tightening of the cascade enumeration when a recurring "forgot to delete from X" class appears
 - New cross-reference when a sister rule (gdpr-ccpa, audit-logging, schema-evolution) provides the data-class metadata

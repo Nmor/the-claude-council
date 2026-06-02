@@ -55,7 +55,7 @@ style.
 - **Tognazzini B. (2003+)** — "First Principles of Interaction
   Design"
 - **Apple Human Interface Guidelines** + **Material Design 3**
-  + **Microsoft Fluent 2** — platform-specific instantiations
+  - **Microsoft Fluent 2** — platform-specific instantiations
 - **Wroblewski L. (2008)** — "Web Form Design: Filling in the
   Blanks"
 - **Cooper A., Reimann R., Cronin D., Noessel C. (2014)** —
@@ -99,7 +99,7 @@ Q12 + Q19 (UX writing).
 
 Every interaction crosses these stages:
 
-```
+```text
 USER side                         SYSTEM side
 ─────────                         ───────────
 1. Goal                           4. Specify action sequence
@@ -485,6 +485,7 @@ the more it's used — instead of worse the more it accretes.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Interaction without clear feedback (user clicks, nothing visible happens — feedback weakening)
 - Destructive action (delete / cancel) without confirmation OR without undo (error-prevention weakening)
 - Error message blames the user ("you entered the wrong format") instead of explaining what's needed
@@ -498,6 +499,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Click target hidden by hover-only affordance on touch device
 
 **Refinement candidates**:
+
 - New affordance / signifier pattern row when a new UI primitive becomes common
 - New cross-reference when a sister skill (wcag-accessibility, accessible-forms, ux-research, design-systems) adds an IxD gate
 - New microcopy template when a recurring error / empty-state shape emerges

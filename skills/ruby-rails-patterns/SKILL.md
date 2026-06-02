@@ -17,7 +17,6 @@ paths:
 
 # ruby-rails-patterns
 
-
 <!-- ============================================================
      Section: ruby/coding-style.md
      ============================================================ -->
@@ -163,7 +162,7 @@ end
 
 ## Required tooling
 
-```
+```text
 .rubocop.yml           # rubocop config (see below)
 .rubocop-todo.yml      # generated; tracked + decreasing
 Gemfile.lock           # committed
@@ -590,7 +589,7 @@ bundle exec rspec
 
 ## Verification block
 
-```
+```text
 Ruby sweep (this turn):
   - rubocop: 0 offenses
   - brakeman: 0 issues

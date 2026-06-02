@@ -259,6 +259,7 @@ shfmt -d -i 4 -ci -bn -sr script.sh
 ```
 
 Flags:
+
 - `-i 4` — indent with 4 spaces
 - `-ci` — switch case indent
 - `-bn` — binary ops at line start when wrapped
@@ -266,7 +267,7 @@ Flags:
 
 ## Verification block
 
-```
+```text
 Bash sweep (this turn):
   - shellcheck -S style: 0 findings
   - shfmt -d -i 4 -ci -bn -sr: clean

@@ -112,6 +112,7 @@ Disabling autocomplete (`autocomplete="off"`) on auth fields fails WCAG 1.3.5 AN
 3. **On submit** for server-side checks (email unique, payment authorised)
 
 Banned:
+
 - **On every keystroke** — user types one character, sees "Required" — destroys flow
 - **Only on submit** — user fills form, submits, sees 8 errors — has to scroll back through
 
@@ -145,7 +146,7 @@ Banned:
 
 | Wrong | Right |
 | --- | --- |
-| "Invalid" | "Enter a valid email address — e.g., name@example.com" |
+| "Invalid" | "Enter a valid email address — e.g., <name@example.com>" |
 | "Field required" | "Enter your full legal name" |
 | "Must be 8+ characters" | "Use 12+ characters including a number and a symbol" |
 | "Password too weak" | "Add a number, a symbol, and increase length to 12+" |
@@ -360,6 +361,7 @@ The 6-digit OTP UI with 6 separate inputs that auto-advance breaks copy-paste fr
 ## Why This Skill Exists
 
 Form a11y failures cause:
+
 - Abandoned signups (conversion loss)
 - Failed checkouts (revenue loss)
 - Failed support requests (the user can't reach support because the contact form excludes them)
@@ -373,6 +375,7 @@ The patterns are mechanical: real labels, autocomplete tokens, ARIA states, vali
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `placeholder` used as label (vanishes on focus — invisible to many users)
 - `autocomplete` attribute missing on personal-info field (WCAG 1.3.5 + form fill UX)
 - Error message colour-only (red border, no text — colour-only signal)
@@ -387,6 +390,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - WCAG 2.2 §3.3.8 Accessible Authentication: cognitive function test without alternative
 
 **Refinement candidates**:
+
 - New input-pattern row when a new HTML autocomplete token / `inputmode` becomes useful
 - New cross-reference when a sister skill (wcag-accessibility, interaction-design, frontend-patterns) adds a forms gate
 - Tightening of the validation-timing rule when premature-validation incidents recur

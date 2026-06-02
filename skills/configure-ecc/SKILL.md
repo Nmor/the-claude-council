@@ -17,6 +17,7 @@ An interactive, step-by-step installation wizard for the Everything Claude Code 
 ## Prerequisites
 
 This skill must be accessible to Claude Code before activation. Two ways to bootstrap:
+
 1. **Via Plugin**: `/plugin install everything-claude-code` — the plugin loads this skill automatically
 2. **Manual**: Copy only this skill to `~/.claude/skills/configure-ecc/SKILL.md`, then activate by saying "configure ecc"
 
@@ -41,7 +42,7 @@ If the clone fails (network issues, etc.), use `AskUserQuestion` to ask the user
 
 Use `AskUserQuestion` to ask the user where to install:
 
-```
+```text
 Question: "Where should ECC components be installed?"
 Options:
   - "User-level (~/.claude/)" — "Applies to all your Claude Code projects"
@@ -50,11 +51,13 @@ Options:
 ```
 
 Store the choice as `INSTALL_LEVEL`. Set the target directory:
+
 - User-level: `TARGET=~/.claude`
 - Project-level: `TARGET=.claude` (relative to current project root)
 - Both: `TARGET_USER=~/.claude`, `TARGET_PROJECT=.claude`
 
 Create the target directories if they don't exist:
+
 ```bash
 mkdir -p $TARGET/skills $TARGET/rules
 ```
@@ -67,7 +70,7 @@ mkdir -p $TARGET/skills $TARGET/rules
 
 There are 27 skills organized into 4 categories. Use `AskUserQuestion` with `multiSelect: true`:
 
-```
+```text
 Question: "Which skill categories do you want to install?"
 Options:
   - "Framework & Language" — "Django, Spring Boot, Go, Python, Java, Frontend, Backend patterns"
@@ -129,6 +132,7 @@ For each selected category, print the full list of skills below and ask the user
 ### 2c: Execute Installation
 
 For each selected skill, copy the entire skill directory:
+
 ```bash
 cp -r $ECC_ROOT/skills/<skill-name> $TARGET/skills/
 ```
@@ -141,7 +145,7 @@ Note: `continuous-learning` and `continuous-learning-v2` have extra files (confi
 
 Use `AskUserQuestion` with `multiSelect: true`:
 
-```
+```text
 Question: "Which rule sets do you want to install?"
 Options:
   - "Common rules (Recommended)" — "Language-agnostic principles: coding style, git workflow, testing, security, etc. (8 files)"
@@ -151,6 +155,7 @@ Options:
 ```
 
 Execute installation:
+
 ```bash
 # Common rules (flat copy into rules/)
 cp -r $ECC_ROOT/rules/common/* $TARGET/rules/
@@ -173,6 +178,7 @@ After installation, perform these automated checks:
 ### 4a: Verify File Existence
 
 List all installed files and confirm they exist at the target location:
+
 ```bash
 ls -la $TARGET/skills/
 ls -la $TARGET/rules/
@@ -181,6 +187,7 @@ ls -la $TARGET/rules/
 ### 4b: Check Path References
 
 Scan all installed `.md` files for path references:
+
 ```bash
 grep -rn "~/.claude/" $TARGET/skills/ $TARGET/rules/
 grep -rn "../common/" $TARGET/rules/
@@ -188,6 +195,7 @@ grep -rn "skills/" $TARGET/skills/
 ```
 
 **For project-level installs**, flag any references to `~/.claude/` paths:
+
 - If a skill references `~/.claude/settings.json` — this is usually fine (settings are always user-level)
 - If a skill references `~/.claude/skills/` or `~/.claude/rules/` — this may be broken if installed only at project level
 - If a skill references another skill by name — check that the referenced skill was also installed
@@ -195,6 +203,7 @@ grep -rn "skills/" $TARGET/skills/
 ### 4c: Check Cross-References Between Skills
 
 Some skills reference others. Verify these dependencies:
+
 - `django-tdd` may reference `django-patterns`
 - `springboot-tdd` may reference `springboot-patterns`
 - `continuous-learning-v2` references `~/.claude/homunculus/` directory
@@ -205,6 +214,7 @@ Some skills reference others. Verify these dependencies:
 ### 4d: Report Issues
 
 For each issue found, report:
+
 1. **File**: The file containing the problematic reference
 2. **Line**: The line number
 3. **Issue**: What's wrong (e.g., "references ~/.claude/skills/python-patterns but python-patterns was not installed")
@@ -216,7 +226,7 @@ For each issue found, report:
 
 Use `AskUserQuestion`:
 
-```
+```text
 Question: "Would you like to optimize the installed files for your project?"
 Options:
   - "Optimize skills" — "Remove irrelevant sections, adjust paths, tailor to your tech stack"
@@ -225,14 +235,16 @@ Options:
   - "Skip" — "Keep everything as-is"
 ```
 
-### If optimizing skills:
+### If optimizing skills
+
 1. Read each installed SKILL.md
 2. Ask the user what their project's tech stack is (if not already known)
 3. For each skill, suggest removals of irrelevant sections
 4. Edit the SKILL.md files in-place at the installation target (NOT the source repo)
 5. Fix any path issues found in Step 4
 
-### If optimizing rules:
+### If optimizing rules
+
 1. Read each installed rule .md file
 2. Ask the user about their preferences:
    - Test coverage target (default 70%)
@@ -255,7 +267,7 @@ rm -rf /tmp/everything-claude-code
 
 Then print a summary report:
 
-```
+```text
 ## ECC Installation Complete
 
 ### Installation Target
@@ -283,15 +295,18 @@ Then print a summary report:
 ## Troubleshooting
 
 ### "Skills not being picked up by Claude Code"
+
 - Verify the skill directory contains a `SKILL.md` file (not just loose .md files)
 - For user-level: check `~/.claude/skills/<skill-name>/SKILL.md` exists
 - For project-level: check `.claude/skills/<skill-name>/SKILL.md` exists
 
 ### "Rules not working"
+
 - Rules are flat files, not in subdirectories: `$TARGET/rules/coding-style.md` (correct) vs `$TARGET/rules-library/common/coding-style.md` (incorrect for flat install)
 - Restart Claude Code after installing rules
 
 ### "Path reference errors after project-level install"
+
 - Some skills assume `~/.claude/` paths. Run Step 4 verification to find and fix these.
 - For `continuous-learning-v2`, the `~/.claude/homunculus/` directory is always user-level — this is expected and not an error.
 
@@ -305,6 +320,7 @@ the user's Claude Code (and Cursor / JetBrains / Windsurf via
 shims) operates with the same rule-set everywhere.
 
 **Negative scope** (NOT what this skill covers):
+
 - Authoring new skills / rules / agents — see
   `rule-authoring-global-vs-project.md` for placement, the
   `principal-level-mandate.md` for depth contract
@@ -341,7 +357,7 @@ shims) operates with the same rule-set everywhere.
 - **`~/.claude/rules-library/common/install-allowlist.md`** — Every
   install passes the publisher allowlist
 - **`~/.claude/rules-library/common/dependency-pinning.md`** — Lockfile
-  + digest pinning applies to ECC's dependencies
+  - digest pinning applies to ECC's dependencies
 - **CWE-829** — Inclusion of Functionality from Untrusted
   Control Sphere (relevant when ECC pulls remote artifacts)
 
@@ -406,6 +422,7 @@ consistency that compounds over time.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Skill installed without Step 4 verification (hardcoded `~/.claude/` paths break in project-level install)
 - Cross-project skill duplication (same skill installed in N projects instead of promoted to global per `~/.claude/rules/common/rule-authoring-global-vs-project.md`)
 - Project-level install of a skill that should be global (universal applicability misread)
@@ -416,6 +433,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Install command misuses `--global` flag when project install was intended (or vice versa)
 
 **Refinement candidates**:
+
 - New installer flag when a recurring install pattern (e.g., bulk-install from a manifest, sync from a shared repo) needs codification
 - Promotion path automation (workspace → global) per `rule-authoring-global-vs-project.md` rule 7
 - Demotion path documentation when global skill turns out workspace-specific

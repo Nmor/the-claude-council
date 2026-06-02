@@ -289,12 +289,12 @@ In a world where compute is cheap but engineering attention is scarce, the disci
 - **`~/.claude/rules/common/council-triggers.md`** (Division 15) — bias,
   fairness, dataset provenance, human-in-the-loop gates
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Transformer / deep model chosen without comparing against linear / tree baseline (over-engineering)
 - Cross-validation done with leaky splits (test data leaked into training — false-positive accuracy)
 - Single metric reported (accuracy alone — class-imbalance hides false-positive cost)
@@ -307,6 +307,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Dataset provenance + licensing not documented
 
 **Refinement candidates**:
+
 - New model-family row when a new architecture becomes broadly applicable
 - New cross-reference when a sister skill (mlops-patterns, rag-design, fine-tuning-workflows) adds a selection gate
 - New fairness-metric row when a recurring bias class emerges in production

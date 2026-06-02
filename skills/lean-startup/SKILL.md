@@ -15,7 +15,8 @@ description: Principal-level methodology for building products under extreme unc
 > (discovery methods), `okr-framework` (outcome metrics),
 > `business-model-canvas` (strategy), `product-discovery` (delivery
 > integration). Standards: Ries 2011/2017, Blank 2005/2012, Osterwalder
-> + Pigneur 2010/2014, Maurya 2010/2022, Cagan 2008/2020, Ellis +
+>
+> - Pigneur 2010/2014, Maurya 2010/2022, Cagan 2008/2020, Ellis +
 > Brown 2017, Torres 2021, Perri 2018.
 
 ## Purpose
@@ -212,7 +213,7 @@ delivery + Lean Manufacturing discipline instead.
 The central engine of Lean Startup. Mis-read versions of this
 loop fail because they invert the order:
 
-```
+```text
        IDEAS
          │
          ▼
@@ -353,7 +354,7 @@ of the search.
 Blank's framework (predates Ries; Lean Startup is Blank +
 Agile + lean manufacturing applied to it):
 
-```
+```text
 SEARCH PHASE                          EXECUTION PHASE
 ─────────────────────────────────  │  ──────────────────────────────────
 Customer Discovery → Customer Validation │ Customer Creation → Company Building
@@ -388,7 +389,7 @@ over.
 **Business Model Canvas (Osterwalder + Pigneur 2010)** — 9
 boxes on one page:
 
-```
+```text
 ┌─────────────────┬─────────────────┬─────────────────┐
 │ Key Partners    │ Key Activities  │ Value           │
 │                 │                 │ Propositions    │
@@ -800,7 +801,7 @@ counters:
    the build.
 4. **"Get to product-market fit, then scale"** — correct, but
    the "then scale" part is widely misexecuted. Hiring sales
-   + marketing teams before PMF is one of the most expensive
+   - marketing teams before PMF is one of the most expensive
    mistakes in startup history.
 5. **"Lean Startup is for software startups"** — wrong. Ries
    explicitly addresses enterprise innovation (The Startup
@@ -878,7 +879,7 @@ opinion.
 - **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
   engineering basis (when civil / structural scope)
 - **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  + digital coordination (when AEC scope)
+  - digital coordination (when AEC scope)
 - **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
   Matrix** — Systematic innovation methodology
 - **Stanford d.school + IDEO Field Guide** — Design thinking
@@ -894,7 +895,6 @@ opinion.
   Management (Grove)** — People + culture frameworks
 - **Getting to Yes (Fisher + Ury) + Never Split the Difference
   (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
 
 ### Cross-cutting engineering standards
 
@@ -917,12 +917,12 @@ opinion.
 - **CWE-1059** — Insufficient technical documentation (process
   workflows MUST be documented)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - MVP scope inflated to "minimum lovable product" (BMVP — Big Minimum Viable Product)
 - Build-measure-learn loop > 4 weeks (cycle-time weakening)
 - Validated learning conflated with feature usage (correlation ≠ causation)
@@ -935,6 +935,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Founder-led customer discovery delegated too early
 
 **Refinement candidates**:
+
 - New MVP-pattern row when a new prototyping technique becomes broadly applicable
 - New cross-reference when a sister skill (design-thinking, ux-research, strategy-reviewer) adds a startup gate
 - Tightening of the pivot-trigger discipline when sunk-cost incidents recur

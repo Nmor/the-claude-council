@@ -100,6 +100,7 @@ applies in test files too. Iterate by index (not range-over with
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Coverage on touched files < 90% (canonical threshold violation)
 - Project coverage < 80% (sister `extreme-lint-policy.md` weakening)
 - Critical-path coverage < 95% (auth / payments / data-mutation / multi-tenant isolation)
@@ -112,6 +113,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Flaky test quarantined without root-cause fix (TDD discipline weakening)
 
 **Refinement candidates**:
+
 - New test-type row when a recurring test class emerges (e.g., chaos test, fuzzing target, snapshot regression)
 - Tightening of the critical-path coverage floor when a regression slips past 95%
 - New cross-reference when a sister skill (django-tdd, springboot-tdd, swift-protocol-di-testing) extends test-type taxonomy

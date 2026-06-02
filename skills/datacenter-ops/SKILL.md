@@ -60,7 +60,7 @@ security (SOC 2 CC6.4, ISO 27001 Annex A.7, PCI-DSS 9, HIPAA
   equipment; the canonical reference for inlet temperature +
   humidity
 - **The Green Grid PUE (Power Usage Effectiveness) + WUE (Water)
-  + CUE (Carbon) metrics** — efficiency measurement
+  - CUE (Carbon) metrics** — efficiency measurement
 - **NIST SP 800-53 Rev 5 PE family (Physical and Environmental
   Protection)** — control catalogue for physical security
 - **ISO/IEC 27001:2022 Annex A.7 (Physical controls)** — 14
@@ -164,6 +164,7 @@ temperature, 60-65% RH (relative humidity), with a dew point
 range that prevents condensation + static.
 
 Cooling topologies:
+
 - **Perimeter CRAC / CRAH** (computer room air conditioner /
   handler) — legacy hot/cold-aisle without containment; low
   efficiency
@@ -181,6 +182,7 @@ Cooling topologies:
   cool climates)
 
 Metrics:
+
 - **PUE** = Total facility energy / IT energy. 1.0 is perfect;
   1.2 is best-in-class hyperscale; 1.5-1.8 is enterprise; 2.0+
   is legacy
@@ -195,6 +197,7 @@ expected, equipment thermal-shutdown cascaded".
 ### Space + Structured Cabling
 
 ANSI/TIA-942 defines the layered cabling architecture:
+
 - **MDA** (Main Distribution Area) — primary cross-connect, core
   network
 - **HDA** (Horizontal Distribution Area) — distribution to ZDAs
@@ -235,6 +238,7 @@ Per ISO 27001 Annex A.7 + PCI-DSS 9 + NIST SP 800-53 PE family:
 ### DCIM + Asset Management
 
 A Data Center Infrastructure Management system tracks:
+
 - Every asset (rack, server, switch, PDU, UPS) with serial,
   location, port mappings, power draw, life-cycle status
 - Capacity utilisation (kW used vs available; U used vs
@@ -251,6 +255,7 @@ without DCIM is operating on heroics.
 
 Physical infrastructure changes are different from software
 changes:
+
 - **Maintenance windows** with explicit GO/NO-GO criteria
 - **Method of Procedure (MOP)** — step-by-step with rollback at
   every step
@@ -271,6 +276,7 @@ mistake brings down half the rack.
 
 Colocation, hardware vendor, freight, smart-hands, fibre carrier
 — each has an SLA. Track:
+
 - **Uptime SLA** (e.g., 99.999% on power) with penalty schedule
 - **Mean time to respond** + **mean time to repair**
 - **Incident reporting** + post-mortem obligations
@@ -285,12 +291,14 @@ notice period, asset removal).
 ### Capacity Planning
 
 Three axes:
+
 - **Power** (kW total, kW per rack, headroom for redundancy)
 - **Cooling** (kW thermal capacity, hot-spot management)
 - **Space** (U total, U per row, U per rack accounting for
   density limits)
 
 Plus:
+
 - Network port capacity at MDA / HDA
 - Generator runtime at full load
 - UPS battery life at full load
@@ -304,6 +312,7 @@ forced + expensive.
 ### Sustainability + ESG
 
 Modern DC ops include sustainability:
+
 - **PUE / WUE / CUE reporting**
 - **Renewable energy procurement** (PPAs, RECs)
 - **Carbon-aware workload scheduling** (run batch in low-
@@ -318,6 +327,7 @@ Modern DC ops include sustainability:
 ### Hybrid + Edge
 
 Modern infrastructure rarely sits in a single DC. Patterns:
+
 - **On-prem + cloud hybrid** — Direct Connect / ExpressRoute /
   Cloud Interconnect; consistent identity, observability,
   security policy across both
@@ -413,6 +423,7 @@ Modern infrastructure rarely sits in a single DC. Patterns:
 ## Why This Skill Exists
 
 Without principal-level DC operations:
+
 - A power event takes down what was sold as Tier III because
   the operations weren't actually Tier III
 - Capacity runs out unexpectedly; growth gets blocked for
@@ -430,6 +441,7 @@ Without principal-level DC operations:
   weren't negotiated
 
 With principal-grade DC operations:
+
 - The physical layer behaves like the abstraction software was
   promised: reliable, observable, secure, compliant
 - Incidents are bounded, recovered from quickly, learned from
@@ -454,6 +466,7 @@ expansion is ready.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Generator load-bank test skipped or deferred past schedule (Tier-III/IV concurrent-maintainability weakening)
 - UPS battery age past manufacturer's recommended replacement (silent SPOF accumulation)
 - PUE creeping up quarter-over-quarter (cooling efficiency / airflow management drift)
@@ -466,6 +479,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Fire-suppression test deferred (life-safety + insurance compliance)
 
 **Refinement candidates**:
+
 - New tier-mapping row when a customer SLA shifts tier requirement
 - New cross-reference when a sister skill (cloud-architecture, esg-reviewer, ops-reviewer) adds a DC gate
 - New operational-handoff checklist row when a recurring incident class emerges

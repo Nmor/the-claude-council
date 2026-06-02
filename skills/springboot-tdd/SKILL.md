@@ -42,6 +42,7 @@ class MarketServiceTest {
 ```
 
 Patterns:
+
 - Arrange-Act-Assert
 - Avoid partial mocks; prefer explicit stubbing
 - Use `@ParameterizedTest` for variants
@@ -115,6 +116,7 @@ class MarketRepositoryTest {
 ## Coverage (JaCoCo)
 
 Maven snippet:
+
 ```xml
 <plugin>
   <groupId>org.jacoco</groupId>
@@ -161,6 +163,7 @@ class MarketBuilder {
 Principal-level Spring Boot test methodology: slice tests over full-context loads, JUnit 5 + Mockito + AssertJ idioms, Testcontainers for integration, contract testing for inter-service, mutation testing for safety-critical paths.
 
 **Negative scope** (NOT what this skill covers):
+
 - Generic Java testing without Spring — see `java-coding-standards`
 - Frontend Java/Selenium E2E — out of scope (use Playwright per `frontend-patterns`)
 - Performance / load testing — see `observability-patterns`
@@ -246,6 +249,7 @@ Spring Boot test suites become unusable through two predictable failures: `@Spri
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `@SpringBootTest` used when a slice test (`@WebMvcTest`, `@DataJpaTest`) would suffice (slow-test suite balloon)
 - Mockito mocks on `@Service` from a `@WebMvcTest` instead of using `@MockBean` correctly
 - `@Transactional` test rolling back when test asserts on committed state (false-positive pass)
@@ -256,6 +260,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Test data builders absent — tests duplicate setup verbatim (DRY weakening)
 
 **Refinement candidates**:
+
 - New slice-test row when a new Spring Boot test annotation ships
 - New cross-reference when a sister skill (springboot-patterns, jpa-patterns, tdd-workflow) adds a Spring-test gate
 - New Testcontainers template per service (Postgres, Kafka, Redis, Localstack)

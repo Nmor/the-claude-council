@@ -149,7 +149,7 @@ person's npm/marketplace credentials.
 
 ## What to do when the rule fires
 
-### "User asked me to install <X>"
+### "User asked me to install `<X>`"
 
 1. **Look up the publisher** in the allowlist above.
 2. **If allowed**: proceed; immediately after install, run the
@@ -164,7 +164,7 @@ person's npm/marketplace credentials.
    prompt sounded urgent. The 30 seconds of approval friction is the
    product, not the bug.
 
-### "Renovate / Dependabot opened a PR bumping <X>"
+### "Renovate / Dependabot opened a PR bumping `<X>`"
 
 1. Read the changelog of the bump. If it crosses a major version,
    surface the breaking changes.
@@ -230,6 +230,7 @@ Already applied in `~/.claude/settings.local.json`:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Auto-run install (`npx -y`, `pnpm dlx`, `curl … | sh`) attempted (rule 2 / 3 violation)
 - Unknown-publisher VS Code / Cursor extension installed without ask (publisher allowlist breach)
 - New MCP server registered without source review (rule 5 weakening)
@@ -239,6 +240,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Post-install CVE scan skipped (rule 7 weakening)
 
 **Refinement candidates**:
+
 - New package on the DO-NOT-INSTALL list when a supply-chain compromise emerges
 - New verified publisher row when an org maintainer proves trustworthy across multiple extensions
 - Tightening of the MCP publisher check when a new MCP-specific attack surface (binary substitution, etc.) is observed

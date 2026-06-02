@@ -272,7 +272,7 @@ bundle exec rspec
 
 ## Verification block
 
-```
+```text
 Ruby sweep (this turn):
   - rubocop: 0 offenses
   - brakeman: 0 issues

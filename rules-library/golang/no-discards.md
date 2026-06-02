@@ -349,7 +349,7 @@ issues:
 
 When a Go file is touched:
 
-```
+```text
 Go lint sweep (this turn):
   - go build ./...: 0 errors
   - go vet ./...: 0 issues

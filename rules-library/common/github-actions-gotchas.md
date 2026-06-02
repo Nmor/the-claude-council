@@ -40,6 +40,7 @@ recovery logic runs.
 ```
 
 Alternatives:
+
 - Append `|| true` to the pipe: `osv-scanner ... | tee scan.log || true`
 - Capture exit code separately: `osv-scanner ... > scan.log; rc=$?`
 
@@ -218,6 +219,7 @@ peak heap — aim for ~12 GB (leaves 4 GB for OS, Docker daemon,
 runner agent, framework overhead).
 
 For Jest:
+
 ```yaml
 env:
   NODE_OPTIONS: --max-old-space-size=6144  # 6 GB per worker
@@ -288,7 +290,7 @@ the documented arbitrary-code-execution vector (Tj-actions etc.).
 When CI tuning lands, the PR's verification block should explicitly
 name which gotchas were addressed:
 
-```
+```text
 GitHub Actions tuning (this turn):
   - Gotcha 1 (bash -e + pipefail): added `shell:` override on
     osv-scanner step so the LOW-filter grep can run.
@@ -312,6 +314,7 @@ GitHub Actions tuning (this turn):
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Pipe + recovery logic shipped with default `bash -eo pipefail` shell (Gotcha 1 recurrence)
 - `run:` block hitting the 21,000-char expression limit (Gotcha 2 — needs split)
 - Required workflow accesses consumer-repo files directly (Gotcha 3 violation)
@@ -325,6 +328,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `pull_request_target` used to RUN code from a fork's PR (Gotcha 13 — RCE class)
 
 **Refinement candidates**:
+
 - New numbered gotcha when a recurring CI-platform surprise surfaces (e.g., new GitHub limit, new action deprecation cycle)
 - Tightening of the SHA-pin enforcement when a recurring third-party action proves volatile
 - New cross-reference when a sister rule (deploy-failures-become-checks, security-controls-org-wide) adds a CI-side gate

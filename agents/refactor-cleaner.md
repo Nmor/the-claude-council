@@ -29,22 +29,27 @@ npx eslint . --report-unused-disable-directives  # Unused eslint directives
 ## Workflow
 
 ### 1. Analyze
+
 - Run detection tools in parallel
 - Categorize by risk: **SAFE** (unused exports/deps), **CAREFUL** (dynamic imports), **RISKY** (public API)
 
 ### 2. Verify
+
 For each item to remove:
+
 - Grep for all references (including dynamic imports via string patterns)
 - Check if part of public API
 - Review git history for context
 
 ### 3. Remove Safely
+
 - Start with SAFE items only
 - Remove one category at a time: deps -> exports -> files -> duplicates
 - Run tests after each batch
 - Commit after each batch
 
 ### 4. Consolidate Duplicates
+
 - Find duplicate components/utilities
 - Choose the best implementation (most complete, best tested)
 - Update all imports, delete duplicates
@@ -53,12 +58,14 @@ For each item to remove:
 ## Safety Checklist
 
 Before removing:
+
 - [ ] Detection tools confirm unused
 - [ ] Grep confirms no references (including dynamic)
 - [ ] Not part of public API
 - [ ] Tests pass after removal
 
 After each batch:
+
 - [ ] Build succeeds
 - [ ] Tests pass
 - [ ] Committed with descriptive message
@@ -121,6 +128,7 @@ After each batch:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - "Unused" import flagged for deletion that was actually a wiring gap (no-silent-drops.md rule 2 needs reinforcement)
 - Commented-out code deleted that turned out to be a stubbed feature (no-silent-drops.md rule 0 needs reinforcement)
 - Same duplicate primitive surfaced across 3+ projects (rule-of-three trigger — promote to global shared primitive)
@@ -130,6 +138,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Bloat-removal phase repeatedly skipped (plan-task-breakdown.md rule enforcement weak)
 
 **Refinement candidates**:
+
 - New anti-pattern entry when a cleanup shortcut recurs across 2+ PRs
 - New verification step when a cleanup class reintroduces work
 - Tightening of safety checklist when chronic mis-removal observed

@@ -74,6 +74,7 @@ For most B2B SaaS: **Security + Availability** is the typical scope. Add Confide
 The Common Criteria families most engineering-relevant:
 
 **CC6 Logical & Physical Access**:
+
 - CC6.1: Logical access security controls
 - CC6.2: Authentication (registration, modification, removal)
 - CC6.3: Authorization (least privilege, segregation of duties)
@@ -82,6 +83,7 @@ The Common Criteria families most engineering-relevant:
 - CC6.8: Prevention or detection of unauthorized software
 
 **CC7 System Operations**:
+
 - CC7.1: Detection of new vulnerabilities
 - CC7.2: System monitoring for security events
 - CC7.3: Incident response evaluation
@@ -89,6 +91,7 @@ The Common Criteria families most engineering-relevant:
 - CC7.5: Identification, development, communication of recovery objectives
 
 **CC8 Change Management**:
+
 - CC8.1: Authorization, design, development, configuration, documentation, testing, approval, implementation of changes
 
 Map each control to evidence sources, then automate evidence collection:
@@ -432,6 +435,7 @@ When the auditor asks "show me how MFA was enforced for the period", the answer 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Evidence collection ad-hoc (screenshot in Confluence) instead of automated immutable storage
 - Quarterly access review skipped or delayed (CC6.3 weakening)
 - Vendor (subprocessor) added without security review (CC9.2)
@@ -444,6 +448,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Trust Service Criteria scope expanded (e.g., adding Privacy) without uplift plan
 
 **Refinement candidates**:
+
 - New evidence-pipeline row when a new TSC criterion is added to scope
 - New cross-reference when a sister skill (iso27001-controls, gdpr-ccpa-compliance, owasp-asvs) adds a control gate
 - New automated-evidence template when an auditor requests new sample type

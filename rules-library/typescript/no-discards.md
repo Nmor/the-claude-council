@@ -388,7 +388,7 @@ export default tseslint.config(
 
 ## Verification block (TS/JS-side)
 
-```
+```text
 TS lint sweep (this turn):
   - tsc --noEmit: 0 errors
   - eslint . --max-warnings 0: 0 warnings

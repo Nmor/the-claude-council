@@ -187,7 +187,7 @@ linter:
 
 ## Verification block
 
-```
+```text
 Dart analyze (this turn):
   - dart analyze: 0 errors, 0 warnings
   - dart format --set-exit-if-changed: clean

@@ -297,7 +297,7 @@ ALTER TABLE users DROP COLUMN IF EXISTS avatar_url;
 
 For critical production changes, follow the expand-contract pattern:
 
-```
+```text
 Phase 1: EXPAND
   - Add new column/table (nullable or with default)
   - Deploy: app writes to BOTH old and new
@@ -314,7 +314,7 @@ Phase 3: CONTRACT
 
 ### Timeline Example
 
-```
+```text
 Day 1: Migration adds new_status column (nullable)
 Day 1: Deploy app v2 — writes to both status and new_status
 Day 2: Run backfill migration for existing rows
@@ -343,13 +343,15 @@ Day 7: Migration drops old status column
 
 Principal-level migration discipline: zero-downtime schema
 evolution, expand-contract pattern, backfill batching, idempotent
-+ reversible migrations, blue/green schema compatibility, FK + index
+
+- reversible migrations, blue/green schema compatibility, FK + index
 add-without-lock semantics (Postgres `NOT VALID` / MySQL `ALGORITHM
 INPLACE LOCK NONE`), the migration calendar (announce → deploy →
 backfill → cutover → cleanup), and cross-ORM migration semantics
 (Prisma / Drizzle / Django / TypeORM / golang-migrate / Alembic).
 
 **Negative scope** (NOT what this skill covers):
+
 - Application-level schema (Zod / Pydantic / class-validator) — out
 - Data lake schema evolution (Iceberg / Delta) — separate domain
 - NoSQL schema-less migration — see `dynamodb-patterns`
@@ -419,6 +421,7 @@ non-event.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Migration not reversible (no down-migration; sister `schema-evolution.md` rule 2 violation)
 - Migration not idempotent (re-run fails — rule 3 violation)
 - `CREATE INDEX` without `CONCURRENTLY` on a > 1M row table (Postgres lock-wait)
@@ -430,6 +433,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Migration tested on dev (10k rows) but not production-sized data
 
 **Refinement candidates**:
+
 - New row in the anti-pattern table when a recurring migration failure class emerges
 - Tightening of the "test against production size" gate when a recurring slow-migration incident recurs
 - New cross-reference when a sister rule (schema-evolution, dependency-pinning, deploy-failures-become-checks) adds a migration gate

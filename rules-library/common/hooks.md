@@ -222,6 +222,7 @@ questions.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New rule shipped without corresponding hook enforcement when mechanical enforcement is feasible (drift toward "guideline-only")
 - PostToolUse hook bypassed via `CLAUDE_NO_DISCARDS_HOOK=off` by the agent (operator-only override misused)
 - New language adopted without its PostToolUse gate wired (per-language hook gap)
@@ -232,6 +233,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Stop hook surfaces uncommitted changes but the agent proceeds to next task anyway (Stop hook ignored)
 
 **Refinement candidates**:
+
 - New row in the lifecycle table when a new hook event surfaces (e.g., new IDE plugin event, new MCP gateway hook)
 - New per-language gate row when a new stack adopts (e.g., new build system, new test runner)
 - Tightening of the auto-accept policy when a destructive false-positive recurs

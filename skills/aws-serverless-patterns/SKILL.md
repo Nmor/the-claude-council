@@ -27,6 +27,7 @@ Lambda + API Gateway + the surrounding event-driven AWS surface. The patterns he
 ## Cold Start: Minimize, Don't Eliminate
 
 Cold-start latency comes from two places:
+
 1. **Container provisioning** — AWS-controlled; ~100-300 ms for Node 20 / 256 MB
 2. **Module import** — your code; can balloon to 1-3 s with heavy SDK imports
 
@@ -328,6 +329,7 @@ Cost of disciplined serverless patterns: minutes per function at write time. Cos
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Lambda cold-start sustained > 1s p99 (provisioned concurrency / runtime / bundle-size review)
 - Throttle alarms firing (reserved-concurrency / account-concurrency exhaustion)
 - Webhook handler doing the work inline instead of enqueueing (async-by-default weakening)
@@ -341,6 +343,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - EventBridge rule without DLQ on target (poison-message loss)
 
 **Refinement candidates**:
+
 - New IaC template row when a new event-source binding becomes common (e.g., Kafka MSK trigger)
 - Tightening of the env-bag size rule when multi-cell deployment scales
 - New cross-reference when a sister skill (dynamodb-patterns, observability-patterns, deployment-patterns) adds a serverless gate

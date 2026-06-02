@@ -592,7 +592,7 @@ def test_with_tmpdir(tmpdir):
 
 ### Directory Structure
 
-```
+```text
 tests/
 ├── conftest.py                 # Shared fixtures
 ├── __init__.py
@@ -819,6 +819,7 @@ pytest --pdb
 Principal-level pytest methodology: fixtures + scopes + parametrize, hypothesis (property-based), pytest-mock + responses, async testing via pytest-asyncio, snapshot tests via syrupy, coverage via pytest-cov + branch coverage.
 
 **Negative scope** (NOT what this skill covers):
+
 - Django-specific testing — see `django-tdd`
 - Python language idioms — see `python-patterns`
 - TDD methodology — see `tdd-workflow`
@@ -907,6 +908,7 @@ Python test suites scale or stall depending on three early decisions: fixture sc
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `@pytest.mark.skip` introduced without ticket + fix deadline
 - Shared mutable fixture (module / session scope) causing test-order coupling
 - `mock.patch` used at the wrong import path (mock not applied — silent test passing)
@@ -918,6 +920,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Test asserts on exception `message` not type / `error_code` (brittle to copy edits)
 
 **Refinement candidates**:
+
 - New fixture-pattern row when a recurring setup class emerges (e.g., new test DB factory, new event-loop helper)
 - New cross-reference when a sister rule (python/no-discards, testing, local-testability) adds a verification surface
 - Tightening of the coverage floor on packages flagged as critical

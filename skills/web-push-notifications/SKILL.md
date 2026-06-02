@@ -228,6 +228,7 @@ fire-and-forget dispatch shape that decouples send from
 acknowledgement.
 
 **Negative scope** (NOT what this skill covers):
+
 - In-app banner / toast UI rendering — out
 - Email / SMS notifications — separate channels
 - Real-time WebSocket / SSE push — different protocol
@@ -332,6 +333,7 @@ by browser heuristics + regulators.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - VAPID public key hardcoded in client + leaked to repo (per `no-discards.md` hook catches; refinement needed if it slips)
 - Push send blocking the alarm dispatch path (fire-and-forget pattern weakening — alarm latency degraded)
 - 410 / 404 subscription responses ignored (stale-subscription cleanup gap; tokens accumulate)
@@ -342,6 +344,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Service worker `push` event handler doesn't validate sender / origin
 
 **Refinement candidates**:
+
 - New section when a browser ships new push capability (e.g., richer notification actions, push for native apps via WebPush W3C)
 - Quota / burn-rate tracking pattern when push send volumes scale past pilot
 - Multi-endpoint orchestration (FCM + APNs Web + Edge Workers) when reach gaps surface

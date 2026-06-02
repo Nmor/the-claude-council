@@ -183,7 +183,7 @@ Key formulas + concepts:
 - **EOQ (Economic Order Quantity)** = √(2DS/H) where D = annual
   demand, S = order cost, H = holding cost per unit per year
 - **Reorder Point (ROP)** = (average demand during lead time)
-  + safety stock
+  - safety stock
 - **Safety stock** = z × σ_LT × √L where z = service-level
   z-score, σ_LT = std-dev of demand during lead time, L = lead
   time. (More complex when both demand + lead time are variable.)
@@ -223,6 +223,7 @@ order is the same dimension viewed from manufacturing:
 
 Demand variability amplifies up the supply chain — small changes
 at retail cause big swings at manufacturers. Drivers:
+
 - Demand forecasting based on orders rather than end-customer
   sell-through
 - Lead-time variability
@@ -242,6 +243,7 @@ plans. Integrated Business Planning (IBP) is the evolution:
 adding strategy, finance, product, and scenario planning.
 
 Mature S&OP / IBP includes:
+
 - Product / portfolio review
 - Demand review (consensus forecast)
 - Supply review (capacity, materials, constraints)
@@ -291,6 +293,7 @@ Modes of transport with different cost / speed / capacity:
 | **Parcel** | Per-unit high | Fast | E-commerce, small parcels |
 
 Incoterms 2020 governs cost + risk transfer:
+
 - EXW (Ex Works) — buyer takes all risk + cost from seller's
   premises
 - FCA / FOB — risk transfers at named place
@@ -517,7 +520,7 @@ company makes; they deserve principal-level frameworks.
 - **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
   engineering basis (when civil / structural scope)
 - **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  + digital coordination (when AEC scope)
+  - digital coordination (when AEC scope)
 - **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
   Matrix** — Systematic innovation methodology
 - **Stanford d.school + IDEO Field Guide** — Design thinking
@@ -533,7 +536,6 @@ company makes; they deserve principal-level frameworks.
   Management (Grove)** — People + culture frameworks
 - **Getting to Yes (Fisher + Ury) + Never Split the Difference
   (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
 
 ### Cross-cutting engineering standards
 
@@ -556,12 +558,12 @@ company makes; they deserve principal-level frameworks.
 - **CWE-1059** — Insufficient technical documentation (process
   workflows MUST be documented)
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - S&OP cycle not run monthly (demand-supply alignment drift)
 - Demand forecast accuracy (MAPE) > 30% sustained (poor signal quality)
 - Bullwhip effect observed (variance amplifying upstream) without dampening
@@ -575,6 +577,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Sustainability / scope-3 emissions not tracked in supplier evaluation (per `~/.claude/rules-library/common/audit-logging.md`)
 
 **Refinement candidates**:
+
 - New supply-chain risk row when a new disruption class emerges (e.g., cyber attack on logistics)
 - New cross-reference when a sister skill (lean-manufacturing, six-sigma, esg-reviewer) adds a SC gate
 - Tightening of the dual-source policy when SPOF incident recurs

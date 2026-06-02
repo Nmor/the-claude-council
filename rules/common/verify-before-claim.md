@@ -50,7 +50,7 @@ Replace with one of:
 
 - "implemented — `<verification gate name>` not run yet; running
   next"
-- "implemented + verified this turn (`<gate>`: <result>)"
+- "implemented + verified this turn (`<gate>`: `<result>`)"
 - "implemented, deferred verification to `<specific window>`
   because `<specific reason>` — tracked as `<follow-up task>`"
 
@@ -59,7 +59,7 @@ Replace with one of:
 Every claim of completion attaches a verification block naming
 the gates that ran this turn:
 
-```
+```text
 Verification (this turn):
 - tsc --noEmit: 0 errors
 - eslint <touched files> --max-warnings 0: clean
@@ -155,6 +155,7 @@ output is visible"; green means "the test runner exited 0 AND
 the assertion count matches expected AND no warnings printed."
 
 ### 9. Manual verification counts (when machine verification is
+
 insufficient)
 
 For UI features, smoke tests, performance changes, accessibility
@@ -177,7 +178,7 @@ just like the automated gates.
 If a change is provably no-op (e.g., a doc-only edit, a comment
 update), the verification block names that explicitly:
 
-```
+```text
 Verification (this turn):
 - diff scope: doc-only (no source changed)
 - markdownlint: 0 warnings
@@ -191,7 +192,7 @@ the diff scope before claiming N/A.
 
 ## Anti-pattern: the stale-verification claim
 
-```
+```text
 [Earlier turn]: agent ran tests, all 2094 passed.
 [Current turn]: agent makes 8 edits, then says "tests still pass."
                 But the test gate was NOT re-run.
@@ -203,7 +204,7 @@ verification.
 
 ## Anti-pattern: the re-affirm under challenge
 
-```
+```text
 User: "are you sure it works?"
 Agent: "yes, definitely working."   ← no new verification ran
 User: "show me the output."
@@ -239,7 +240,7 @@ Documented incidents in real sessions:
 
 1. Agent claimed "100% solid" mid-session; on user challenge,
    verification found 9 calendar bugs + 10 silent-failure sites
-   + 4 regressions + 25 UX gaps. The claim was wrong by
+   - 4 regressions + 25 UX gaps. The claim was wrong by
    hundreds of items.
 2. Agent claimed a backend change was "shipped"; nothing had
    been pushed. The user discovered this when production
@@ -260,6 +261,7 @@ for every coding request they must be able to run locally."**
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Claim phrase issued without same-turn verification (rule 1 violation)
 - Stale verification block (gate ran earlier turn; files have changed since)
 - Re-affirm under user challenge without re-verification (rule 6 violation)
@@ -268,6 +270,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - "No-op" claim made without confirming the diff scope is actually no-op
 
 **Refinement candidates**:
+
 - New row in the "verification scopes by claim type" table when a claim class gains a load-bearing gate
 - New banned claim phrase when a recurring rhetorical pattern slips past the rule
 - Tightening of the "re-run when" triggers when stale verifications recur

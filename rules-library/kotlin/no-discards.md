@@ -282,7 +282,7 @@ coroutines:
 
 ## Verification block
 
-```
+```text
 Kotlin sweep (this turn):
   - ktlint -F: clean
   - detekt --config detekt-strict.yml: 0 issues

@@ -3,7 +3,8 @@
 > Auto-fires on every `*.rs`, `Cargo.toml`, `Cargo.lock` file.
 > Standards: **The Rust API Guidelines**, **The Rustonomicon**,
 > **RFC track**, **rustfmt default**, **clippy pedantic + nursery
-> + cargo**.
+>
+> - cargo**.
 
 ## Core Principle
 

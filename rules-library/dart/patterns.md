@@ -17,7 +17,7 @@ scoped.**
 
 ## Project layout
 
-```
+```text
 lib/
 ├── main.dart
 ├── src/

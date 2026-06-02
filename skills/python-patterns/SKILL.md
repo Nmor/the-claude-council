@@ -518,7 +518,7 @@ async def fetch_all(urls: list[str]) -> dict[str, str]:
 
 ### Standard Project Layout
 
-```
+```text
 myproject/
 ├── src/
 │   └── mypackage/
@@ -561,7 +561,7 @@ from mypackage.utils import format_name
 # pip install isort
 ```
 
-### __init__.py for Package Exports
+### **init**.py for Package Exports
 
 ```python
 # mypackage/__init__.py
@@ -578,7 +578,7 @@ __all__ = ["User", "Post", "format_name"]
 
 ## Memory and Performance
 
-### Using __slots__ for Memory Efficiency
+### Using **slots** for Memory Efficiency
 
 ```python
 # Bad: Regular class uses __dict__ (more memory)
@@ -763,7 +763,7 @@ except SpecificError as e:
     logger.error(f"Operation failed: {e}")
 ```
 
-__Remember__: Python code should be readable, explicit, and follow the principle of least surprise. When in doubt, prioritize clarity over cleverness.
+**Remember**: Python code should be readable, explicit, and follow the principle of least surprise. When in doubt, prioritize clarity over cleverness.
 
 ## Purpose
 
@@ -818,6 +818,7 @@ Cost of typed-Python discipline (mypy strict + ruff ALL): minutes per module. Co
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `except:` / `except Exception:` without specific type + log + rethrow (sister `python/no-discards.md` rules 1-2)
 - `raise NewErr(...)` without `from err` (loses cause chain — rule 4)
 - `logging.error(...)` inside `except` instead of `logging.exception(...)` (rule 5)
@@ -830,6 +831,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `subprocess.run(..., shell=True)` (rule 14 — command injection)
 
 **Refinement candidates**:
+
 - New per-version idiom row when a new Python release ships (e.g., 3.13 free-threaded, structural pattern-matching improvements)
 - Tightening of the strict-typing baseline when a Pydantic v3 / mypy improvement ships
 - New cross-reference when a sister rule (python/no-discards, security) adds a banned pattern
@@ -852,9 +854,12 @@ Phase H will delete the source files at `rules-library/python/`. Content below p
 
 ---
 paths:
-  - "**/*.py"
-  - "**/*.pyi"
+
+- "**/*.py"
+- "**/*.pyi"
+
 ---
+
 # Python Coding Style
 
 > This file extends [common/coding-style.md](../../rules-library/common/coding-style.md) with Python specific content.
@@ -901,9 +906,12 @@ See skill: `python-patterns` for comprehensive Python idioms and patterns.
 
 ---
 paths:
-  - "**/*.py"
-  - "**/*.pyi"
+
+- "**/*.py"
+- "**/*.pyi"
+
 ---
+
 # Python Hooks
 
 > This file extends [common/hooks.md](../../rules-library/common/hooks.md) with Python specific content.
@@ -1352,7 +1360,7 @@ show_missing = true
 
 ## Verification block (Python-side)
 
-```
+```text
 Python lint sweep (this turn):
   - ruff check . --select=ALL: 0 issues
   - ruff format --check: clean
@@ -1406,9 +1414,12 @@ and refactorable.
 
 ---
 paths:
-  - "**/*.py"
-  - "**/*.pyi"
+
+- "**/*.py"
+- "**/*.pyi"
+
 ---
+
 # Python Patterns
 
 > This file extends [common/patterns.md](../../rules-library/common/patterns.md) with Python specific content.
@@ -1452,9 +1463,12 @@ See skill: `python-patterns` for comprehensive patterns including decorators, co
 
 ---
 paths:
-  - "**/*.py"
-  - "**/*.pyi"
+
+- "**/*.py"
+- "**/*.pyi"
+
 ---
+
 # Python Security
 
 > This file extends [common/security.md](../../rules-library/common/security.md) with Python specific content.
@@ -1473,6 +1487,7 @@ api_key = os.environ["OPENAI_API_KEY"]  # Raises KeyError if missing
 ## Security Scanning
 
 - Use **bandit** for static security analysis:
+
   ```bash
   bandit -r src/
   ```
@@ -1489,9 +1504,12 @@ See skill: `django-security` for Django-specific security guidelines (if applica
 
 ---
 paths:
-  - "**/*.py"
-  - "**/*.pyi"
+
+- "**/*.py"
+- "**/*.pyi"
+
 ---
+
 # Python Testing
 
 > This file extends [common/testing.md](../../rules-library/common/testing.md) with Python specific content.

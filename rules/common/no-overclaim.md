@@ -23,8 +23,8 @@ honestly, and revises the claim downward.
 
 2. **Default to weaker, accurate language.** Use:
    - "in progress"
-   - "next: <item>"
-   - "<X> step finished; <Y> step pending"
+   - "next: `<item>`"
+   - "`<X>` step finished; `<Y>` step pending"
    - "code change is in; verification not yet run this turn"
    - "tsc + tests pass; the docs-sync gate hasn't been run yet"
 
@@ -50,7 +50,8 @@ honestly, and revises the claim downward.
 
 5. **The verification block IS the proof.** Every claim of completion
    pairs with a block that names the gates that passed:
-   ```
+
+   ```text
    Verification (this turn):
    - backend tsc: 0 errors
    - backend tests: 2094/2094 pass
@@ -62,6 +63,7 @@ honestly, and revises the claim downward.
    - probe-view-controls.mts 1440x900: pass
    - probe-mobile-shell.mts 375x812: pass
    ```
+
    Missing gates are listed: "docs-sync gate NOT run; running next."
 
 ## What "verified that turn" means
@@ -130,7 +132,7 @@ by:
 4. Then, only then, saying "done."
 
 Until all three are true, the language is "in progress" /
-"next: <gate>" / "code change is in; <gate> not run yet."
+"next: `<gate>`" / "code change is in; `<gate>` not run yet."
 
 ## Inverse case: when partial work is shippable
 
@@ -141,7 +143,8 @@ This rule does NOT forbid shipping partial work. It forbids
 > in progress: 3 new global rules drafted; 5 new skill files
 > pending; done-criteria.md update pending. The bundled PR cannot
 > open until those three Phase ζ items + Phase η deploy-file review
-> + Phase θ verification + Council sign-off all land. Next: 5 skill
+>
+> - Phase θ verification + Council sign-off all land. Next: 5 skill
 > files."
 
 That language is precise, honest, and the user can act on it.
@@ -187,6 +190,7 @@ user-facing rework and trust loss.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - "Done" claim issued without a verification block this turn (rule violation pattern)
 - User challenges a completion claim and finds it wrong (re-affirm discipline weak)
 - Strong-completion language ("100%", "shipped", "bulletproof") used without proof
@@ -195,6 +199,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Re-claim after the same gate failed in the prior turn (verify-before-claim discipline weak)
 
 **Refinement candidates**:
+
 - New banned-phrase entry when a rhetorical claim recurs without proof
 - New verification gate when a missed dimension produces a false "done" in 2+ retrospectives
 - Tightening of the "verified this turn" definition when stale-verification incidents recur

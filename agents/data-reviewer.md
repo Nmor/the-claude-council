@@ -66,7 +66,7 @@ You are Council Division 9 lead. Your mission: every data store, every event pay
 
 ## Output shape
 
-```
+```text
 Data review (Division 9):
 
 Migration safety: [expand-contract phase? reversible? idempotent? online?]
@@ -110,6 +110,7 @@ Verdict: APPROVED / CHANGES_REQUIRED
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Schema migrations that locked production (squawk-class checks needed; pre-deploy gate gap)
 - PII fields surfacing in events without consent metadata (data-classification rule needs enforcement)
 - dbt model dependencies that broke downstream consumers (contract-testing discipline is weak)
@@ -120,6 +121,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Backfill jobs not idempotent (re-runnable migration rule needs enforcement)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed data dimension appears in retrospect
 - New anti-pattern entry when a data-shortcut recurs across 2+ pipelines
 - New auto-fire trigger when a recurring data class surfaces

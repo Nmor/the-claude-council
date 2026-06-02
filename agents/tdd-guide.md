@@ -27,22 +27,27 @@ You are a Test-Driven Development (TDD) specialist who ensures all code is devel
 ## TDD Workflow
 
 ### 1. Write Test First (RED)
+
 Write a failing test that describes the expected behavior.
 
 ### 2. Run Test -- Verify it FAILS
+
 ```bash
 npm test
 ```
 
 ### 3. Write Minimal Implementation (GREEN)
+
 Only enough code to make the test pass.
 
 ### 4. Run Test -- Verify it PASSES
 
 ### 5. Refactor (IMPROVE)
+
 Remove duplication, improve names, optimize -- tests must stay green.
 
 ### 6. Verify Coverage
+
 ```bash
 npm run test:coverage
 # Required: 80%+ branches, functions, lines, statements
@@ -122,6 +127,7 @@ For detailed mocking patterns and framework-specific examples, see `skill: tdd-w
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Coverage gaming pattern recurring (asserting `length === 0` instead of behaviour)
 - Flaky test class shipping (root-cause investigation skipped — quarantine + ticket discipline weak)
 - Tests asserting on `message` instead of `error_code` (error-handling-with-context.md rule 10 enforcement weak)
@@ -134,6 +140,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Test class repeatedly missing edge cases (test-design rubric needs sharpening)
 
 **Refinement candidates**:
+
 - New testing-pattern entry when a missed test-strategy dimension appears in retrospect
 - New anti-pattern entry when a test shortcut recurs across 2+ services
 - Tightening of coverage thresholds when chronic miss observed

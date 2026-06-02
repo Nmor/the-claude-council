@@ -149,6 +149,7 @@ trivial in the moment and painful for years if wrong. Rules:
 ### Routing
 
 Cloud and on-prem routing patterns:
+
 - **Default route** (0.0.0.0/0) for internet egress — through NAT
   Gateway, internet gateway, or proxy
 - **Specific routes** for peered networks
@@ -159,6 +160,7 @@ Cloud and on-prem routing patterns:
   Interconnect) — communities to control preference + propagation
 
 Common failures:
+
 - **Asymmetric routing** — traffic goes out via one path, returns
   via another, stateful firewalls drop it
 - **Black hole MTU** — large packet sent, ICMP-unreachable
@@ -193,6 +195,7 @@ patterns:
   Manager) — failover routing based on health checks
 
 Common DNS failures:
+
 - TTL too long — failover takes 30 min instead of 30 sec
 - Forgotten CNAME pointing at a now-deleted resource — domain
   hijacking via subdomain takeover
@@ -262,8 +265,9 @@ checks let bad instances serve traffic.
 ### Zero-Trust Networking (NIST SP 800-207)
 
 The premise: network location ≠ trust. Every request authenticated
-+ authorised; encrypted transport; least-privilege access; logged
-+ monitored. Implementations:
+
+- authorised; encrypted transport; least-privilege access; logged
+- monitored. Implementations:
 
 - **BeyondCorp** model (Google) — context-aware access decisions
   at proxy
@@ -424,6 +428,7 @@ Without principal-level network discipline, organisations:
 - Suffer reputation hits from preventable DDoS impact
 
 With principal-grade networking:
+
 - The network is designed once with documented CIDR, routing,
   DNS, TLS strategy and re-validated on changes
 - Failure modes are anticipated, instrumented, and handled
@@ -443,6 +448,7 @@ erosion of confidence in the platform.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Security group with `0.0.0.0/0` ingress on a non-public-facing service (least-privilege weakening)
 - CIDR overlap between two VPCs / accounts (peering / Transit Gateway routing breakage waiting to happen)
 - DNS TTL > 5 min on a service expected to fail over (RPO/RTO weakening)
@@ -456,6 +462,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Zero-trust posture relaxed for "internal" service (lateral movement risk)
 
 **Refinement candidates**:
+
 - New topology pattern row when a new connectivity shape emerges (e.g., Cloud WAN, AWS VPC Lattice)
 - New WAF / NACL template when a new attack class is observed in traffic
 - New cross-reference when a sister skill (cloud-architecture, security-review, observability-patterns) adds a network gate

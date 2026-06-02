@@ -137,7 +137,7 @@ trivy image --severity HIGH,CRITICAL --exit-code 1 myapp:pr-${SHA}
 Every scan produces a verification block the developer / reviewer
 reads:
 
-```
+```text
 Dependency vulnerability scan (this turn):
   pnpm audit:        0 HIGH, 0 CRITICAL (3 MEDIUM tracked in docs/security-advisories.md)
   govulncheck:       0 findings
@@ -148,7 +148,7 @@ Status: PASS
 
 A failing block looks like:
 
-```
+```text
 Dependency vulnerability scan (this turn):
   pnpm audit:        1 HIGH (CVE-2025-XXXXX in lodash@4.17.20 → upgrade to 4.17.21)
 
@@ -298,6 +298,7 @@ hours each.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - CVE published in a dep the project uses but no PR opened within 7 days (Renovate / Dependabot misconfigured)
 - HIGH / MODERATE finding suppressed via `audit-ignore` / per-line comment (rule 1 weakening)
 - MODERATE backlog growing > 5 entries in `docs/security-advisories.md` (rule 8 weakening — exception drift)
@@ -308,6 +309,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Deploy reached production with a CRITICAL CVE in the dep graph (5-layer enforcement weakening)
 
 **Refinement candidates**:
+
 - New scanner row when a new ecosystem ships (e.g., new Wasm registry, new mobile SDK store) and OSV-Scanner / npm-audit coverage gap
 - Tightening of the MODERATE floor when a recurring CVE class shows MODERATE underestimates real exploitability
 - New cross-reference when a sister rule (dependency-overrides-not-exceptions, install-allowlist, license-allowlist-gate) provides the toolkit to close a finding

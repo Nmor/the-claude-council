@@ -362,7 +362,7 @@ documented test matrix.
 
 ## Verification block
 
-```
+```text
 Dependency pinning (this turn):
   - Lockfile present + committed: pnpm-lock.yaml
   - CI runs `pnpm install --frozen-lockfile`: yes
@@ -423,6 +423,7 @@ dependencies: irreproducible bugs, supply-chain incidents,
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `"*"` or `"latest"` as version string in `package.json` / `requirements.txt` (rule 1 violation)
 - Container `FROM` line with floating tag (no `@sha256:...` digest) — rule 3 violation
 - GitHub Actions used by tag (`@v4`) instead of full SHA — rule 3 violation, supply-chain risk
@@ -435,6 +436,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Verification block shows un-pinned deps but PR merged anyway (CI gate weakening)
 
 **Refinement candidates**:
+
 - New ecosystem row in the range-syntax table when a new package manager emerges (e.g., `bun`, `deno`, new Python tools)
 - Tightening of the auto-merge policy when minor / patch auto-merges break consumers
 - New cross-reference when a sister rule (dependency-overrides-not-exceptions, license-allowlist-gate, install-allowlist) tightens the pinning contract

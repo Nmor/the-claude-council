@@ -71,6 +71,7 @@ This skill maps the controls to implementation patterns + verification gates so 
 - **V2.10.1** — Service accounts use ephemeral credentials (OIDC federated, not long-lived keys)
 
 **Verification:**
+
 ```bash
 # Verify password policy
 grep -rn "minLength\|MIN_PASSWORD_LENGTH" src/ — should ≥ 12
@@ -257,6 +258,7 @@ The cost of implementing ASVS controls during development: a few extra middlewar
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - V2 (Authentication) control gap: password policy < 12 chars, no rate-limit on login, MFA optional for admin
 - V3 (Session Management) control gap: session token leaked in URL / log / referrer
 - V4 (Access Control) control gap: IDOR pattern reaches main (resource lookup without ownership check)
@@ -273,6 +275,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New L3 control becomes applicable (e.g., regulated workload added) without uplift
 
 **Refinement candidates**:
+
 - New control mapping row when a recurring control gap appears in production audit
 - Tightening of the L1 → L2 → L3 boundary when the workload's regulatory scope changes
 - New cross-reference when a sister skill (iso27001-controls, soc2-readiness, pci-dss-patterns) cites the same control under a different framework

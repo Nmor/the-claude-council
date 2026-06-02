@@ -151,6 +151,7 @@ final class QuestionListViewModel {
 Principal-level Swift concurrency + persistence: `actor` for thread-safe shared state, `Sendable` conformance, structured concurrency via `async`/`await` + `TaskGroup`, persistence via Core Data / SwiftData / SQLite under actor isolation, cancellation propagation.
 
 **Negative scope** (NOT what this skill covers):
+
 - Generic Swift idioms — see `coding-standards`
 - Protocol-based DI + test doubles — see `swift-protocol-di-testing`
 - iOS-specific UI patterns — out of scope here
@@ -231,6 +232,7 @@ Swift's concurrency model (actors + structured concurrency) eliminates entire cl
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Shared mutable state without `actor` isolation (data race risk)
 - `@MainActor` on a method that doesn't need main-thread isolation (perf overhead)
 - `Task.detached` used where `Task` would inherit context correctly
@@ -242,6 +244,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - File I/O on main actor (UI hitch)
 
 **Refinement candidates**:
+
 - New persistence-pattern row when SwiftData ships a new feature
 - New cross-reference when a sister skill (swift-protocol-di-testing, security-review) adds a Swift gate
 - Tightening of the actor-isolation rule when a data-race incident recurs
@@ -264,8 +267,10 @@ Phase H will delete the source files at `rules-library/swift/`. Content below pr
 
 ---
 paths:
-  - "**/*.swift"
-  - "**/Package.swift"
+
+- "**/*.swift"
+- "**/Package.swift"
+
 ---
 
 # Swift Coding Style
@@ -508,6 +513,7 @@ brew install --cask xcodes       # Xcode version management
 ## `.swiftlint.yml` (already covered in `swift/no-discards.md`)
 
 See `~/.claude/rules-library/swift/no-discards.md` for the strict config:
+
 - `force_unwrapping: error`
 - `force_try: error`
 - `empty_catch: error`
@@ -562,7 +568,7 @@ versions.
 
 `*.xcconfig`:
 
-```
+```text
 // Treat warnings as errors
 SWIFT_TREAT_WARNINGS_AS_ERRORS = YES
 GCC_TREAT_WARNINGS_AS_ERRORS = YES
@@ -914,7 +920,7 @@ line_length:
 
 ## Verification block
 
-```
+```text
 Swift build (this turn):
   - swift build -Xswiftc -warnings-as-errors: 0 warnings
   - swiftlint lint --strict: 0 violations
@@ -962,7 +968,7 @@ dependency injection via protocol composition.**
 
 ## Project layout
 
-```
+```text
 MyApp/
 ├── Package.swift                      # SwiftPM manifest
 ├── Sources/
@@ -1011,6 +1017,7 @@ final class OrderViewModel: ObservableObject {
 ```
 
 Default: `struct`. Reach for `class` only when:
+
 - Identity matters (`===` comparison)
 - Deinitializer needed (resource cleanup)
 - Reference semantics required (shared mutable state)
@@ -1285,7 +1292,9 @@ Per `~/.claude/rules-library/common/reuse-first.md`.
 
 ---
 paths:
-  - "**/*.swift"
+
+- "**/*.swift"
+
 ---
 
 # Swift Security
@@ -1316,9 +1325,11 @@ Use `LAContext` with proper error handling. Always provide a passcode fallback.
 
 ---
 paths:
-  - "**/*Tests.swift"
-  - "**/*Test.swift"
-  - "**/Tests/**/*.swift"
+
+- "**/*Tests.swift"
+- "**/*Test.swift"
+- "**/Tests/**/*.swift"
+
 ---
 
 # Swift Testing

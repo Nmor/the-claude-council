@@ -26,6 +26,7 @@ phase reports done.
 ### 1. Atomic granularity
 
 Each task is the smallest unit that:
+
 - Produces a single verifiable outcome (one file written, one
   function refactored, one config gate added, one commit boundary)
 - Can be completed in roughly 15 minutes to 4 hours by a single
@@ -41,6 +42,7 @@ outcome.
 ### 2. Long lists are the norm, not the exception
 
 A real-world plan typically produces:
+
 - **Small fix**: 3–8 tasks
 - **Medium feature**: 15–40 tasks
 - **Large migration / refactor**: 50–200 tasks
@@ -54,7 +56,7 @@ wrong — go finer.
 Every plan uses a three-level structure. The canonical shape —
 not the specifics — is universal across plans:
 
-```
+```text
 Phase N — <one-line goal>
 ├── N.A — <one-line sub-step goal>
 │   ├── Task N.A.1 — <atomic action with path + outcome> · verify: <predicate>
@@ -110,6 +112,7 @@ move to `completed` IMMEDIATELY (per `plan-execution-progress.md`).
 
 A `TodoWrite` list with N phase-level entries for a 10×N-task plan
 is wrong. Either:
+
 - Use phase-level entries that LINK into the plan file's task
   list (acceptable for very long plans), AND tick the plan file's
   tasks as they finish, OR
@@ -120,6 +123,7 @@ is wrong. Either:
 
 When mid-execution a task reveals new sub-work (a missed gate, a
 discovered orphan, a hidden dependency), the agent:
+
 1. Pauses the current task
 2. Adds the new tasks to the plan + TodoWrite with explicit IDs
 3. Resumes execution
@@ -150,12 +154,14 @@ verified done, and it removes everything the plan made obsolete:
 | Sanitized intermediate artifacts | Temp files, snapshot dumps, `.tmp` / `.bak` left by previous phases |
 
 The bloat-removal phase MUST run AFTER:
+
 - Every prior phase's verification block is green this turn
 - Every consumer of the about-to-be-removed surface has migrated
 - A link-integrity grep shows zero inbound references to each
   target of removal
 
 The bloat-removal phase MUST run BEFORE:
+
 - The plan-completion commit (per `plan-completion-before-push.md`)
 - Any tag, release, or PR merge
 
@@ -173,6 +179,7 @@ be able to read the plan + TodoWrite + git log and resume from
 the next pending task without re-deriving context.
 
 This means tasks include:
+
 - The file paths they touch (absolute or repo-rooted)
 - The commands they run (verbatim)
 - The expected outcome (verifiable predicate)
@@ -182,14 +189,14 @@ A task that says "fix the thing" is unrecoverable on resume.
 
 ## Canonical task-row shape
 
-```
+```text
 Task <id> — <verb> <object> [in <file/dir>] · verify: <predicate>
 ```
 
 Examples of correctly-shaped rows (generic, substitute your
 domain):
 
-```
+```text
 Task M.N.1 — Read primary-source spec / RFC / regulation §<section>
              · verify: docs/provider-research/<name>.md cites the URL
 Task M.N.2 — Draft <artifact> at <path> per the template
@@ -214,7 +221,7 @@ immediate neighbors).
 Every plan file under `~/.claude/plans/` or `<project>/.claude/
 plans/` MUST follow this structure:
 
-```
+```text
 # <Plan slug>
 
 ## Context
@@ -239,7 +246,7 @@ rebuild is correct; a two-page plan for the same work is wrong.
 
 ## Anti-pattern: what NOT to write
 
-```
+```text
 Phase N: Add domain skills
   - Security
   - Finance
@@ -287,6 +294,7 @@ items that lead to big goals."
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Phase header lacks a sub-step or task list (granularity rule violation)
 - A "task" in the plan spans > 4 hours of work (atomic-task threshold breached)
 - Plan has < 10 tasks for non-trivial work (rule 2 weakening)
@@ -297,6 +305,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - TodoWrite list has phase-level entries for a 50+-task plan with no task-level mirror
 
 **Refinement candidates**:
+
 - New row in the task-row shape table when a new artifact kind recurs (e.g., new IaC type, new schema migration template)
 - Tightening of the atomic-task time threshold when 4h tasks consistently overrun
 - New cross-reference when a sister rule (verify-before-claim, no-silent-drops, proper-fixes-first) provides a gate the task list must verify

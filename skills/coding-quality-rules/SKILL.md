@@ -66,7 +66,6 @@ This skill bundles 19 cross-cutting rules that apply to every code file. Loading
 
 ---
 
-
 <!-- ============================================================
      Section: coding-style.md (from rules/common/)
      ============================================================ -->
@@ -77,7 +76,7 @@ This skill bundles 19 cross-cutting rules that apply to every code file. Loading
 
 ALWAYS create new objects, NEVER mutate existing ones:
 
-```
+```text
 // Pseudocode
 WRONG:  modify(original, field, value) → changes original in-place
 CORRECT: update(original, field, value) → returns new copy with change
@@ -88,6 +87,7 @@ Rationale: Immutable data prevents hidden side effects, makes debugging easier, 
 ## File Organization
 
 MANY SMALL FILES > FEW LARGE FILES:
+
 - High cohesion, low coupling
 - 200-400 lines typical, 800 max
 - Extract utilities from large modules
@@ -96,6 +96,7 @@ MANY SMALL FILES > FEW LARGE FILES:
 ## Error Handling
 
 ALWAYS handle errors comprehensively:
+
 - Handle errors explicitly at every level
 - Provide user-friendly error messages in UI-facing code
 - Log detailed error context on the server side
@@ -104,6 +105,7 @@ ALWAYS handle errors comprehensively:
 ## Input Validation
 
 ALWAYS validate at system boundaries:
+
 - Validate all user input before processing
 - Use schema-based validation where available
 - Fail fast with clear error messages
@@ -112,6 +114,7 @@ ALWAYS validate at system boundaries:
 ## Code Quality Checklist
 
 Before marking work complete:
+
 - [ ] Code is readable and well-named
 - [ ] Functions are small (<50 lines)
 - [ ] Files are focused (<800 lines)
@@ -127,6 +130,7 @@ constraints, subtle invariants, surprising shape choices, workarounds for
 specific bugs.
 
 Comments DO NOT contain:
+
 - The current task, fix, or callers ("used by X", "added for the Y flow",
   "handles the case from issue #123") — those belong in the PR description.
 - External tracker pointers: plan IDs (`plan B2`, `Initiative I10`,
@@ -213,6 +217,7 @@ DO NOT WRITE:
   every value Go returns is part of the contract and must be bound.
 - `defer file.Close()` and `defer func() { _ = x.Close() }()` —
   Close errors must be logged. Correct shape:
+
   ```go
   defer func() {
       if err := file.Close(); err != nil {
@@ -220,6 +225,7 @@ DO NOT WRITE:
       }
   }()
   ```
+
 - Comparing errors with `==` instead of `errors.Is` / `errors.As`.
   Wrapped errors do not pass `==`. The Go `errorlint` linter rejects
   every `==` against a sentinel.
@@ -267,6 +273,7 @@ Operator override (humans only, never the agent):
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Mutation on an existing object instead of returning a new copy (Immutability rule violation)
 - Files past 800 LOC introduced (file-organization warning)
 - Functions > 50 lines / files > 800 lines created (size discipline weakening)
@@ -280,6 +287,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Raw color literal added to UI source (hook blocked: hex / rgb / hsl / oklch)
 
 **Refinement candidates**:
+
 - New row in the "banned vocabulary" comment table when a new refactor-history phrasing recurs
 - Tightening of the file-LOC warning threshold (currently 800) when small files consistently produce cleaner reviews
 - New cross-reference when a sister rule (no-discards, no-silent-failures, no-silent-drops) provides the canonical home for a banned pattern
@@ -305,6 +313,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 ## Skeleton Projects
 
 When implementing new functionality:
+
 1. Search for battle-tested skeleton projects
 2. Use parallel agents to evaluate options:
    - Security assessment
@@ -319,6 +328,7 @@ When implementing new functionality:
 ### Repository Pattern
 
 Encapsulate data access behind a consistent interface:
+
 - Define standard operations: findAll, findById, create, update, delete
 - Concrete implementations handle storage details (database, API, file, etc.)
 - Business logic depends on the abstract interface, not the storage mechanism
@@ -327,6 +337,7 @@ Encapsulate data access behind a consistent interface:
 ### API Response Format
 
 Use a consistent envelope for all API responses:
+
 - Include a success/status indicator
 - Include the data payload (nullable on error)
 - Include an error message field (nullable on success)
@@ -337,6 +348,7 @@ Use a consistent envelope for all API responses:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New component / function / class introduced without sweep against `reuse-first.md` (existing primitive missed)
 - Rule of three violated — third occurrence of same shape without extraction (parallel implementations growing)
 - Response envelope inconsistent across handlers (different success indicators, different error shapes)
@@ -345,6 +357,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Pattern catalog gap: a recurring shape (e.g., outbox, saga, CQRS, fanout) absent from this file
 
 **Refinement candidates**:
+
 - New pattern entry when a recurring architectural shape (event-sourcing, sidecar, ambassador, anti-corruption layer) emerges
 - Tightening of the rule-of-three threshold when twin parallel implementations cause defect drift
 - New response-envelope field when a recurring metadata need (rate-limit headers, request-id, deprecation notice) emerges
@@ -596,6 +609,7 @@ or objects."**
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Parallel implementation of an existing primitive shipping (sweep step skipped — rule violation pattern)
 - Same primitive appearing in 2+ projects (rule-of-three trigger — promote to global shared package)
 - Fork of a shared primitive instead of extend-with-prop (rule violation — log + reinforce)
@@ -605,6 +619,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - "Cleanup PR" deletes a primitive without migrating call sites (silent-drop class — surface to `no-silent-drops.md`)
 
 **Refinement candidates**:
+
 - New canonical-radius row when a new shared layer emerges (workspace package, monorepo internal lib)
 - New anti-pattern entry when a duplication shortcut recurs across 2+ PRs
 - Tightening of the rule-of-three trigger when duplicates accumulate before extraction
@@ -641,7 +656,7 @@ a rule violation.
 
 ### 1. Killing a healthy service to free resources
 
-```
+```text
 # BANNED
 docker stop <noisy-container>   # "to free CPU for <service-under-pressure>"
 
@@ -718,7 +733,7 @@ that declares the regex for every key.
 
 ### 5. Rotating a credential non-atomically
 
-```
+```text
 # BANNED sequence:
 # 1. Generated new DB password in memory
 # 2. Pushed to vault
@@ -761,7 +776,7 @@ error". Don't do either.
 
 ### 7. Half-completing a migration and walking away
 
-```
+```text
 # BANNED: "service-a is up, service-b is failing — I'll come back
 # to it". Walking away leaves the deployment broken-by-design.
 
@@ -776,7 +791,7 @@ Every "done" claim must be paired with a self-audit answering ALL
 of the following. The audit goes in the verification block — see
 `done-criteria.md` and `no-overclaim.md`.
 
-```
+```text
 Proper-fix audit (this turn):
   [ ] Every observed failure has a documented root cause.
   [ ] No service was killed to free resources for another.
@@ -876,6 +891,7 @@ always"** / **"nothing simple please"**.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Container `docker stop`-ed to "free resources" rather than CPU/memory-limited (banned pattern 1 recurrence)
 - Healthcheck `timeout` / `retries` / `start_period` bumped without naming an underlying slow code path (banned pattern 2 recurrence)
 - Config env-var name guessed from a README instead of canonical loader source (banned pattern 3 — `official-docs-first.md` weakening)
@@ -888,6 +904,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Time-pressure context used as justification to skip the audit (rule 8 "I'm being rushed" failure mode)
 
 **Refinement candidates**:
+
 - New row in the banned-pattern list when a new shortcut class recurs (e.g., `kubectl delete pod` to recover, `restart-loop` to mask leak, dependency downgrade to escape a bug)
 - Tightening of the proper-fix audit when a row consistently gets ticked without real verification
 - New cross-reference when a sister rule (no-silent-failures, no-overclaim, deploy-failures-become-checks) provides the underlying gate the shortcut bypassed
@@ -1053,6 +1070,7 @@ The cost of pausing to verify is low; the cost of silently dropping product work
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Commented-out code deleted without user confirmation (Rule 0 violation pattern)
 - TODO / FIXME / XXX marker removed without implementing the underlying work (Rule 1 violation)
 - "Unused" import deleted that was actually a wiring gap (Rule 2 enforcement weak)
@@ -1062,6 +1080,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Same "we'll do this later" pattern recurring across PRs (taxonomy needs new banned shape)
 
 **Refinement candidates**:
+
 - New entry in the "Specific Rules" list when a new silent-drop shape recurs across 2+ incidents
 - Tightening of the three-layer-restoration evidence requirements when a layer is consistently missed
 - New cross-reference when a sister rule (no-discards, no-overclaim) covers a pattern previously thought unique to this rule
@@ -1366,6 +1385,7 @@ user-experience layer.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - False-positive success toast where the optional sub-step actually failed (rule 1 violation pattern)
 - Async op left in "pending forever" terminal state (rule 2 violation)
 - Optimistic UI update without rollback on failure (rule 3 weakening)
@@ -1380,6 +1400,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Server controller `throw` without centralised exception-mapping middleware turning into a generic 500 (rule 7 server-side weakening)
 
 **Refinement candidates**:
+
 - New rule when a new false-positive success shape appears in 2+ incidents
 - New cross-reference when a sister rule (no-discards, error-handling-with-context) covers a pattern previously thought unique to this rule
 - Tightening of the "every async op has a known status" rule when a new state-machine gap is observed
@@ -1789,7 +1810,7 @@ These rules have surfaced in real code. Every one of them MUST be addressed when
 | **S109** | Magic number literals | Extract to named `const`. |
 | **S101** | Class name not PascalCase | Rename. |
 | **S100** | Function name not camelCase | Rename. No underscores in test names — use `t.Run("sub test", ...)`. |
-| **S6582** | `if (!x || !x.foo)` | Optional chain: `if (!x?.foo)`. |
+| **S6582** | `if (!x \|\| !x.foo)` | Optional chain: `if (!x?.foo)`. |
 | **S7735** | Negated condition in ternary `!cond ? a : b` | Flip to `cond ? b : a`. |
 | **S6606** | `Object.prototype.hasOwnProperty.call(obj, k)` | `Object.hasOwn(obj, k)`. |
 | **S7773** | Bare `parseInt(s)` / `parseFloat(s)` | `Number.parseInt(s, 10)` / `Number.parseFloat(s)`. |
@@ -1854,9 +1875,11 @@ is the only safety net.
 ### The five steps
 
 1. **Inventory duplicated literals (S1192).** For Go / TS / Python:
+
    ```bash
    grep -oE '"[^"]{8,}"' <file> | sort | uniq -c | sort -rn | awk '$1 >= 3'
    ```
+
    Every line in the output is a violation. If you decide to extract,
    do **declare + replace in the SAME edit** — never declare a
    const and stop, that produces the unused-const warning state the
@@ -1867,6 +1890,7 @@ is the only safety net.
 2. **Inventory discards.** Run the relevant grep set for the file's
    language from the "Pre-delivery self-audit checklist" section
    below. Fix every hit. Common offenders in Go:
+
    ```bash
    grep -nE '\bfor [_, ]+_[, ]* := range\b' <file>
    grep -nE '_, err :=|, _ :=|^\s*_ =' <file>
@@ -1896,9 +1920,11 @@ is the only safety net.
 
 6. **Commented-out code audit (no-silent-drops.md Rule 0).** Grep the
    file for commented-out source:
+
    ```bash
    grep -nE '^\s*//\s*(if|for|switch|return|err|var|const|func|import|package|[a-zA-Z_]+[ \t]*[:=]|c\.|i\.|a\.|h\.|k\.)' <file>
    ```
+
    Every match is one of three things:
    - **A genuine TODO marker** — leave it OR open a real ticket and
      remove it. Either way, surface it to the user.
@@ -1919,6 +1945,7 @@ is the only safety net.
 ### Declare-and-stop is forbidden
 
 If you decide to extract a constant or a helper:
+
 - The same edit MUST replace every usage.
 - Or revert the declaration before reporting done.
 
@@ -2000,7 +2027,7 @@ exists so the workflow is explicit and the failure cannot recur as
 | 38 | Empty function body (S108) | `grep -nE "\{\s*\}"` | Implement or document why |
 | 39 | `catch (e) { throw e }` useless rethrow (S2737) | Visual | Drop the try/catch or add real handling |
 | 40 | Caught exception used only for `instanceof`, never logged (S1166) | Visual | Always log on the way through |
-| 41 | `throw` / `reject` / `raise` in a user-facing path WITHOUT a paired user-visible surface (toast / inline validation / banner / state transition / modal) — `no-silent-failures.md` rule 7 | Visual + grep for `throw ` / `reject(` / `raise ` in views / handlers / form-submit / API client; confirm each is caught + surfaced | Pair every throw in a user-facing path with toast.error / inline error / banner / status transition. NEVER rely on a generic ErrorBoundary as the first UX surface. Server-side throws route through a centralised exception handler that emits a typed `{error_code, message, details}` envelope per `error-handling-with-context.md` rule 4 |
+| 41 | `throw` / `reject` / `raise` in a user-facing path WITHOUT a paired user-visible surface (toast / inline validation / banner / state transition / modal) — `no-silent-failures.md` rule 7 | Visual + grep for `throw` / `reject(` / `raise` in views / handlers / form-submit / API client; confirm each is caught + surfaced | Pair every throw in a user-facing path with toast.error / inline error / banner / status transition. NEVER rely on a generic ErrorBoundary as the first UX surface. Server-side throws route through a centralised exception handler that emits a typed `{error_code, message, details}` envelope per `error-handling-with-context.md` rule 4 |
 
 ### How to run the audit
 
@@ -2046,6 +2073,7 @@ Operator override (humans only, never the agent):
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Hook rejection on a new pattern not in the current rule list (candidate for promotion to documented pattern)
 - Discard pattern shipping despite the hook (hook coverage gap — refine the regex / AST query)
 - Suppression directive (`// eslint-disable`, `//nolint`, `# noqa`) attempted (rule violation — log + reinforce)
@@ -2055,6 +2083,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Hardcoded credential prefix appearing in source despite hook (new prefix pattern to add to the hook)
 
 **Refinement candidates**:
+
 - New banned-pattern entry when a class recurs across 2+ services
 - New hook check when a pattern bypass surfaces
 - Tightening of complexity / length / parameter caps when chronic violation observed
@@ -2491,6 +2520,7 @@ Ambient globals cause failures that are HARD to debug:
    tracing every global it transitively reads/writes
 
 Injection-based code is:
+
 - Testable in isolation (mock the deps)
 - Parallel-safe (no shared state)
 - Self-documenting (signature shows the dependencies)
@@ -2504,6 +2534,7 @@ debuggable, testable, scalable code.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New module-level mutable state introduced (singleton cache, shared dict, lazy-init holder) — rule 1 weakening
 - `process.env` / `os.environ` read deep in the call stack instead of at startup (rule 2 violation)
 - `init()` (Go) / `__init__.py` with side effects beyond pure assignment — rule 3 violation
@@ -2516,6 +2547,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `gochecknoglobals` / `gochecknoinits` lint disabled in golangci-lint config
 
 **Refinement candidates**:
+
 - New per-language DI pattern row when a new framework's idiom emerges (e.g., new async-local-storage shape, new effect system)
 - Tightening of the test-shuffle gate when randomised order isn't enforced in CI
 - New cross-reference when a sister rule (no-discards, local-testability, idempotency) depends on DI for verification
@@ -2631,7 +2663,7 @@ code, the fix is part of the work — do not leave it:
 
 1. Identify the data being persisted.
 2. Pick the right replacement from the table above (most often: S3
-   + in-memory buffer for exports; object storage + signed URLs for
+   - in-memory buffer for exports; object storage + signed URLs for
    uploads).
 3. Stream where possible — pipe `io.Reader` → S3 PutObject with
    multipart, not load-all-then-write. Memory is also bounded.
@@ -2712,6 +2744,7 @@ Sister failure modes worth naming:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `os.Create` / `os.WriteFile` / `fs.writeFile` / `open(path, "w")` introduced in production source (Hard rules 1-4 violation)
 - Generated artifact (CSV, PDF, image) written to local FS instead of streamed / object-store-uploaded (use-case mapping violation)
 - Local cache directory created without request-scoped TTL + cleanup (allowed-exception 1 weakening)
@@ -2722,6 +2755,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Sticky-session affinity required because of local FS state (horizontal-scaling block introduced)
 
 **Refinement candidates**:
+
 - New row in the "where to write instead" table when a new artifact class recurs (e.g., generated PDFs needing fonts cache, ML inference temp files)
 - Tightening of the allowlist-exception criteria when transient request-scoped writes prove load-bearing
 - New language entry in the Hard rules when a new ecosystem appears (e.g., Bun's filesystem APIs, Deno's permissions model)
@@ -2775,7 +2809,7 @@ support.
 
 ### 1. Codes are snake_case + stable
 
-```
+```text
 wrong_cell
 wallet_insufficient_funds
 auth_invalid_token
@@ -2848,7 +2882,7 @@ Adding a code is a contract change. The PR adds:
 - The client-side UX handler (per `useApiError` composable
   pattern or equivalent)
 - Tests that assert the code at the boundary (BE returns it
-  + FE handles it per spec)
+  - FE handles it per spec)
 
 ### 6. Codes never carry sensitive data
 
@@ -2880,6 +2914,7 @@ expect(err.details?.required).toBe(5000);
 Copy iterates frequently; the code is the contract.
 
 ### 8. Deprecation lifecycle (per `deprecation-lifecycle`
+
 rule, when authored)
 
 When a code is deprecated:
@@ -2891,7 +2926,7 @@ When a code is deprecated:
    clients still requesting old code get a new
    `code_deprecated` error pointing at the replacement.
 4. **Remove** — the code is removed from the registry +
-   runbook (with a "Superseded by <new code>" link).
+   runbook (with a "Superseded by `<new code>`" link).
 
 Each step has a calendar minimum; clients need time to
 update.
@@ -2911,7 +2946,8 @@ The error envelope is implemented once per platform:
 Per `reuse-first.md` — ONE class / type / hook per concept.
 No duplicate error envelopes across handlers.
 
-### 10. Codes are the integration point between BE, FE, ops,
+### 10. Codes are the integration point between BE, FE, ops
+
 support
 
 When a customer reports a problem with `request_id` X:
@@ -2956,7 +2992,8 @@ stable codes:
   path
 
 The cost of adding the code at write time is one extra string
-+ one registry entry. The cost of debugging without codes is
+
+- one registry entry. The cost of debugging without codes is
 hours per incident.
 
 ## Learning hooks
@@ -2964,6 +3001,7 @@ hours per incident.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New code shipped without an entry in `docs/error-codes.md` registry (rule 4 violation)
 - Same `error_code` reused with different semantics across services (taxonomy drift)
 - Code spelling changed after publication (rule 1 violation — codes are stable)
@@ -2973,6 +3011,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New code introduced without UX behaviour + i18n key + runbook entry simultaneously (rule 4 weakening)
 
 **Refinement candidates**:
+
 - New code class entry when a recurring failure shape needs a stable code
 - New row in the HTTP-status-to-code class table when a new RFC status gains common use
 - Tightening of the deprecation lifecycle steps when soft / hard windows prove too short in practice
@@ -3032,6 +3071,7 @@ language idiom:
   `throw .doThingFailed(userId: userId, underlying: error)`.
 
 Every wrap names:
+
 - The operation (verb + noun: `doThing`, `commitTx`, `parseRequest`)
 - The ids in scope (the smallest set that lets oncall reproduce)
 - The cause (preserved, never stringified-and-lost)
@@ -3281,6 +3321,7 @@ context."**
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Bare `return err` / `raise X` / `throw e` without context wrap shipping (wrapping discipline weakening)
 - Error chain lost on the way through a layer (`%v` instead of `%w`, no `from err`, no `cause:`)
 - Test asserting on `message` instead of `error_code` (rule 10 enforcement weak)
@@ -3290,6 +3331,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Log entry without `request_id` / `trace_id` / `error_code` (structured-fields discipline weak)
 
 **Refinement candidates**:
+
 - New error-code class entry when a recurring failure shape needs a stable code
 - New required-field entry when a context dimension proves load-bearing in production debugging
 - Tightening of the EXP test rubric on `error_code` assertions when chronic copy-fragile tests observed
@@ -3364,6 +3406,7 @@ NOT WARN:
   surfaces at runtime it's an ERROR)
 
 ### 3. INFO is for "a thing happened that's part of normal
+
 operation"
 
 INFO is the audit + lifecycle level:
@@ -3459,7 +3502,7 @@ Per `security.md` A09 + `secrets-management.md`:
 
 A failure that retries successfully:
 
-```
+```text
 attempt 1: WARN "transient failure; retrying" + error_code
 attempt 2: WARN
 attempt N (success): INFO "succeeded after retries" + attempts: N
@@ -3532,6 +3575,7 @@ sanity.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - ERROR fired without an alert routing to on-call (rule 1 weakening — "ERROR reserved for alerts")
 - WARN volume growing > N/min on a service without trend signal (rule 2 dumping-ground anti-pattern)
 - INFO used for genuine handler failure (rule 3 violation — real error hidden)
@@ -3544,6 +3588,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Log ingestion cost crosses per-service budget without action (rule 8 weakening)
 
 **Refinement candidates**:
+
 - New per-library mapping row when a new logger surfaces (e.g., new structured logger in a niche language)
 - Tightening of the WARN-vs-ERROR boundary when a recurring "what level is this?" decision class emerges
 - New PII-redaction entry when a new sensitive field shape recurs (e.g., new identifier format, new biometric)
@@ -3575,7 +3620,7 @@ major version and know to brace for change at a major bump.**
 
 ## What each number means
 
-```
+```text
 MAJOR.MINOR.PATCH
 
 MAJOR — breaking changes to the public API (consumers MUST update)
@@ -3632,7 +3677,7 @@ major; communicate the choice clearly.
 Per the **Conventional Commits 1.0.0** spec, commit messages
 have a structured prefix that maps to a version bump:
 
-```
+```text
 feat: <description>          → MINOR bump
 fix: <description>           → PATCH bump
 docs: <description>          → PATCH (no release if internal)
@@ -3786,6 +3831,7 @@ but the technical version must follow semver semantics
 regardless of marketing.
 
 ### Anti-pattern 3: Quietly breaking changes inside a MINOR
+
 or PATCH
 
 Once a thing is in MINOR, you cannot change it in PATCH.
@@ -3846,6 +3892,7 @@ ignoring it is broken consumers + lost trust.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Breaking change shipped as MINOR or PATCH (rule 2 violation — consumers silently broken)
 - 0.x version pinned with caret range by consumers (0.x semantics misunderstanding)
 - CHANGELOG missing entry for a published release (rule 4 weakening — anti-pattern 4)
@@ -3856,6 +3903,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Internal package treated as exempt from semver (anti-pattern 1)
 
 **Refinement candidates**:
+
 - New bump-rule row when an emerging change class is ambiguous (e.g., enum addition in serialised form)
 - Tightening of the "release notes published with every version" requirement when CHANGELOGs drift
 - New cross-reference when a sister rule (deprecation-lifecycle, api-versioning) prescribes companion semantics
@@ -3995,6 +4043,7 @@ fix is:
 ## CI integration
 
 Every project's CI:
+
 - Runs every linter in this rule
 - Fails on ANY finding (no `continue-on-error: true`, no
   `--exit-zero`)
@@ -4019,6 +4068,7 @@ via `--no-verify` is forbidden per the global rule on actions.
 Every supported IDE (VS Code, Cursor, JetBrains family, Windsurf,
 Neovim, Emacs) gets a `.vscode/settings.json` / `.idea/inspection
 profile.xml` / equivalent that:
+
 - Points at the project's lint config
 - Surfaces every finding inline
 - Sets format-on-save = on (so format-blockers don't accumulate)
@@ -4029,7 +4079,7 @@ profile.xml` / equivalent that:
 When a file is touched, the verification block names the lint
 sweep result:
 
-```
+```text
 Lint sweep (this turn):
 - tsc --strict --noEmit: 0 errors
 - eslint <files>: 0 warnings (sonarjs + strict-type-checked)
@@ -4075,6 +4125,7 @@ User directive (verbatim): **"update lint rules extremely"**.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Per-line suppression attempted (`// eslint-disable`, `//nolint`, `# noqa`, etc.) — rule violation
 - Linter config change that loosens a threshold instead of fixing code (escape-hatch pattern)
 - Same lint class recurring across PRs in 30 days (developer-pattern signal — needs surfaced)
@@ -4084,6 +4135,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Threshold (cognitive complexity, function length, parameters) creep above the strict cap on a class of functions (architectural smell)
 
 **Refinement candidates**:
+
 - New mandatory-linters row when a language gains presence in the rebuild
 - New strict-threshold value when a default proves too loose for a class of bugs
 - Tightening of the suppression-detection sweep when bypass patterns evolve
@@ -4243,6 +4295,7 @@ package names a given codebase has burned on.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Archived / deprecated package added or kept on first-touch (Hard rule 1 violation)
 - EOL runtime (Go ≤ 1.21, Node ≤ 18, Python ≤ 3.9) targeted by new code (Hard rule 2 violation)
 - HIGH / CRITICAL CVE present in pinned version (Hard rule 3 violation — sister `dependency-vulnerabilities.md` gate weakening)
@@ -4253,6 +4306,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - "We'll bump it later" markers introduced (deferred-bump anti-pattern)
 
 **Refinement candidates**:
+
 - New row in the abandoned-deps table when a new archive surfaces (e.g., `node-postgres` ↔ `pg`, new SDK retirements)
 - Tightening of the "one major behind maximum" cap when N-1 versions consistently carry security debt
 - New cross-reference when a sister rule (dependency-overrides-not-exceptions, install-allowlist) provides the replacement workflow
@@ -4328,17 +4382,20 @@ escalation:
 ## Context Window Management
 
 Avoid the last 20% of the context window for:
+
 - Large-scale refactoring
 - Feature implementation spanning multiple files
 - Debugging complex interactions
 
 Lower-context-sensitivity tasks (safe in the last 20%):
+
 - Single-file edits
 - Independent utility creation
 - Documentation updates
 - Simple bug fixes
 
 When context fills, prefer:
+
 1. **Strategic compaction** (per the `verification-loop` skill's
    "Strategic context management" section) at logical phase
    boundaries.
@@ -4354,6 +4411,7 @@ Extended thinking is enabled by default, reserving up to 31,999
 tokens for internal reasoning.
 
 Control extended thinking via:
+
 - **Toggle**: Option+T (macOS) / Alt+T (Windows/Linux)
 - **Config**: Set `alwaysThinkingEnabled` in `~/.claude/settings.json`
 - **Budget cap**: `export MAX_THINKING_TOKENS=10000` (lift to
@@ -4361,6 +4419,7 @@ Control extended thinking via:
 - **Verbose mode**: Ctrl+O to see thinking output
 
 For complex tasks:
+
 1. Ensure extended thinking is enabled (on by default).
 2. Enable **Plan Mode** for structured approach.
 3. Use multiple critique rounds for thorough analysis.
@@ -4369,6 +4428,7 @@ For complex tasks:
 ## Build Troubleshooting
 
 If build fails:
+
 1. Use `build-error-resolver` (TS/JS/TSX) or `go-build-resolver`
    (Go) agent — both on opus.
 2. Analyse error messages.
@@ -4410,6 +4470,7 @@ used.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New coding / reviewing / planning agent created with `model: sonnet` (opus-default policy weakening)
 - New agent on `model: haiku` for non-mechanical work (haiku scope violation)
 - Cross-language session pivots show quality drop (opus's broader knowledge surface not engaged)
@@ -4420,6 +4481,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Build failure not delegated to `build-error-resolver` / `go-build-resolver` agent
 
 **Refinement candidates**:
+
 - New agent role row when a recurring expertise gap surfaces (e.g., Solidity reviewer, Terraform refactor specialist)
 - Tightening of the haiku scope when a doc-class artifact proves to need depth (codemap quality drops)
 - New escalation row when an agent's track record on a domain warrants per-task model bump (e.g., security-incident response → opus by default)
@@ -4533,6 +4595,7 @@ applies in test files too. Iterate by index (not range-over with
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Coverage on touched files < 90% (canonical threshold violation)
 - Project coverage < 80% (sister `extreme-lint-policy.md` weakening)
 - Critical-path coverage < 95% (auth / payments / data-mutation / multi-tenant isolation)
@@ -4545,6 +4608,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Flaky test quarantined without root-cause fix (TDD discipline weakening)
 
 **Refinement candidates**:
+
 - New test-type row when a recurring test class emerges (e.g., chaos test, fuzzing target, snapshot regression)
 - Tightening of the critical-path coverage floor when a regression slips past 95%
 - New cross-reference when a sister skill (django-tdd, springboot-tdd, swift-protocol-di-testing) extends test-type taxonomy
@@ -4634,14 +4698,16 @@ cd backend
 pnpm test src/services/payment.test.ts
 pnpm tsc --noEmit
 pnpm build
-```
+```text
 
 Expected output:
+
 - Tests: 14/14 pass
 - Type-check: 0 errors
 - Build: clean
 
 If anything fails, share the output and I'll fix.
+
 ```
 
 The instructions are exact — no "run your usual test command"
@@ -4732,18 +4798,21 @@ resumes by running the same commands first.
 
 ## Anti-pattern: write-and-hope
 
-```
+```text
+
 Agent: <writes 200 lines of payment-processing code>
 Agent: "Done!"
 User: <tries to run> "It crashes — Stripe key missing."
 Agent: "Oh, add STRIPE_SECRET_KEY to .env."
 User: <adds, runs again> "Now it crashes on the DB."
 Agent: "Run the migration first."
+
 ```
 
 Should have been:
 
-```
+```text
+
 Agent: "Before I write the payment code, I need to confirm:
         1. STRIPE_SECRET_KEY is in your .env
         2. The migration `add_payment_intents` has been run
@@ -4754,6 +4823,7 @@ Agent: <writes 200 lines + the test command>
         "Run: `pnpm test src/services/payment.test.ts`
          Expected: 14/14 pass.
          If anything fails, share output."
+
 ```
 
 ## Cross-references
@@ -4798,6 +4868,7 @@ every code that is written must be testable."**
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Code written before prerequisite check ran (rule 1 violation — "write-and-hope")
 - Missing prerequisite discovered post-edit instead of pre-edit (env-setup request not issued in time)
 - "I'll write it and you can test later" pattern recurrence (rule 4 violation)
@@ -4808,6 +4879,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Verification commands in plan file but not surfaced in the per-code-emit response (rule 9 weakening)
 
 **Refinement candidates**:
+
 - New row in the prerequisite-check table when a recurring tool / runtime / service emerges (e.g., new vector DB, new auth provider, new package manager)
 - Tightening of the prereq-detection heuristic when missing-prereq incidents recur for the same shape
 - New cross-language entry in the local-testability matrix when a new framework / stack appears
@@ -5060,7 +5132,7 @@ tries to clone.
 
 ### Node.js / TypeScript
 
-```
+```text
 .
 ├── .devcontainer/
 │   ├── devcontainer.json
@@ -5082,7 +5154,7 @@ tries to clone.
 
 ### Go
 
-```
+```text
 .
 ├── .devcontainer/...
 ├── .tool-versions          # asdf-managed go version
@@ -5101,23 +5173,23 @@ tries to clone.
 .PHONY: dev test verify bootstrap
 
 bootstrap:
-	@./scripts/bootstrap.sh
+ @./scripts/bootstrap.sh
 dev:
-	@docker compose up -d
-	@go run ./cmd/server
+ @docker compose up -d
+ @go run ./cmd/server
 test:
-	@go test -race -count=1 ./...
+ @go test -race -count=1 ./...
 verify:
-	@go vet ./...
-	@staticcheck ./...
-	@golangci-lint run ./...
-	@govulncheck ./...
-	@make test
+ @go vet ./...
+ @staticcheck ./...
+ @golangci-lint run ./...
+ @govulncheck ./...
+ @make test
 ```
 
 ### Python
 
-```
+```text
 .
 ├── .devcontainer/...
 ├── .python-version         # pyenv
@@ -5203,7 +5275,7 @@ cd repo
 ./scripts/bootstrap.sh   # ~5 minutes on first run
 pnpm dev                 # starts the app + dependencies
 open http://localhost:3000
-```
+```text
 
 ### Common tasks
 
@@ -5216,6 +5288,7 @@ open http://localhost:3000
 ### Troubleshooting
 
 See [docs/local-dev-troubleshooting.md](docs/local-dev-troubleshooting.md).
+
 ```
 
 ## Cross-references
@@ -5262,6 +5335,7 @@ engineer-weeks per quarter forever.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New repo's bootstrap takes > 30 minutes for a fresh-clone developer (rule 1 violation — frictionful first-run)
 - Tool version not pinned via `.nvmrc` / `.tool-versions` / equivalent (rule 2 weakening)
 - Service dependency not in `docker-compose.yml` (rule 3 weakening — implicit local install)
@@ -5274,6 +5348,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Bootstrap script not tested in CI (rule 10 weakening — fresh-clone CI job missing)
 
 **Refinement candidates**:
+
 - New row in the prod-parity table when a recurring service class (vector DB, search engine, ML model server) emerges
 - Tightening of the bootstrap time budget when 30-min target consistently slips
 - New cross-language template when a stack (React Native, Flutter, Tauri, Solidity) needs platform-specific bootstrap

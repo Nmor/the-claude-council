@@ -19,7 +19,7 @@ Comprehensive Go testing patterns for writing reliable, maintainable tests follo
 
 ### The RED-GREEN-REFACTOR Cycle
 
-```
+```text
 RED     → Write a failing test first
 GREEN   → Write minimal code to pass the test
 REFACTOR → Improve code while keeping tests green
@@ -683,6 +683,7 @@ go test -count=10 ./...
 ## Best Practices
 
 **DO:**
+
 - Write tests FIRST (TDD)
 - Use table-driven tests for comprehensive coverage
 - Test behavior, not implementation
@@ -692,6 +693,7 @@ go test -count=10 ./...
 - Use meaningful test names that describe the scenario
 
 **DON'T:**
+
 - Test private functions directly (test through public API)
 - Use `time.Sleep()` in tests (use channels or conditions)
 - Ignore flaky tests (fix or remove them)
@@ -726,6 +728,7 @@ test:
 Principal-level Go test methodology: table-driven tests + subtests, parallel execution (`t.Parallel()`), race detection, benchmarks (`testing.B`), fuzz testing (Go 1.18+), httptest + testcontainers, coverage with branch tracking, go-cmp for deep equality.
 
 **Negative scope** (NOT what this skill covers):
+
 - Go language idioms — see `golang-patterns`
 - Generic test taxonomy — see `testing.md` rule
 - TDD methodology — see `tdd-workflow`
@@ -815,6 +818,7 @@ Go test idioms have a deceptive cleanliness: table-driven tests look simple but 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Test name uses `_` separator (`TestFoo_Bar`) instead of `t.Run("sub test", ...)` (S100 violation)
 - Table-driven test entry not bound by index (sister `golang/no-discards.md` rule 2)
 - `testify` mock used where a fake / stub would be simpler (over-mocking)
@@ -827,6 +831,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `t.Parallel()` skipped where tests are genuinely independent (slow suite)
 
 **Refinement candidates**:
+
 - New testing-package row when a new Go testing facility ships (synctest, fuzzing improvements)
 - Tightening of the coverage floor on packages flagged as critical
 - New cross-reference when a sister rule (golang/no-discards, testing) adds a per-language verification

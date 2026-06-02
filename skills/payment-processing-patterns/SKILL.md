@@ -24,6 +24,7 @@ reconciliation against processor settlement files, and ledger
 double-entry per `bookkeeping-patterns`.
 
 **Out of scope (deliberate)**:
+
 - PCI-DSS compliance mechanics — covered by `pci-dss-patterns`
 - Double-entry bookkeeping mechanics — covered by `bookkeeping-patterns`
 - Revenue recognition under IFRS 15 / ASC 606 — covered by `ifrs-gaap-reporting`
@@ -65,7 +66,7 @@ double-entry per `bookkeeping-patterns`.
 - **FinCEN MSB Registration** (31 CFR §1022.380) — federal
   money-services-business registration for custodial escrow
 - **NY DFS Part 200 + Part 417** — New York Money Transmitter
-  + BitLicense for crypto custody
+  - BitLicense for crypto custody
 - **State Money Transmitter Licenses** — 48 US states + DC + PR;
   Conference of State Bank Supervisors (CSBS) one-stop NMLS
   filing
@@ -86,6 +87,7 @@ double-entry per `bookkeeping-patterns`.
 ## When to Fire
 
 File path triggers:
+
 - `**/payments/**`, `**/billing/**`, `**/invoices/**`,
   `**/checkout/**`, `**/orders/**`, `**/subscriptions/**`,
   `**/refunds/**`, `**/chargebacks/**`, `**/disputes/**`,
@@ -100,6 +102,7 @@ File path triggers:
   `@cashfreepayments/*`, `plaid`, `@plaid/*`
 
 Keyword triggers:
+
 - "idempotency", "PaymentIntent", "Charge", "Refund", "Capture",
   "3DS", "SCA", "PSD2", "tokenization", "PAN", "BIN",
   "chargeback", "dispute", "interchange", "ACH", "SEPA",
@@ -111,6 +114,7 @@ Keyword triggers:
   "OFAC", "SDN", "BOI", "AMLD6", "KYB", "marketplace split"
 
 Change-scope triggers:
+
 - Any new payment processor integration
 - Any change to checkout flow
 - Any change to subscription billing logic
@@ -141,11 +145,12 @@ correct, not just present.
 **1a. Cache-key composition.** The server-side dedupe cache
 key is NEVER the idempotency_key alone. It is the tuple:
 
-```
+```text
 cache_key = sha256(tenant_id + ":" + endpoint + ":" + api_version + ":" + idempotency_key)
 ```
 
 Reasons:
+
 - **Multi-tenant isolation**: tenant A's key cannot collide
   with tenant B's (intentional or otherwise)
 - **Endpoint scoping**: same key sent to `POST /charges` vs
@@ -268,6 +273,7 @@ purpose for retried requests). Requirements:
 the webhook handler is itself a retry-prone surface. The
 provider redelivers on 5xx, on timeouts, and on receiver-
 side errors. Every handler:
+
 1. Verifies signature (per Anti-pattern 4)
 2. Extracts the EVENT ID (Stripe `evt_...`, Adyen `eventCode`+`pspReference`)
 3. Looks up event id in `webhook_processed_events` table
@@ -314,6 +320,7 @@ fail-rate per BIN range and surface to product.
 
 Store the **network token** (Visa Token Service / Mastercard
 Digital Enablement Service), not the PAN. Network tokens:
+
 - Survive card re-issuance (lower involuntary churn)
 - Authorize at higher rates (issuers trust them more)
 - Reduce PCI scope (token is non-sensitive)
@@ -324,7 +331,7 @@ operation (subscriptions, MIT, account-updater).
 
 ### Pattern 5: Subscription / dunning lifecycle
 
-```
+```text
 draft → active → past_due → unpaid → canceled
                      ↓                 ↑
                   retry × N            ↓
@@ -343,15 +350,16 @@ recovery action.
 ### Pattern 6: Refunds + partial captures
 
 Authorize for one amount, capture for a smaller amount (auth-hold
-+ capture-on-ship pattern) — common in e-commerce. Refunds are
+
+- capture-on-ship pattern) — common in e-commerce. Refunds are
 async on most rails (5-10 business days to settle). Track refund
 state separately from order state; the order can be `delivered`
-+ `partially_refunded` simultaneously. Refund reasons must map
+- `partially_refunded` simultaneously. Refund reasons must map
 to scheme codes (Visa CR-30 / 40 / 41, Mastercard 4853 / 4854).
 
 ### Pattern 7: Chargeback / dispute lifecycle
 
-```
+```text
 inquiry (retrieval) → chargeback (Visa 1st presentment) →
 representment (merchant submits evidence) → pre-arbitration →
 arbitration → final ruling (issuer/network)
@@ -384,8 +392,9 @@ file (Stripe Balance Transactions, Adyen Settlement Detail Report,
 Visa VSS, Mastercard Net Settlement Statement). Reconcile every
 authorized charge / refund / chargeback / fee against the
 processor's record AND against your ledger. Discrepancies (timing
-+ fee + currency-conversion + on-behalf-of) need named owners
-+ resolution SLA. Per `bookkeeping-patterns` — every payment is a
+
+- fee + currency-conversion + on-behalf-of) need named owners
+- resolution SLA. Per `bookkeeping-patterns` — every payment is a
 double-entry journal: Dr. Cash-clearing-account, Cr. Revenue (gross);
 on settlement: Dr. Bank, Cr. Cash-clearing-account, Dr. Processor-fees.
 
@@ -461,7 +470,7 @@ hold pattern = equivalent.
 **11c. Escrow state machine.** Every escrow operation has a
 state machine with explicit transitions:
 
-```
+```text
 created → funded → held → released | refunded | disputed → resolved
                                 ↓
                             partial_released ← partial_refunded
@@ -816,7 +825,7 @@ auto-release fires.
 - `secrets-management.md` (rule) — processor API keys via vault;
   webhook signing secrets rotation
 - `security.md` (rule) — OWASP umbrella; payment-specific A02
-  + A07 + A09 controls
+  - A07 + A09 controls
 - `fp-and-a` — unit economics, payment cost as %GMV
 - `valuation-models` — TAM modelling for escrow-volume-based
   marketplaces
@@ -826,6 +835,7 @@ auto-release fires.
 ## Why This Skill Exists
 
 Payment is the rare domain where a single defect can:
+
 - Charge customers twice (consumer complaints, scheme fines,
   CFPB enforcement)
 - Double-pay sellers (financial loss + recovery effort)
@@ -851,6 +861,7 @@ in a compliance audit two years later.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Payment POST shipped without `Idempotency-Key` header (rule violation; double-charge risk)
 - Raw PAN written anywhere in source / logs / fixtures (Anti-pattern 1; immediate PCI scope blast)
 - Processor 200 treated as money-moved without settlement reconciliation step (Anti-pattern 3)
@@ -883,6 +894,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - 1031 QI integration treats funds as operating cash (vs trust) — Treas. Reg. §1.1031(k)-1 violation; lost tax-deferral status
 
 **Refinement candidates**:
+
 - New processor / rail row when a new payment method gains adoption (e.g., FedNow merchant launch, PIX expansion outside Brazil, UPI international)
 - 3DS frictionless-rate target update when EMVCo / EBA refine RTS guidance
 - Network-token coverage update as VTS / MDES / AETS expand to new card types

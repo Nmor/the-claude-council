@@ -39,7 +39,7 @@ org-admin actions, each audit-logged.
 The canonical security gate (workflow + allowlists + cross-check
 scripts) lives at:
 
-```
+```text
 <org>/.github/
 ├── .github/
 │   ├── workflows/
@@ -57,6 +57,7 @@ arbitrary exceptions. Allowlists + exceptions live in the org repo,
 under CODEOWNERS approval by the security team.
 
 This applies to:
+
 - License-allowlist exceptions
 - CVE-allowlist entries (LOW findings, unfixable advisories with
   documented non-exploitability)
@@ -76,12 +77,14 @@ on the ruleset config).
 2. New `main` SHA on `<org>/.github` is calculated.
 3. Org ruleset (e.g., `require-security-baseline`) is updated to pin
    the new SHA:
+
    ```bash
    gh api orgs/<org>/rulesets/<id> > /tmp/r.json
    jq '.rules[].parameters.workflows[0].sha = "<new-sha>"' \
      /tmp/r.json > /tmp/r-bumped.json
    gh api orgs/<org>/rulesets/<id> -X PUT --input /tmp/r-bumped.json
    ```
+
 4. The next CI run on every consumer PR picks up the new gate
    logic. No consumer-side change needed.
 
@@ -90,7 +93,7 @@ on the ruleset config).
 Every security gate produces a verification block the developer +
 reviewer reads:
 
-```
+```text
 Security baseline (this turn):
   pnpm audit (backend):        0 HIGH, 0 CRITICAL, 0 MODERATE
   pnpm audit (frontend):       0 HIGH, 0 CRITICAL, 0 MODERATE
@@ -105,7 +108,7 @@ Status: PASS
 
 A failing block names the specific blocker + the documented fix path:
 
-```
+```text
 Security baseline (this turn):
   osv-scanner CVE scan:        1 MODERATE — qs@6.15.1 (CVSS 6.3)
                                Fix: pnpm.overrides "qs": ">=6.15.2"
@@ -151,16 +154,18 @@ exception — it's wishful thinking.
 ## What the consumer repo carries
 
 Consumer repos under this regime carry:
+
 - A `.githooks/pre-push` symlink + the `git config core.hooksPath
   .githooks` setup documented in the README
 - A `docs/security-advisories.md` listing the LOW findings tracked
   (NOT the exceptions — those are org-side)
 - A `.github/CODEOWNERS` requiring security-team review on lockfile
-  + IaC changes
+  - IaC changes
 - A `infra/verify-local.sh` (or equivalent) wiring the same gates CI
   runs, so `git push` triggers them locally
 
 Consumers do NOT carry:
+
 - The security-baseline workflow source (org repo owns it)
 - Allowlist values (org repo owns them)
 - Exception lists (org repo owns them)
@@ -184,6 +189,7 @@ Consumers do NOT carry:
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Per-consumer security-exceptions file found (rule 2 violation — exceptions live in org repo)
 - Layer skipped (e.g., pre-push hook bypassed via `--no-verify`) — defence-in-depth weakening
 - Required-workflow ruleset's SHA pin not bumped after gate logic change (org-side drift)
@@ -194,6 +200,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Bypass actor allowlist non-empty for branch protection on `main` (configuration drift)
 
 **Refinement candidates**:
+
 - New row in the 5-layer table when a new enforcement surface emerges (e.g., MCP gateway, IDE plugin)
 - Tightening of the SHA-pin lifecycle when a malicious-tag retargeting incident is observed
 - New cross-reference when a sister rule (dependency-vulnerabilities, license-allowlist-gate) provides the gate this enforces

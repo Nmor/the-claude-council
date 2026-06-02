@@ -23,7 +23,7 @@ a rule violation.
 
 ### 1. Killing a healthy service to free resources
 
-```
+```text
 # BANNED
 docker stop <noisy-container>   # "to free CPU for <service-under-pressure>"
 
@@ -100,7 +100,7 @@ that declares the regex for every key.
 
 ### 5. Rotating a credential non-atomically
 
-```
+```text
 # BANNED sequence:
 # 1. Generated new DB password in memory
 # 2. Pushed to vault
@@ -143,7 +143,7 @@ error". Don't do either.
 
 ### 7. Half-completing a migration and walking away
 
-```
+```text
 # BANNED: "service-a is up, service-b is failing — I'll come back
 # to it". Walking away leaves the deployment broken-by-design.
 
@@ -158,7 +158,7 @@ Every "done" claim must be paired with a self-audit answering ALL
 of the following. The audit goes in the verification block — see
 `done-criteria.md` and `no-overclaim.md`.
 
-```
+```text
 Proper-fix audit (this turn):
   [ ] Every observed failure has a documented root cause.
   [ ] No service was killed to free resources for another.
@@ -258,6 +258,7 @@ always"** / **"nothing simple please"**.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Container `docker stop`-ed to "free resources" rather than CPU/memory-limited (banned pattern 1 recurrence)
 - Healthcheck `timeout` / `retries` / `start_period` bumped without naming an underlying slow code path (banned pattern 2 recurrence)
 - Config env-var name guessed from a README instead of canonical loader source (banned pattern 3 — `official-docs-first.md` weakening)
@@ -270,6 +271,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Time-pressure context used as justification to skip the audit (rule 8 "I'm being rushed" failure mode)
 
 **Refinement candidates**:
+
 - New row in the banned-pattern list when a new shortcut class recurs (e.g., `kubectl delete pod` to recover, `restart-loop` to mask leak, dependency downgrade to escape a bug)
 - Tightening of the proper-fix audit when a row consistently gets ticked without real verification
 - New cross-reference when a sister rule (no-silent-failures, no-overclaim, deploy-failures-become-checks) provides the underlying gate the shortcut bypassed

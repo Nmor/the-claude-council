@@ -39,7 +39,7 @@ This skill governs the platform-side ML lifecycle: feature stores, training pipe
 
 ### Pattern 1: The ML platform stack
 
-```
+```text
 ┌────────────────────────────────────────────────────────────┐
 │  Use cases (recommender, fraud, churn, ranker, LLM agent)  │
 ├────────────────────────────────────────────────────────────┤
@@ -382,12 +382,12 @@ MLOps maturity is the difference between teams that ship 1 model and rebuild it 
 - **`~/.claude/rules/common/council-triggers.md`** (Division 15) — bias,
   fairness, dataset provenance, human-in-the-loop gates
 
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Training pipeline runs locally but not in CI (training-serving skew waiting to happen)
 - Model artifact deployed without registry entry (lineage gap)
 - Feature store absent — features re-engineered per model (DRY weakening + serving skew)
@@ -400,6 +400,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Retraining triggers not defined (no calendar, no drift threshold)
 
 **Refinement candidates**:
+
 - New deployment-pattern row when a new serving infra ships (e.g., vLLM, Triton)
 - New cross-reference when a sister skill (ml-model-selection, rag-design, observability-patterns) adds a MLOps gate
 - New rollback template per model class (online inference, batch scoring, recommendation)

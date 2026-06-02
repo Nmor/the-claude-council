@@ -15,26 +15,34 @@ Sequential agent workflow for complex tasks.
 ## Workflow Types
 
 ### feature
+
 Full feature implementation workflow:
-```
+
+```text
 planner -> tdd-guide -> code-reviewer -> security-reviewer
 ```
 
 ### bugfix
+
 Bug investigation and fix workflow:
-```
+
+```text
 planner -> tdd-guide -> code-reviewer
 ```
 
 ### refactor
+
 Safe refactoring workflow:
-```
+
+```text
 architect -> code-reviewer -> tdd-guide
 ```
 
 ### security
+
 Security-focused review:
-```
+
+```text
 security-reviewer -> code-reviewer -> architect
 ```
 
@@ -72,7 +80,7 @@ Between agents, create handoff document:
 
 ## Example: Feature Workflow
 
-```
+```text
 /orchestrate feature "Add user authentication"
 ```
 
@@ -104,7 +112,7 @@ Executes:
 
 ## Final Report Format
 
-```
+```text
 ORCHESTRATION REPORT
 ====================
 Workflow: feature
@@ -157,6 +165,7 @@ Combine outputs into single report
 ## Arguments
 
 $ARGUMENTS:
+
 - `feature <description>` - Full feature workflow
 - `bugfix <description>` - Bug fix workflow
 - `refactor <description>` - Refactoring workflow
@@ -165,7 +174,7 @@ $ARGUMENTS:
 
 ## Custom Workflow Example
 
-```
+```text
 /orchestrate custom "architect,tdd-guide,code-reviewer" "Redesign caching layer"
 ```
 

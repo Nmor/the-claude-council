@@ -103,7 +103,7 @@ public <T extends Identifiable> Map<Long, T> indexById(Collection<T> items) { ..
 
 ## Project Structure (Maven/Gradle)
 
-```
+```text
 src/main/java/com/example/app/
   config/
   controller/
@@ -158,6 +158,7 @@ log.error("failed_fetch_market slug={}", slug, ex);
 Principal-level Java language idioms (Java 21 LTS): records for value types, sealed interfaces + pattern matching, Optional usage rules, immutability discipline, streams + collectors, null-safety annotations, exception hierarchy, modern concurrency (virtual threads, structured concurrency).
 
 **Negative scope** (NOT what this skill covers):
+
 - Spring Boot framework patterns — see `springboot-patterns`
 - JPA / persistence — see `jpa-patterns`
 - Spring Security — see `springboot-security`
@@ -246,6 +247,7 @@ Java 21 LTS introduced records, sealed types, pattern matching, and virtual thre
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - `Optional` field on entity instead of method return (Optional misuse)
 - Returning `null` from collection-returning method (caller-must-null-check anti-pattern)
 - `var` overuse hiding non-obvious type (style drift)
@@ -259,6 +261,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `@SuppressWarnings("unchecked")` without justification
 
 **Refinement candidates**:
+
 - New Java-version row when JDK ships new feature (sealed records, pattern matching for switch)
 - New cross-reference when a sister skill (springboot-patterns, jpa-patterns, java/no-discards) adds a related pattern
 - Tightening of the immutability / `final` policy when a recurring mutation incident emerges
@@ -810,7 +813,7 @@ ErrorProne: `FutureReturnValueIgnored`.
 
 ## Verification block
 
-```
+```text
 Java build (this turn):
   - mvn verify: 0 warnings, 0 errors
   - ErrorProne (with NullAway): 0 issues
@@ -852,7 +855,7 @@ imperative loops.**
 
 ## Layered architecture (Spring Boot)
 
-```
+```text
 com.example.app/
 ├── App.java                          # @SpringBootApplication
 ├── domain/                           # Business logic — pure Java; no Spring
@@ -1025,6 +1028,7 @@ public class ApiExceptionHandler {
 - Event-driven pipelines (RxJava / Project Reactor)
 
 When NOT:
+
 - CPU-bound workloads
 - Existing code that's all sync (rewriting hurts more than helps)
 - Team unfamiliar with reactive semantics (the debugging cost is
@@ -1453,10 +1457,12 @@ dialects produce false positives + negatives.
 ### 6. No flaky tests
 
 - No `Thread.sleep()` — use `Awaitility`:
+
   ```java
   await().atMost(5, SECONDS).untilAsserted(() ->
       assertThat(repo.findById(id)).isPresent());
   ```
+
 - No real-clock dependencies — inject `Clock` (per `no-ambient-globals.md`)
 - No order-dependent tests; assume random execution order
 - Mark known-flaky tests with `@Disabled("CI-flaky: ticket #...")`

@@ -213,7 +213,7 @@ relevant one(s) on touched files:
 Per `verify-before-claim.md`, the verification block for every
 claim of completion includes a code-graph row:
 
-```
+```text
 Verification (this turn):
 - tsc --noEmit: 0 errors
 - eslint <touched> --max-warnings 0: clean
@@ -231,6 +231,7 @@ check), say so explicitly: "code-graph not run (doc-only edit,
 no source touched)".
 
 ### 7. Every atomic task in a plan carries a code-graph
+
 predicate
 
 Per `plan-task-breakdown.md` rule 4 (every task has explicit
@@ -238,7 +239,7 @@ verification): the verification predicate for atomic tasks
 SHOULD include a code-graph check when the task touches code,
 config, or wiring. Example task rows:
 
-```
+```text
 Task M.N.1 — Add `OrderService.placeOrder` method in
   src/services/OrderService.ts · verify: tsc clean +
   code-graph for OrderService + handler import resolves
@@ -273,7 +274,8 @@ side of the edge.
 
 Per `plan-completion-before-push.md`, the push gate runs the
 FULL code-graph validation across the touched-in-plan surface
-+ its inbound + outbound 2-hop closure. This is the safety
+
+- its inbound + outbound 2-hop closure. This is the safety
 net before the work becomes visible to teammates / CI /
 production.
 
@@ -455,6 +457,7 @@ implementations 100% of the time."*
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Task / todo claimed done without a code-graph row in the
   verification block (rule 6 weakening)
 - Dangling reference shipped (route → handler missing, import
@@ -479,6 +482,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
   (anti-pattern 5 violation)
 
 **Refinement candidates**:
+
 - New row in the per-language commands table when a stack
   emerges with its own incremental graph tooling (LSIF / SCIP
   / scip-typescript / scip-python adoption)
@@ -538,7 +542,7 @@ Decisions that warrant an ADR:
 - Migration approach (e.g., "dual-write for 30 days then
   cutover")
 - Compliance choice (e.g., "GDPR data deletion via DDB TTL
-  + DB column tombstone")
+  - DB column tombstone")
 - Tooling / build / deploy (e.g., "pnpm not npm; serverless-
   framework not SAM")
 
@@ -704,7 +708,7 @@ Council divisions 1 (Architecture) + 4 (Security) + 6
 
 ### 8. Repository layout
 
-```
+```text
 docs/
 ├── adr/
 │   ├── README.md           # index + acceptance process
@@ -773,6 +777,7 @@ answer that contradicts the original (causing thrash).
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Architectural decision made without an ADR landing in the same PR (rule 3 weakening)
 - ADR amended after acceptance (rule 4 violation — body is immutable; supersede instead)
 - ADR not referenced from the code path that implements it (rule 5 weakening — discoverability gap)
@@ -783,6 +788,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Council Phase 0 architectural output not crystallised into an ADR (council-default.md weakening)
 
 **Refinement candidates**:
+
 - New required-section row when an ADR class consistently lacks a load-bearing dimension
 - Tightening of the "Considered options" requirement when ADRs ship with only one option compared
 - New cross-reference when a sister rule (runbook-template, docs-sync-with-code) prescribes companion artifacts
@@ -887,6 +893,7 @@ equivalent). The runbook entry explains what the code means +
 how to recover when the user-facing path is failing.
 
 ### 3. Every new failure mode introduces a runbook entry in
+
 the SAME PR
 
 When a PR adds an alert, a new failure mode, or a new
@@ -897,14 +904,16 @@ PR-blocker.
 ### 4. Diagnose steps name the SPECIFIC signal
 
 Wrong:
-```
+
+```text
 - Check the dashboard
 - Look at the logs
 - See if anything looks weird
 ```
 
 Right:
-```
+
+```text
 - Open https://grafana.example.com/d/auth-overview
 - Check `auth_login_duration_seconds` (p99 panel, top-right)
 - Run `aws logs tail /aws/lambda/auth-login --since 10m | jq 'select(.error_code)'`
@@ -920,7 +929,7 @@ around."
 
 Every fix step ends with the signal that confirms it worked:
 
-```
+```text
 1. Run `kubectl scale deployment/auth-service --replicas=10 -n auth`
 2. Wait for pods to be Ready: `kubectl rollout status deployment/auth-service -n auth`
 3. Verify: `auth_login_duration_seconds` p99 drops below 500ms
@@ -992,6 +1001,7 @@ minutes) is repaid the first time on-call uses it.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New PagerDuty / Opsgenie alert created without a runbook URL in the payload (rule 1 violation)
 - `error_code` (per `error-codes.md`) added without a corresponding runbook entry (rule 2 weakening)
 - "Diagnose" steps say "check the dashboard" / "look at the logs" without naming the specific metric / query (rule 4 violation)
@@ -1002,6 +1012,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - On-call escalates an incident the runbook should have resolved without escalation (entry quality gap)
 
 **Refinement candidates**:
+
 - New row in the canonical incident-classes table when a recurring class (e.g., DNS-resolution flap, cert-rotation race, vector DB index-rebuild) emerges
 - Tightening of the "specific signal" requirement when on-call's queries reveal common ambiguity
 - New cross-reference when a sister rule (observability, error-codes, deploy-failures-become-checks) adds a metric / code the runbook must consume

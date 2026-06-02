@@ -62,17 +62,20 @@ escalation:
 ## Context Window Management
 
 Avoid the last 20% of the context window for:
+
 - Large-scale refactoring
 - Feature implementation spanning multiple files
 - Debugging complex interactions
 
 Lower-context-sensitivity tasks (safe in the last 20%):
+
 - Single-file edits
 - Independent utility creation
 - Documentation updates
 - Simple bug fixes
 
 When context fills, prefer:
+
 1. **Strategic compaction** (per the `verification-loop` skill's
    "Strategic context management" section) at logical phase
    boundaries.
@@ -88,6 +91,7 @@ Extended thinking is enabled by default, reserving up to 31,999
 tokens for internal reasoning.
 
 Control extended thinking via:
+
 - **Toggle**: Option+T (macOS) / Alt+T (Windows/Linux)
 - **Config**: Set `alwaysThinkingEnabled` in `~/.claude/settings.json`
 - **Budget cap**: `export MAX_THINKING_TOKENS=10000` (lift to
@@ -95,6 +99,7 @@ Control extended thinking via:
 - **Verbose mode**: Ctrl+O to see thinking output
 
 For complex tasks:
+
 1. Ensure extended thinking is enabled (on by default).
 2. Enable **Plan Mode** for structured approach.
 3. Use multiple critique rounds for thorough analysis.
@@ -103,6 +108,7 @@ For complex tasks:
 ## Build Troubleshooting
 
 If build fails:
+
 1. Use `build-error-resolver` (TS/JS/TSX) or `go-build-resolver`
    (Go) agent — both on opus.
 2. Analyse error messages.
@@ -144,6 +150,7 @@ used.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New coding / reviewing / planning agent created with `model: sonnet` (opus-default policy weakening)
 - New agent on `model: haiku` for non-mechanical work (haiku scope violation)
 - Cross-language session pivots show quality drop (opus's broader knowledge surface not engaged)
@@ -154,6 +161,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Build failure not delegated to `build-error-resolver` / `go-build-resolver` agent
 
 **Refinement candidates**:
+
 - New agent role row when a recurring expertise gap surfaces (e.g., Solidity reviewer, Terraform refactor specialist)
 - Tightening of the haiku scope when a doc-class artifact proves to need depth (codemap quality drops)
 - New escalation row when an agent's track record on a domain warrants per-task model bump (e.g., security-incident response → opus by default)

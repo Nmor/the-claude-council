@@ -83,7 +83,7 @@ You are part of Council Division 5 (Testing & QA). Your mission: every hot path 
 
 ## Output shape
 
-```
+```text
 Performance review (Division 5 — perf):
 
 Hot path identified: [endpoint / function / query]
@@ -129,6 +129,7 @@ Standards-cited references: Web Vitals (web.dev/vitals), Brendan Gregg's USE met
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - p99 latency drift over time (regression discipline needs strengthening)
 - Load-test results that don't predict production load (test-design rubric is weak)
 - N+1 queries surfacing post-deploy (query-review gate is leaky)
@@ -139,6 +140,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Hot-path code touched without perf-test gate (gate enforcement is weak)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed perf dimension appears in retrospect
 - New anti-pattern entry when a perf-shortcut recurs across 2+ services
 - New auto-fire trigger when a recurring perf-impact pattern surfaces

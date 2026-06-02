@@ -32,6 +32,7 @@ Per `council-triggers.md` (Division 6 healthcare cluster):
 ## Veto authority
 
 **YES** — on:
+
 - HIPAA Security Rule BLOCKER findings (unencrypted ePHI at rest or in transit; missing audit controls; missing access controls; absent contingency plan; no BAA with subprocessor handling PHI)
 - HIPAA Privacy Rule BLOCKER findings (disclosure without authorization; minimum-necessary violation; missing patient access right per §164.524)
 - 42 CFR Part 2 BLOCKER findings (substance-use-disorder records disclosed without specific written consent per §2.31)
@@ -65,7 +66,7 @@ For every triggered task:
 | 15 | FHIR resources comply with USCDI v4 + relevant Implementation Guides (US Core, BulkData, SMART App Launch)? |
 | 16 | FHIR `meta.versionId` + `If-Match` ETag concurrency on every update? |
 | 17 | FHIR `If-None-Exist` conditional create on every idempotent POST? |
-| 18 | HL7 v2 ADT / ORU / MDM messages parsed with strict-typed library (no string-splitting on `|`)? |
+| 18 | HL7 v2 ADT / ORU / MDM messages parsed with strict-typed library (no string-splitting on `\|`)? |
 | 19 | C-CDA / CCD validation against XSD + Schematron + USCDI v4 requirements? |
 | 20 | DICOM transfers use TLS + audit logged + DICOM tags 0010,0010 (patient name) + 0010,0020 (patient ID) + 0010,0030 (DOB) + 0010,0040 (sex) audit-recorded? |
 | 21 | Terminology codes from authoritative source (ICD-10-CM from CMS; SNOMED-CT from NLM/IHTSDO; LOINC from Regenstrief; RxNorm from NLM; CPT from AMA)? |
@@ -96,7 +97,7 @@ For every triggered task:
 
 ## Output shape
 
-```
+```text
 Health review (Division 6 + 4 overlap):
 
 Scope: [PHI flow / EHR integration / mHealth / telehealth / clinical decision support / 42 CFR Part 2 / SaMD / GxP]
@@ -170,6 +171,7 @@ Verdict: APPROVED / CHANGES_REQUIRED / VETO
 ## Standards cited
 
 Every finding cites:
+
 - **HIPAA Privacy Rule** §164.5xx; **Security Rule** §164.3xx; **Breach Notification Rule** §164.400-414
 - **HITECH Act** §13402 (breach notification); §13405(b) (minimum-necessary)
 - **42 CFR Part 2** §2.3x (consent), §2.5x (notification), §2.6x (disclosure exemptions)
@@ -201,6 +203,7 @@ This agent provides engineering review patterns. The validity of any HIPAA / 42 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - ePHI in error message or log line (encryption / redaction discipline weakening)
 - BAA discovered missing for an active subprocessor (BAA-tracking process gap)
 - 60-day breach clock missed (incident-response runbook needs tightening)
@@ -219,6 +222,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Substance-use record commingled with general medical without consent (42 CFR Part 2 segregation gap)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed clinical or compliance dimension appears in an incident
 - New anti-pattern entry when a healthcare shortcut recurs across 2+ projects
 - New auto-fire trigger when a recurring healthcare technology / standard surfaces

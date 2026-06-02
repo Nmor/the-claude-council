@@ -188,7 +188,7 @@ cppcheck --enable=all --inconclusive --error-exitcode=1 .
 
 ## Verification block
 
-```
+```text
 C++ build (this turn):
   - cmake --build build/ -- -Werror: 0 errors / 0 warnings
   - clang-tidy: 0 issues
@@ -209,6 +209,7 @@ C++ build (this turn):
 ## Why this rule exists
 
 C++ silent failures cause memory corruption + UB:
+
 - Ignored `[[nodiscard]]` from `open()` → write to closed fd
 - Forgotten `delete` → leak; with `new[]` without `delete[]` →
   heap corruption

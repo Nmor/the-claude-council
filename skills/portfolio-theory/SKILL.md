@@ -185,7 +185,7 @@ Decompose portfolio returns into factor exposures (market, size, value, momentum
 
 Strict calendar (rebalance every quarter regardless) is simple but inefficient — generates trading costs even when allocations are near target. Strict tolerance-band-only never rebalances in stable markets but rebalances aggressively in volatile ones. The hybrid:
 
-```
+```text
 1. Check allocations at the end of every quarter
 2. If any asset class is outside its tolerance band (e.g., ±5% absolute or ±25% relative), rebalance THAT asset class back to target
 3. If all classes are inside bands, skip rebalancing (no trading costs)
@@ -238,6 +238,7 @@ JOIN benchmark_returns br USING (asset_class);
 ```
 
 Brinson-Hood-Beebower attribution decomposes excess return into:
+
 - **Allocation effect**: did we overweight asset classes that outperformed?
 - **Selection effect**: did our security picks within each class beat the asset class benchmark?
 - **Interaction**: cross-term (small in well-attributed portfolios)
@@ -353,6 +354,7 @@ Markowitz called diversification "the only free lunch in finance" — meaning yo
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Strategic allocation drifts past tolerance band without rebalance (band-drift)
 - Single-name concentration > IPS limit (concentration risk)
 - Factor exposure (value / quality / momentum) unintended — uncompensated risk
@@ -365,6 +367,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Liquidity tier not tagged (private + illiquid positions assumed liquid in stress)
 
 **Refinement candidates**:
+
 - New asset-class row when a new investable category emerges (e.g., tokenised RWAs)
 - New cross-reference when a sister skill (investment-research, valuation-models, financial-analyst) adds a portfolio gate
 - New rebalance-rule when transaction-cost regime shifts

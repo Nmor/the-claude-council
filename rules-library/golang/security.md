@@ -20,6 +20,7 @@ if apiKey == "" {
 ## Security Scanning
 
 - Use **gosec** for static security analysis:
+
   ```bash
   gosec ./...
   ```

@@ -42,12 +42,14 @@ gate lives in `security-controls-org-wide.md` (5-layer enforcement).
 
 3. **Default-safe SPDX allowlist** (start here; extend with org
    counsel sign-off):
-   ```
+
+   ```text
    MIT, MIT-0, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC,
    MPL-2.0, CC0-1.0, CC-BY-4.0, CC-BY-SA-4.0, Unlicense, 0BSD,
    Zlib, BlueOak-1.0.0, Python-2.0, PSF-2.0, PostgreSQL,
    LGPL-3.0-only, LGPL-3.0-or-later, WTFPL
    ```
+
    Notably **NOT** on the safe-by-default list (require legal review
    before adding): GPL-2.0, GPL-3.0, AGPL-*, SSPL, BUSL, Commons
    Clause, Elastic License, Confluent Community License.
@@ -99,7 +101,7 @@ gate lives in `security-controls-org-wide.md` (5-layer enforcement).
 
 A passing scan reports counted SPDX values + the cross-check resolutions:
 
-```
+```text
 ── License-allowlist scan (osv-scanner) ───────────────────────
 +------------------------------------------+-------+
 | LICENSE                                  | COUNT |
@@ -131,7 +133,7 @@ A passing scan reports counted SPDX values + the cross-check resolutions:
 
 A failing scan names the package + the failure path:
 
-```
+```text
 ✗ License-allowlist gate FAILED — 1 violation(s) outside allowlist:
   - npm buffers@0.1.1: UNKNOWN — npm license=""; GitHub probe-failed
     (substack/node-buffers archived)
@@ -166,7 +168,7 @@ osv-scanner scan source \
 ## Cross-references
 
 - `security-controls-org-wide.md` — 5-layer non-bypassable enforcement
-  + centralize-in-org principle.
+  - centralize-in-org principle.
 - `dependency-vulnerabilities.md` — sister gate for CVE enforcement.
 - `updated-frameworks.md` — replace abandoned/unmaintained deps
   rather than adding exceptions.
@@ -178,6 +180,7 @@ osv-scanner scan source \
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Non-allowlisted SPDX shipped (gate weakening — exception added instead of dep replaced)
 - "UNKNOWN" / "non-standard" license carve-out without Trove / GitHub License API cross-check (rule 5 weakening)
 - Per-consumer license-exceptions file found (rule 2 violation — must live in org repo)
@@ -187,6 +190,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Cross-check script not run in CI (rule 5 — manual judgement re-emerged)
 
 **Refinement candidates**:
+
 - New SPDX row when a new permissive license gains adoption
 - New deny-list entry when a viral / restrictive license emerges
 - Tightening of the cross-check when "UNKNOWN" carve-outs prove load-bearing more often than expected

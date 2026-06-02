@@ -52,6 +52,7 @@ Each event records:
 ```
 
 ### 2. Candidates are reviewed periodically — not silently
+
 applied
 
 The assistant does NOT silently mutate global / workspace
@@ -72,6 +73,7 @@ artifact in the same session; rejected candidates are marked
 `status: rejected` in the event log.
 
 ### 3. Promotion: workspace → global (per
+
 `rule-authoring-global-vs-project.md` rule 7)
 
 A candidate that appears in 2+ workspaces is eligible for
@@ -88,6 +90,7 @@ promotion to global:
 4. Replace workspace copies with redirects.
 
 ### 4. Demotion: global → workspace (per
+
 `rule-authoring-global-vs-project.md` rule 6)
 
 A global rule that turns out to be workspace-specific gets
@@ -104,7 +107,7 @@ rules disagree on the same point), the assistant:
    times. Refresh?"
 3. On user approval: the rule is downgraded to "advisory"
    status pending revision; the body acquires a "Last
-   contradicted: <date>; pending refresh" footer.
+   contradicted: `<date>`; pending refresh" footer.
 
 ### 6. Every artifact has a `learning_hooks` section
 
@@ -124,6 +127,7 @@ initial draft. Existing artifacts acquire the section during the
 next routine touch.
 
 ### 7. The `continuous-learning-v2` skill is the implementation
+
 arm
 
 The skill at `~/.claude/skills/continuous-learning-v2/` handles:
@@ -250,6 +254,7 @@ baked into all agents, the council, skils and rules."**
 Per this very rule (self-referential):
 
 **Signals to watch**:
+
 - Council-mediated task ends without a `learning-candidate` event emitted (rule 1 violation)
 - Candidate auto-applied without user review prompt (rule 2 violation — silent mutation)
 - Candidate observed in 2+ workspaces but never promoted to global (rule 3 weakening — promotion gap)
@@ -262,6 +267,7 @@ Per this very rule (self-referential):
 - Rule downgraded to "advisory" but still cited as enforced in agents / skills (status drift)
 
 **Refinement candidates**:
+
 - Tightening of the confidence-threshold table when low-confidence approvals prove load-bearing
 - New event-schema field when a recurring learning class needs additional context (e.g., session-id, parent-plan-slug, rule-affected list)
 - New cross-reference when a sister rule changes the artifact shape the loop depends on

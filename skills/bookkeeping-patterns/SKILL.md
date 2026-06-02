@@ -67,7 +67,7 @@ CREATE TABLE accounts (
 
 A typical SaaS chart of accounts:
 
-```
+```text
 ASSETS (debit normal balance)
   1000 Cash and cash equivalents
     1010 Operating bank account — USD
@@ -516,6 +516,7 @@ When the founder asks "how much revenue did we recognise in Q2?", the answer com
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Flat transactions table proposed for new product (double-entry weakening — anti-pattern)
 - Ledger entries mutated post-posting (immutability weakening; should be reversing entries)
 - Trial balance not zero (debits != credits) on close (double-entry invariant violated)
@@ -528,6 +529,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Idempotency missing on payment posting (per `~/.claude/rules-library/common/idempotency.md` — double-post risk)
 
 **Refinement candidates**:
+
 - New journal-template row when a new business event class emerges (e.g., crypto-asset, ESG credit)
 - New cross-reference when a sister skill (ifrs-gaap-reporting, fp-and-a, pci-dss-patterns) adds an accounting gate
 - New reconciliation template when a new external system (PSP, bank, AP automation) is integrated

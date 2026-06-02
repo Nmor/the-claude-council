@@ -241,7 +241,7 @@ To keep velocity high while keeping Council always-on:
 
 Every Council-mediated task ends with:
 
-```
+```text
 Council (this turn):
   - Division 1 (Architecture): <position>
   - Division 2 (Implementation): <position>
@@ -289,6 +289,7 @@ shortcut."
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Task shipped without a Council verification block (Council bypass attempted)
 - Core Five division speaks in boilerplate ("looks fine") instead of real analysis (rule 1 weakening)
 - Extended Division trigger matched but Division did not engage (council-triggers.md miscalibration)
@@ -298,6 +299,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Post-implementation review skipped on a Council-mediated task (rule 10 violation)
 
 **Refinement candidates**:
+
 - New trigger row in `council-triggers.md` when a Division consistently engages on a pattern that wasn't in its trigger ruleset
 - Tightening of the tiebreaker matrix when an ambiguity surfaces in practice
 - New row in the task-class table when a new shape of work needs its own Council pacing

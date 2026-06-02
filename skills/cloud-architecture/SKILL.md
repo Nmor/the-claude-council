@@ -96,6 +96,7 @@ Auto-engage on these signals:
 ## Core Patterns
 
 ### The Six Well-Architected Pillars (AWS framing; near-identical
+
 in GCP + Azure)
 
 Every architectural decision is evaluated against all six. Trade-
@@ -173,9 +174,11 @@ control or stateful behaviour the managed services can't deliver.
 Multi-account / multi-project / multi-subscription is the default
 isolation pattern. AWS Organizations, GCP Folders + Projects, Azure
 Management Groups + Subscriptions provide hierarchical isolation
-+ policy inheritance.
+
+- policy inheritance.
 
 Pattern:
+
 - **Per-environment isolation** — separate prod / staging / dev /
   sandbox accounts (or projects/subscriptions)
 - **Per-business-unit isolation** — separate parent OUs / folders /
@@ -195,6 +198,7 @@ Pattern:
 ### Network Architecture
 
 Per `network-patterns`. Cloud-side highlights:
+
 - **VPC / VNet design** — non-overlapping CIDRs across all accounts
   (plan in advance — overlap forces NAT gymnastics later)
 - **Subnet tiers** — public (load balancers + NAT only) / private
@@ -212,6 +216,7 @@ Per `network-patterns`. Cloud-side highlights:
 ### Reliability — SLO + Error Budget
 
 Per the Google SRE Book:
+
 - Define SLO per service (e.g., 99.9% availability over 28-day
   window)
 - Compute error budget (0.1% = ~43 min/month of unavailability)
@@ -220,6 +225,7 @@ Per the Google SRE Book:
 - Per `runbook-template.md`, every alert ties to an SLO
 
 Failure modes to design against:
+
 - AZ failure — multi-AZ everything in prod
 - Region failure — multi-region for tier-1
 - Dependency failure — circuit breakers (`circuit-breaker.md`),
@@ -269,6 +275,7 @@ quarterly architecture review for cost.
 ### Security
 
 Per `security.md`, `iso27001-controls`, `owasp-asvs`:
+
 - Identity perimeter (Zero Trust) — every request authenticated +
   authorised; no implicit trust based on network location
 - Encryption at rest (KMS / Cloud KMS / Key Vault) + in transit
@@ -287,6 +294,7 @@ Per `security.md`, `iso27001-controls`, `owasp-asvs`:
 ### Sustainability
 
 Per the AWS Sustainability pillar (added 2021):
+
 - **Region selection** — carbon intensity varies by region; AWS
   publishes carbon-neutral / 100% renewable-matched regions
 - **Workload right-sizing** — don't pay carbon for idle capacity
@@ -425,6 +433,7 @@ predictably:
 - **Spend years untangling kubernetes** they didn't need
 
 Conversely, with principal-grade cloud architecture:
+
 - The design doc names the trade-offs by pillar; reviewers can
   challenge or accept them on the merits
 - The SLO + budget + region topology + service selection align
@@ -448,6 +457,7 @@ person who designed it has long since left.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Workload deployed to a single AZ when the Reliability tier requires multi-AZ (Well-Architected Reliability pillar weakening)
 - New service ships without an ADR documenting the architectural choice (per `~/.claude/rules-library/common/adr-template.md`)
 - Region selection ignoring carbon-intensity heatmap when ESG tier requires it (Sustainability pillar weakening)
@@ -460,6 +470,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Reserved Instances / Savings Plans not refreshed when usage stabilises (FinOps optimisation gap)
 
 **Refinement candidates**:
+
 - New row in cloud-service-selection guide when a new managed service materially changes the trade-off
 - Tightening of the multi-AZ / multi-region rule when a customer SLA tier shifts
 - New cross-reference when a sister skill (network-patterns, datacenter-ops, aws-serverless-patterns, esg-reviewer) adds an architectural gate

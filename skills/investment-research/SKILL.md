@@ -40,7 +40,7 @@ This skill governs the full research lifecycle: idea generation, hypothesis fram
 
 ### Pattern 1: Thesis structure — one page that fits on the elevator wall
 
-```
+```text
 RECOMMENDATION: BUY (TP $185, current $142, upside 30%)
 
 THESIS (3 sentences max):
@@ -107,7 +107,7 @@ Compliance: NEVER trade on Material Non-Public Information (MNPI). Channel check
 
 ### Pattern 3: Financial model — audit-quality
 
-```
+```text
 SECTION 1: HISTORICAL FINANCIALS (5-10 year history)
 - Income statement (revenue → net income with each line item)
 - Balance sheet (every line item, with notes for unusual items)
@@ -205,7 +205,7 @@ A research note without an explicit risk register is incomplete. Risks aren't di
 
 Every long thesis has a bear case; every short thesis has a bull case. The analyst must articulate the counter-thesis at the level of detail of someone who actually believes it. If the bear case can't be summarised in 5 bullets, the analyst hasn't done the work.
 
-```
+```text
 BEAR THESIS (Acme Corp):
 1. Cyclical peak: 2024-2025 was anomalous demand from post-COVID stocking; normalised demand 15% lower
 2. Margin mean-reversion: 280 bps GM expansion came from temporary input cost relief; 2026 inputs +6% YoY
@@ -344,6 +344,7 @@ Edge in research is RARE. The analyst who doesn't believe edge is rare hasn't be
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Thesis stated without explicit thesis-breaker (no falsifiable predicate)
 - Recommendation issued without counter-thesis review
 - Model assumptions not stress-tested at 3 scenarios (bear / base / bull)
@@ -356,6 +357,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Industry-cycle stage misidentified (peak misread as growth)
 
 **Refinement candidates**:
+
 - New thesis-template row when a new asset class becomes coverage
 - New cross-reference when a sister skill (financial-analyst, valuation-models, investor-due-diligence) adds a research gate
 - Tightening of the catalyst-discipline policy when soft-thesis regression recurs

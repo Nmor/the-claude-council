@@ -195,6 +195,7 @@ explain analyze select ... from ...;
 ```
 
 Watch for:
+
 - `Seq Scan` on large tables (need index)
 - `Nested Loop` with high row counts (might need hash join)
 - High `loops=` on inner side (N+1 in disguise)

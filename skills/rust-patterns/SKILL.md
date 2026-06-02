@@ -16,7 +16,6 @@ paths:
 
 # rust-patterns
 
-
 <!-- ============================================================
      Section: rust/coding-style.md
      ============================================================ -->
@@ -26,7 +25,8 @@ paths:
 > Auto-fires on every `*.rs`, `Cargo.toml`, `Cargo.lock` file.
 > Standards: **The Rust API Guidelines**, **The Rustonomicon**,
 > **RFC track**, **rustfmt default**, **clippy pedantic + nursery
-> + cargo**.
+>
+> - cargo**.
 
 ## Core Principle
 
@@ -691,7 +691,7 @@ Per-crate test override (tests may unwrap):
 
 ## Verification block
 
-```
+```text
 Rust sweep (this turn):
   - cargo fmt --check: clean
   - cargo clippy --all-targets --all-features -- -D warnings: 0 issues
@@ -732,7 +732,7 @@ traits (concrete first, generic later).**
 
 ## Module + workspace layout
 
-```
+```text
 my-app/
 ├── Cargo.toml                # workspace root
 ├── crates/

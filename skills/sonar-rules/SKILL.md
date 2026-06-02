@@ -37,7 +37,6 @@ paths:
 
 > Migrated 2026-06-02 from `~/.claude/rules-library/common/sonarlint-checks.md` as part of the lazy-rules-loading plan. Phase H will delete the original to close the eager-load loop.
 
-
 # SonarLint / SonarQube Checks (Global Default)
 
 ## Standards Cited
@@ -102,7 +101,7 @@ Most SonarJS rules are bug-class. A handful are pure style and should be turned 
 | ---- | ------------ |
 | `sonarjs/prefer-regexp-exec` | `String.match` vs `RegExp.exec` is a style call |
 | `sonarjs/concise-regex` | `[0-9]` vs `\d` — both correct |
-| `sonarjs/single-character-alternation` | `a|b` vs `[ab]` — both correct |
+| `sonarjs/single-character-alternation` | `a\|b` vs `[ab]` — both correct |
 | `sonarjs/single-char-in-character-classes` | `[a]` vs `a` — both correct |
 | `sonarjs/regex-complexity` | length-bounded regex still fires; `slow-regex` is the bug-class one |
 | `sonarjs/no-nested-template-literals` | reasonable in render-text contexts |
@@ -111,7 +110,7 @@ Most SonarJS rules are bug-class. A handful are pure style and should be turned 
 | `sonarjs/function-return-type` | discriminated unions trip this |
 | `sonarjs/void-use` | `void promise` IS the explicit-fire-and-forget idiom |
 | `sonarjs/no-selector-parameter` | boolean params are sometimes the right shape |
-| `sonarjs/no-redundant-optional` | false-positives on `T | undefined | null` |
+| `sonarjs/no-redundant-optional` | false-positives on `T \| undefined \| null` |
 | `sonarjs/deprecation` | duplicates `@typescript-eslint/no-deprecated` |
 
 ### Per-file overrides for legitimate exceptions
@@ -377,7 +376,7 @@ If a rule is genuinely wrong for the project, change the project's lint config �
 
 When reporting work done, the verification block should explicitly call out Sonar sweep results:
 
-```
+```text
 Sonar sweep:
   - S7781: 7 → 0 (replace literal /x/g with replaceAll)
   - S1192: 0 violations
@@ -574,7 +573,7 @@ Each entry: rule code · ESLint rule name · short purpose. The `recState` colum
 | **S5256** | sonarjs/table-header | Tables should have headers | error |
 | **S5257** | sonarjs/no-table-as-layout | HTML "<table>" should not be used for layout purposes | error |
 | **S5260** | sonarjs/table-header-reference | Table cells should reference their headers | error |
-| **S5264** | sonarjs/object-alt-content | "<object>" tags should provide an alternative content | error |
+| **S5264** | sonarjs/object-alt-content | "`<object>`" tags should provide an alternative content | error |
 | **S5332** | sonarjs/no-clear-text-protocols | Using clear-text protocols is security-sensitive | error |
 | **S5443** | sonarjs/publicly-writable-directories | Temporary files should not be created in publicly writable directories | error |
 | **S5527** | sonarjs/unverified-hostname | Server hostnames should be verified during SSL/TLS connections | error |
@@ -667,6 +666,7 @@ Each entry: rule code · ESLint rule name · short purpose. The `recState` colum
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - New TS/JS repo opened without `eslint-plugin-sonarjs` wired (mandatory-step weakening)
 - SonarLint IDE warnings ignored / dismissed across multiple sessions on the same project
 - Per-line `// eslint-disable` / `// @ts-ignore` introduced to silence a Sonar rule (rule-violation shortcut)
@@ -677,6 +677,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Stylistic disable-list grows with rules that produce real bugs (over-disabling — recurrence audit needed)
 
 **Refinement candidates**:
+
 - New rule row when a new SonarJS rule ships (the catalog regularly grows; add columns + fix recipes)
 - Tightening of the disabled-rules list when a previously-stylistic rule starts catching real bugs
 - New cross-language entry when a recurring shape gains a Sonar equivalent in another language (e.g., SonarRust ships)

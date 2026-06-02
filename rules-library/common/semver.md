@@ -18,7 +18,7 @@ major version and know to brace for change at a major bump.**
 
 ## What each number means
 
-```
+```text
 MAJOR.MINOR.PATCH
 
 MAJOR — breaking changes to the public API (consumers MUST update)
@@ -75,7 +75,7 @@ major; communicate the choice clearly.
 Per the **Conventional Commits 1.0.0** spec, commit messages
 have a structured prefix that maps to a version bump:
 
-```
+```text
 feat: <description>          → MINOR bump
 fix: <description>           → PATCH bump
 docs: <description>          → PATCH (no release if internal)
@@ -229,6 +229,7 @@ but the technical version must follow semver semantics
 regardless of marketing.
 
 ### Anti-pattern 3: Quietly breaking changes inside a MINOR
+
 or PATCH
 
 Once a thing is in MINOR, you cannot change it in PATCH.
@@ -289,6 +290,7 @@ ignoring it is broken consumers + lost trust.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Breaking change shipped as MINOR or PATCH (rule 2 violation — consumers silently broken)
 - 0.x version pinned with caret range by consumers (0.x semantics misunderstanding)
 - CHANGELOG missing entry for a published release (rule 4 weakening — anti-pattern 4)
@@ -299,6 +301,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Internal package treated as exempt from semver (anti-pattern 1)
 
 **Refinement candidates**:
+
 - New bump-rule row when an emerging change class is ambiguous (e.g., enum addition in serialised form)
 - Tightening of the "release notes published with every version" requirement when CHANGELOGs drift
 - New cross-reference when a sister rule (deprecation-lifecycle, api-versioning) prescribes companion semantics

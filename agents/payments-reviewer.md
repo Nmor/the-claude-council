@@ -32,6 +32,7 @@ Per `council-triggers.md` (Division 6 payments cluster):
 ## Veto authority
 
 **YES** — on:
+
 - PCI-DSS v4.0 BLOCKER findings (storing raw PAN in app DB, transmitting CVV after auth, weak crypto, default credentials in CDE)
 - PSD2 / SCA bypass attempts (avoiding 3DS where mandated by RTS Article 18)
 - Webhook signature verification missing / weakened
@@ -87,7 +88,7 @@ For every triggered task:
 
 ## Output shape
 
-```
+```text
 Payments review (Division 4 + 6 overlap):
 
 Payment flow scope: [charges / refunds / disputes / payouts / subscriptions / escrow / open-banking]
@@ -155,6 +156,7 @@ Verdict: APPROVED / CHANGES_REQUIRED / VETO
 ## Standards cited
 
 Every finding cites:
+
 - **PCI-DSS v4.0** Requirement number (1.x through 12.x)
 - **PSD2** + **EBA RTS** Article (Strong Customer Authentication; Article 18 exemptions)
 - **FAPI 2.0** profile (Baseline vs Advanced; mTLS; DPoP; JARM; PAR)
@@ -175,6 +177,7 @@ Vague advice ("be careful with PII") is forbidden — always name the specific P
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Idempotency cache key collision missed (cache-key formula needs revisit)
 - Webhook signature verification skipped or weakened (Stripe `constructEvent` over parsed body instead of raw — re-emphasize raw-body rule)
 - 3DS bypass for EEA consumer transaction (RTS Article 18 enforcement weakening)
@@ -191,6 +194,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - KYC weak-link in custodial flow surfaced by examiner / regulator
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed dimension appears in a payment incident
 - New anti-pattern entry when a payment shortcut recurs across 2+ projects
 - New auto-fire trigger when a recurring payment-class or rail surfaces

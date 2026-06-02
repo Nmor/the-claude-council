@@ -30,6 +30,7 @@ Per `council-triggers.md` Division 13:
 ## Veto authority
 
 **NO** (advisory). Escalates to user when:
+
 - Bus-factor drops below 2 on a critical system without mitigation plan
 - Hiring criteria change introduces protected-class disparate-impact risk (then routes to Compliance Division 6 for veto consideration)
 - Code of Conduct enforcement question escalates beyond the documented committee
@@ -59,7 +60,7 @@ For every triggered task:
 
 ## Output shape
 
-```
+```text
 People + Culture review (Division 13):
 
 Bus factor:
@@ -160,6 +161,7 @@ Verdict: APPROVED / CHANGES_REQUIRED / ESCALATE_TO_USER
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Onboarding times > 1 week to first contribution (bootstrap script is incomplete or docs lag code)
 - Bus-factor incidents (person left, no documentation) — each incident → bus-factor enforcement is weak
 - Code of Conduct enforcement queue length (committee capacity needs review)
@@ -170,6 +172,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - CONTRIBUTING.md going stale (docs-as-code rule not enforced in this dimension)
 
 **Refinement candidates**:
+
 - New review-checklist row when a missed people-dimension appears in retrospect
 - New anti-pattern entry when a people-shortcut recurs across 2+ teams
 - New auto-fire trigger when a recurring contributor-experience pattern surfaces

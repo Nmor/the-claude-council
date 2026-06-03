@@ -99,6 +99,8 @@ What you get after install:
 <td valign="top">
 
 ```bash
+# Public repo — no auth required for clone.
+# `gh repo clone Nmor/the-claude-council` also works.
 git clone https://github.com/Nmor/the-claude-council.git
 cd the-claude-council
 ./bootstrap/install.sh
@@ -109,6 +111,8 @@ cd the-claude-council
 <td valign="top">
 
 ```powershell
+# Public repo — no auth required for clone.
+# `gh repo clone Nmor/the-claude-council` also works.
 git clone https://github.com/Nmor/the-claude-council.git
 Set-Location the-claude-council
 Set-ExecutionPolicy -Scope Process Bypass

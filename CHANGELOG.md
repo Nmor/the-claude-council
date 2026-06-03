@@ -7,7 +7,34 @@ and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
-Nothing pending.
+### Added — multi-config install targeting
+
+- `bootstrap/install.sh` + `bootstrap/install.ps1` now install into
+  any chosen Claude config directory, several, or all of them. On an
+  interactive terminal with no target flag, the installer detects the
+  available config directories (`$CLAUDE_CONFIG_DIR` + `~/.claude` +
+  sibling `~/.claude-*` profiles, excluding backups) and prompts for a
+  one / several / all selection. This supports the documented
+  [`CLAUDE_CONFIG_DIR`](https://code.claude.com/docs/en/claude-directory)
+  multi-profile pattern (e.g. `~/.claude` personal + `~/.claude-work`).
+- New flags: `--config-dir PATH` (repeatable) and `--all` on the bash
+  installer; `-ConfigDir PATH[]` and `-All` on the PowerShell installer.
+  `--prefix` / `-Prefix` are retained as back-compat single-target
+  aliases.
+
+### Changed
+
+- With no target flag and no interactive terminal, both installers fall
+  back to `$CLAUDE_CONFIG_DIR` when set, otherwise `~/.claude` —
+  preserving the historical single-target default.
+- `install.sh` `usage()` now emits its help via a heredoc instead of a
+  line-range `sed` of its own header (no longer breaks when the header
+  is edited).
+
+### Docs
+
+- `INSTALL.md` gains a "Choosing which config directory" section;
+  `README.md` install block documents `--all` / `--config-dir`.
 
 ## [1.1.0] — 2026-06-02
 

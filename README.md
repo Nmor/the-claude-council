@@ -133,6 +133,20 @@ timestamped backup before the new one lands. Pass `--dry-run`
 skip the backup, `--no-ide` (`-NoIde`) to skip IDE integration.
 Full options + per-IDE walkthroughs in [INSTALL.md](INSTALL.md).
 
+**Multiple Claude profiles?** If you run more than one config
+directory via [`CLAUDE_CONFIG_DIR`](https://code.claude.com/docs/en/claude-directory)
+(e.g. `~/.claude` for personal, `~/.claude-work` for a second
+account), the installer detects them and — on an interactive
+terminal — prompts you to install The Council into one, several,
+or all of them. Non-interactively, target them explicitly:
+
+```bash
+./bootstrap/install.sh --all                       # every detected profile
+./bootstrap/install.sh --config-dir ~/.claude-work # one named profile
+```
+
+See [INSTALL.md](INSTALL.md#choosing-which-config-directory) for the full flow.
+
 After install, open any project in any Claude Code-compatible
 IDE — the Council fires on the next prompt.
 

@@ -7,10 +7,24 @@
 # with installed IDEs (VS Code, Cursor, Windsurf, JetBrains).
 #
 # Usage:
-#   ./bootstrap/install.sh [--prefix PATH] [--no-ide] [--dry-run] [--force]
+#   ./bootstrap/install.sh [--config-dir PATH]... [--all]
+#                          [--prefix PATH] [--no-ide] [--dry-run] [--force]
 #
-# Options:
-#   --prefix PATH   Install into PATH instead of ~/.claude (testing)
+# Target selection (which Claude config directory to install into):
+#   --config-dir PATH   Install into PATH. Repeatable to target several
+#                       profiles in one run (e.g. ~/.claude and
+#                       ~/.claude-work). Skips the interactive menu.
+#   --all               Install into every detected config directory
+#                       ($CLAUDE_CONFIG_DIR + ~/.claude + sibling
+#                       ~/.claude-* profiles). Skips the menu.
+#   --prefix PATH       Back-compat alias for --config-dir.
+#
+#   With no target flag and an interactive terminal, the installer
+#   detects the available config directories and prompts you to pick
+#   one, several, or all. With no target flag and no terminal, it
+#   installs into $CLAUDE_CONFIG_DIR if set, otherwise ~/.claude.
+#
+# Other options:
 #   --no-ide        Skip IDE integration step
 #   --dry-run       Print actions without making changes
 #   --force         Overwrite existing destination without backup
@@ -34,7 +48,17 @@ readonly DEFAULT_PREFIX="${HOME}/.claude"
 TIMESTAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 readonly TIMESTAMP
 
+# PREFIX is the CURRENT install target. With multi-config support it is
+# reassigned once per selected directory inside main()'s install loop;
+# every install helper (backup_existing / copy_payload / rewrite_paths /
+# ensure_runtime_dirs) reads it. It starts at the default so a sourced
+# script (tests) sees a sane value without running selection.
 PREFIX="${DEFAULT_PREFIX}"
+# CONFIG_DIRS collects explicit --config-dir / --prefix targets.
+# TARGETS is the resolved, deduped list main() iterates over.
+CONFIG_DIRS=()
+TARGETS=()
+INSTALL_ALL=false
 SKIP_IDE=false
 DRY_RUN=false
 FORCE=false
@@ -45,19 +69,221 @@ log_warn()  { log "WARN  $*"; }
 log_error() { log "ERROR $*"; }
 
 usage() {
-  sed -n '3,21p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  cat <<'EOF'
+install.sh — Bootstrap installer for the global Claude Code config.
+
+Usage:
+  ./bootstrap/install.sh [--config-dir PATH]... [--all]
+                         [--prefix PATH] [--no-ide] [--dry-run] [--force]
+
+Target selection (which Claude config directory to install into):
+  --config-dir PATH   Install into PATH. Repeatable to target several
+                      profiles in one run (e.g. ~/.claude and
+                      ~/.claude-work). Skips the interactive menu.
+  --all               Install into every detected config directory
+                      ($CLAUDE_CONFIG_DIR + ~/.claude + sibling
+                      ~/.claude-* profiles). Skips the menu.
+  --prefix PATH       Back-compat alias for --config-dir.
+
+  With no target flag and an interactive terminal, the installer
+  detects the available config directories and prompts you to pick
+  one, several, or all. With no target flag and no terminal, it
+  installs into $CLAUDE_CONFIG_DIR if set, otherwise ~/.claude.
+
+Other options:
+  --no-ide        Skip IDE integration step
+  --dry-run       Print actions without making changes
+  --force         Overwrite existing destination without backup
+  -h, --help      Show this help
+EOF
 }
 
 parse_args() {
   while [ $# -gt 0 ]; do
     case "$1" in
-      --prefix)   PREFIX="$2"; shift 2 ;;
-      --no-ide)   SKIP_IDE=true; shift ;;
-      --dry-run)  DRY_RUN=true; shift ;;
-      --force)    FORCE=true; shift ;;
-      -h|--help)  usage; exit 0 ;;
+      --prefix)      [ $# -ge 2 ] || { log_error "--prefix needs a PATH"; exit 1; }
+                     CONFIG_DIRS+=("$2"); shift 2 ;;
+      --config-dir)  [ $# -ge 2 ] || { log_error "--config-dir needs a PATH"; exit 1; }
+                     CONFIG_DIRS+=("$2"); shift 2 ;;
+      --all)         INSTALL_ALL=true; shift ;;
+      --no-ide)      SKIP_IDE=true; shift ;;
+      --dry-run)     DRY_RUN=true; shift ;;
+      --force)       FORCE=true; shift ;;
+      -h|--help)     usage; exit 0 ;;
       *) log_error "unknown option: $1"; usage; exit 1 ;;
     esac
+  done
+}
+
+# normalize_dir — expand a leading ~, collapse trailing slashes.
+# Keeps a bare "/" intact. Pure string work; does not touch the FS.
+normalize_dir() {
+  local d="$1"
+  # Expand a leading ~ / ~/ to $HOME. Done via prefix-strip rather than a
+  # "~/"* case glob so ShellCheck doesn't read it as a (non-expanding)
+  # quoted tilde (SC2088).
+  if [ "${d}" = "~" ]; then
+    d="${HOME}"
+  elif [ "${d#\~/}" != "${d}" ]; then
+    d="${HOME}/${d#\~/}"
+  fi
+  while [ "${#d}" -gt 1 ] && [ "${d%/}" != "${d}" ]; do
+    d="${d%/}"
+  done
+  printf '%s' "${d}"
+}
+
+# detect_config_dirs — emit candidate Claude config directories, one
+# per line, deduped, in priority order:
+#   1. $CLAUDE_CONFIG_DIR (the active profile, when set) — the
+#      documented override that relocates every ~/.claude path.
+#   2. $HOME/.claude (the default profile).
+#   3. Sibling profile dirs $HOME/.claude-* (e.g. .claude-work),
+#      excluding installer backups (*.bak.*, *.uninstalled.*).
+# Candidates need not exist yet; the installer creates the target.
+detect_config_dirs() {
+  local -a cands=()
+  if [ -n "${CLAUDE_CONFIG_DIR:-}" ]; then
+    cands+=("$(normalize_dir "${CLAUDE_CONFIG_DIR}")")
+  fi
+  cands+=("$(normalize_dir "${HOME}/.claude")")
+  local g
+  for g in "${HOME}"/.claude-*; do
+    [ -d "${g}" ] || continue
+    case "${g}" in
+      *.bak.*|*.uninstalled.*) continue ;;
+    esac
+    cands+=("$(normalize_dir "${g}")")
+  done
+
+  # Dedupe preserving order. `seen` is a |-delimited membership string;
+  # path chars never include "|" in practice, and the surrounding
+  # delimiters make the match exact.
+  local seen="|" c
+  for c in "${cands[@]+"${cands[@]}"}"; do
+    case "${seen}" in
+      *"|${c}|"*) continue ;;
+    esac
+    seen="${seen}${c}|"
+    printf '%s\n' "${c}"
+  done
+}
+
+# prompt_targets — interactive menu. Reads detected dirs as args,
+# writes the menu to stderr, and prints the chosen dir(s) to stdout
+# (one per line). Returns non-zero on invalid input.
+prompt_targets() {
+  local -a detected=("$@")
+  local i d state
+  {
+    printf '\n'
+    printf 'Multiple Claude config directories can host The Council.\n'
+    printf 'Each is an independent profile (switched via CLAUDE_CONFIG_DIR).\n\n'
+    printf 'Select where to install:\n\n'
+    i=1
+    for d in "${detected[@]}"; do
+      if [ -d "${d}" ]; then state="exists"; else state="will be created"; fi
+      printf '  %d) %s  (%s)\n' "${i}" "${d}" "${state}"
+      i=$((i + 1))
+    done
+    printf '  a) all of the above\n'
+    printf '  c) a custom path not listed above\n\n'
+    printf 'Enter choice [number(s) space/comma separated, "a", or "c"; default 1]: '
+  } >&2
+
+  local reply
+  read -r reply || reply=""
+  reply="$(printf '%s' "${reply}" | tr ',' ' ')"
+
+  case "${reply}" in
+    ""|" ")
+      printf '%s\n' "${detected[0]}" ;;
+    a|A|all|ALL)
+      printf '%s\n' "${detected[@]}" ;;
+    c|C|custom)
+      local custom
+      printf 'Enter the config directory path: ' >&2
+      read -r custom || custom=""
+      if [ -z "${custom}" ]; then
+        log_error "no path entered"
+        return 1
+      fi
+      normalize_dir "${custom}"; printf '\n' ;;
+    *)
+      # The script-wide IFS is $'\n\t' (no space), so split the index
+      # list on spaces/tabs/newlines locally. `local IFS` is restored
+      # on return. Validate EVERY token before emitting anything, so an
+      # invalid token yields no partial selection (the caller treats an
+      # empty result as "nothing selected" and aborts cleanly).
+      local tok idx count="${#detected[@]}" out=""
+      local IFS=$' \t\n'
+      for tok in ${reply}; do
+        case "${tok}" in
+          *[!0-9]*|"")
+            log_error "invalid selection: '${tok}' (expected a number, 'a', or 'c')"
+            return 1 ;;
+        esac
+        idx="${tok}"
+        if [ "${idx}" -lt 1 ] || [ "${idx}" -gt "${count}" ]; then
+          log_error "selection out of range: ${idx} (1-${count})"
+          return 1
+        fi
+        out="${out}${detected[$((idx - 1))]}
+"
+      done
+      printf '%s' "${out}" ;;
+  esac
+}
+
+# resolve_targets — populate the global TARGETS array from flags or the
+# interactive menu, applying this precedence:
+#   explicit --config-dir/--prefix  ∪  (--all → all detected)
+#   else interactive menu (tty)  else default (CLAUDE_CONFIG_DIR | ~/.claude)
+# The result is normalized + deduped and always has at least one entry.
+resolve_targets() {
+  local -a chosen=()
+  local c
+
+  for c in "${CONFIG_DIRS[@]+"${CONFIG_DIRS[@]}"}"; do
+    chosen+=("$(normalize_dir "${c}")")
+  done
+
+  if [ "${INSTALL_ALL}" = true ]; then
+    while IFS= read -r c; do
+      [ -n "${c}" ] && chosen+=("${c}")
+    done < <(detect_config_dirs)
+  fi
+
+  # No explicit targets: prompt when interactive, else fall back.
+  if [ "${#chosen[@]}" -eq 0 ]; then
+    if [ -t 0 ] && [ -t 1 ]; then
+      local -a detected=()
+      while IFS= read -r c; do
+        [ -n "${c}" ] && detected+=("${c}")
+      done < <(detect_config_dirs)
+      while IFS= read -r c; do
+        [ -n "${c}" ] && chosen+=("${c}")
+      done < <(prompt_targets "${detected[@]}")
+      if [ "${#chosen[@]}" -eq 0 ]; then
+        log_error "no install target selected"
+        exit 2
+      fi
+    elif [ -n "${CLAUDE_CONFIG_DIR:-}" ]; then
+      chosen+=("$(normalize_dir "${CLAUDE_CONFIG_DIR}")")
+    else
+      chosen+=("$(normalize_dir "${DEFAULT_PREFIX}")")
+    fi
+  fi
+
+  # Dedupe preserving order into the global TARGETS.
+  TARGETS=()
+  local seen="|" t
+  for t in "${chosen[@]+"${chosen[@]}"}"; do
+    case "${seen}" in
+      *"|${t}|"*) continue ;;
+    esac
+    seen="${seen}${t}|"
+    TARGETS+=("${t}")
   done
 }
 
@@ -457,15 +683,25 @@ integrate_ides() {
 }
 
 post_install_message() {
+  local targets_block="" first_target="" t
+  for t in "${TARGETS[@]+"${TARGETS[@]}"}"; do
+    targets_block="${targets_block}  • ${t}
+"
+    [ -z "${first_target}" ] && first_target="${t}"
+  done
+
   cat <<EOF
 
 ================================================================
-✓ Global Claude config installed at ${PREFIX}
-
+✓ Global Claude config installed into:
+${targets_block}
 Next steps:
-  1. Run the self-test:        ${SCRIPT_DIR}/verify.sh
-  2. Read the council protocol: ${PREFIX}/CLAUDE.md
+  1. Run the self-test:        ${SCRIPT_DIR}/verify.sh --prefix "${first_target}"
+  2. Read the council protocol: ${first_target}/CLAUDE.md
   3. Open the docs:            ${REPO_ROOT}/docs/ARCHITECTURE.md
+
+If you installed into more than one directory, re-run the
+self-test once per target, passing each with --prefix.
 
 The 15 Floor rules, 160 Library rules, 121 skills, 32 agents,
 33 commands, and 14 hooks are now active for every Claude Code
@@ -474,8 +710,8 @@ session; the Library + skill bodies load on demand via skill
 paths: triggers (lazy-load architecture, ~92% cold-load drop
 vs the monolith).
 
-If you backed up an existing ${PREFIX}, the backup is at:
-  ${PREFIX}.bak.${TIMESTAMP}
+Any directory that already existed was backed up alongside
+itself as <dir>.bak.${TIMESTAMP} (unless --force was used).
 
 ----------------------------------------------------------------
 Forking this repo? Apply branch protection to your fork
@@ -507,11 +743,26 @@ EOF
 main() {
   parse_args "$@"
   check_prereqs
-  backup_existing
-  copy_payload
-  rewrite_paths
-  ensure_runtime_dirs
+  resolve_targets
+
+  log_info "install target(s): $(printf '%s ' "${TARGETS[@]}")"
+
+  # Per-target install. PREFIX is the current target each iteration;
+  # the install helpers read it. IDE integration is machine-level
+  # (writes to ~/.vscode etc.), so it runs once after the loop.
+  local target
+  for target in "${TARGETS[@]}"; do
+    PREFIX="${target}"
+    log_info "──────────────────────────────────────────────"
+    log_info "installing into ${PREFIX}"
+    backup_existing
+    copy_payload
+    rewrite_paths
+    ensure_runtime_dirs
+  done
+
   integrate_ides
+
   if [ "${DRY_RUN}" = true ]; then
     log_info "dry-run complete; no changes made"
   else

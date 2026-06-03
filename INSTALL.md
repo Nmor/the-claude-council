@@ -129,6 +129,79 @@ in the WSL filesystem (`/home/<you>/.claude/`), and the bash scripts
 
 ---
 
+## Choosing which config directory
+
+Claude Code reads its configuration from `~/.claude` by default, but
+the [`CLAUDE_CONFIG_DIR`](https://code.claude.com/docs/en/claude-directory)
+environment variable relocates **every** `~/.claude` path to a
+directory of your choosing. People who run more than one account keep
+several independent profiles — for example `~/.claude` for personal use
+and `~/.claude-work` for a second subscription — and switch between them
+with shell aliases:
+
+```bash
+alias claude-personal='CLAUDE_CONFIG_DIR=~/.claude command claude'
+alias claude-work='CLAUDE_CONFIG_DIR=~/.claude-work command claude'
+```
+
+The installer is multi-profile aware. With no target flag on an
+interactive terminal, it detects the available config directories and
+prompts you to install The Council into one, several, or all of them:
+
+```text
+Multiple Claude config directories can host The Council.
+Each is an independent profile (switched via CLAUDE_CONFIG_DIR).
+
+Select where to install:
+
+  1) /Users/you/.claude       (exists)
+  2) /Users/you/.claude-work  (exists)
+  a) all of the above
+  c) a custom path not listed above
+
+Enter choice [number(s) space/comma separated, "a", or "c"; default 1]:
+```
+
+What it detects, in priority order:
+
+1. `$CLAUDE_CONFIG_DIR` — the active profile, when the variable is set.
+2. `~/.claude` — the default profile.
+3. Sibling `~/.claude-*` profiles (e.g. `~/.claude-work`), excluding
+   installer backups (`*.bak.*`, `*.uninstalled.*`).
+
+### Non-interactive selection
+
+In scripts, CI, or any non-terminal session, pick targets explicitly:
+
+| Goal | macOS / Linux / WSL2 | Windows (PowerShell) |
+| --- | --- | --- |
+| Every detected profile | `./bootstrap/install.sh --all` | `.\bootstrap\install.ps1 -All` |
+| One named profile | `./bootstrap/install.sh --config-dir ~/.claude-work` | `.\bootstrap\install.ps1 -ConfigDir $HOME\.claude-work` |
+| Several named profiles | `./bootstrap/install.sh --config-dir ~/.claude --config-dir ~/.claude-work` | `.\bootstrap\install.ps1 -ConfigDir $HOME\.claude, $HOME\.claude-work` |
+| Back-compat single target | `./bootstrap/install.sh --prefix ~/.claude-work` | `.\bootstrap\install.ps1 -Prefix $HOME\.claude-work` |
+
+With no flag and **no** terminal, the installer falls back to
+`$CLAUDE_CONFIG_DIR` if set, otherwise `~/.claude` — preserving the
+historical single-target behaviour.
+
+Each selected directory is backed up (unless `--force` / `-Force`),
+populated, and given its runtime directories independently. Verify each
+target by pointing the self-test at it:
+
+```bash
+./bootstrap/verify.sh --prefix ~/.claude-work        # macOS / Linux / WSL2
+```
+
+```powershell
+.\bootstrap\verify.ps1 -Prefix $HOME\.claude-work     # Windows-native
+```
+
+To uninstall a non-default profile, pass the same path:
+`./bootstrap/uninstall.sh --prefix ~/.claude-work`
+(`-Prefix` on PowerShell).
+
+---
+
 ## IDE integration
 
 The installer auto-detects IDEs and copies recommended settings to opt-in locations. The installer NEVER overwrites your existing IDE settings — it copies templates as `*.recommended.json` for manual review.

@@ -10,8 +10,23 @@
     Run from the repository root or from the bootstrap/ directory. Requires
     PowerShell 5.1+ (Windows 10/11 ships with this) or PowerShell Core 7+.
 
+.PARAMETER ConfigDir
+    One or more Claude config directories to install into. Repeatable
+    so several profiles can be targeted in one run (e.g.
+    "$env:USERPROFILE\.claude", "$env:USERPROFILE\.claude-work").
+    Supplying any value skips the interactive menu.
+
+.PARAMETER All
+    Install into every detected config directory ($env:CLAUDE_CONFIG_DIR
+    + $env:USERPROFILE\.claude + sibling .claude-* profiles). Skips the
+    interactive menu.
+
 .PARAMETER Prefix
-    Override the install destination. Default: $env:USERPROFILE\.claude
+    Back-compat alias for -ConfigDir (single directory). When neither
+    -ConfigDir, -All, nor -Prefix is supplied and the session is
+    interactive, the installer detects the available config directories
+    and prompts. When non-interactive, it installs into
+    $env:CLAUDE_CONFIG_DIR if set, otherwise $env:USERPROFILE\.claude.
 
 .PARAMETER NoIde
     Skip the IDE integration step.
@@ -24,7 +39,16 @@
 
 .EXAMPLE
     .\bootstrap\install.ps1
-    Default install into $env:USERPROFILE\.claude
+    Detect config directories and prompt (interactive), or install into
+    the default $env:USERPROFILE\.claude (non-interactive).
+
+.EXAMPLE
+    .\bootstrap\install.ps1 -All
+    Install into every detected config directory.
+
+.EXAMPLE
+    .\bootstrap\install.ps1 -ConfigDir C:\Users\me\.claude -ConfigDir C:\Users\me\.claude-work
+    Install into two named profiles, no prompt.
 
 .EXAMPLE
     .\bootstrap\install.ps1 -Prefix C:\Tools\claude -NoIde
@@ -33,7 +57,9 @@
 
 [CmdletBinding()]
 param(
-    [string]$Prefix = (Join-Path $env:USERPROFILE '.claude'),
+    [string[]]$ConfigDir = @(),
+    [switch]$All,
+    [string]$Prefix = '',
     [switch]$NoIde,
     [switch]$DryRun,
     [switch]$Force
@@ -49,6 +75,115 @@ $Timestamp = (Get-Date -Format 'yyyyMMddTHHmmssZ')
 function Log-Info  { param([string]$Msg) Write-Host "[INFO]  $Msg" -ForegroundColor Cyan }
 function Log-Warn  { param([string]$Msg) Write-Host "[WARN]  $Msg" -ForegroundColor Yellow }
 function Log-Error { param([string]$Msg) Write-Host "[ERROR] $Msg" -ForegroundColor Red }
+
+# Normalize-Dir — expand a leading ~, collapse trailing slashes /
+# backslashes. Pure string work; does not touch the filesystem.
+function Normalize-Dir {
+    param([string]$Path)
+    if ([string]::IsNullOrWhiteSpace($Path)) { return '' }
+    if ($Path -eq '~') {
+        $Path = $env:USERPROFILE
+    } elseif ($Path.StartsWith('~/') -or $Path.StartsWith('~\')) {
+        $Path = Join-Path $env:USERPROFILE $Path.Substring(2)
+    }
+    return ($Path -replace '[\\/]+$', '')
+}
+
+# Get-ConfigDirs — candidate Claude config directories, deduped, in
+# priority order: $env:CLAUDE_CONFIG_DIR (active profile), the default
+# $env:USERPROFILE\.claude, then sibling .claude-* profiles (excluding
+# installer backups). Candidates need not exist yet.
+function Get-ConfigDirs {
+    $cands = @()
+    if (-not [string]::IsNullOrWhiteSpace($env:CLAUDE_CONFIG_DIR)) {
+        $cands += (Normalize-Dir $env:CLAUDE_CONFIG_DIR)
+    }
+    $cands += (Normalize-Dir (Join-Path $env:USERPROFILE '.claude'))
+    $siblings = Get-ChildItem -LiteralPath $env:USERPROFILE -Directory -Force `
+        -ErrorAction SilentlyContinue |
+        Where-Object {
+            $_.Name -like '.claude-*' -and
+            $_.Name -notlike '*.bak.*' -and
+            $_.Name -notlike '*.uninstalled.*'
+        }
+    foreach ($s in $siblings) { $cands += (Normalize-Dir $s.FullName) }
+    return @($cands | Select-Object -Unique)
+}
+
+# Prompt-Targets — interactive menu. Returns the chosen dir(s) as an
+# array; returns an empty array on invalid input (caller aborts).
+function Prompt-Targets {
+    param([string[]]$Detected)
+    $Detected = @($Detected)
+    Write-Host ''
+    Write-Host 'Multiple Claude config directories can host The Council.'
+    Write-Host 'Each is an independent profile (switched via CLAUDE_CONFIG_DIR).'
+    Write-Host ''
+    Write-Host 'Select where to install:'
+    Write-Host ''
+    for ($i = 0; $i -lt $Detected.Count; $i++) {
+        $state = if (Test-Path -LiteralPath $Detected[$i]) { 'exists' } else { 'will be created' }
+        Write-Host ("  {0}) {1}  ({2})" -f ($i + 1), $Detected[$i], $state)
+    }
+    Write-Host '  a) all of the above'
+    Write-Host '  c) a custom path not listed above'
+    Write-Host ''
+    $reply = (Read-Host 'Enter choice [number(s) space/comma separated, "a", or "c"; default 1]').Trim()
+
+    if ($reply -eq '') { return , @($Detected[0]) }
+    if ('a', 'A', 'all', 'ALL' -contains $reply) { return $Detected }
+    if ('c', 'C', 'custom' -contains $reply) {
+        $custom = Read-Host 'Enter the config directory path'
+        if ([string]::IsNullOrWhiteSpace($custom)) { Log-Error 'no path entered'; return @() }
+        return , @(Normalize-Dir $custom)
+    }
+
+    # Validate every token before emitting anything.
+    $tokens = $reply -split '[,\s]+' | Where-Object { $_ -ne '' }
+    $out = @()
+    foreach ($t in $tokens) {
+        if ($t -notmatch '^\d+$') {
+            Log-Error "invalid selection: '$t' (expected a number, 'a', or 'c')"
+            return @()
+        }
+        $idx = [int]$t
+        if ($idx -lt 1 -or $idx -gt $Detected.Count) {
+            Log-Error "selection out of range: $idx (1-$($Detected.Count))"
+            return @()
+        }
+        $out += $Detected[$idx - 1]
+    }
+    return $out
+}
+
+# Resolve-Targets — the deduped list to install into. Precedence:
+# explicit -ConfigDir/-Prefix (union -All) ; else interactive menu ;
+# else default ($env:CLAUDE_CONFIG_DIR | $env:USERPROFILE\.claude).
+function Resolve-Targets {
+    $chosen = @()
+    foreach ($c in $ConfigDir) {
+        if (-not [string]::IsNullOrWhiteSpace($c)) { $chosen += (Normalize-Dir $c) }
+    }
+    if (-not [string]::IsNullOrWhiteSpace($Prefix)) { $chosen += (Normalize-Dir $Prefix) }
+    if ($All) { $chosen += (Get-ConfigDirs) }
+
+    if ($chosen.Count -eq 0) {
+        $interactive = $false
+        try {
+            $interactive = [Environment]::UserInteractive -and -not [Console]::IsInputRedirected
+        } catch { $interactive = [Environment]::UserInteractive }
+
+        if ($interactive) {
+            $chosen = @(Prompt-Targets (Get-ConfigDirs))
+            if ($chosen.Count -eq 0) { Log-Error 'no install target selected'; exit 2 }
+        } elseif (-not [string]::IsNullOrWhiteSpace($env:CLAUDE_CONFIG_DIR)) {
+            $chosen += (Normalize-Dir $env:CLAUDE_CONFIG_DIR)
+        } else {
+            $chosen += (Normalize-Dir (Join-Path $env:USERPROFILE '.claude'))
+        }
+    }
+    return @($chosen | Select-Object -Unique)
+}
 
 function Test-Prereqs {
     Log-Info 'checking prerequisites'
@@ -254,15 +389,23 @@ function Integrate-Ides {
 }
 
 function Print-PostInstall {
+    param([string[]]$Targets)
+    $Targets = @($Targets)
+    $targetsBlock = ($Targets | ForEach-Object { "  • $_" }) -join "`n"
+    $firstTarget = $Targets[0]
     @"
 
 ================================================================
-✓ Global Claude config installed at $Prefix
+✓ Global Claude config installed into:
+$targetsBlock
 
 Next steps:
-  1. Run the self-test:        $ScriptDir\verify.ps1
-  2. Read the council protocol: $Prefix\CLAUDE.md
+  1. Run the self-test:        $ScriptDir\verify.ps1 -Prefix "$firstTarget"
+  2. Read the council protocol: $firstTarget\CLAUDE.md
   3. Open the docs:            $RepoRoot\docs\ARCHITECTURE.md
+
+If you installed into more than one directory, re-run the
+self-test once per target, passing each with -Prefix.
 
 The 15 Floor rules, 160 Library rules, 121 skills, 32 agents,
 33 commands, and 14 hooks are now active for every Claude Code
@@ -270,8 +413,8 @@ session. Floor rules + CLAUDE.md (~240 KB) load on every session;
 the Library + skill bodies load on demand via skill paths:
 triggers (lazy-load architecture, ~92% cold-load drop).
 
-If you backed up an existing $Prefix, the backup is at:
-  $Prefix.bak.$Timestamp
+Any directory that already existed was backed up alongside
+itself as <dir>.bak.$Timestamp (unless -Force was used).
 
 ----------------------------------------------------------------
 Forking this repo? Apply branch protection to your fork
@@ -301,14 +444,26 @@ to main without explicit CODEOWNER review approval.
 }
 
 Test-Prereqs
-Backup-Existing
-Copy-Payload
-Rewrite-Paths
-Ensure-RuntimeDirs
+$Targets = @(Resolve-Targets)
+Log-Info ("install target(s): " + ($Targets -join ', '))
+
+# Per-target install. $script:Prefix is the current target each
+# iteration; the install helpers read it. IDE integration is
+# machine-level (writes to ~\.vscode etc.), so it runs once after.
+foreach ($t in $Targets) {
+    $script:Prefix = $t
+    Log-Info '----------------------------------------------'
+    Log-Info "installing into $Prefix"
+    Backup-Existing
+    Copy-Payload
+    Rewrite-Paths
+    Ensure-RuntimeDirs
+}
+
 Integrate-Ides
 
 if ($DryRun) {
     Log-Info 'dry-run complete; no changes made'
 } else {
-    Print-PostInstall
+    Print-PostInstall -Targets $Targets
 }

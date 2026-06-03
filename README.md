@@ -60,9 +60,10 @@ This repo is the *complete* config surface — **15 Floor rules**
 skill triggers, ~1.6 MB), **121 principal-level skills**, **32
 specialist agents**, **33 commands**, a strict Council protocol,
 **14 hook-enforced quality gates**, and project-scoped artifact
-bootstrap. The dual-surface design keeps every session's cold-load
-budget around **~140 KB** (down from ~1.7 MB) while preserving every
-rule's full content for on-demand reference.
+bootstrap. The dual-surface design keeps every session's eager
+cold-load budget around **~240 KB** (Floor + `CLAUDE.md`, down from
+the ~1.7 MB monolith) while preserving every rule's full content
+for on-demand reference via skill `paths:` triggers.
 
 **For anyone, on any project.** No org-dependency, no SaaS, no
 telemetry.
@@ -313,7 +314,7 @@ Per-IDE walkthroughs live in [INSTALL.md](INSTALL.md).
   Workspace contamination in global ......... 0          PASS
   Council divisions ......................... 5 core + 11 extended
 
-  Cold-load budget (Floor + CLAUDE.md) ...... ~140 KB    (was ~1.7 MB)
+  Cold-load budget (Floor + CLAUDE.md) ...... ~240 KB    (was ~1.7 MB)
   Lazy-load surface (Library + Skills) ...... ~5.4 MB    on demand
 
 ═══════════════════════════════════════════════════════════════

@@ -119,12 +119,23 @@ else
         # Find script paths referenced (node "$HOME/...", python3 ~/...)
         SCRIPTS=$(printf '%s\n' "${CMD}" | grep -oE '("\$HOME/[^"]+\.(js|py|sh)"|~/[^ ]+\.(js|py|sh)|\$HOME/[^ ]+\.(js|py|sh))' || true)
         for s in ${SCRIPTS}; do
-          # Strip quotes + resolve $HOME / ~
+          # Strip quotes + resolve $HOME / ~ + .claude/ to PREFIX.
+          # The canonical settings.json paths are written as
+          # `$HOME/.claude/scripts/hooks/X.js`. When PREFIX is the
+          # caller's `~/.claude/` (the install case), substituting
+          # `$HOME` with the actual HOME works. When PREFIX is a
+          # CI checkout (e.g. `/home/runner/work/REPO/REPO`), the
+          # `$HOME/.claude/` prefix has to be substituted with PREFIX
+          # directly so paths resolve against the checkout — not
+          # against an empty `~/.claude/` on the runner. Both shapes
+          # collapse to the same answer when PREFIX == ${HOME}/.claude.
           resolved="${s%\"}"
           resolved="${resolved#\"}"
+          resolved="${resolved//\$HOME\/.claude\//${PREFIX}/}"
+          resolved="${resolved//\~\/.claude\//${PREFIX}/}"
+          # Catch any remaining $HOME / ~ (paths outside .claude/) — fall
+          # back to the runner's HOME.
           resolved="${resolved//\$HOME/${HOME}}"
-          # Tilde must be escaped — bare `~` undergoes tilde-expansion at
-          # parse time, turning the pattern into ${HOME} itself (no-op).
           resolved="${resolved//\~/${HOME}}"
           if [ -f "${resolved}" ]; then
             ok "${EVENT}: ${resolved}"

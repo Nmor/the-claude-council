@@ -106,8 +106,14 @@ copy_payload() {
   log_info "installing config surface into ${PREFIX}"
 
   # The payload is everything in the repo except the bootstrap
-  # surface itself + version-control + IDE temp files.
+  # surface itself + version-control + IDE temp files + ANY per-
+  # user runtime / local state.  When the install runs from a clone
+  # most of these dirs don't exist; the excludes are defensive so
+  # that running install.sh from a populated ~/.claude/ (or against
+  # a self-update layout where the source already has runtime state)
+  # cannot leak personal content into the consumer's install.
   local -a excludes=(
+    # Version control + CI + docs (consumer doesn't need these)
     --exclude='.git'
     --exclude='.github'
     --exclude='bootstrap'
@@ -116,11 +122,18 @@ copy_payload() {
     --exclude='README.md'
     --exclude='INSTALL.md'
     --exclude='CHANGELOG.md'
+    --exclude='CODE_OF_CONDUCT.md'
+    --exclude='SECURITY.md'
     --exclude='LICENSE'
     --exclude='.gitignore'
+    --exclude='.markdownlint.jsonc'
+    # OS junk
     --exclude='.DS_Store'
     --exclude='*.swp'
     --exclude='*.bak'
+    --exclude='*.orig'
+    --exclude='Thumbs.db'
+    # Per-user / per-session RUNTIME directories (gitignored)
     --exclude='projects'
     --exclude='sessions'
     --exclude='session-env'
@@ -134,6 +147,24 @@ copy_payload() {
     --exclude='cache'
     --exclude='downloads'
     --exclude='backups'
+    --exclude='contexts'
+    --exclude='mcp-configs'
+    # Per-user PLAN / AUDIT / MEMORY state (gitignored everywhere)
+    --exclude='plans'
+    --exclude='audits'
+    --exclude='memory'
+    # Per-user staging surfaces
+    --exclude='.local'
+    --exclude='.last-cleanup'
+    --exclude='.claude-skipped'
+    --exclude='mcp-needs-auth-cache.json'
+    --exclude='plugins/installed_plugins.json'
+    # Dev tooling artefacts
+    --exclude='node_modules'
+    --exclude='__pycache__'
+    --exclude='*.pyc'
+    --exclude='.pytest_cache'
+    --exclude='*.lock-info'
   )
 
   if [ "${DRY_RUN}" = true ]; then
@@ -240,9 +271,64 @@ ensure_runtime_dirs() {
 
 detect_ides() {
   local -a found=()
+  # Check PATH first (binary `code` / `cursor` / `windsurf` installed
+  # via the IDE's "Install code command in PATH" step).
   command -v code >/dev/null 2>&1 && found+=("vscode")
   command -v cursor >/dev/null 2>&1 && found+=("cursor")
   command -v windsurf >/dev/null 2>&1 && found+=("windsurf")
+
+  # macOS — .app bundle installs that haven't added the binary to PATH.
+  # Users frequently install via drag-to-Applications and never run
+  # "Shell Command: Install code command in PATH" from the IDE menu.
+  # We detect by the canonical .app location and the embedded binary
+  # path.
+  if [ "$(uname -s)" = "Darwin" ]; then
+    if ! printf '%s\n' "${found[@]+"${found[@]}"}" | grep -q '^vscode$'; then
+      for app in "/Applications/Visual Studio Code.app" \
+                 "/Applications/Visual Studio Code - Insiders.app" \
+                 "/Applications/Visual Studio Code 3.app" \
+                 "${HOME}/Applications/Visual Studio Code.app"; do
+        if [ -d "${app}" ]; then
+          found+=("vscode"); break
+        fi
+      done
+    fi
+    if ! printf '%s\n' "${found[@]+"${found[@]}"}" | grep -q '^cursor$'; then
+      for app in "/Applications/Cursor.app" "${HOME}/Applications/Cursor.app"; do
+        if [ -d "${app}" ]; then
+          found+=("cursor"); break
+        fi
+      done
+    fi
+    if ! printf '%s\n' "${found[@]+"${found[@]}"}" | grep -q '^windsurf$'; then
+      for app in "/Applications/Windsurf.app" "${HOME}/Applications/Windsurf.app"; do
+        if [ -d "${app}" ]; then
+          found+=("windsurf"); break
+        fi
+      done
+    fi
+  fi
+
+  # Linux — Flatpak installs and Snap installs are common on Ubuntu
+  # but don't add binaries to PATH by default. We probe the
+  # canonical install paths.
+  if [ "$(uname -s)" = "Linux" ]; then
+    if ! printf '%s\n' "${found[@]+"${found[@]}"}" | grep -q '^vscode$'; then
+      for d in /usr/share/code /snap/code/current /var/lib/flatpak/app/com.visualstudio.code \
+               "${HOME}/.local/share/flatpak/app/com.visualstudio.code" /opt/visual-studio-code; do
+        if [ -d "${d}" ]; then
+          found+=("vscode"); break
+        fi
+      done
+    fi
+    if ! printf '%s\n' "${found[@]+"${found[@]}"}" | grep -q '^cursor$'; then
+      for d in /usr/share/cursor /opt/cursor "${HOME}/.local/share/applications/cursor.desktop"; do
+        if [ -e "${d}" ]; then
+          found+=("cursor"); break
+        fi
+      done
+    fi
+  fi
 
   # JetBrains: detect across macOS / Linux / WSL2.
   # macOS:  /Applications/<IDE>.app
@@ -381,8 +467,12 @@ Next steps:
   2. Read the council protocol: ${PREFIX}/CLAUDE.md
   3. Open the docs:            ${REPO_ROOT}/docs/ARCHITECTURE.md
 
-The 73 global rules, 99 skills, 32 agents, and 33 commands are
-now active for every Claude Code session.
+The 15 Floor rules, 160 Library rules, 121 skills, 32 agents,
+33 commands, and 14 hooks are now active for every Claude Code
+session. Floor rules + CLAUDE.md (~240 KB) load on every
+session; the Library + skill bodies load on demand via skill
+paths: triggers (lazy-load architecture, ~92% cold-load drop
+vs the monolith).
 
 If you backed up an existing ${PREFIX}, the backup is at:
   ${PREFIX}.bak.${TIMESTAMP}
@@ -429,4 +519,14 @@ main() {
   fi
 }
 
-main "$@"
+# Run main ONLY when this script is executed directly, NOT when
+# it is sourced.  Sourcing should expose the helper functions
+# without running an install — sourcing is how tests and tooling
+# inspect the script without taking destructive action.
+# `${BASH_SOURCE[0]}` is the path of this script; `$0` is the
+# name of the running shell (when sourced) or the script (when
+# executed).  When they're equal, this script is being executed
+# directly; when different, it's being sourced.
+if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
+  main "$@"
+fi

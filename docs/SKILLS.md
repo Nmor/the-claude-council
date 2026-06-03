@@ -4,8 +4,10 @@
 > reusable patterns and methodologies — where a rule says "do not
 > write X," a skill says "here is how to design Y." Skills auto-fire
 > based on file type per
-> [`auto-skills.md`](../rules-library/common/auto-skills.md). Total: 99
-> skills across 13 domain clusters.
+> [`auto-skills.md`](../rules-library/common/auto-skills.md). Total: 121
+> skills across 15 domain clusters; 36 declare `paths:` triggers
+> for auto-fire on file globs, the rest are slash-command or
+> by-name skills loaded on demand.
 
 ## Each skill follows the principal-level template
 

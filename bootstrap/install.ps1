@@ -87,13 +87,33 @@ function Backup-Existing {
 function Copy-Payload {
     Log-Info "installing config surface into $Prefix"
 
+    # Defensive exclude list — matches install.sh.  Covers VCS, docs,
+    # CI surface, OS junk, every per-user RUNTIME directory
+    # (gitignored everywhere), per-user plan / audit / memory state,
+    # staging surfaces, and dev tooling artefacts.  When install
+    # runs from a clean clone most of these don't exist; the entries
+    # are defensive so a populated source dir cannot leak personal
+    # content into the consumer's install.
     $excludes = @(
+        # Version control + CI + docs
         '.git', '.github', 'bootstrap', 'tests', 'docs',
-        'README.md', 'INSTALL.md', 'CHANGELOG.md', 'LICENSE',
-        '.gitignore', '.DS_Store',
+        'README.md', 'INSTALL.md', 'CHANGELOG.md',
+        'CODE_OF_CONDUCT.md', 'SECURITY.md', 'LICENSE',
+        '.gitignore', '.markdownlint.jsonc',
+        # OS junk
+        '.DS_Store', 'Thumbs.db',
+        # Per-user / per-session RUNTIME directories
         'projects', 'sessions', 'session-env', 'telemetry',
         'statsig', 'file-history', 'shell-snapshots', 'todos',
-        'ide', 'debug', 'cache', 'downloads', 'backups'
+        'ide', 'debug', 'cache', 'downloads', 'backups',
+        'contexts', 'mcp-configs',
+        # Per-user plan / audit / memory state
+        'plans', 'audits', 'memory',
+        # Per-user staging surfaces
+        '.local', '.last-cleanup', '.claude-skipped',
+        'mcp-needs-auth-cache.json',
+        # Dev tooling artefacts
+        'node_modules', '__pycache__', '.pytest_cache'
     )
 
     if ($DryRun) {
@@ -244,8 +264,11 @@ Next steps:
   2. Read the council protocol: $Prefix\CLAUDE.md
   3. Open the docs:            $RepoRoot\docs\ARCHITECTURE.md
 
-The 73 global rules, 99 skills, 32 agents, and 33 commands are
-now active for every Claude Code session.
+The 15 Floor rules, 160 Library rules, 121 skills, 32 agents,
+33 commands, and 14 hooks are now active for every Claude Code
+session. Floor rules + CLAUDE.md (~240 KB) load on every session;
+the Library + skill bodies load on demand via skill paths:
+triggers (lazy-load architecture, ~92% cold-load drop).
 
 If you backed up an existing $Prefix, the backup is at:
   $Prefix.bak.$Timestamp

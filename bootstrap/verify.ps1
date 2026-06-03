@@ -104,14 +104,15 @@ function Get-DirCount {
 Write-Host "`n== Phase A: Layout exists =="
 
 $layoutChecks = @(
-    @{ Name = 'PREFIX is a directory';   Path = $Prefix;                              Kind = 'Container' }
-    @{ Name = 'CLAUDE.md present';        Path = (Join-Path $Prefix 'CLAUDE.md');      Kind = 'Leaf'      }
-    @{ Name = 'rules\common\ directory';  Path = (Join-Path $Prefix 'rules\common');   Kind = 'Container' }
-    @{ Name = 'skills\ directory';        Path = (Join-Path $Prefix 'skills');         Kind = 'Container' }
-    @{ Name = 'agents\ directory';        Path = (Join-Path $Prefix 'agents');         Kind = 'Container' }
-    @{ Name = 'commands\ directory';      Path = (Join-Path $Prefix 'commands');       Kind = 'Container' }
-    @{ Name = 'hooks\ directory';         Path = (Join-Path $Prefix 'hooks');          Kind = 'Container' }
-    @{ Name = 'templates\ directory';     Path = (Join-Path $Prefix 'templates');      Kind = 'Container' }
+    @{ Name = 'PREFIX is a directory';      Path = $Prefix;                                 Kind = 'Container' }
+    @{ Name = 'CLAUDE.md present';          Path = (Join-Path $Prefix 'CLAUDE.md');         Kind = 'Leaf'      }
+    @{ Name = 'rules\common\ directory';    Path = (Join-Path $Prefix 'rules\common');      Kind = 'Container' }
+    @{ Name = 'rules-library\ directory';   Path = (Join-Path $Prefix 'rules-library');     Kind = 'Container' }
+    @{ Name = 'skills\ directory';          Path = (Join-Path $Prefix 'skills');            Kind = 'Container' }
+    @{ Name = 'agents\ directory';          Path = (Join-Path $Prefix 'agents');            Kind = 'Container' }
+    @{ Name = 'commands\ directory';        Path = (Join-Path $Prefix 'commands');          Kind = 'Container' }
+    @{ Name = 'hooks\ directory';           Path = (Join-Path $Prefix 'hooks');             Kind = 'Container' }
+    @{ Name = 'templates\ directory';       Path = (Join-Path $Prefix 'templates');         Kind = 'Container' }
 )
 foreach ($c in $layoutChecks) {
     $present = if (Test-Path -LiteralPath $c.Path -PathType $c.Kind) { 1 } else { 0 }
@@ -123,19 +124,44 @@ foreach ($c in $layoutChecks) {
 # ---------------------------------------------------------------
 Write-Host "`n== Phase B: Inventory floors =="
 
-$rulesCommon = Get-FileCount -Path (Join-Path $Prefix 'rules\common') -Filter '*.md'
-$langDirs    = Get-DirCount  -Path (Join-Path $Prefix 'rules')
-# rules/common is one of the subdirs; subtract it for the language-subfolder count.
-if ($langDirs -gt 0) { $langDirs = [Math]::Max(0, $langDirs - 1 + 1) }  # keep parity with bash counter (counts all subdirs including common)
-$skills      = Get-DirCount  -Path (Join-Path $Prefix 'skills')
+# Per the lazy-rules-loading architecture (v1.1.0):
+#   - rules\common\           — Floor, always auto-walked
+#   - rules-library\common\   — Library common, lazy-loaded
+#   - rules-library\<lang>\   — Library language rules
+$rulesFloor      = Get-FileCount -Path (Join-Path $Prefix 'rules\common')         -Filter '*.md'
+$libraryTotal    = Get-FileCount -Path (Join-Path $Prefix 'rules-library')        -Filter '*.md' -Recurse
+$libraryCommon   = Get-FileCount -Path (Join-Path $Prefix 'rules-library\common') -Filter '*.md'
+# Language-specific Library subdirs = total Library subdirs minus the common\ subdir
+$libraryAllDirs  = Get-DirCount  -Path (Join-Path $Prefix 'rules-library')
+$libraryLangDirs = [Math]::Max(0, $libraryAllDirs - 1)
+$skills          = Get-DirCount  -Path (Join-Path $Prefix 'skills')
+$skillsWithPaths = 0
+$skillsDir       = Join-Path $Prefix 'skills'
+if (Test-Path -LiteralPath $skillsDir) {
+    Get-ChildItem -LiteralPath $skillsDir -Directory | ForEach-Object {
+        $skillFile = Join-Path $_.FullName 'SKILL.md'
+        if (Test-Path -LiteralPath $skillFile) {
+            $head = Get-Content -LiteralPath $skillFile -TotalCount 40 -ErrorAction SilentlyContinue
+            if ($head -and ($head -join "`n") -match '(?m)^paths:') {
+                $skillsWithPaths++
+            }
+        }
+    }
+}
 $agents      = Get-FileCount -Path (Join-Path $Prefix 'agents')   -Filter '*.md'
 $commands    = Get-FileCount -Path (Join-Path $Prefix 'commands') -Filter '*.md'
+# Backwards-compat names for the summary line
+$rulesCommon = $rulesFloor
+$langDirs    = $libraryLangDirs
 
-Test-Check -Name 'rules\common\*.md   >= 60' -Actual $rulesCommon -Op '-ge' -Expected 60
-Test-Check -Name 'rules\ subfolders   >= 20' -Actual $langDirs    -Op '-ge' -Expected 20
-Test-Check -Name 'skills\             >= 90' -Actual $skills      -Op '-ge' -Expected 90
-Test-Check -Name 'agents\*.md         >= 25' -Actual $agents      -Op '-ge' -Expected 25
-Test-Check -Name 'commands\*.md       >= 30' -Actual $commands    -Op '-ge' -Expected 30
+Test-Check -Name 'rules\common\*.md (Floor)   >= 10'  -Actual $rulesFloor      -Op '-ge' -Expected 10
+Test-Check -Name 'rules-library\*.md          >= 100' -Actual $libraryTotal    -Op '-ge' -Expected 100
+Test-Check -Name 'rules-library\common\       >= 40'  -Actual $libraryCommon   -Op '-ge' -Expected 40
+Test-Check -Name 'rules-library\ lang dirs    >= 15'  -Actual $libraryLangDirs -Op '-ge' -Expected 15
+Test-Check -Name 'skills\                     >= 90'  -Actual $skills          -Op '-ge' -Expected 90
+Test-Check -Name 'skills with paths: trigger  >= 25'  -Actual $skillsWithPaths -Op '-ge' -Expected 25
+Test-Check -Name 'agents\*.md                 >= 25'  -Actual $agents          -Op '-ge' -Expected 25
+Test-Check -Name 'commands\*.md               >= 30'  -Actual $commands        -Op '-ge' -Expected 30
 
 # ---------------------------------------------------------------
 # Phase C: Agent frontmatter sanity
@@ -214,10 +240,11 @@ Test-Check -Name 'hooks unreadable' -Actual $hookMissing -Op '-eq' -Expected 0
 # ---------------------------------------------------------------
 Write-Host "`n== Phase F: Broken cross-references =="
 
-$rulePattern = 'rules/(common|golang|typescript|python|cpp|csharp|dart|java|kotlin|lua|rust|ruby|swift|bash|sql|markdown|yaml|dockerfile|terraform|html-css|solidity)/[a-z][a-z0-9-]*\.md'
+$rulePattern = 'rules(-library)?/(common|golang|typescript|python|cpp|csharp|dart|java|kotlin|lua|rust|ruby|swift|bash|sql|markdown|yaml|dockerfile|terraform|html-css|solidity)/[a-z][a-z0-9-]*\.md'
 
 $refsRoots = @(
     (Join-Path $Prefix 'rules'),
+    (Join-Path $Prefix 'rules-library'),
     (Join-Path $Prefix 'skills'),
     (Join-Path $Prefix 'CLAUDE.md'),
     (Join-Path $Prefix 'agents')
@@ -249,11 +276,19 @@ $broken = 0
 foreach ($rel in $referenced) {
     $relWin = $rel -replace '/', '\'
     $full = Join-Path $Prefix $relWin
-    if (-not (Test-Path -LiteralPath $full -PathType Leaf)) {
-        $broken++
-        if ($VerbosePreference -ne 'SilentlyContinue') {
-            Write-Host "    broken: $rel" -ForegroundColor Yellow
-        }
+    # Per the lazy-rules-loading architecture (v1.1.0), a reference of the
+    # shape `rules\<lang>\<name>.md` may resolve in EITHER the Floor
+    # (`rules\<lang>\<name>.md`) OR the Library (`rules-library\<lang>\<name>.md`).
+    # Try the Floor form first; fall back to the Library form.
+    if (Test-Path -LiteralPath $full -PathType Leaf) { continue }
+    if ($relWin -like 'rules\*') {
+        $libraryForm = 'rules-library\' + $relWin.Substring('rules\'.Length)
+        $libraryFull = Join-Path $Prefix $libraryForm
+        if (Test-Path -LiteralPath $libraryFull -PathType Leaf) { continue }
+    }
+    $broken++
+    if ($VerbosePreference -ne 'SilentlyContinue') {
+        Write-Host "    broken: $rel" -ForegroundColor Yellow
     }
 }
 Test-Check -Name 'broken rule cross-references' -Actual $broken -Op '-eq' -Expected 0

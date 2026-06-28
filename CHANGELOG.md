@@ -72,6 +72,15 @@ public-ready scrub so every file ships as reusable guidance.
 - `actions/checkout` bumped to v7.0.0 (was v4.3.1) across the CI workflow
   (folds the dependabot `gh-actions-major` group; pinned by SHA).
 
+### Docs
+
+- Synced `README.md` (badges, surface table, verification block,
+  cold-load budget, version), `docs/RULES.md` (Floor count + the seven
+  new rules catalogued in their clusters), `docs/SKILLS.md`
+  (`codebase-memory` + count), and a post-release note on
+  `docs/lazy-loading-classification.md` — Floor is now 22 rules, 122
+  skills.
+
 ## [1.1.0] — 2026-06-02
 
 The lazy-rules-loading release. Reduces cold-load context from ~1.7 MB

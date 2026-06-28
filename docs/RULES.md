@@ -9,10 +9,16 @@
 
 ## Counts
 
-- **`rules/common/`** — 73 universal rules
-- **`rules/<lang>/`** — 16 language subfolders (bash, cpp, csharp,
-  dart, golang, java, kotlin, lua, markdown, python, ruby, rust,
-  sql, swift, typescript, and the implicit shared `common/`)
+- **`rules/common/`** — 22 Floor rules (always-loaded every session)
+- **`rules-library/common/`** — 60 lazy-loaded universal rules
+- **`rules-library/<lang>/`** — 100 language rules across 20 subfolders
+  (bash, cpp, csharp, dart, dockerfile, golang, html-css, java, kotlin,
+  lua, markdown, python, ruby, rust, solidity, sql, swift, terraform,
+  typescript, yaml)
+
+The clusters below catalog the Floor + the lazy-loaded common rules;
+language rules are listed under
+[Language-specific rules](#language-specific-rules).
 
 ## Common rules — by cluster
 
@@ -37,7 +43,11 @@
 | [`plan-execution-progress.md`](../rules/common/plan-execution-progress.md) | Structured per-phase progress updates |
 | [`plan-completion-before-push.md`](../rules/common/plan-completion-before-push.md) | Active plan declares commit-policy; no push until plan complete |
 | [`verify-before-claim.md`](../rules/common/verify-before-claim.md) | Every completion claim preceded by same-turn verification |
+| [`validate-payloads-before-coding.md`](../rules/common/validate-payloads-before-coding.md) | Validate any external payload against the real contract before writing the code that produces / consumes it |
 | [`no-overclaim.md`](../rules/common/no-overclaim.md) | Reserve "done" / "shipped" / "complete" for verified states |
+| [`post-phase-retrospective-review.md`](../rules/common/post-phase-retrospective-review.md) | Every phase re-audits ALL prior phases via different gates + a multi-division audit of its own work |
+| [`phase-retrospective-sweep.md`](../rules/common/phase-retrospective-sweep.md) | The five-step mechanical sweep run at every phase boundary |
+| [`principal-level-review-after-each-phase.md`](../rules/common/principal-level-review-after-each-phase.md) | Backward review of every prior phase for principal-level depth + intact cross-phase wiring |
 | [`local-testability.md`](../rules-library/common/local-testability.md) | Every change locally testable BEFORE writing |
 | [`done-criteria.md`](../rules/common/done-criteria.md) | Service-migration done checklist |
 | [`proper-fixes-first.md`](../rules-library/common/proper-fixes-first.md) | Root-cause fixes; no shortcuts |
@@ -52,7 +62,9 @@
 | [`extreme-lint-policy.md`](../rules-library/common/extreme-lint-policy.md) | Strictest linters; thresholds tightened beyond defaults |
 | [`sonarlint-checks.md`](../rules-library/common/sonarlint-checks.md) | Every SonarJS rule (~270) + cross-language equivalents |
 | [`no-discards.md`](../rules-library/common/no-discards.md) | Bind every value; hook-enforced; pre-delivery 40-pattern audit |
-| [`no-silent-failures.md`](../rules-library/common/no-silent-failures.md) | Failures produce log + metric + typed response |
+| [`no-silent-failures.md`](../rules/common/no-silent-failures.md) | Floor: failures produce log + metric + typed response; observable best-effort swallows; absence-class detection |
+| [`wiring-and-usage-review.md`](../rules/common/wiring-and-usage-review.md) | Floor: every new symbol has a live consumer; NETWORK + INFRA path is part of the live path (no inert validators / dead config) |
+| [`no-bloat.md`](../rules/common/no-bloat.md) | Floor: least code that solves the problem; no speculative or inert surface; bloat-removal phase per plan |
 | [`no-silent-drops.md`](../rules-library/common/no-silent-drops.md) | Never silently delete; complete or surface |
 | [`no-ambient-globals.md`](../rules-library/common/no-ambient-globals.md) | DI everywhere; no module-level mutable state |
 | [`no-local-fs.md`](../rules-library/common/no-local-fs.md) | No FS state on ephemeral containers; object store + buffers |

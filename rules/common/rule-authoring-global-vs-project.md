@@ -238,6 +238,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
+- New rule file created without first SEARCHING for an existing rule covering the same concern (duplicate-rule risk — reuse-first). Incident 2026-06-05: a `post-phase-principal-audit.md` was created when `post-phase-retrospective-review.md` already existed; the fix was to consolidate into the existing rule + delete the duplicate. ALWAYS `grep`/`ls` `rules/common/` for the concept before authoring; extend the nearest existing rule rather than adding a sibling.
 - New rule written without classification step (rule 1 violation — classify-before-writing)
 - Global rule contains project / workspace / vendor names or session-specific dates (rule 2 violation — purity sweep failed)
 - Workspace rule attempts to LOWER a global threshold (rule 4 violation — strictest wins)

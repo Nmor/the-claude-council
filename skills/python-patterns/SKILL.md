@@ -839,7 +839,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 <!-- ============================================================
      Migration appendix: 2026-06-02 lazy-rules-loading
-     Source: /Users/APPLE/.claude/rules-library/python/
+     Source: ~/.claude/rules-library/python/
      ============================================================ -->
 
 ## Migrated rules (rules-library/python/, 2026-06-02)

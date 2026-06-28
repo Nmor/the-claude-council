@@ -360,7 +360,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 <!-- ============================================================
      Migration appendix: 2026-06-02 lazy-rules-loading
-     Source: /Users/APPLE/.claude/rules-library/typescript/
+     Source: ~/.claude/rules-library/typescript/
      ============================================================ -->
 
 ## Migrated rules (rules-library/typescript/, 2026-06-02)

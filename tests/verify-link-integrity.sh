@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 # verify-link-integrity.sh
 #
-# Walks every markdown file under the repo and verifies that every
-# in-repo link target exists. External URLs are skipped; only
-# internal cross-references are checked.
+# Walks every tracked markdown file under the repo and verifies that
+# every in-repo link target exists. External URLs are skipped; only
+# internal cross-references are checked. Gitignored runtime dirs
+# (plans/, audits/, sessions/, projects/, file-history/, .local/) are
+# skipped — CI only ever checks out tracked files, and per the global
+# project-scoped-artifacts rule plans/ + audits/ are never repo paths.
 #
 # Exit codes:
 #   0 — all links resolve
@@ -40,6 +43,8 @@ find . \
   -not -path './sessions/*' \
   -not -path './projects/*' \
   -not -path './file-history/*' \
+  -not -path './plans/*' \
+  -not -path './audits/*' \
   | sort > "${FILE_LIST}"
 
 FILE_COUNT=$(wc -l < "${FILE_LIST}" | tr -d ' ')

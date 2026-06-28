@@ -252,7 +252,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 <!-- ============================================================
      Migration appendix: 2026-06-02 lazy-rules-loading
-     Source: /Users/APPLE/.claude/rules-library/swift/
+     Source: ~/.claude/rules-library/swift/
      ============================================================ -->
 
 ## Migrated rules (rules-library/swift/, 2026-06-02)

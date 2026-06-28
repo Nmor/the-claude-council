@@ -71,6 +71,7 @@ const isPython = isExt(/\.py$/i);
 const isUI = isExt(/\.(jsx|tsx|vue)$/i);
 const isCSS = isExt(/\.(css|scss|sass|less)$/i);
 const isMarkdown = isExt(/\.(md|mdx)$/i);
+const isIaC = isExt(/\.(tf|tfvars|ya?ml)$|(^|\/)Dockerfile[^/]*$/i);
 
 const isTestFile = (filePath) =>
   /_test\.go$/i.test(filePath) ||
@@ -113,16 +114,33 @@ const rules = [
   {
     id: "underscore-discard",
     level: "block",
+    // Covers Go, JS/TS, AND Python — including test files. A discarded return
+    // value is a discard regardless of language or whether the file is a test
+    // (the policy is "NO discards ever"). Python's `_, x = f()` / `x, _ = f()`
+    // / `_ = f()` forms are caught by the same regexes below.
     applies: (filePath) =>
-      (isGo(filePath) || isJSLike(filePath)) && !isTestFile(filePath),
+      isGo(filePath) || isJSLike(filePath) || isPython(filePath),
     test: (line) => {
       const ns = stripQuoted(line);
       // Skip range / for-loop binding forms — these are not discards
       // of a function-call result, they are loop-iteration variable
       // declarations where the unused half is intentionally omitted.
+      // Covers Go (`for _, v := range`) and Python (`for _, v in ...`).
       if (/\bfor\s+_\s*,/.test(ns)) return false;
       if (/\bfor\s+\w+\s*,\s*_\s*(:=|=)\s*range\b/.test(ns)) return false;
       if (/\bfor\s+_\s*(:=|=)\s*range\b/.test(ns)) return false;
+      if (/\bfor\s+[\w\s,]*\b_\b[\w\s,]*\s+in\s+/.test(ns)) return false;
+      // Skip blank-named function/method PARAMETERS (Go uses `_`
+      // to mark an unused parameter — `func f(_, x string)` —
+      // which is the idiomatic way to satisfy an interface
+      // contract without naming the value).
+      if (/^\s*func\s+/.test(ns) || /^\s*\([^)]*\)\s+\w+\s*\(/.test(ns))
+        return false;
+      // Skip Python function/lambda signatures: an unused PARAMETER named `_`
+      // or `_, x` in a def/lambda is a parameter convention, not a return
+      // discard (e.g. `def handler(_, x):`, `lambda _, y: ...`).
+      if (/^\s*(async\s+)?def\s+\w+\s*\(/.test(ns) || /\blambda\b[^:]*:/.test(ns))
+        return false;
       // Skip blank-named function/method PARAMETERS (Go uses `_`
       // to mark an unused parameter — `func f(_, x string)` —
       // which is the idiomatic way to satisfy an interface
@@ -138,6 +156,52 @@ const rules = [
         /(^|[\s(])_, /.test(ns) ||
         /, _ :?=/.test(ns) ||
         /(^|\s)_ ?:?= [^=]/.test(ns)
+      );
+    },
+  },
+
+  // 1b. expr-statement-discard — a bare call whose return value is dropped.
+  //
+  //     A blanket "any bare call statement is a discard" is INFEASIBLE in
+  //     Python/JS: side-effecting void calls (logger.info(), list.append(),
+  //     await queue.put(), metrics.inc()) are idiomatic and everywhere. So this
+  //     rule is deliberately HIGH-PRECISION: it flags only a bare call whose
+  //     final callee segment begins with a verb that almost always RETURNS a
+  //     value meant to be used (find/fetch/lookup/parse/compute/calculate/
+  //     query). `result = obj.find(...)` is fine (assigned); `obj.find(...)`
+  //     alone is the footgun (a dropped return value that reads as a no-op).
+  //     Awaited calls (`await x.fetch()`) are intentionally NOT flagged here —
+  //     awaiting for side effects is common and the false-positive risk is high.
+  {
+    id: "expr-statement-discard",
+    level: "block",
+    applies: (filePath) =>
+      isGo(filePath) || isJSLike(filePath) || isPython(filePath),
+    test: (line) => {
+      const ns = stripQuoted(line).trim();
+      // Must be a standalone call statement: an identifier/attribute chain
+      // immediately followed by `(`, to a balanced-ish `)` end (optional
+      // trailing `;`). Leading `=`, `return`, `await`, `yield`, control
+      // keywords, decorators, and comments all fail this anchor.
+      const m = /^([A-Za-z_][\w]*(?:\.[A-Za-z_][\w]*)*)\s*\(.*\)\s*;?$/.exec(ns);
+      if (!m) return false;
+      const chain = m[1];
+      // Exclude DECLARATIONS, not calls: an interface/method signature
+      // (`Fetch(ctx) (T, error)`) or a Go func decl has a second parenthesised
+      // group (the return types) after the first. A real call statement does
+      // not. This keeps the rule from flagging interface bodies.
+      const afterFirstCall = ns.replace(/^[A-Za-z_][\w.]*\s*\([^]*?\)\s*/, "");
+      if (/^\(/.test(afterFirstCall)) return false;
+      const finalSegment = chain.slice(chain.lastIndexOf(".") + 1);
+      // High-signal "returns a value" verb prefixes (case-sensitive, lower-case
+      // first letter). DELIBERATELY NARROW: broadening to exported methods or
+      // more verbs flags void calls (handlers, GenerateCompositeKeys, flag.Parse)
+      // and interface decls — a regex can't tell a value-returning call from a
+      // void one without type info. The comprehensive "dropped value/error"
+      // gate is the type-aware linter (errcheck / staticcheck / ruff) in
+      // done-criteria, NOT this hook. Match find/find_all/findOne/parse_x etc.
+      return /^(find|fetch|lookup|parse|compute|calculate|query)([_A-Z]|$)/.test(
+        finalSegment,
       );
     },
   },
@@ -163,7 +227,8 @@ const rules = [
   {
     id: "task-pointer",
     level: "block",
-    applies: (filePath) => isProdSource(filePath) || isCSS(filePath),
+    applies: (filePath) =>
+      isProdSource(filePath) || isCSS(filePath) || isIaC(filePath),
     test: (line) => {
       const trimmed = line.trim();
       const isComment =
@@ -173,6 +238,11 @@ const rules = [
       if (!isComment) return false;
       return (
         /\b(plan|initiative)\s+[A-Z]\d+\b/i.test(line) ||
+        // Bare-number plan refs the letter-prefixed pattern above misses:
+        // "plan 2.2", "(plan 2.0)", "plan phase 3". Verified zero false
+        // positives across the working repos (legit code comments don't say
+        // "plan <number>"); plan IDs belong in the gitignored plan, not source.
+        /\bplan\s+(phase\s+)?\d/i.test(line) ||
         /\bpunch[- ]list\s+[A-Z]?\d+\b/i.test(line) ||
         /\bbug\s+[A-Z]\d+\b/.test(line) ||
         /\bSonar(?:'s|Lint|Qube|\s+rule)?\b/i.test(line) ||
@@ -180,7 +250,28 @@ const rules = [
         /\bper\s+S\d+\b/i.test(line) ||
         /\bsee\s+plan\b/i.test(line) ||
         /\bthe\s+plan\b/i.test(line) ||
-        /\bphase\s+\d+\b/i.test(line)
+        /\bphase\s+\d+\b/i.test(line) ||
+        // Phased-plan task identifiers: capital P, digits, then dot-segments
+        // (the gitignored plans' shorthand). Case-sensitive so lowercase
+        // percentile labels (p95, p99) are not caught.
+        /\bP\d+(?:\.[0-9A-Za-z]+)+\b/.test(line) ||
+        // The SAME identifiers without the P prefix: <digits>.<UPPER>.<alnum>,
+        // e.g. 9.B.8, 9.D.11, 9.H.1. The \b before the digits means embedded ids
+        // (S3.Bucket, boto3.client) are NOT matched; the required uppercase middle
+        // letter + a third segment skip version strings (1.2.3, "Python 3.x") and
+        // percentile labels. Three-segment only — bare two-segment phase refs
+        // (9.B) overlap too much with version families (3.X, 4.X) to flag safely.
+        /\b\d+\.[A-Z]\.[0-9A-Za-z]+\b/.test(line) ||
+        // Retrospective/workstream shorthand: R-W2, RW2, R-W2.G2. Belt-and-braces
+        // for the legacy vocabulary — the CANONICAL plan-marker convention is the
+        // P-form above (P<plan>.<wave>.<item>, e.g. P11.W2.G2), which this rule
+        // already catches; new plans MUST use it (see plan-task-breakdown.md).
+        /\bR-?W\d/.test(line) ||
+        // Gap/work-item pointers: GAP8, GAP-9. Case-SENSITIVE (uppercase GAP +
+        // digit) so the prose word "gap" (e.g. "close the gap") is NOT flagged —
+        // only the task-pointer form. The gap->commit mapping belongs in the
+        // commit/PR, not a source/IaC comment (the comment states the WHY).
+        /\bGAP-?\d+\b/.test(line)
       );
     },
   },
@@ -353,6 +444,29 @@ const fileRules = [
         if (body !== "") continue;
         const lineNum = joined.slice(0, m.index).split("\n").length;
         return `line ${lineNum}: catch block has no statements`;
+      }
+      return false;
+    },
+  },
+
+  // silent-except — Python `except:` (bare) or broad `except Exception:` /
+  // `except BaseException:` whose body is ONLY `pass` / `...`: a swallow with
+  // no log AND no metric — the canonical silent failure (no-silent-failures
+  // rule 8). NARROW intentional ignores (`except ValueError: pass`) are NOT
+  // flagged; the fix for a real ignore is `contextlib.suppress(X)`, and for a
+  // best-effort swallow it is log(WARNING)+ a `*_failures_total` metric + alert.
+  {
+    id: "silent-except",
+    level: "block",
+    applies: (filePath) => /\.py$/.test(filePath) && !isTestFile(filePath),
+    test: (lines) => {
+      const joined = lines.join("\n");
+      const re =
+        /\bexcept\s*(?::|(?:Exception|BaseException)(?:\s+as\s+\w+)?\s*:)[ \t]*(?:#[^\n]*)?(?:\n[ \t]+|[ \t]*)(?:pass|\.\.\.)(?=\s|$)/g;
+      let m;
+      while ((m = re.exec(joined)) !== null) {
+        const lineNum = joined.slice(0, m.index).split("\n").length;
+        return `line ${lineNum}: bare/broad except swallows with no log or metric (silent failure)`;
       }
       return false;
     },

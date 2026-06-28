@@ -190,6 +190,30 @@ Verification (this turn):
 The "not applicable" is verified — i.e., the agent confirmed
 the diff scope before claiming N/A.
 
+### 11. Delegated work is only "verified" when the gate actually ran
+
+When code changes are delegated to a sub-agent / reviewer / tool, the change is
+NOT verified until the verification gate has been RUN against it — by whoever can
+run it. Therefore:
+
+- **Check the delegate can run the gate before delegating a verifiable change.**
+  A sub-agent that cannot execute the gate (e.g. Bash/test-runner unavailable to
+  it) CANNOT satisfy this rule. Do not delegate gate-requiring code fixes to a
+  delegate that cannot verify them — either grant it the capability, or keep the
+  change in a context that can run the gate.
+- **A delegate's unverified edits are accepted only after the orchestrator runs
+  the gate** on them this turn and captures the block. "The sub-agent wrote it"
+  is not verification; "the gate passed on what the sub-agent wrote" is.
+- **A delegate that correctly refuses to claim done without running the gate is
+  behaving correctly** — treat its refusal as the signal to re-route the work,
+  not to override it.
+
+Incident (2026-06-05): fix-work was delegated to background sub-agents that were
+denied Bash; they could not run ruff/mypy/pytest and (correctly) refused to write
+unverified security-critical code. The delegation produced zero verified output;
+the fixes had to be done in a gate-capable context. Verify the delegate's
+gate-capability up front.
+
 ## Anti-pattern: the stale-verification claim
 
 ```text
@@ -268,6 +292,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Verification block missing a gate the claim class requires (rule 7 scope mismatch)
 - Manual verification (UI smoke / accessibility / perf) skipped on a UI / a11y / perf change
 - "No-op" claim made without confirming the diff scope is actually no-op
+- Verifiable code change delegated to a sub-agent/tool that cannot run the gate (rule 11 violation)
+- A delegate's edits accepted as "done" without the orchestrator running the gate on them this turn (rule 11)
 
 **Refinement candidates**:
 

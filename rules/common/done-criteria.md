@@ -54,7 +54,7 @@ staticcheck ./...                    # zero issues
 golangci-lint run ./...              # 0 issues
 ```
 
-If your tooling lives at `/Users/APPLE/go/bin/`, prepend that path. SonarLint
+If your tooling lives at `~/go/bin/ (or $(go env GOPATH)/bin/)`, prepend that path. SonarLint
 warnings shown by the IDE count as real findings — fix every one.
 
 For language-agnostic Sonar / SonarLint patterns, run the sweep documented in

@@ -4,7 +4,7 @@
 > reusable patterns and methodologies — where a rule says "do not
 > write X," a skill says "here is how to design Y." Skills auto-fire
 > based on file type per
-> [`auto-skills.md`](../rules-library/common/auto-skills.md). Total: 121
+> [`auto-skills.md`](../rules-library/common/auto-skills.md). Total: 122
 > skills across 15 domain clusters; 36 declare `paths:` triggers
 > for auto-fire on file globs, the rest are slash-command or
 > by-name skills loaded on demand.
@@ -41,6 +41,7 @@ every `SKILL.md` carries:
 | [`continuous-learning-v2`](../skills/continuous-learning-v2/) | Instinct-based learning; confidence scoring; pattern evolution |
 | [`i18n-rules`](../skills/i18n-rules/) | Internationalisation — ICU MessageFormat, RTL layout mirroring, locale-aware sort + collation, Unicode normalisation |
 | [`resilience-rules`](../skills/resilience-rules/) | Resilience patterns — circuit breakers, graceful degradation, idempotency, retry-with-jitter, rate limiting, deploy-failures-become-checks |
+| [`codebase-memory`](../skills/codebase-memory/) | Knowledge-graph structural code queries (callers, call chains, dead code, impact analysis) via the codebase-memory MCP tools |
 
 ### Backend + systems
 

@@ -1,5 +1,16 @@
 # Lazy-Loading Classification
 
+> **Note (post-release).** This is the point-in-time Phase B
+> classification from the v1.1.0 lazy-loading split (13 Floor files at
+> the time). The Floor has since grown — as of v1.2.0 it is **22**
+> always-on rules (silent-failure / wiring / no-bloat / payload-validation
+> / phase-retrospective enforcement were added to the Floor). For the
+> live counts + the current Floor roster see [`RULES.md`](RULES.md) and
+> the repo `README.md`; this file is kept as the historical record of the
+> original split, not a live catalog.
+>
+> ---
+>
 > Phase B output of `~/.claude/plans/lazy-rules-loading.md`. Every
 > file under `~/.claude/rules/common/` and `~/.claude/rules/<lang>/`
 > classified into one of:

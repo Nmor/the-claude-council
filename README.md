@@ -22,8 +22,8 @@
 
 *Drop-in `~/.claude/` config — runs on any machine, any project, every IDE.*
 
-[![Skills](https://img.shields.io/badge/skills-121-2ea043?style=for-the-badge)](docs/SKILLS.md)
-[![Rules](https://img.shields.io/badge/rules-15%20Floor%20%2B%20160%20Library-1f6feb?style=for-the-badge)](docs/RULES.md)
+[![Skills](https://img.shields.io/badge/skills-122-2ea043?style=for-the-badge)](docs/SKILLS.md)
+[![Rules](https://img.shields.io/badge/rules-22%20Floor%20%2B%20160%20Library-1f6feb?style=for-the-badge)](docs/RULES.md)
 [![Agents](https://img.shields.io/badge/agents-32-8957e5?style=for-the-badge)](docs/AGENTS.md)
 [![Council](https://img.shields.io/badge/divisions-5%20core%20%2B%2011%20extended-dc7800?style=for-the-badge)](docs/COUNCIL.md)
 [![License](https://img.shields.io/badge/license-MIT-238636?style=for-the-badge)](LICENSE)
@@ -55,13 +55,13 @@ architecture, security, compliance, ops, data, finance, risk,
 strategy, people, ESG, ethics, comms, plus the five core technical
 divisions.
 
-This repo is the *complete* config surface — **15 Floor rules**
-(always-loaded, ~224 KB) + **160 Library rules** (lazy-loaded via
-skill triggers, ~1.6 MB), **121 principal-level skills**, **32
+This repo is the *complete* config surface — **22 Floor rules**
+(always-loaded, ~283 KB) + **160 Library rules** (lazy-loaded via
+skill triggers, ~1.6 MB), **122 principal-level skills**, **32
 specialist agents**, **33 commands**, a strict Council protocol,
 **14 hook-enforced quality gates**, and project-scoped artifact
 bootstrap. The dual-surface design keeps every session's eager
-cold-load budget around **~240 KB** (Floor + `CLAUDE.md`, down from
+cold-load budget around **~300 KB** (Floor + `CLAUDE.md`, down from
 the ~1.7 MB monolith) while preserving every rule's full content
 for on-demand reference via skill `paths:` triggers.
 
@@ -213,9 +213,9 @@ system improves itself with every interaction.
 | Surface | Path | Count | What it does |
 | --- | --- | --- | --- |
 | **Doctrine** | `CLAUDE.md` | 1 | The Council protocol pointer (~14 KB) — loaded every session |
-| **Floor rules** | `rules/common/` | 15 | Always-loaded; defines Council protocol, intake, verification, plan structure, project memory |
+| **Floor rules** | `rules/common/` | 22 | Always-loaded; Council protocol, intake, verification, plan structure, project memory, silent-failure / wiring / no-bloat / payload-validation / phase-retrospective enforcement |
 | **Library rules** | `rules-library/` | 160 | Lazy-loaded via skill `paths:` triggers; 60 common + 100 language-specific across 20 language subdirs |
-| **Skills** | `skills/` | 121 | Principal-level skills (36 with `paths:` triggers for auto-fire on file globs; rest invoked by slash command or by name) |
+| **Skills** | `skills/` | 122 | Principal-level skills (36 with `paths:` triggers for auto-fire on file globs; rest invoked by slash command or by name) |
 | **Agents** | `agents/` | 32 | Specialist agents organised into the 16 Council divisions |
 | **Commands** | `commands/` | 33 | Slash commands — `/learn`, `/evolve`, `/instinct-status`, `/verify`, and more |
 | **Hooks** | `scripts/hooks/` | 14 | PreToolUse + PostToolUse + UserPromptSubmit + PreCompact + SessionStart/End — mechanical enforcement (no-discards, governance-sweep, pre-push gate, Council pre-compact brief) |
@@ -303,13 +303,13 @@ Per-IDE walkthroughs live in [INSTALL.md](INSTALL.md).
 
 ```text
 ═══════════════════════════════════════════════════════════════
-       THE CLAUDE COUNCIL  ·  v1.1.0  ·  VERIFICATION BLOCK
+       THE CLAUDE COUNCIL  ·  v1.2.0  ·  VERIFICATION BLOCK
 ═══════════════════════════════════════════════════════════════
 
-  Floor rules ............................... 15 / 15    PASS
+  Floor rules ............................... 22 / 22    PASS
   Library rules (lazy-loaded) ............... 160 / 160  PASS
-  Skills with paths: triggers ............... 36 / 121   ROUTED
-  Skills (slash-command / by-name) .......... 85         PASS
+  Skills with paths: triggers ............... 36 / 122   ROUTED
+  Skills (slash-command / by-name) .......... 86         PASS
   Skill -> rules-library cross-refs ......... 116 / 116  PASS
   Agents with complete frontmatter .......... 32 / 32    PASS
   Slash commands ............................ 33         PASS
@@ -318,7 +318,7 @@ Per-IDE walkthroughs live in [INSTALL.md](INSTALL.md).
   Workspace contamination in global ......... 0          PASS
   Council divisions ......................... 5 core + 11 extended
 
-  Cold-load budget (Floor + CLAUDE.md) ...... ~240 KB    (was ~1.7 MB)
+  Cold-load budget (Floor + CLAUDE.md) ...... ~300 KB    (was ~1.7 MB)
   Lazy-load surface (Library + Skills) ...... ~5.4 MB    on demand
 
 ═══════════════════════════════════════════════════════════════
@@ -370,7 +370,7 @@ redistribute or modify any standard.
 
 <div align="center">
 
-**The Claude Council** · *v1.1.0* · *<a href="LICENSE">MIT</a>*
+**The Claude Council** · *v1.2.0* · *<a href="LICENSE">MIT</a>*
 
 [Architecture](docs/ARCHITECTURE.md) ·
 [Council](docs/COUNCIL.md) ·

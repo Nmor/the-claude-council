@@ -3,17 +3,27 @@
 //
 // PreToolUse Bash hook. Enforces
 // ~/.claude/rules/common/plan-completion-before-push.md:
-// no push reaches a remote unless the operator has set
-// CLAUDE_PUSH_AUTHORIZED=yes in the session for THIS push only.
 //
-// The hook PASSES every non-`git push` Bash invocation through
-// unchanged (stdout) and EXITS 2 (blocks) on `git push` without
-// the explicit authorisation.
+// (a) No push reaches a remote unless the operator has set
+//     CLAUDE_PUSH_AUTHORIZED=yes in the session for THIS push only.
+// (b) No `git commit` lands a `Co-Authored-By: Claude` (or any
+//     Claude / Anthropic AI attribution) trailer, nor the
+//     "🤖 Generated with Claude Code" marketing footer. Both
+//     overrule the default Claude-Code system-prompt templates
+//     per user directive 2026-06-08 ("no and never are to global
+//     rules and hooks") — see
+//     ~/.claude/rules/common/plan-completion-before-push.md §11.
+//
+// The hook PASSES every other Bash invocation through unchanged
+// (stdout) and EXITS 2 (blocks) on a violating `git push` /
+// `git commit`.
 //
 // Bypass policy:
 //   CLAUDE_PUSH_AUTHORIZED=yes git push origin main
 //
 // The env var is per-process so it does NOT leak across shells.
+// There is intentionally NO bypass for the Co-Authored-By gate
+// — the user-stated rule is "never".
 
 "use strict";
 
@@ -35,6 +45,40 @@ stdin.on("end", () => {
   } catch {
     // If we can't parse the payload, pass through — the harness
     // owns the protocol and we are not the parser of record.
+    process.stdout.write(buf);
+    return;
+  }
+
+  // Detect `git commit` invocations and block any AI-attribution
+  // trailer (Co-Authored-By: Claude / Anthropic / Claude Code
+  // marketing footer). Per user 2026-06-08 there is no bypass.
+  // The check inspects the literal command string; HEREDOCs and
+  // -m bodies both surface here, so the regex catches every form.
+  const isGitCommit = /(^|[\s;&|`(]+)git(?:\s+-C\s+\S+)?\s+commit(\s|$)/.test(
+    cmd,
+  );
+  if (isGitCommit) {
+    const coAuthor =
+      /Co-?Authored-?By:\s*(Claude|Anthropic|noreply@anthropic\.com)/i.test(
+        cmd,
+      );
+    const generatedFooter = /Generated with \[?Claude Code\]?|🤖.*Claude/i.test(
+      cmd,
+    );
+    if (coAuthor || generatedFooter) {
+      process.stderr.write(
+        `${LOG_PREFIX}BLOCKED: commit message carries a Claude/Anthropic AI-attribution trailer.\n` +
+          `${LOG_PREFIX}Per ~/.claude/rules/common/plan-completion-before-push.md §11 +\n` +
+          `${LOG_PREFIX}user directive 2026-06-08, never add:\n` +
+          `${LOG_PREFIX}  Co-Authored-By: Claude <noreply@anthropic.com>\n` +
+          `${LOG_PREFIX}  🤖 Generated with [Claude Code](https://claude.com/claude-code)\n` +
+          `${LOG_PREFIX}or any equivalent. Strip the trailer and re-run.\n` +
+          `${LOG_PREFIX}There is no bypass — the rule is global and absolute.\n`,
+      );
+      process.exit(2);
+    }
+    // Non-violating commits pass through to the rest of the
+    // pipeline (no push-gate logic applies to commits).
     process.stdout.write(buf);
     return;
   }
@@ -89,6 +133,11 @@ stdin.on("end", () => {
         `${LOG_PREFIX}no push reaches a remote until the operator confirms the plan is\n` +
         `${LOG_PREFIX}complete (or this is an explicitly-named bug-fix override).\n` +
         `${LOG_PREFIX}\n` +
+        `${LOG_PREFIX}AND every changed symbol/flag/env/config must be 100% CONFIRMED\n` +
+        `${LOG_PREFIX}and WIRED — reaching a live consumer on the live path, verified\n` +
+        `${LOG_PREFIX}this turn, NOT assumed. No inert code/config (e.g. an env the app\n` +
+        `${LOG_PREFIX}never reads). Per ~/.claude/rules/common/wiring-and-usage-review.md.\n` +
+        `${LOG_PREFIX}\n` +
         `${LOG_PREFIX}To proceed for THIS push only:\n` +
         `${LOG_PREFIX}  CLAUDE_PUSH_AUTHORIZED=yes <your-push-command>\n` +
         `${LOG_PREFIX}\n` +
@@ -98,7 +147,16 @@ stdin.on("end", () => {
     process.exit(2);
   }
 
-  // Authorised — pass through.
+  // Authorised — pass through, with a standing reminder that authorising a push
+  // ASSERTS the diff is 100% confirmed AND wired (no inert code/config; verified
+  // on the live path), per wiring-and-usage-review.md + plan-completion-before-push.md.
+  // A hook cannot mechanically prove "wired" (it is semantic), so this reminder
+  // keeps the assertion explicit on every push. The push is NOT blocked.
+  process.stderr.write(
+    `${LOG_PREFIX}NOTE: authorising this push asserts every changed symbol/flag/env/\n` +
+      `${LOG_PREFIX}config is 100% CONFIRMED and WIRED (live-path verified, no inert\n` +
+      `${LOG_PREFIX}code/config). If any is unconfirmed/unwired, abort and verify first.\n`,
+  );
   process.stdout.write(buf);
 });
 

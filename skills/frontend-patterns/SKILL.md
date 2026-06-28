@@ -872,7 +872,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 <!-- ============================================================
      Migration appendix: 2026-06-02 lazy-rules-loading
-     Source: /Users/APPLE/.claude/rules-library/html-css/
+     Source: ~/.claude/rules-library/html-css/
      ============================================================ -->
 
 ## Migrated rules (rules-library/html-css/, 2026-06-02)

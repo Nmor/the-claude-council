@@ -50,9 +50,8 @@ defeating the skill-system's lazy-load mechanism.
 - `bootstrap/verify.sh` Phase B + F rewritten to match the
   dual-surface architecture. Reports Floor + Library counts
   separately; `paths:` trigger sweep added.
-- Workspace `CLAUDE.md` files (Reback, Unvamp, stewardbot,
-  4 small) updated to point at the new `rules-library/`
-  layout (67 broken refs fixed).
+- Per-workspace `CLAUDE.md` files updated to point at the new
+  `rules-library/` layout (67 broken refs fixed).
 - IDE config templates (cursor, jetbrains, vscode, windsurf)
   updated to reference `rules-library/`.
 

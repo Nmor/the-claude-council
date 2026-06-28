@@ -14,19 +14,20 @@ Runs on every Edit / Write to a watched source file, in every project, every
 session. Mechanical pattern detection. Exits 2 to block the edit when any
 blocking rule fires; exits 0 with stderr warning for soft rules.
 
-| Rule id              | Level  | Detects                                             |
-| -------------------- | ------ | --------------------------------------------------- |
-| underscore-discard   | block  | `_, err :=`, `, _ :=`, `_ = …` outside test files   |
-| placeholder-marker   | block  | T0D0 / F1XME / X-X-X markers in any source comment  |
-| suppression          | block  | //nolint, eslint-disable, @ts-ignore, noqa, etc.    |
-| task-pointer         | block  | `plan B2`, `Initiative I10`, `Sonar S1192` in code  |
-| raw-color            | block  | hex/rgb/hsl/oklch/oklab in UI component code        |
-| console-log          | block  | console.log in JS/TS production source              |
-| hardcoded-secret     | block  | Stripe / GitHub / AWS / JWT / Slack key prefixes    |
-| go-test-naming       | block  | `func TestFoo_Bar(...)` Go test names with `_`      |
-| merge-conflict       | block  | `<<<<<<<`, `=======`, `>>>>>>>` markers             |
-| important            | warn   | `!important` in CSS / Tailwind className strings    |
-| file-too-large       | warn   | files past the 800-LOC soft cap                     |
+| Rule id                | Level | Detects                                                   |
+| ---------------------- | ----- | --------------------------------------------------------- |
+| underscore-discard     | block | `_,x=` / `x,_=` / `_=…` in Go/JS/Python, incl. tests      |
+| expr-statement-discard | block | bare `find/fetch/lookup/parse/compute/query(...)` dropped |
+| placeholder-marker     | block | T0D0 / F1XME / X-X-X markers in any source comment        |
+| suppression            | block | //nolint, eslint-disable, @ts-ignore, noqa, etc.          |
+| task-pointer           | block | `plan B2`, `Initiative I10`, `Sonar S1192` in code        |
+| raw-color              | block | hex/rgb/hsl/oklch/oklab in UI component code              |
+| console-log            | block | console.log in JS/TS production source                    |
+| hardcoded-secret       | block | Stripe / GitHub / AWS / JWT / Slack key prefixes          |
+| go-test-naming         | block | `func TestFoo_Bar(...)` Go test names with `_`            |
+| merge-conflict         | block | `<<<<<<<`, `=======`, `>>>>>>>` markers                   |
+| important              | warn  | `!important` in CSS / Tailwind className strings          |
+| file-too-large         | warn  | files past the 800-LOC soft cap                           |
 
 Source: `~/.claude/scripts/hooks/post-edit-no-discards.js` (runner) +
 `~/.claude/scripts/hooks/lib/no-discards-rules.js` (manifest).

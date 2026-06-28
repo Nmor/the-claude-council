@@ -269,7 +269,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 <!-- ============================================================
      Migration appendix: 2026-06-02 lazy-rules-loading
-     Source: /Users/APPLE/.claude/rules-library/java/
+     Source: ~/.claude/rules-library/java/
      ============================================================ -->
 
 ## Migrated rules (rules-library/java/, 2026-06-02)

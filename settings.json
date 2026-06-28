@@ -52,6 +52,16 @@
             "command": "node \"$HOME/.claude/scripts/hooks/pre-write-governance-sweep.js\""
           }
         ]
+      },
+      {
+        "matcher": "Grep|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/cbm-code-discovery-gate",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PreCompact": [
@@ -81,6 +91,42 @@
           {
             "type": "command",
             "command": "node \"$HOME/.claude/scripts/hooks/session-start.js\""
+          }
+        ]
+      },
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/cbm-session-reminder"
+          }
+        ]
+      },
+      {
+        "matcher": "resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/cbm-session-reminder"
+          }
+        ]
+      },
+      {
+        "matcher": "clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/cbm-session-reminder"
+          }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/cbm-session-reminder"
           }
         ]
       }
@@ -175,5 +221,5 @@
       }
     ]
   },
-  "effortLevel": "max"
+  "agentPushNotifEnabled": true
 }

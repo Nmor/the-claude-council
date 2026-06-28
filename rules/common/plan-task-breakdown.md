@@ -187,6 +187,45 @@ This means tasks include:
 
 A task that says "fix the thing" is unrecoverable on resume.
 
+## Canonical plan-marker naming convention (mandatory)
+
+EVERY plan artifact — plan, wave, phase, task, gap, review, finding —
+uses ONE typed grammar, always rooted at `P<plan-number>` with
+dot-segments. One grammar ⇒ one hook family catches every stray.
+
+```text
+P<plan>.<segment>[.<segment>…]    root form (P + digits, dot-segments)
+```
+
+| Artifact | Canonical form | Example |
+| --- | --- | --- |
+| Plan | `P<n>` | `P11` |
+| Wave | `P<n>.W<k>` | `P11.W2` |
+| Phase | `P<n>.<PHASE>` (letter or `PH<k>`) | `P9.C`, `P11.PH3` |
+| Task / item | `P<n>.<wave\|phase>.<item>` | `P11.W2.G2`, `P9.C.8` |
+| Gap | `P<n>.GAP<k>` | `P11.GAP8` |
+| Review | `P<n>.RV<k>` (or `P<n>.W<k>.RV`) | `P11.RV1`, `P11.W2.RV` |
+| Finding | `P<n>.F<k>` | `P11.F3` |
+
+- ALWAYS prefix with `P<digits>` and use dot-segments. NEVER invent a
+  bare ad-hoc scheme — `C6`, `R-W2`, `G1`, AND standalone `GAP8` /
+  `GAP-9` are all DEPRECATED: a gap is `P<n>.GAP<k>`, a review is
+  `P<n>.RV<k>`. The typed `P<n>.…` form is the ONE allowed shape, so a
+  single hook family covers every artifact type.
+- This is not cosmetic: the global `no-discards` hook (`task-pointer`
+  rule) catches the `P<n>.<seg>.<seg>` form in any committed
+  source/test/IaC with ZERO false positives (cell `C6`, hex
+  `#C6C6C6`, note `G1`, version `1.2.3` are all correctly ignored).
+  Conform and a stray marker is auto-blocked at edit time; deviate and
+  it ships silently. The hook ALSO catches the deprecated standalone
+  forms — `R-W<n>` and `GAP<n>`/`GAP-<n>` — as belt-and-braces, so a
+  leaked gap pointer (`GAP8`) is blocked even though new plans must use
+  the `P<n>.GAP<k>` form.
+- Plan-marker IDs live in the gitignored plan + the commit/PR body
+  ONLY — never in a source/test comment (per
+  `feedback-no-plan-markers-in-code`). The convention exists so that
+  IF one leaks, the hook catches it.
+
 ## Canonical task-row shape
 
 ```text

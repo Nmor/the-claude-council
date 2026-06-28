@@ -22,7 +22,7 @@ Strictest rule wins. Project files NEVER relax global rules. Skills auto-discove
 
 ### What runs automatically on every task (Floor — always-on)
 
-The following thirteen rules are the always-on **Floor**. Every interaction obeys them regardless of which files are touched. Skill-routed disciplines (coding-quality, security-extended, sonar, observability, a11y, etc.) lazy-load via `paths:` frontmatter when matching files are touched — they're not inlined here to keep the cold-load budget tight (~110-130 KB total).
+The following fourteen rules are the always-on **Floor**. Every interaction obeys them regardless of which files are touched. Skill-routed disciplines (coding-quality, security-extended, sonar, observability, a11y, etc.) lazy-load via `paths:` frontmatter when matching files are touched — they're not inlined here to keep the cold-load budget tight (~110-130 KB total).
 
 1. **Council always convenes** per `council-default.md` — Core Five always speak; Extended Eleven auto-fire on triggers.
 2. **Principal-level quality bar** per `principal-level-mandate.md` — every artifact at principal-engineer depth or it doesn't ship.
@@ -30,13 +30,14 @@ The following thirteen rules are the always-on **Floor**. Every interaction obey
 4. **Task intake (29 questions)** per `task-intake-due-diligence.md` — Phase 0 intake gates every non-trivial task; online research mandatory.
 5. **Plan structure** per `plan-task-breakdown.md`, `plan-execution-progress.md`, `plan-completion-before-push.md` — atomic tasks, per-phase verification blocks, no push until plan complete.
 6. **Verify before claim** per `verify-before-claim.md` — every completion claim attaches same-turn verification block.
-7. **No overclaim** per `no-overclaim.md` — strong-completion phrases ("done", "100%", "shipped") require verified evidence this turn.
-8. **Done-criteria checklist** per `done-criteria.md` — service-migration / "X-stripped" claims run every check in the file before the claim.
-9. **Project memory** per `project-memory.md` — `<workspace>/.claude/memory/MEMORY.md` is gitignored, survives compaction, written at every phase boundary.
-10. **Project-scoped artifacts** per `project-scoped-artifacts.md` — every workspace's `.claude/` scaffold auto-bootstraps on first non-trivial work; plans + audits ALWAYS gitignored, NEVER repo paths.
-11. **Rule placement** per `rule-authoring-global-vs-project.md` — global = pure guidance; workspace specifics under `<workspace>/.claude/rules/`.
-12. **Skills auto-fire** by file-pattern (per each skill's `paths:` frontmatter). No central catch-all mapping — each skill declares its own triggers.
-13. **Agents delegate automatically** when their description matches the work; Council protocol delegates to specialised reviewers (security-reviewer, code-reviewer, language-reviewers, tdd-guide, etc.) without narration.
+7. **Post-phase retrospective review** per `post-phase-retrospective-review.md` — every phase end re-audits ALL prior phases via DIFFERENT gates; "CI green" never substitutes for re-verifying the chain end-to-end. Stays OPEN through user-verification on user-visible surfaces.
+8. **No overclaim** per `no-overclaim.md` — strong-completion phrases ("done", "100%", "shipped") require verified evidence this turn.
+9. **Done-criteria checklist** per `done-criteria.md` — service-migration / "X-stripped" claims run every check in the file before the claim.
+10. **Project memory** per `project-memory.md` — `<workspace>/.claude/memory/MEMORY.md` is gitignored, survives compaction, written at every phase boundary.
+11. **Project-scoped artifacts** per `project-scoped-artifacts.md` — every workspace's `.claude/` scaffold auto-bootstraps on first non-trivial work; plans + audits ALWAYS gitignored, NEVER repo paths.
+12. **Rule placement** per `rule-authoring-global-vs-project.md` — global = pure guidance; workspace specifics under `<workspace>/.claude/rules/`.
+13. **Skills auto-fire** by file-pattern (per each skill's `paths:` frontmatter). No central catch-all mapping — each skill declares its own triggers.
+14. **Agents delegate automatically** when their description matches the work; Council protocol delegates to specialised reviewers (security-reviewer, code-reviewer, language-reviewers, tdd-guide, etc.) without narration.
 
 ### Output style
 

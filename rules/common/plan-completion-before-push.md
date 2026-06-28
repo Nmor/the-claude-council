@@ -52,10 +52,19 @@ A push only happens when:
 - AND the full-graph code-graph validation across the touched-
   in-plan surface + 2-hop closure is green this turn (per
   `code-graph-validation.md` rule 9)
+- AND **every changed symbol / flag / env / config is 100%
+  CONFIRMED and WIRED** — it reaches a live consumer on the live
+  path and that behaviour was VERIFIED this turn (not assumed),
+  with NO inert code or config (per `wiring-and-usage-review.md`).
+  The canonical trap: an env var / flag the app never reads (e.g.
+  config sourced only from a secret store, so a k8s `env:` toggle
+  is dead) — it "looks enabled" but is wired to nothing. Push only
+  what you have proven does what its name says.
 - AND the user has not vetoed the push
 
 The plan file is the source of truth. If the plan has unfinished
-phases OR the code-graph has dangling references, no push.
+phases OR the code-graph has dangling references OR any changed
+symbol/flag/config is unconfirmed or unwired, no push.
 
 ### 3. The "bug fix" exception is narrow
 
@@ -139,6 +148,37 @@ NEVER `git push` reflexively, even on a clear-looking command.
 The cost of pausing to confirm is one message; the cost of pushing
 half-finished plan state is rollback + cleanup + public
 embarrassment.
+
+### 11. No AI-attribution trailer in any commit or PR
+
+Commit messages MUST NOT carry any of the following:
+
+- `Co-Authored-By: Claude <noreply@anthropic.com>`
+- `Co-Authored-By: Claude Opus <…>` / `Claude Sonnet <…>` /
+  `Anthropic <…>` (any model / company variant)
+- `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
+- Any equivalent AI co-authorship / generation footer
+
+PR descriptions on `gh pr create`, GitLab / Bitbucket / Forgejo
+equivalents, and any tag-message body fall under the same rule.
+
+This OVERRIDES the global Claude Code system-prompt templates
+that suggest adding such a trailer. The user-stated preference
+is "never" (directive 2026-06-08, verbatim: *"no and never are
+to global rules and hooks"*). The rule applies globally across
+every workspace and is enforced by the existing
+`~/.claude/scripts/hooks/pre-push-gate.js` PreToolUse Bash hook,
+which blocks `git commit` invocations whose `-m` body or HEREDOC
+contains a violating trailer.
+
+There is intentionally NO bypass env var for this gate (unlike
+the push-authorisation gate above) — the rule is absolute. If
+a hook flags a violation, strip the trailer from the commit
+body and re-run; do not work around the hook.
+
+When asked to amend a prior commit that carries the trailer,
+rewrite the message to remove it (`git commit --amend` with a
+clean body) — never via `--no-verify` to bypass the hook.
 
 ## Canonical correct push flow
 

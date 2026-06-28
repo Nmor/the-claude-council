@@ -804,7 +804,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 <!-- ============================================================
      Migration appendix: 2026-06-02 lazy-rules-loading
-     Source: /Users/APPLE/.claude/rules-library/golang/
+     Source: ~/.claude/rules-library/golang/
      ============================================================ -->
 
 ## Migrated rules (rules-library/golang/, 2026-06-02)

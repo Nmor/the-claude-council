@@ -9,6 +9,69 @@ and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.
 
 Nothing pending.
 
+## [1.2.0] — 2026-06-28
+
+The enforcement release. Promotes silent-failure / wiring / no-bloat /
+payload-validation disciplines into the always-on Floor, adds mechanical
+hook + CI enforcement for plan-marker strays, and completes the
+public-ready scrub so every file ships as reusable guidance.
+
+### Added — Floor rules
+
+- `rules/common/no-silent-failures.md` — promoted from `rules-library/`
+  to the Floor. New rule 8 (an observable best-effort swallow emits a
+  metric + alert, not just a log) and rule 9 (absence-class detection via
+  dead-man alerts + a startup effective-config log). The `rules-library/`
+  copy is now a redirect stub.
+- `rules/common/wiring-and-usage-review.md` — every new symbol has a live
+  consumer; the NETWORK + INFRA path (NetworkPolicy / Service / IAM-IRSA /
+  resource-applied / quota) is part of the live path, not just the call
+  graph.
+- `rules/common/no-bloat.md` — least code that solves the problem; no
+  speculative or inert surface; every plan ends with a bloat-removal
+  phase.
+- `rules/common/validate-payloads-before-coding.md` — validate any
+  external payload against the real contract before writing the code that
+  produces or consumes it.
+- `rules/common/principal-level-review-after-each-phase.md` +
+  `rules/common/post-phase-retrospective-review.md` +
+  `rules/common/phase-retrospective-sweep.md` — every phase boundary
+  re-audits all prior phases for principal-level depth + intact
+  cross-phase wiring via a different gate.
+- `skills/codebase-memory/SKILL.md` — knowledge-graph query skill (cites
+  ISO/IEC 39075:2024 GQL for the property-graph model).
+
+### Changed — enforcement + hooks
+
+- `scripts/hooks/lib/no-discards-rules.js` — `task-pointer` rule now also
+  catches `GAP-?<n>` markers; new `silent-except` file rule flags
+  `except: pass` / `except: ...` swallows.
+- `scripts/hooks/pre-push-gate.js` — the authorized-push reminder asserts
+  every changed symbol / flag / env / config is confirmed AND wired (no
+  inert config).
+- `rules/common/plan-task-breakdown.md` — unified the canonical plan-marker
+  grammar (`P<n>.<segment>`, typed Gap / Review / Finding rows);
+  deprecated standalone `GAP8` / `R-W2` forms.
+- `rules/common/plan-completion-before-push.md` — push gate now requires
+  every changed symbol / flag / env / config to be confirmed + wired.
+- `tests/verify-link-integrity.sh` — skips gitignored runtime dirs
+  (`plans/`, `audits/`, …) so the sweep matches what CI actually checks
+  out.
+
+### Changed — public-ready scrub
+
+- Removed personal / workspace / vendor references and absolute machine
+  paths across `CLAUDE.md`, `CHANGELOG.md`, the language-pattern skills,
+  and `rules/common/done-criteria.md` — every file ships as reusable
+  guidance.
+- `.gitignore` — excludes machine-local MCP config (`.mcp.json`) and
+  tool-installed `cbm-*` hooks so per-machine state never enters the repo.
+
+### Changed — dependencies
+
+- `actions/checkout` bumped to v7.0.0 (was v4.3.1) across the CI workflow
+  (folds the dependabot `gh-actions-major` group; pinned by SHA).
+
 ## [1.1.0] — 2026-06-02
 
 The lazy-rules-loading release. Reduces cold-load context from ~1.7 MB

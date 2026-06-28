@@ -2,7 +2,8 @@
 
 > Auto-fires on every file. Sister to
 > `post-phase-retrospective-review.md` (the broader adversarial
-> + multi-division retrospective discipline),
+>
+> - multi-division retrospective discipline),
 > `verify-before-claim.md` (current-phase verification gate),
 > `plan-execution-progress.md` (per-phase progress reporting),
 > `code-graph-validation.md` (wiring integrity),
@@ -71,7 +72,7 @@ If any prior gate regresses, the current phase is NOT done.
 Fix the regression in-stream before proceeding. Do not
 silently skip the prior phase's gate; absent gates are
 explicit ("Phase N-3 retrospective gate not available because
-<specific reason>") with a follow-up captured in Step 5.
+`<specific reason>`") with a follow-up captured in Step 5.
 
 ### Step 3 — Wiring verification (code-graph closure)
 
@@ -102,7 +103,7 @@ work the new work touches:
 
 - **Breadth**: cross-cutting reasoning across
   architecture + security + ops + data + product + business
-  + compliance
+  - compliance
 - **Depth**: standards cited with version + section, not
   vague references
 - **Sources**: primary-source citations for any external
@@ -247,7 +248,7 @@ state; the current state needs the sweep.
   forward verification (step 1) requirement
 - [`common/plan-execution-progress.md`](./plan-execution-progress.md)
   — phase-boundary progress reporting; sweep block appended
-- [`common/code-graph-validation.md`](./code-graph-validation.md)
+- [`common/code-graph-validation.md`](../../rules-library/common/code-graph-validation.md)
   — wiring verification (step 3)
 - [`common/principal-level-mandate.md`](./principal-level-mandate.md)
   — depth floor for principal audit (step 4)

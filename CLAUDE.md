@@ -22,14 +22,14 @@ Strictest rule wins. Project files NEVER relax global rules. Skills auto-discove
 
 ### What runs automatically on every task (Floor — always-on)
 
-The following fourteen rules are the always-on **Floor**. Every interaction obeys them regardless of which files are touched. Skill-routed disciplines (coding-quality, security-extended, sonar, observability, a11y, etc.) lazy-load via `paths:` frontmatter when matching files are touched — they're not inlined here to keep the cold-load budget tight (~110-130 KB total).
+The following fourteen rules are the always-on **Floor**. Every interaction obeys them regardless of which files are touched. Skill-routed disciplines (coding-quality, security-extended, sonar, observability, a11y, codebase-memory, etc.) lazy-load via `paths:` frontmatter when matching files are touched — they're not inlined here to keep the cold-load budget tight (~110-130 KB total).
 
 1. **Council always convenes** per `council-default.md` — Core Five always speak; Extended Eleven auto-fire on triggers.
-2. **Principal-level quality bar** per `principal-level-mandate.md` — every artifact at principal-engineer depth or it doesn't ship.
+2. **Principal-level quality bar** per `principal-level-mandate.md` — every artifact at principal-engineer depth or it doesn't ship; per `principal-level-review-after-each-phase.md`, every phase boundary re-audits all prior phases for that depth + intact cross-phase wiring.
 3. **Continuous learning** per `continuous-learning-mandate.md` — every Council-mediated task emits learning candidates; cross-workspace patterns promote to Floor.
 4. **Task intake (29 questions)** per `task-intake-due-diligence.md` — Phase 0 intake gates every non-trivial task; online research mandatory.
-5. **Plan structure** per `plan-task-breakdown.md`, `plan-execution-progress.md`, `plan-completion-before-push.md` — atomic tasks, per-phase verification blocks, no push until plan complete.
-6. **Verify before claim** per `verify-before-claim.md` — every completion claim attaches same-turn verification block.
+5. **Plan structure** per `plan-task-breakdown.md`, `plan-execution-progress.md`, `plan-completion-before-push.md` — atomic tasks, per-phase verification blocks, no push until plan complete; every plan ends with a `no-bloat.md` removal phase (the least code that solves the problem; no speculative or inert surface).
+6. **Verify before claim** per `verify-before-claim.md` — every completion claim attaches same-turn verification block; per `validate-payloads-before-coding.md`, any external payload is validated against the real contract before the code that produces/consumes it is written.
 7. **Post-phase retrospective review** per `post-phase-retrospective-review.md` — every phase end re-audits ALL prior phases via DIFFERENT gates; "CI green" never substitutes for re-verifying the chain end-to-end. Stays OPEN through user-verification on user-visible surfaces.
 8. **No overclaim** per `no-overclaim.md` — strong-completion phrases ("done", "100%", "shipped") require verified evidence this turn.
 9. **Done-criteria checklist** per `done-criteria.md` — service-migration / "X-stripped" claims run every check in the file before the claim.

@@ -85,3 +85,9 @@ __pycache__/
 # --- Settings backups (kept out of VCS) ---
 settings.json.bak-*
 *.bak-council-audit-*
+
+# --- Machine-local MCP config + tool-installed hooks (never in VCS) ---
+# Installed per-machine by external tools (e.g. codebase-memory-mcp);
+# carry absolute paths / local state, so they must not enter the repo.
+.mcp.json
+hooks/cbm-*

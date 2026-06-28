@@ -128,6 +128,7 @@ the cost of a shape-guess is silent wrong behaviour discovered in production.
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
+
 - Parser/builder written without a live/fixture/schema validation of the shape (rule 1/3 violation)
 - `data`/payload assumed list-vs-object and proven wrong later (anti-pattern recurrence)
 - Test-write fired at production to learn a shape (rule 2 violation)
@@ -136,6 +137,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Completion claim on an integration without the payload-validation block (verification weakening)
 
 **Refinement candidates**:
+
 - New ground-truth source row when a project provides a contract registry / recorded-cassette tooling
 - Tightening of the write-payload validation guidance when a safe non-prod write path becomes standard
 - New cross-reference when a sister rule provides the fixture/contract gate

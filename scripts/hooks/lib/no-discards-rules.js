@@ -84,8 +84,23 @@ const isTokenSource = (filePath) =>
 // The placeholder-marker keywords are kept in a single regex source
 // string so we don't repeat them as bare identifiers in this file.
 // The runner treats this string as a regex source via new RegExp(...).
+//
+// Every keyword is split into pieces so THIS file doesn't self-match:
+//   - T + ODO   → "TODO"
+//   - F + IXME  → "FIXME"
+//   - X + XX    → "XXX"
+//   - B + UG    → "BUG(…)" — Go-style godoc bug marker + free-form
+//   - H + ACK   → "HACK"
+//   - K + LUDGE → "KLUDGE"
+//   - W + ORKAROUND → "WORKAROUND"
+//   - N + OTE   → "NOTE: <blocker>" — informational-but-actionable
+// The BUG variant matches both `BUG(slug)` (godoc's Bug function
+// registration) and bare `BUG:` prose; the intent is that "there's
+// a known bug here, ignore it" is not acceptable in production —
+// open a real issue with a fix or delete the comment.
 const PLACEHOLDER_MARKERS =
-  String.raw`T` + String.raw`ODO|F` + String.raw`IXME|X` + String.raw`XX`;
+  String.raw`T` + String.raw`ODO|F` + String.raw`IXME|X` + String.raw`XX` +
+  String.raw`|B` + String.raw`UG|H` + String.raw`ACK|K` + String.raw`LUDGE|W` + String.raw`ORKAROUND|N` + String.raw`OTE`;
 const placeholderRe = new RegExp(
   String.raw`(?://|#|<!--)\s*(${PLACEHOLDER_MARKERS})\b|/\*[\s\S]*?(${PLACEHOLDER_MARKERS})`,
   "i",

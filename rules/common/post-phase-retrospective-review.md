@@ -342,8 +342,8 @@ to always do always do a review of all past phases/task after each phase/task to
 ensure it is top/principal level job and everything is properly wired."**
 
 Consolidated 2026-07-23 from three overlapping rules
-(`post-phase-retrospective-review.md` + `principal-level-review-after-each-phase.md`
-+ `phase-retrospective-sweep.md`) into this single canonical rule, per the
+(`post-phase-retrospective-review.md` + `principal-level-review-after-each-phase.md` +
+`phase-retrospective-sweep.md`) into this single canonical rule, per the
 duplicate-rule guidance in `rule-authoring-global-vs-project.md` (search-and-reuse
 before authoring a sibling; consolidate into the existing canonical + redirect the
 duplicates). No gate was dropped: the five-step sweep, the mechanical wiring

@@ -56,8 +56,39 @@ position from EACH of:
 5. **Testing & QA** (tdd-guide, e2e-runner,
    performance-reviewer when added)
 
-Five sentences is the floor. Each must reflect real analysis,
-not boilerplate ("looks fine").
+**Coverage is mandatory; depth is signal-gated.** Every Core
+division (and every triggered Extended division) still ENGAGES
+and owns its domain — no domain is ever skipped, and each records
+a verdict. But the division's OUTPUT scales to what it found:
+
+- **Material finding or cross-division conflict → go deep.**
+  Multi-sentence analysis carrying the trade-off / failure-mode /
+  verification signal per `principal-level-mandate.md`. This is
+  where generated tokens belong.
+- **No material finding → one line, with the one-clause reason it
+  checked** — never a bare "looks fine". E.g. "Testing: no
+  test-impacting change; existing suite covers the touched path."
+  The one-clause reason is the PROOF the division actually
+  engaged; it replaces the filler the old fixed floor produced.
+
+Concentrate the deep analysis on the 2-3 divisions that OWN the
+change's risk surface (specialist-deep): a security-critical
+change gets Security + Compliance at full depth; the rest give
+the gated one-liner. Depth on the right owners — not breadth of
+ceremony — is where Council quality comes from.
+
+**Shared context in, structured findings out.** Read / distill
+the target surface ONCE and fan the divisions out over that
+shared context (parallel, single pass) — never N independent
+subagents each re-reading the same files and re-paying the same
+cold-load. Divisions reason about EACH OTHER'S findings; the
+cross-cutting interactions (security × compliance, perf × data-
+shape) are exactly where Council value concentrates and where
+independent single-slice reviews miss. Each division emits
+findings in a structured shape — `severity · file:line · claim ·
+owner` — and findings are DEDUPED across divisions before
+synthesis, so one issue found by three divisions is one finding
+with one owner, not three counted thrice.
 
 ### 2. Extended Eleven auto-fire on signals
 
@@ -130,15 +161,20 @@ consensus block.
 
 The "Abbreviated Council Check" mode is a SPEED option:
 
-- Each division speaks in 2-3 sentences
-- Phase 0 (intake) uses the compact table form per
-  `task-intake-due-diligence.md`
-- Phase 1 (discussion) is terse
+- Divisions apply the signal-gated discipline of rule 1: the
+  risk-owning divisions go deep; no-concern divisions collapse to
+  the one-line gated verdict (with the one-clause reason)
+- Phase 0 (intake) is trigger-gated per
+  `task-intake-due-diligence.md` — the always-fire core plus the
+  domain questions whose triggers matched
+- Phase 1 (discussion) is terse; depth only where there's a finding
 - Phase 2 (consensus) is one paragraph
 - Phase 3 (implementation) follows
 
-It is NOT "skip divisions." Every division still speaks. The
-shape is preserved; only the verbosity changes.
+It is NOT "skip divisions." Every division still ENGAGES and owns
+its domain (the coverage guarantee of rule 1 is absolute); what
+scales down is the output of divisions that found nothing material
+— never the coverage.
 
 ### 7. The Council mediates EVERY external surface
 
@@ -204,6 +240,77 @@ Each verifies its column of the post-implementation review. The
 "FINAL VERDICT" (APPROVED / CHANGES REQUIRED / BLOCKED) is the
 Council's collective output.
 
+### 11. Online research is MANDATORY across all three phases
+
+Every Council-mediated task grounds its collection, planning, AND
+implementation in CURRENT online research — never the model's prior
+knowledge alone. The model has a training cutoff; online research is
+how the Council stays recent. This is not optional and needs no
+permission (`WebSearch` / `WebFetch` / research `Agent` are always
+authorised). It reinforces existing gates — it does not replace them:
+
+- **Phase 0 (collection / intake)** — the always-fire intake core
+  per `task-intake-due-diligence.md`: Q29 (online research —
+  primary sources only: provider docs / RFC / standard / spec,
+  never a Stack Overflow answer or package README as sole ref),
+  Q1 (prior-art sweep across OSS / GitHub / npm / PyPI), Q5 (SOTA
+  scan of the last 12-24 months).
+- **Planning** — before the plan is authored, verify the approach
+  against the CURRENT state of the art: latest stable versions,
+  recent breaking changes, deprecations, newer best-in-class
+  libraries, live security advisories. A plan built on stale recall
+  is a plan built to be reworked. Cite sources (URL + section +
+  read-date) in the plan's research section.
+- **Phase 3 (implementation)** — for any external contract
+  (API / SDK / protocol / config / schema), read the primary-source
+  docs for the exact surface BEFORE writing the code (per
+  `official-docs-first.md`) and validate the real payload shape
+  (per `validate-payloads-before-coding.md`).
+
+"I recall X works this way" is NOT acceptable where a lookup
+confirms the current truth. Insufficient / stale research is a
+NO-GO per rule 9; the GO decision names the primary sources read
+this turn. Citations land durably in the plan's research section
+and the `docs/provider-research/<provider>.md` file — not in code
+comments.
+
+**Enforcement (not documentation-only).** Two layers back this rule: (1) a
+`Research (this turn)` block is a completion-claim gate for integration /
+external-contract / current-version work (per `verify-before-claim.md` rule 7 —
+absent it, the claim is INCOMPLETE); and (2) the `research-gate.js` PreToolUse
+hook emits a non-blocking nudge when integration-shaped source is edited before
+any `WebSearch`/`WebFetch` runs this session (`research-marker.js` clears it once
+research runs).
+
+### 12. Model selection uses the capability-aware ladder
+
+When the Council spawns an agent for a task, it does NOT hardcode the
+model — it resolves the agent's role to a model via the ladders in
+`model-tier-selection.md` and passes the resolved model on the Agent
+call. Each role has an ordered ladder (best-for-the-job → broadly-
+available floor); the Council picks the highest-ranked model actually
+AVAILABLE in this install (declared in
+`~/.claude/.local/model-availability`; default `{opus, sonnet, haiku}`
+when absent).
+
+- **Best available, per role.** Strategic / long-horizon / hardest
+  non-security work resolves `fable → opus → sonnet`; security &
+  regulated review resolves `opus → sonnet` (**Fable excluded** — its
+  classifiers refuse security work); mechanical fixes resolve
+  `sonnet → haiku`; search resolves `haiku → sonnet`. A Max install
+  fields Fable on the hardest work; a Pro / ZDR install automatically
+  fields the next-best for that same job.
+- **Graceful, audible degradation.** If a resolved model is
+  unavailable at runtime (or Fable refuses with no fallback), drop to
+  the next ladder rung and SURFACE it (per `no-silent-failures.md`) —
+  never a silent downgrade, never a hard failure while a floor model
+  is available.
+- **No over-provisioning.** The ladder floors keep mechanical / search
+  / routine work off the expensive tiers even when Fable is available.
+
+The resolved model appears in the Council verification block
+(`Model selection: <role> → <model> (ladder: <ladder>)`).
+
 ## Why this rule replaces the bypass model
 
 The earlier model assumed Council was "overhead" that could be
@@ -223,19 +330,41 @@ is small (the divisions are agents; calling them is automatic).
 The VALUE is consistent — every task gets every relevant
 perspective.
 
-## Speed without skipping
+## Speed without skipping — token & context efficiency (research-grounded)
 
-To keep velocity high while keeping Council always-on:
+Council is always-on; the discipline is to spend the SMALLEST set of high-signal
+tokens per task (Anthropic, *Effective context engineering for AI agents*).
+Context is the scarce resource — model quality DEGRADES as the window fills, so a
+lean working set is a QUALITY measure, not only a cost one. Rule 1 already defines
+the in-Council levers (signal-gated depth, shared-context-in / structured-findings-
+out, cross-division dedup, specialist-deep). This section adds the levers Rule 1
+does not cover — none weakens a gate:
 
-- **Use the abbreviated mode** for trivial work
-- **Use the compact intake table** instead of per-question
-  subsections
-- **Parallelise division analysis** — divisions don't run
-  sequentially; they all analyse the same context concurrently
-- **Cache prior findings** — if a similar task was done last
-  session, the intake + research are reusable
-- **Delegate to specialised agents** when their expertise is
-  needed (per the Agent Delegation Guide in CLAUDE.md)
+1. **Subagents are deliberate, not reflexive.** A subagent runs its own context
+   and costs ~4× a chat turn; a multi-agent fan-out ~15× (Anthropic, *How we
+   built our multi-agent research system*). Spawn one when the task genuinely
+   needs a separate context window (reading many files without cluttering the main
+   thread) or an adversarial fresh-eyes verifier (the retrospective's Rule 8
+   audit) — not to restate analysis the orchestrator can do inline. Match model to
+   task: **Opus** for the lead + deep-reasoning reviewers (architecture, security,
+   compliance, AI-ethics, risk); **Sonnet** for most reviewers + broad search;
+   **Haiku** for mechanical work (doc / codemap generation). An Opus-lead +
+   Sonnet-subagent fleet outperformed single-Opus by 90.2% on Anthropic's research
+   evals — tiering is a quality win, not a compromise.
+
+2. **Trigger-gated intake + lazy catalogs.** Phase-0 fires its always-fire core +
+   only the domain questions whose triggers match (per
+   `task-intake-due-diligence.md`); the full per-division trigger / persona
+   catalog loads just-in-time via the `council-rules` skill, never on the
+   always-on floor. Load context when it's relevant, not before.
+
+3. **Compact output + reuse.** Use the compact intake table + the terse
+   abbreviated Council for trivial work; reuse a prior session's intake / research
+   when a similar task was already scoped.
+
+The through-line — and why none of this weakens the Council: quality was never
+coming from breadth of ceremony; it comes from the right specialist reasoning
+deeply, over shared context, on the cases that need judgment.
 
 ## Verification block
 
@@ -262,7 +391,14 @@ Council. That's a violation.
 - `~/.claude/CLAUDE.md` — the Council protocol (this rule is the
   meta-rule defining when it fires)
 - `council-triggers.md` — per-division engagement signals
-- `task-intake-due-diligence.md` — Phase 0 intake (29 questions)
+- `task-intake-due-diligence.md` — Phase 0 intake (trigger-gated:
+  always-fire core + domain-triggered questions)
+- Anthropic, *Effective context engineering for AI agents* —
+  https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
+  (the "smallest high-signal token set" principle behind §Speed without skipping)
+- Anthropic, *How we built our multi-agent research system* —
+  https://www.anthropic.com/engineering/multi-agent-research-system
+  (subagent ~4×/15× token cost + Opus-lead/Sonnet-subagent 90.2% finding)
 - `audit-logging.md` — bypass attempts logged
 - `verify-before-claim.md` — completion claims tied to Council
   verification

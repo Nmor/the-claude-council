@@ -25,9 +25,9 @@ Strictest rule wins. Project files NEVER relax global rules. Skills auto-discove
 The following fourteen rules are the always-on **Floor**. Every interaction obeys them regardless of which files are touched. Skill-routed disciplines (coding-quality, security-extended, sonar, observability, a11y, codebase-memory, etc.) lazy-load via `paths:` frontmatter when matching files are touched — they're not inlined here to keep the cold-load budget tight (~110-130 KB total).
 
 1. **Council always convenes** per `council-default.md` — Core Five always speak; Extended Eleven auto-fire on triggers.
-2. **Principal-level quality bar** per `principal-level-mandate.md` — every artifact at principal-engineer depth or it doesn't ship; per `principal-level-review-after-each-phase.md`, every phase boundary re-audits all prior phases for that depth + intact cross-phase wiring.
+2. **Principal-level quality bar** per `principal-level-mandate.md` — every artifact at principal-engineer depth or it doesn't ship; per `post-phase-retrospective-review.md`, every phase boundary runs the five-step sweep — re-auditing all prior phases for that depth + intact cross-phase wiring.
 3. **Continuous learning** per `continuous-learning-mandate.md` — every Council-mediated task emits learning candidates; cross-workspace patterns promote to Floor.
-4. **Task intake (29 questions)** per `task-intake-due-diligence.md` — Phase 0 intake gates every non-trivial task; online research mandatory.
+4. **Task intake (trigger-gated)** per `task-intake-due-diligence.md` — Phase 0 intake gates every non-trivial task: an always-fire high-signal core + domain questions that fire on the same triggers as the Extended divisions; online research mandatory.
 5. **Plan structure** per `plan-task-breakdown.md`, `plan-execution-progress.md`, `plan-completion-before-push.md` — atomic tasks, per-phase verification blocks, no push until plan complete; every plan ends with a `no-bloat.md` removal phase (the least code that solves the problem; no speculative or inert surface).
 6. **Verify before claim** per `verify-before-claim.md` — every completion claim attaches same-turn verification block; per `validate-payloads-before-coding.md`, any external payload is validated against the real contract before the code that produces/consumes it is written.
 7. **Post-phase retrospective review** per `post-phase-retrospective-review.md` — every phase end re-audits ALL prior phases via DIFFERENT gates; "CI green" never substitutes for re-verifying the chain end-to-end. Stays OPEN through user-verification on user-visible surfaces.
@@ -124,7 +124,7 @@ Vetoes are explicit; documented in the Council consensus block.
 
 Phase templates (the full ~30 KB protocol surface) live at `~/.claude/skills/council-protocol/SKILL.md`. The pointer here:
 
-- **Phase 0: Deep Research** — runs the 29-question intake per `~/.claude/rules/common/task-intake-due-diligence.md`. Online research mandatory per `~/.claude/rules/common/official-docs-first.md`. Skipping the intake = same severity as skipping divisions.
+- **Phase 0: Deep Research** — runs the trigger-gated intake per `~/.claude/rules/common/task-intake-due-diligence.md` (always-fire core + domain-triggered questions). Online research mandatory per `~/.claude/rules/common/official-docs-first.md`. Skipping the intake = same severity as skipping divisions.
 - **Phase 1: Council Discussion** — Core Five always speak in order (Architecture → Implementation → Quality → Security → Testing). Extended Eleven speak when triggers fire.
 - **Phase 2: Council Consensus** — agreed approach + files-to-touch + agents-to-delegate + concerns + GO/NO-GO decision. Vetoes named.
 - **Phase 3: Implementation** — only after GO. Order: tdd-guide (RED) → implementation (GREEN) → frontend-patterns skill (if UI) → refactor-cleaner → security-reviewer → code-reviewer → e2e-runner → doc-updater.

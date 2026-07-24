@@ -28,6 +28,7 @@ language rules are listed under
 | ---- | ------- |
 | [`council-default.md`](../rules/common/council-default.md) | Council is the default mode; no bypass surface |
 | [`council-triggers.md`](../rules/common/council-triggers.md) | Per-division engagement signals for the Extended Eleven |
+| [`model-tier-selection.md`](../rules/common/model-tier-selection.md) | Capability-aware model ladders per Council role — resolve to the best model AVAILABLE in this install (Fable→Opus→Sonnet→Haiku), graceful degradation, Fable excluded from security |
 | [`agents.md`](../rules-library/common/agents.md) | Agent orchestration + parallel-task execution |
 | [`auto-skills.md`](../rules-library/common/auto-skills.md) | File-to-skill-and-agent mapping (auto-fire on file type) |
 | [`hooks.md`](../rules-library/common/hooks.md) | Hook lifecycle — Session/Prompt/PreTool/PostTool/PreCompact/Stop/SessionEnd |
@@ -45,9 +46,7 @@ language rules are listed under
 | [`verify-before-claim.md`](../rules/common/verify-before-claim.md) | Every completion claim preceded by same-turn verification |
 | [`validate-payloads-before-coding.md`](../rules/common/validate-payloads-before-coding.md) | Validate any external payload against the real contract before writing the code that produces / consumes it |
 | [`no-overclaim.md`](../rules/common/no-overclaim.md) | Reserve "done" / "shipped" / "complete" for verified states |
-| [`post-phase-retrospective-review.md`](../rules/common/post-phase-retrospective-review.md) | Every phase re-audits ALL prior phases via different gates + a multi-division audit of its own work |
-| [`phase-retrospective-sweep.md`](../rules/common/phase-retrospective-sweep.md) | The five-step mechanical sweep run at every phase boundary |
-| [`principal-level-review-after-each-phase.md`](../rules/common/principal-level-review-after-each-phase.md) | Backward review of every prior phase for principal-level depth + intact cross-phase wiring |
+| [`post-phase-retrospective-review.md`](../rules/common/post-phase-retrospective-review.md) | Canonical single source: the five-step sweep at every phase boundary — forward verify → retrospective re-verify all prior phases (different gates) → wiring closure → multi-division adversarial audit → capture follow-ups. Consolidates the former `phase-retrospective-sweep.md` + `principal-level-review-after-each-phase.md` (now redirect stubs). |
 | [`local-testability.md`](../rules-library/common/local-testability.md) | Every change locally testable BEFORE writing |
 | [`done-criteria.md`](../rules/common/done-criteria.md) | Service-migration done checklist |
 | [`proper-fixes-first.md`](../rules-library/common/proper-fixes-first.md) | Root-cause fixes; no shortcuts |

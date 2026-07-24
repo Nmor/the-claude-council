@@ -286,7 +286,19 @@ const rules = [
         // digit) so the prose word "gap" (e.g. "close the gap") is NOT flagged —
         // only the task-pointer form. The gap->commit mapping belongs in the
         // commit/PR, not a source/IaC comment (the comment states the WHY).
-        /\bGAP-?\d+\b/.test(line)
+        /\bGAP-?\d+\b/.test(line) ||
+        // Wave/session pointers: "Wave A", "Wave F.B11", "Wave E.subscription-
+        // inverted", "Session 3b". Case-SENSITIVE on the leading capital so
+        // ocean/microwave prose is not caught. The plan's wave IDs belong in
+        // the gitignored plan + commit body, never in a source/IaC comment.
+        /\bWave\s+[A-Z](?:[.+-][A-Za-z0-9._-]+)?\b/.test(line) ||
+        /\bSession\s+\d+[a-z]?\b/i.test(line) ||
+        // Master-plan / gitignored-plan cross-references: "master plan §",
+        // "master plan section", "per master plan", "see gitignored plan".
+        // Same failure mode as "see plan" above — the plan lives outside
+        // git so the reference rots the moment the plan is updated.
+        /\bmaster\s+plan\b/i.test(line) ||
+        /\bgitignored\s+plan\b/i.test(line)
       );
     },
   },

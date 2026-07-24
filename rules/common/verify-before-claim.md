@@ -144,6 +144,24 @@ Different claims require different gates:
 | "Deploy ready" | All `done-criteria.md` checks + `proper-fixes-first.md` audit + `docs-sync-with-code.md` audit + dep-CVE + license gates + full-graph validation on plan surface (per `code-graph-validation.md` rule 9) |
 | "Production deployed" | Above + health endpoints 200 + smoke E2E green + metrics within SLO |
 | "Plan complete" | Every phase's verification block green + bloat-removal phase ran + every TodoWrite item ticked |
+| "Integration / external-contract / current-version work" | The applicable gates above **plus** a `Research (this turn)` block — each primary source as title · URL · read-date · key finding, per `council-default.md` rule 11 + `official-docs-first.md`. A claim on integration / SDK / API / provider / webhook / current-version work WITHOUT this block is INCOMPLETE (a NO-GO). |
+
+**The `Research (this turn)` done-gate.** Any completion claim on work that
+touches an external contract (API / SDK / protocol / webhook / config schema) or
+that depends on a current version / recent breaking change MUST carry a
+`Research (this turn)` block in the verification block:
+
+```text
+Research (this turn):
+- <source> · <URL> · <read-date> · <key finding that shaped the change>
+```
+
+Absent it, the claim is downgraded to "implemented — research pending". The
+`research-gate.js` PreToolUse hook is the mechanical belt-and-braces: a
+non-blocking nudge fires when integration-shaped source is edited before any
+`WebSearch`/`WebFetch` runs this session (the `research-marker.js` PostToolUse
+hook clears it once research runs). Established-stable facts (a long-standing CLI
+exists) need no fetch; current versions, provider contracts, and payload shapes do.
 
 ### 8. Test files have no exemption
 

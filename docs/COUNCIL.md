@@ -14,14 +14,27 @@ bypass surface exists:
 - The `*` prefix skips ONLY the prompt-improver clarification step.
   Council still convenes.
 - "Quick Council Check" mode is replaced with "Abbreviated Council
-  Check" — same divisions speak, terser output (2-3 sentences each).
-  Never zero divisions.
+  Check" — every division still engages and owns its domain; the
+  risk-owning divisions go deep and no-concern divisions collapse to
+  a one-line gated verdict. Never zero divisions.
 - Bypass attempts are audit-logged to
   `~/.claude/audits/bypass-log.jsonl`.
 
 Trigger model:
 
-- **Core Five always engage.** Minimum 2 sentences each on every task.
+- **Core Five always engage — coverage is mandatory, depth is
+  signal-gated.** Every division owns its domain and records a
+  verdict; no domain is ever skipped. Output scales to what it found:
+  a material finding or a cross-division conflict → deep analysis;
+  nothing material → a one-line verdict with the one-clause reason it
+  checked (never a bare "looks fine"). Deep analysis concentrates on
+  the 2-3 divisions that own the change's risk surface. Per
+  [`council-default.md`](../rules/common/council-default.md) rule 1.
+- **Shared context in, structured findings out.** The target surface
+  is read once and divisions reason over it in parallel (not N
+  independent re-reads); findings are emitted as
+  `severity · file:line · claim · owner` and deduped across divisions
+  before synthesis.
 - **Extended Eleven auto-fire on signals.** Per
   [`council-triggers.md`](../rules/common/council-triggers.md) —
   file patterns + keywords + change scope + plan-tier impact.
@@ -45,7 +58,7 @@ integration points, cost considerations, and risks.
 
 ### Division 2: Implementation & Build
 
-| Lead agents | `build-error-resolver`, `go-build-resolver`, `refactor-cleaner`, `database-reviewer` |
+| Lead agents | per-stack build resolvers (`build-error-resolver` TS/JS · `go-build-resolver` · `python-` / `rust-` / `java-` / `dotnet-` / `ruby-` / `php-` / `swift-build-resolver`), `refactor-cleaner`, `database-reviewer` |
 | ----------- | ------------------------------------------------------------------------------------ |
 | **When** | Every task that writes / modifies code |
 | **Veto** | None (escalates to Architecture on cross-cutting build concerns) |
@@ -213,21 +226,51 @@ When divisions disagree, named tiebreakers apply:
 Vetoes are explicit; they are documented in the Council consensus
 block.
 
+## Model selection — capability-aware ladders
+
+Per [`model-tier-selection.md`](../rules/common/model-tier-selection.md),
+the Council does not hardcode a model per agent — it resolves each
+agent's ROLE to a ladder of models (best-for-the-job → broadly-
+available floor) and spawns the highest-ranked model AVAILABLE in
+this install (declared in `~/.claude/.local/model-availability`;
+default `{opus, sonnet, haiku}` when the file is absent).
+
+| Role class | Ladder (best → floor) | Notes |
+| ---------- | --------------------- | ----- |
+| Strategic / long-horizon / hardest non-security work | `fable → opus → sonnet` | Fable only here — where first-shot correctness offsets its ~2× cost |
+| Security & regulated review | `opus → sonnet` | **Fable excluded** — its safety classifiers refuse security work |
+| Deep + standard review | `opus → sonnet` | Deep reviewers stay on Opus |
+| Mechanical build / refactor | `sonnet → haiku` | Deterministic fixes — Sonnet ceiling, never over-provisioned |
+| Search / doc / codemap | `haiku → sonnet` | Cheapest model that does the job |
+
+Capability order: **fable ≥ mythos > opus > sonnet > haiku** (source:
+Anthropic Models Overview, read 2026-07-24). A Max install fields
+Fable on the hardest work; a Pro / Team / ZDR install automatically
+fields the next-best model for that same job. Resolution degrades
+gracefully and AUDIBLY — a runtime-unavailable model (or a Fable
+refusal without fallback) drops to the next ladder rung and is
+surfaced, never silently downgraded, and never a hard failure while a
+floor model is available.
+
 ## The Council Conversation Protocol
 
 Detailed in [`CLAUDE.md`](../CLAUDE.md) — short form here:
 
 ### Phase 0: Deep Research
 
-Mandatory before any discussion. Begins with the 29-question
+Mandatory before any discussion. Runs the trigger-gated
 [task-intake-due-diligence](../rules/common/task-intake-due-diligence.md)
-questionnaire (prior art, OSS option, scalability, FMEA, STRIDE,
-data lifecycle, compliance, a11y, i18n, test strategy,
-observability, cost, rollback, deprecation lifecycle, UX writing,
-docs, risk register, success criteria, post-launch watch, AI / ML
-ethics, vendor / IP / license, operational handoff). Online
-research is mandatory per
-[`official-docs-first.md`](../rules/common/official-docs-first.md).
+intake — an always-fire high-signal core (prior art, provenance,
+better?, scalable?, integration map, FMEA, STRIDE, test strategy,
+docs, action plan, online research) plus the domain questions whose
+triggers match (compliance, a11y, i18n, data lifecycle, cost,
+rollback, deprecation, AI / ML ethics, vendor / IP / license, …).
+Online research is MANDATORY across collection, planning, AND
+implementation — per
+[`council-default.md`](../rules/common/council-default.md) rule 11
+and [`official-docs-first.md`](../rules/common/official-docs-first.md):
+current primary sources (provider docs / RFC / standard), cited with
+read-dates, never training-cutoff recall alone.
 
 ### Phase 1: Council Discussion
 
@@ -258,8 +301,10 @@ BLOCKED.
 ### Abbreviated Council Check (NEVER zero divisions)
 
 For trivial work (single-file bug fix, typo, config tweak), the
-Council still convenes — output is terser. Core Five speak in 2-3
-sentences each. Extended Eleven auto-fire only when their trigger
+Council still convenes — every division engages and owns its domain,
+but output is signal-gated: no-concern divisions give a one-line
+verdict with a one-clause reason, and only a division with a material
+finding goes deep. Extended Eleven auto-fire only when their trigger
 ruleset hits.
 
 ### Standard tasks (full Council protocol)
@@ -288,16 +333,24 @@ Every Council-mediated task ends with a verification block:
 
 ```text
 Council (this turn):
-  - Division 1 (Architecture): <position>
+  - Division 1 (Architecture): <deep — owns this change>
   - Division 2 (Implementation): <position>
-  - Division 3 (Quality): <position>
-  - Division 4 (Security): <position>
-  - Division 5 (Testing): <position>
+  - Division 3 (Quality): <one-line gated verdict — no concern>
+  - Division 4 (Security): <deep — owns this change>
+  - Division 5 (Testing): <one-line gated verdict — no concern>
   Extended fired: 6 (Compliance — GDPR consent UI), 7 (UX — copy review)
+  Research (this turn): <source · URL · read-date · key finding>
+  Model selection: <role> → <model> (ladder: <ladder>)
   Consensus: GO
   Tiebreaker invoked: N/A
   Bypass attempts: 0
 ```
+
+At every phase boundary the task also closes with the five-step
+retrospective sweep per
+[`post-phase-retrospective-review.md`](../rules/common/post-phase-retrospective-review.md)
+— forward verify → retrospective re-verify prior phases → wiring
+closure → multi-division adversarial audit → capture follow-ups.
 
 A task that lacks this block is a task that did not pass through
 Council. That is a rule violation per
@@ -315,4 +368,8 @@ Council. That is a rule violation per
   — Phase 0 intake
 - [`principal-level-mandate.md`](../rules/common/principal-level-mandate.md)
   — depth bar every agent meets
+- [`model-tier-selection.md`](../rules/common/model-tier-selection.md)
+  — capability-aware model ladders per Council role
+- [`post-phase-retrospective-review.md`](../rules/common/post-phase-retrospective-review.md)
+  — the five-step sweep at every phase boundary
 - [AGENTS.md](AGENTS.md) — the agent catalog

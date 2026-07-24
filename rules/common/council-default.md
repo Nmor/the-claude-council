@@ -394,10 +394,10 @@ Council. That's a violation.
 - `task-intake-due-diligence.md` — Phase 0 intake (trigger-gated:
   always-fire core + domain-triggered questions)
 - Anthropic, *Effective context engineering for AI agents* —
-  https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
+  <https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents>
   (the "smallest high-signal token set" principle behind §Speed without skipping)
 - Anthropic, *How we built our multi-agent research system* —
-  https://www.anthropic.com/engineering/multi-agent-research-system
+  <https://www.anthropic.com/engineering/multi-agent-research-system>
   (subagent ~4×/15× token cost + Opus-lead/Sonnet-subagent 90.2% finding)
 - `audit-logging.md` — bypass attempts logged
 - `verify-before-claim.md` — completion claims tied to Council

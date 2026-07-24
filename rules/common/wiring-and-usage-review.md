@@ -64,9 +64,10 @@ shutdown. An opened-but-never-closed resource is a half-wired lifecycle (leak).
 
 ### 4. Review at WRITE time, not only at phase end
 
-The retrospective sweep (`phase-retrospective-sweep.md`) catches wiring gaps at
-phase boundaries; this rule pulls the check EARLIER — to the moment the symbol is
-written. Don't defer "is this used?" to a later audit; answer it as you write.
+The retrospective sweep (`post-phase-retrospective-review.md`, Step 3) catches
+wiring gaps at phase boundaries; this rule pulls the check EARLIER — to the moment
+the symbol is written. Don't defer "is this used?" to a later audit; answer it as
+you write.
 
 ### 5. The verification block reports wiring + usage
 
@@ -179,8 +180,8 @@ block when the scrape/call/Job silently does nothing in prod.
 
 - `post-phase-retrospective-review.md` rule 8 — controls-on-path / no inert
   validators / lifecycle symmetry / cross-repo contracts
-- `phase-retrospective-sweep.md` — phase-boundary wiring sweep (this rule is the
-  write-time counterpart)
+- `post-phase-retrospective-review.md` Step 3 — phase-boundary wiring sweep (this
+  rule is the write-time counterpart)
 - `verify-before-claim.md` — the verification block carries the wiring line
 - `plan-completion-before-push.md` rule 2 — the push gate: never push a
   changed symbol/flag/config that is not 100% confirmed AND wired (inert

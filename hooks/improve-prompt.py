@@ -88,13 +88,31 @@ If the prompt is CLEAR but NON-TRIVIAL (any feature, refactor,
 integration, multi-file change, new endpoint, new dependency,
 performance work, security work, schema change, design change):
 
-Before any implementation discussion, run the full
-`~/.claude/rules/common/task-intake-due-diligence.md` 29-question
-questionnaire. The intake output populates Council Protocol
+Before any implementation discussion, run the
+`~/.claude/rules/common/task-intake-due-diligence.md` trigger-gated
+intake (the always-fire high-signal core + the domain questions
+whose triggers match). The intake output populates Council Protocol
 Phase 0. Surface it FIRST, then proceed.
 
 Either invoke the `prompt-improver` skill (which automates the
 intake) OR produce the intake block inline as your first response.
+
+== MANDATORY ONLINE RESEARCH (every non-trivial / INTAKE task) ==
+Online research is REQUIRED — during collection, planning, AND
+implementation — and needs no permission. Do NOT plan or write code
+from training-cutoff recall alone.
+
+- Run WebSearch / WebFetch (or a research Agent) THIS turn on: the
+  current primary-source docs for any API / SDK / protocol / config
+  touched; the latest stable versions + recent breaking changes +
+  deprecations; and live security advisories (last 12-24 months).
+- Primary sources only (provider docs / RFC / standard / spec) —
+  never a Stack Overflow answer or a package README as the sole ref.
+- Surface a \"Research (this turn)\" block — each source as
+  title, URL, read-date, key finding — BEFORE the plan / GO decision.
+- Per `council-default.md` rule 11 + `official-docs-first.md` +
+  `validate-payloads-before-coding.md`, a plan or implementation
+  without current cited research is INCOMPLETE — a NO-GO.
 
 == TRIVIAL MODE ==
 If the prompt is CLEAR and TRIVIAL (typo fix, single-line edit,
@@ -110,6 +128,9 @@ immediately afterwards. Trust user intent.
   re-asking; surface the intake answers from history.
 - The task touches user-visible behaviour, security, data
   shape, scalability, or external integration? → INTAKE.
+- Non-trivial (INTAKE) task? → online research is MANDATORY this
+  turn (see MANDATORY ONLINE RESEARCH above); never plan or
+  implement from memory alone. Cite sources before the plan / GO.
 - The task is a single-line correction or a stated typo fix?
   → TRIVIAL.
 - The task description is missing target / action / success?

@@ -54,6 +54,15 @@
         ]
       },
       {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/research-gate.js\""
+          }
+        ]
+      },
+      {
         "matcher": "Grep|Glob",
         "hooks": [
           {
@@ -176,6 +185,15 @@
             "command": "node \"$HOME/.claude/scripts/hooks/post-edit-no-discards.js\""
           }
         ]
+      },
+      {
+        "matcher": "WebSearch|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/research-marker.js\""
+          }
+        ]
       }
     ],
     "Stop": [
@@ -221,5 +239,7 @@
       }
     ]
   },
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "effortLevel": "xhigh",
+  "switchModelsOnFlag": false
 }

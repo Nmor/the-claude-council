@@ -26,11 +26,18 @@ every agent file carries:
 
 ## Model selection
 
-Per [`performance.md`](../rules-library/common/performance.md):
+Per [`model-tier-selection.md`](../rules/common/model-tier-selection.md),
+each agent's role maps to a capability-aware ladder; the Council spawns
+the best model AVAILABLE in the install (Fable → Opus → Sonnet → Haiku;
+default `{opus, sonnet, haiku}` when Fable isn't present). The `Model`
+column below is each agent's default for a direct spawn (its ladder floor):
 
-- **opus** — coding / reviewing / planning / security / compliance /
-  ethics work where quality and broad coverage matter
-- **sonnet** — narrow-scope reviewers, verification-loop agents
+- **fable** (Strategic ladder top) — hardest / long-horizon / novel
+  non-security work, on installs where Fable is available
+- **opus** — deep reasoning, review, planning, security, compliance,
+  ethics (quality + broad coverage)
+- **sonnet** — mechanical build/compile fixes, narrow-scope reviewers,
+  verification-loop agents
 - **haiku** — mechanical doc work (codemaps, README maintenance)
 
 ## Agents by Council Division
@@ -46,9 +53,16 @@ Per [`performance.md`](../rules-library/common/performance.md):
 
 | Agent | Model | Role |
 | ----- | ----- | ---- |
-| [`build-error-resolver`](../agents/build-error-resolver.md) | opus | Fix TypeScript/JavaScript build failures; type errors; module resolution |
-| [`go-build-resolver`](../agents/go-build-resolver.md) | opus | Fix Go compilation errors; vet warnings; golangci-lint issues; module deps |
-| [`refactor-cleaner`](../agents/refactor-cleaner.md) | opus | Dead code removal; unused exports; duplicate detection; dependency cleanup |
+| [`build-error-resolver`](../agents/build-error-resolver.md) | sonnet | Fix TypeScript/JavaScript build failures; type errors; module resolution |
+| [`go-build-resolver`](../agents/go-build-resolver.md) | sonnet | Fix Go compilation errors; vet warnings; golangci-lint issues; module deps |
+| [`python-build-resolver`](../agents/python-build-resolver.md) | sonnet | Fix Python build/import/packaging + mypy/ruff/pyright errors |
+| [`rust-build-resolver`](../agents/rust-build-resolver.md) | sonnet | Fix Rust cargo build/check + borrow-checker/trait/lifetime errors |
+| [`java-build-resolver`](../agents/java-build-resolver.md) | sonnet | Fix Java/Kotlin Maven/Gradle compile + classpath/module errors |
+| [`dotnet-build-resolver`](../agents/dotnet-build-resolver.md) | sonnet | Fix .NET/C# dotnet build + nullable/analyzer/package errors |
+| [`ruby-build-resolver`](../agents/ruby-build-resolver.md) | sonnet | Fix Ruby load/syntax/bundler + rubocop/Sorbet errors |
+| [`php-build-resolver`](../agents/php-build-resolver.md) | sonnet | Fix PHP composer/autoload/syntax + PHPStan/Psalm errors |
+| [`swift-build-resolver`](../agents/swift-build-resolver.md) | sonnet | Fix Swift build/compile + optional/type/module errors (not signing) |
+| [`refactor-cleaner`](../agents/refactor-cleaner.md) | sonnet | Dead code removal; unused exports; duplicate detection; dependency cleanup |
 | [`database-reviewer`](../agents/database-reviewer.md) | opus | PostgreSQL query audit; schema design; RLS; indexing; connection pooling |
 | [`infra-reviewer`](../agents/infra-reviewer.md) | sonnet | Dockerfile; Terraform; CI/CD review |
 
@@ -158,6 +172,7 @@ subagents:
 | Designing system architecture | `architect` | Evaluates trade-offs; creates ADRs |
 | TypeScript/JS build errors | `build-error-resolver` | Surgical fixes; no refactoring |
 | Go build/vet/lint errors | `go-build-resolver` | Go-specific compilation fixes |
+| Python / Rust / Java·Kotlin / .NET·C# / Ruby / PHP / Swift build errors | matching `<stack>-build-resolver` | Per-stack surgical build/compile fixes |
 | Dead code / unused deps | `refactor-cleaner` | Safe batch removal with tests |
 | Database schema review | `database-reviewer` | PostgreSQL queries; RLS; indexing |
 | Code review (any language) | `code-reviewer` | Severity-based review: BLOCKER → SUGGESTION |

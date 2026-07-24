@@ -165,9 +165,9 @@ Already governed by `rule-authoring-global-vs-project.md`. Adds:
 
 Per `council-default.md` + `council-triggers.md`:
 
-- Each division writes MINIMUM 2 sentences per task (Core Five)
+- Each division ENGAGES and records a verdict; depth is signal-gated per `council-default.md` — deep (multi-sentence, carrying trade-off + failure-mode + verification signal) on a material finding or cross-division conflict, and a one-line gated verdict with a one-clause reason when nothing material was found (never bare boilerplate)
 - Extended divisions auto-fire on triggers
-- Output is structured (positions + findings + verdict), not narrative
+- Output is structured (`severity · file:line · claim · owner`, deduped across divisions), not narrative
 - Cites the global rules / standards / RFCs informing the position
 - Names verification signals that confirm the decision
 
@@ -313,7 +313,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New skill SKILL.md < 500 words (shallow-stub floor breached)
 - Skill missing standards citations with version + section (rule "Standards Cited" weakening)
 - "Best practices recommend" / "studies show" / "common patterns" used without primary source (non-cited claim recurrence)
-- Council Division output one sentence per division (below 2-sentence floor)
+- Council Division emits bare boilerplate ("looks fine") or fails to engage its domain — the coverage-guarantee violation (mere brevity is NOT a violation when the one-clause gated verdict shows real engagement)
 - Tactical-only contribution shipped without trade-off + failure-mode + verification signal (breadth weakening)
 - Single-domain reasoning on a cross-cutting topic (e.g., security agent ignoring compliance overlap)
 - Project-specific names / paths / vendor identifiers found in a global artifact (rule "Banned in global" violation)

@@ -1,269 +1,355 @@
 # Post-Phase Retrospective Review Rule (Always-On, Global)
 
-> Auto-fires on every file. Sister to `verify-before-claim.md`,
-> `plan-execution-progress.md`, `done-criteria.md`,
-> `principal-level-mandate.md`, `code-graph-validation.md`. Companion
-> to `no-overclaim.md`. Defines the brief retrospective every phase
-> closes with — REVERIFYING all prior phases in the same work stream.
+> **Canonical, consolidated 2026-07-23.** This rule absorbs and replaces
+> `principal-level-review-after-each-phase.md` and `phase-retrospective-sweep.md`
+> (both now redirect stubs). It is the single source of truth for what happens at
+> every phase / task boundary. Sister to `verify-before-claim.md` (current-phase
+> gates), `plan-execution-progress.md` (per-phase progress block),
+> `done-criteria.md` (the per-language gates), `principal-level-mandate.md` (depth
+> floor), `code-graph-validation.md` (wiring integrity), `no-overclaim.md` (claim
+> discipline), `no-silent-drops.md` (follow-up capture), `council-default.md`
+> (the divisions that run the adversarial audit).
 
 ## Core Principle
 
-**Every phase / task boundary closes with (a) a multi-division
-principal-level audit of the CURRENT phase's own work + the
-cross-repo seams it touches (rule 8), AND (b) a brief retrospective
-that re-audits ALL prior phases in the same work stream (rules 1-7).
-The current phase's own verification block is necessary but not
-sufficient; the audit proves the phase is correct + fully wired,
-and the retrospective confirms prior phases' fixes still hold after
-the new changes land. "CI green" is not "everything works as
-intended" — only the audit + retrospective prove it. This is a
-top-level job, run at every phase boundary before "done".**
+**Every phase / task boundary closes with a five-step sweep, run BEFORE any
+"done" claim: (1) forward verification of the current phase, (2) retrospective
+re-verification of prior phases — a cheap mechanical sweep across all, plus a deep
+different-gate audit of the ones the change actually reaches, (3) wiring verification
+across the touched surface + 2-hop closure, (4) a multi-division adversarial
+principal-level audit of the new work and any prior work it touches, and (5)
+capture of every follow-up discovered. The current phase's own green gates are
+necessary but NEVER sufficient — "CI green" proves only what CI exercises. The
+sweep proves the phase is correct + fully wired AND that prior phases still hold
+after the new changes landed. This is a top-level job; skipping it equals
+skipping verification per `verify-before-claim.md`.**
 
 ## Why this rule exists
 
-Recurring incident classes — CI green, the bug in a layer the
-gates never exercised:
+The failure mode: **"phase N broke phase N-3 silently."** A phase ships with
+green current-phase gates; weeks later the user finds an earlier phase's
+behaviour regressed because the new work touched a shared seam. Rework cost =
+original effort + regression diagnosis + re-fix + trust loss. Recurring incident
+classes, each CI-green with the bug in a layer the gates never exercised:
 
-1. **A UI fix that passes CI but renders wrong** — a component
-   style change declared done because lint/type-check/tests/probes
-   passed, but a CSS override pulled the element off-viewport; the
-   gates never rendered the live component, so they could not catch
-   it. Surfaced only by a human on a real screen, PRs later.
-2. **A rename verified only at the edited sites** — a field rename
-   fixed the sites in the diff, but a whole-file / repo re-grep
-   would have surfaced other call paths still on the old name.
-3. **Round-after-round static-analysis mitigation** — each
-   sanitiser pattern looked correct in isolation; each next round
-   revealed the prior one didn't match the analyser's actual
-   recognition. A retrospective on round N before drafting round
-   N+1 would have surfaced the recurring wrong assumption earlier.
-4. **A green phase hiding inert controls** — a phase shipped with
-   full green gates and "100% complete", but a multi-division
-   principal audit found, in that same green code: a CRITICAL
-   security control **never wired** (unit-tested in isolation, but
-   nothing on the live path called it — inert); clients **opened
-   but never closed** (resource leaks); a "consent-gated" flow with
-   **no consent check in code**; an undocumented cross-border PII
-   transfer; a swallowed crash. Unit tests covered units, not the
-   activation path / lifecycle / cross-repo contracts. This drove
-   rule 8 (the current-phase multi-division adversarial audit).
+1. **UI fix that passes CI but renders wrong** — a CSS override pulled the
+   element off-viewport; gates never rendered the live component. Surfaced by a
+   human on a real screen, PRs later.
+2. **Rename verified only at the edited sites** — the diff sites were fixed, but
+   a whole-file / repo re-grep would have surfaced other call paths still on the
+   old name.
+3. **Round-after-round static-analysis mitigation** — each sanitiser looked
+   right in isolation; a retrospective on round N before drafting N+1 would have
+   surfaced the recurring wrong assumption earlier.
+4. **Green phase hiding inert controls** — full green gates + "100% complete",
+   yet a multi-division audit found in that same code: a CRITICAL security
+   control **never wired** (unit-tested, but nothing on the live path called it);
+   clients **opened but never closed** (leaks); a "consent-gated" flow with **no
+   consent check in code**; an undocumented cross-border PII transfer; a
+   swallowed crash. Unit tests covered units, not the activation path /
+   lifecycle / cross-repo contracts.
 
-In every case the CURRENT phase's verification was green; the bug
-lived in a layer the gates didn't exercise. A retrospective on
-prior phases — even a brief one — would have surfaced it.
+In every case the CURRENT phase's verification was green; the bug lived in a
+layer the gates didn't exercise. The sweep is the discipline that catches it.
 
-## Hard rules
+## The five-step sweep (the operational spine)
 
-### 1. Every phase end carries a retrospective block
+Every phase / task closeout, in order. The Hard Rules below qualify the DEPTH
+each step runs at.
 
-Per `plan-execution-progress.md`, every phase ends with a
-verification block. This rule appends a retrospective sub-block:
+### Step 1 — Forward verification (current phase)
 
-```text
-Retrospective on prior phases:
-- Phase N-2 (X): re-verified via <grep / probe / live test> — wired ✓
-- Phase N-1 (Y): re-verified via <grep / probe / live test> — wired ✓
-- Cross-phase invariant: <name> still holds — verified via <check>
-```
+Run the current phase's verification block per `verify-before-claim.md` rule 7
+(gates depend on claim class); at minimum: build / type-check clean on touched
+code; test gate green; lint green; IDE diagnostics zero; manual verification (UI
+smoke / API probe / perf trace) when applicable; docs-sync gate when docs
+touched. The block is captured BEFORE the claim phrase.
 
-The retrospective is the FINAL block before the next phase starts
-or before the work stream ships. If the retrospective surfaces a
-regression, the current phase isn't done; fix the regression
-in-stream before proceeding.
+### Step 2 — Retrospective verification (dependency-scoped: deep where the change reaches + cheap sweep across all)
 
-### 2. The retrospective uses different gates than the current phase's verification
+Re-auditing EVERY prior phase *deeply* at every boundary is O(n²) and spreads
+attention thin — which produces rubber-stamping ("audit fatigue"), the opposite of
+what the retrospective is for. Scope by dependency instead, so no phase is
+unaudited but the deep attention lands where a regression is actually possible:
 
-`verify-before-claim.md` mandates current-phase gates (build, test,
-lint, code-graph). The retrospective adds:
+- **Cheap mechanical sweep across ALL prior phases** — Step 3's code-graph closure
+  already covers this near-free (dangling / dead / unwired across the whole
+  surface). Every prior phase gets this baseline integrity check.
+- **Deep, different-gate retrospective on the dependency-connected set** — the
+  prior phases the current change actually REACHES: shared files, shared schema /
+  events / API contracts, upstream callers, downstream consumers (via the
+  code-graph). A phase the current change cannot reach cannot have been regressed
+  by it; spend the deep audit where a regression is possible. If the dependency
+  graph is uncertain, WIDEN the deep set (over-include, per the trigger philosophy
+  in `council-triggers.md`).
 
-- **Cross-file re-grep** for the OLD pattern that was supposedly
-  removed in prior phase. Confirms the new pattern WINS, not
-  coexists.
-- **End-to-end trace** of the user-visible surface affected. For UI
-  fixes: confirm the visual rendering on a live build or against a
-  probe. For backend fixes: round-trip a request through the
-  authoritative gate (cookie + body + audit + DB) and verify
-  every layer.
-- **Integration sanity** with the layer the prior phase touched.
-  For backend renames: confirm callers + tests + docs all
-  reference the new name. For frontend rules: confirm cascade
-  order, bundle order, mount tree.
+For each phase in the deep set: re-run its declared predicate AND add a
+different-angle gate (Hard Rule 2) — cross-file grep for the OLD pattern (must
+return 0), end-to-end trace through the user-visible surface, or an integration
+probe across the affected cross-repo seam. If any prior gate regresses, the
+current phase is NOT done: fix in-stream before proceeding. Absent gates are
+stated explicitly ("Phase N-3 retrospective gate unavailable because `<reason>`")
+with a follow-up captured in Step 5 — never silently skipped. A user-reported
+regression in a phase you scoped OUT of the deep set means the dependency graph
+was wrong — widen it and re-run (Hard Rule 3).
 
-### 3. Treat user-reported regressions as evidence the retrospective was insufficient
+### Step 3 — Wiring verification (code-graph closure)
 
-When the user reports "the prior fix didn't actually work" or
-"the bug is still there":
+Run incremental code-graph validation per `code-graph-validation.md` across the
+touched surface + 2-hop closure:
 
-1. STOP the current phase.
-2. RE-RUN the retrospective for the named prior phase. Use a
-   DIFFERENT gate than the prior phase used. The prior gate is
-   already known to be insufficient — pick another.
-3. Identify the layer the prior gate missed. Add an automated
-   check (lint rule, probe script, build assertion) that would
-   have caught it.
-4. Only after the layer is identified + checked may the current
-   phase resume.
+- Every outbound reference resolves — import / call / route / handler / schema
+  column / env var / IAM action / agent file / skill file / hook script / rule
+  citation / docs link.
+- Every touched file has ≥1 inbound edge OR is a documented entry point.
+- Cross-artifact graph closes: hook event → script exists; agent in trigger
+  files → file exists; skill in auto-skills → directory exists; command → agent
+  exists.
+- No `BUG(unwired-<slug>)` markers left without the user being told.
 
-NEVER argue with the user that "CI was green so the prior fix
-must be correct". CI green proves what CI exercises — nothing more.
+Report counts: `dangling: N, dead: M, unwired: K` — zero on each OR explicit
+user-approved deferral captured in Step 5.
 
-### 4. Multi-PR work streams accumulate retrospective scope
+### Step 4 — Multi-division principal-level audit
 
-When a work stream spans multiple PRs, the retrospective re-audits
-EVERY prior PR in the same stream — not just the prior phase.
-Across 3+ PRs, build a one-line "what was verified vs not" map:
+Re-confirm the principal-level mandate for the new work AND any prior work it
+touches, via a **multi-reviewer, adversarial** audit (Hard Rules 6 + 8) — not a
+single self-review. Depth axes per `principal-level-mandate.md`: breadth
+(architecture + security + ops + data + product + business + compliance);
+depth (standards cited with version + section); sources (primary-source
+citations per `official-docs-first.md`); trade-offs (what's given up + the
+inflection point); failure modes (concrete FMEA rows); outcome ownership (the
+signal that confirms the decision was right). For touched-prior work: confirm the
+prior phase's depth still holds in the merged state — no silent regression of
+citations, failure modes, or trade-off analyses.
 
-```text
-Stream retrospective (PR-a … PR-d — one user-visible surface):
-- PR-a (sync): tree match with the base confirmed via diff stat ✓
-- PR-b (style + static-analysis): analyser finding cleared ✓
-                          override reaches the bundle ✓
-                          BUT the rendered layer NOT verified
-                          (no live render gate); FIXED in PR-d
-- PR-c (field rename): verified at the edited site only; SHOULD
-                       have re-grepped the whole file
-- PR-d (final fix): override + build ✓; live render gate: pending
-                    user verify
-```
+### Step 5 — Capture follow-ups
 
-The map exposes what's not yet verified. The user-visible surface
-needed a live render gate that an earlier PR's verification lacked
-— and the missing gate is itself a refinement candidate (per
-`continuous-learning-mandate.md`).
+Anything discovered in Steps 1-4 that needs work becomes a NEW tracked task,
+never silently dropped (per `no-silent-drops.md`). Each names: the phase / area,
+the completion predicate, the owner (this session OR explicit defer), and the
+cross-reference to the discovery. Follow-ups land in the active plan's phase task
+list, the TodoWrite list, and `<workspace>/.claude/audits/learning-events.jsonl`
+when a learning candidate. "I'll handle it later" without a durable record is
+forbidden.
 
-### 5. Add a check for every recurring miss
+## Hard rules (the depth + discipline each sweep step runs at)
 
-When the retrospective surfaces the SAME class of miss across
-multiple phases, the rule's response is to add an AUTOMATED
-check that catches it:
+### 1. The sweep fires at EVERY phase boundary
 
-- Recurring CSS-override miss → add a build assertion that the
-  override file is imported AFTER the file it overrides
-- Recurring audit-field forbidden-pattern miss → add an eslint
-  rule that forbids `_token_` / `_secret_` / etc. in audit
-  details bag keys
-- Recurring static-analyser false-positive sanitiser pattern →
-  document what the analyser actually accepts for that rule class
-- Recurring "rendered element not visible" → add a UI probe (e.g.
-  a headless-browser test) that triggers the element on a known
-  surface and asserts a visible DOM node appears
+A phase boundary is any of: a wave / phase completion; a task ticked in TodoWrite
+or the plan file; a commit milestone; a push gate; a Council Phase 2 → Phase 3
+transition. Every one closes with the five-step sweep + the sweep block below.
 
-The check converts a one-off retrospective find into a permanent
-guard.
+### 2. The retrospective uses DIFFERENT gates than the current phase
+
+The prior gate is known sufficient for the prior state; the current state has new
+code on top. Add cross-file re-grep for the removed pattern (confirm the new
+pattern WINS, not coexists), an end-to-end trace of the affected user-visible
+surface (UI: render on a live build / probe; backend: round-trip through the
+authoritative path — cookie + body + audit + DB), and an integration-sanity
+check on the touched layer (callers + tests + docs on a rename; cascade / bundle
+/ mount order on frontend).
+
+### 3. User-reported regressions mean the retrospective was insufficient
+
+When the user reports "the prior fix didn't work" / "the bug is still there":
+STOP the current phase; re-run the retrospective for the named prior phase with a
+DIFFERENT gate (the prior gate is proven insufficient); identify the layer that
+gate missed and add an automated check (lint rule, probe, build assertion) that
+would have caught it; only then resume. NEVER argue "CI was green so the fix must
+be correct" — CI green proves what CI exercises, nothing more.
+
+### 4. Mechanical cross-phase wiring checklist
+
+Beyond Step 3's graph closure, mechanically confirm the phase-to-phase seams:
+Phase N's declared "consumers" actually exist; N's "produces" matches the
+downstream expected input; N's data structures are consumed correctly by N+1;
+event names match producer + consumer; API contracts match downstream callers;
+schema migrations don't break a prior phase's queries.
+
+### 5. Findings taxonomy — fix ❌ before the next phase
+
+Every reviewed phase gets one of: **✅** verified principal-level + wired
+correctly; **⚠️** drift requiring re-work; **❌** wiring broken / phase BLOCKED.
+❌ blocks the next phase until fixed. ⚠️ becomes top-of-todo for the next phase.
+Severity from the adversarial audit (Rule 8) gates the same way: CRITICAL / HIGH
+open → phase NOT done; MEDIUM / LOW → deferred only as an explicit tracked task;
+risk-accepting a CRITICAL / HIGH needs the USER's written acceptance recorded in
+the plan.
 
 ### 6. Principal-level is the floor for the retrospective itself
 
-Per `principal-level-mandate.md`, every artifact operates at
-principal-engineer depth. The retrospective is no exception:
+The retrospective names the SPECIFIC layer each prior phase's gate did NOT
+exercise, and the SPECIFIC check (gate / probe / lint / build assertion) that
+closes the gap. It cites file:line where each prior change lives and where the
+retrospective confirmed it still holds. It never uses vague verbs ("looks fine",
+"seems wired"). "All prior phases verified ✓" without naming what was checked is
+a violation.
 
-- It names the SPECIFIC layer each prior phase's gate did NOT
-  exercise
-- It names the SPECIFIC test (gate, probe, lint, build assertion)
-  that would close the gap
-- It does NOT use vague verbs like "looks fine" or "seems wired"
-- It cites the file:line where each prior phase's change lives
-  - the file:line where the retrospective verified the change
-  is still in effect
+### 7. Council Phase 2 consensus re-check
 
-A retrospective that reads "all prior phases verified ✓" without
-naming what was checked is a violation of this rule's principal-
-level floor.
+For each materially-touched prior phase, re-run the Council Phase 2 question: does
+the original GO/NO-GO still hold given new information? Did a veto-able finding
+emerge later? Are the tiebreakers still valid? A prior GO that no longer holds is
+a ❌ blocker.
 
-### 7. The retrospective extends through the user-verification window
+### 8. Multi-division adversarial audit of the CURRENT phase's own work
 
-Per `verify-before-claim.md`, claims of completion ("done",
-"shipped") are paired with same-turn verification. This rule
-extends: when the work stream is user-facing AND the prior
-phase shipped a user-visible fix, the retrospective stays OPEN
-until the user explicitly confirms the fix in the user-visible
-surface.
+Before the current phase is marked done / committed, it passes a **parallel,
+adversarial** audit — each reviewer's job is to find what's wrong, not confirm it
+works. Delegate to the relevant Council divisions / specialized reviewers per
+`council-default.md`: architecture + security ALWAYS; code / async-quality on any
+code; compliance / privacy / residency on PII / regulated / cross-border;
+AI/ML ethics on any ML / LLM / automated-decision surface; infra / ops on IaC /
+deploy; data + cost as triggered. **"Everything wired" is an explicit objective**
+(per `code-graph-validation.md`): every control the design CLAIMS is actually
+called on the live path (no inert validators, no prompt-only gates, no dead
+security code); every resource opened in construction is closed on shutdown
+(lifecycle symmetry); every producer↔consumer contract matches across repos;
+nothing was silently dropped in a lift / refactor (diff against the source of
+truth). Passing lint + type-check + tests is necessary but NEVER sufficient —
+green gates routinely co-exist with non-functional controls, dropped wiring,
+resource leaks, and compliance gaps no linter sees.
 
-The retrospective block carries an open state:
+### 9. The retrospective stays OPEN through the user-verification window
+
+When the work stream is user-facing AND the prior phase shipped a user-visible
+fix, the retrospective stays OPEN until the user confirms the fix in the
+user-visible surface. The agent's gates are not the ground truth; the user's
+surface is. Carry `Retrospective state: OPEN (awaiting user verify of <surface>)`
+until confirmed.
+
+### 10. Add a permanent check for every recurring miss
+
+When the sweep surfaces the SAME class of miss across multiple phases, add an
+AUTOMATED check that catches it — e.g. recurring CSS-override miss → build
+assertion that the override imports AFTER the file it overrides; recurring
+audit-field forbidden-pattern → eslint rule forbidding those keys; recurring
+"rendered element not visible" → a headless-browser probe asserting a visible DOM
+node. The check converts a one-off find into a permanent guard.
+
+### 11. Multi-PR work streams accumulate retrospective scope
+
+When a stream spans multiple PRs, the retrospective re-audits EVERY prior PR in
+the stream, not just the prior phase, and builds a "verified vs not" map (see the
+PR-description format below). The map exposes what's not yet verified; a missing
+gate is itself a refinement candidate per `continuous-learning-mandate.md`.
+
+### 12. The review's output is a durable artefact
+
+The backward sweep writes to
+`<workspace>/.claude/audits/phase-review-<wave-id>-<timestamp>.md` (gitignored
+per `project-scoped-artifacts.md`). It records the just-completed phase's
+verification summary, the per-prior-phase ✅/⚠️/❌ status with the gate used,
+the ❌ blockers (with owner + ETA), the ⚠️ drift (with deferred plan), and the
+✅ cleared list.
+
+### 13. Plans declare an explicit Review step between waves
+
+Multi-wave plans carry a "Review" step between each wave in the wave sequencing.
+It runs the five-step sweep, updates the plan file with findings, and surfaces
+any ❌ blockers via AskUserQuestion before the next wave starts.
+
+## When the sweep escalates (STOP-THE-LINE)
+
+Escalate — surface to the user before continuing — when any of:
+
+- A prior phase's gate regresses AND the cause is not in the current phase's
+  changes → an upstream dependency drifted.
+- The audit finds CRITICAL or HIGH severity in new OR prior work → fix + re-audit;
+  risk-accept needs the user's written acceptance in the plan.
+- The wiring check finds a control the design CLAIMS but that is NOT called on the
+  live path (inert validator, prompt-only gate, dead security code) → wire it or
+  surface the gap; phase NOT done.
+- Follow-ups exceed the current session's capacity → batch them into a new phase /
+  task group with explicit user awareness.
+
+NEVER silently proceed past an escalation signal. Stopping the line costs one turn
+of surfacing; proceeding past a regression costs cascading rework.
+
+## Output formats
+
+### The sweep block (appended to every phase-closeout verification block)
 
 ```text
-Retrospective state: OPEN (awaiting user verify of <surface>)
+Phase retrospective sweep (this turn):
+  Step 1 (forward):       <gates passed this turn>
+  Step 2 (retrospective): N-1 ✓ via <gate>; N-2 ✓ via <gate>;
+                          N-3 REGRESSED — fixed in <commit>
+  Step 3 (wiring):        dangling 0 / dead 0 / unwired 0; cross-artifact green
+  Step 4 (audit):         reviewers: architecture, security, <as triggered>;
+                          CRITICAL 0 / HIGH 0 / MEDIUM 3 (tracked) / LOW 5 (tracked);
+                          controls-on-path ✓ lifecycle-symmetry ✓ cross-repo ✓;
+                          verdict: PASS   (or BLOCKED — N CRITICAL/HIGH open)
+  Step 5 (follow-ups):    <count> captured (see plan §<phase>)
+  Retrospective state:    CLOSED   (or OPEN — awaiting user verify of <surface>)
 ```
 
-Until the user verifies, the prior phase is not "fully complete"
-in the rule's sense — the gates exercised are the agent's
-verification gates, but the surface the user cares about is the
-ground truth.
+A phase-closeout that lacks this block didn't close properly — an
+`no-overclaim.md` violation.
 
-### 8. Every phase also runs a multi-division principal audit of ITS OWN work
-
-The retrospective (rules 1-7) re-verifies PRIOR phases. This rule adds the
-forward half: before the CURRENT phase is marked done / committed / called
-"complete", it passes a **multi-reviewer, adversarial, principal-level audit of
-its own artifacts AND the cross-repo seams it touches** — not a single
-self-review.
-
-- **Delegate in parallel** to the relevant Council divisions / specialized
-  reviewers (per `council-default.md`), each adversarial (job = find what's
-  wrong, not confirm it works). Dimensions fire by content: architecture +
-  security ALWAYS; code/async-quality on any code; compliance/privacy/residency
-  on PII/regulated/cross-border; AI/ML ethics on any ML/LLM/automated-decision
-  surface; infra/ops on IaC/deploy; data + cost as triggered.
-- **"Everything wired" is an explicit objective** (per `code-graph-validation.md`):
-  every control the design CLAIMS is actually called on the live path (no inert
-  validators, no prompt-only "gates", no dead security code); every resource
-  opened in construction is closed on shutdown (lifecycle symmetry); every
-  producer↔consumer contract matches across repos; nothing was silently dropped
-  in a lift/refactor (diff against the source of truth).
-- **Severity gates the phase**: CRITICAL/HIGH open → phase NOT done (fix +
-  re-audit). MEDIUM/LOW → defer ONLY as an explicit tracked task. Risk-accepting
-  a CRITICAL/HIGH needs the USER's written acceptance, recorded in the plan.
-- **Audit verdict goes in the phase's verify-before-claim block** — the floor of
-  "gates pass" is reported as exactly that, never restated as "done":
-
-```text
-Post-phase audit (this turn):
-  reviewers: architecture, security, quality, compliance, <as triggered>
-  findings:  CRITICAL 0 / HIGH 0 / MEDIUM 3 (tracked) / LOW 5 (tracked)
-  wiring:    controls-on-path ✓  lifecycle-symmetry ✓  cross-repo contracts ✓
-  verdict:   PASS   (or BLOCKED — N CRITICAL/HIGH open)
-```
-
-A phase claim without this audit block is an overclaim (per `no-overclaim.md`).
-This is a top-level job: passing lint + type-check + tests is necessary but
-NEVER sufficient — green gates routinely co-exist with non-functional controls,
-dropped wiring, resource leaks, and compliance gaps no linter sees.
-
-## Hard requirement on per-phase retrospective
-
-When the work stream is a multi-PR sequence, the retrospective
-appears in the PR description of every PR after the first. Format:
+### PR-description retrospective (every PR after the first in a stream)
 
 ```markdown
 ## Retrospective on prior PRs in this stream
-
 - **PR #N (title)**: <what changed> — verified via <gate/probe>.
-  Status: <closed/open-awaiting-verify/regressed-fixed-here>.
-- **PR #N+1 (title)**: <what changed> — verified via <gate/probe>.
-  Status: <…>.
+  Status: <closed / open-awaiting-verify / regressed-fixed-here>.
 
 ## Recurring miss class
-
-If this PR is correcting a layer a prior PR's verification did
-NOT exercise, name the layer + name the automated check this PR
-adds (or that should be added in a follow-up).
+If this PR corrects a layer a prior PR's verification did NOT exercise, name the
+layer + the automated check this PR adds (or a follow-up to add it).
 ```
+
+## Anti-patterns
+
+- **Forward-only verification** — Step 1 green, Steps 2-5 skipped because "prior
+  phases were already verified." The prior verification was valid for the prior
+  state; the current state needs the sweep.
+- **Same-gate retrospective** — Step 2 re-runs the gate the prior phase already
+  passed. That gate is known sufficient for the prior state; use a different angle.
+- **Audit as rubber-stamp** — "principal-level audit ✓" without naming the layer
+  each prior gate did NOT exercise and the check that closes the gap.
+- **"We'll come back to it later"** — every drift item gets immediate remediation,
+  a scheduled remediation wave, or an ADR explaining the deferral.
+- **"We already verified that phase"** — past verification stays valid only if NO
+  subsequent phase touched the artefact; if touched, re-verify.
+- **Silent follow-up drop** — fixing the immediate symptom without capturing the
+  underlying gap class; the same class recurs next phase.
+- **Proceeding past an escalation signal silently** — see STOP-THE-LINE.
 
 ## Cross-references
 
-- `verify-before-claim.md` — current-phase verification; this rule
-  extends to prior-phase re-verification
-- `plan-execution-progress.md` — verification block per phase; this
-  rule appends the retrospective sub-block
-- `done-criteria.md` — the per-language gates the verification block
-  runs; this rule defines what to re-run on prior phases
-- `principal-level-mandate.md` — floor for every artifact including
-  retrospectives
-- `no-overclaim.md` — never claim done without proof; this rule
-  defines what proof spans
-- `code-graph-validation.md` — incremental graph validation paired
-  with verification + retrospective
-- `continuous-learning-mandate.md` — recurring misses surfaced by
-  retrospectives become learning candidates + rule refinements
+- `verify-before-claim.md` — Step 1 forward gates; claim ↔ verification pairing
+- `plan-execution-progress.md` — the per-phase progress block the sweep appends to
+- `done-criteria.md` — the per-language gates Steps 1-2 run
+- `code-graph-validation.md` — Step 3 wiring closure
+- `principal-level-mandate.md` — Step 4 depth floor (Rules 6 + 8)
+- `council-default.md` — the divisions the Rule 8 adversarial audit delegates to
+- `no-overclaim.md` — the sweep block is part of the proof a phase is done
+- `no-silent-drops.md` — Step 5 follow-up capture
+- `plan-task-breakdown.md` — follow-ups land as new tasks in the active plan
+- `plan-completion-before-push.md` — push gate after all sweeps green
+- `project-scoped-artifacts.md` — the durable phase-review audit location (Rule 12)
+- `continuous-learning-mandate.md` — recurring misses become learning candidates
+- `official-docs-first.md` — primary-source citations in the Step 4 audit
+- `adr-template.md` — ADR format for deferrals
+
+## Provenance
+
+User directive (verbatim, 2026-06-04): **"add this to the memory and update rules
+to always do always do a review of all past phases/task after each phase/task to
+ensure it is top/principal level job and everything is properly wired."**
+
+Consolidated 2026-07-23 from three overlapping rules
+(`post-phase-retrospective-review.md` + `principal-level-review-after-each-phase.md`
++ `phase-retrospective-sweep.md`) into this single canonical rule, per the
+duplicate-rule guidance in `rule-authoring-global-vs-project.md` (search-and-reuse
+before authoring a sibling; consolidate into the existing canonical + redirect the
+duplicates). No gate was dropped: the five-step sweep, the mechanical wiring
+checklist, the ✅/⚠️/❌ taxonomy, the durable audit artefact, the Council Phase-2
+re-check, the STOP-THE-LINE escalation, and the multi-division adversarial audit
+are all preserved.
 
 ## Learning hooks
 
@@ -271,27 +357,25 @@ Per `continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Phase closed without a retrospective block (rule 1 violation)
-- Prior-phase re-verification used the SAME gate as the prior phase
-  (rule 2 violation — different gates required)
-- User reports a regression that the prior phase's gates "passed"
-  (rule 3 weakening — prior gate was insufficient)
-- Multi-PR stream with no accumulated retrospective map (rule 4
-  weakening)
-- Same class of miss across 3+ phases without a check added
-  (rule 5 weakening — recurring-miss escalation)
-- Retrospective uses vague verbs ("looks fine", "seems wired")
-  (rule 6 violation — principal-level floor)
-- User-visible fix marked "done" before user confirms (rule 7
-  weakening)
+- Phase closeout without the five-step sweep block (Rule 1 violation)
+- Step 2 re-used the same gate as the prior phase's verification (Rule 2 violation)
+- Step 3 (wiring) skipped on a phase touching cross-repo seams (Rule 4 weakening)
+- Step 4 reported "PASS" without naming the layer each prior gate did NOT exercise
+  (Rules 6 + 8 principal-floor weakening)
+- Step 5 follow-up absorbed into "I'll handle it later" without a durable record
+  (`no-silent-drops.md` violation)
+- User reports a regression the prior phase's gates "passed" (Rule 3 weakening)
+- Multi-PR stream with no accumulated retrospective map (Rule 11 weakening)
+- Same miss class across 3+ phases without an automated check added (Rule 10)
+- User-visible fix marked "done" before user confirms (Rule 9 weakening)
+- Council Phase 2 re-check skipped on a materially-touched prior phase (Rule 7)
+- Durable phase-review artefact not written (Rule 12 violation)
+- STOP-THE-LINE signal proceeded past silently (escalation weakening)
 
 **Refinement candidates**:
 
-- New entry in the recurring-miss-class table when 3+ phases hit
-  the same class without a check
-- Tightening of the "different gate" requirement when same-gate
-  re-runs prove repeatedly insufficient
-- New cross-reference when a sister rule's gate becomes the
-  retrospective's go-to check
-- New automated check the rule mandates be added when a recurring
-  miss class becomes load-bearing
+- New gate-roster row when a new artifact class needs a retrospective gate
+- New recurring-miss-class entry when 3+ phases hit the same class without a check
+- Tightening of the "different-angle gate" requirement when same-gate retros recur
+- New STOP-THE-LINE signal when a recurring escalation condition surfaces
+- New cross-reference when a sister rule provides a gate the sweep depends on

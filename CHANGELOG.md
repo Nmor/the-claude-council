@@ -7,7 +7,56 @@ and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
-Nothing pending.
+The efficiency + specialist release. Cuts the always-on cold-load while
+adding capability-aware model selection and per-stack build specialists —
+efficiency and quality moved together, not traded.
+
+### Added
+
+- `rules/common/model-tier-selection.md` — capability-aware model ladders
+  per Council role. Each role resolves to the best model AVAILABLE in the
+  install (Fable → Opus → Sonnet → Haiku), degrading gracefully and audibly.
+  Fable is reserved for the Strategic ladder and excluded from security roles
+  (its classifiers refuse security work). Availability is declared per-install
+  in the gitignored `~/.claude/.local/model-availability` (default
+  `{opus, sonnet, haiku}`).
+- Seven new per-stack build-resolver specialists (all `sonnet`,
+  `mechanical-build-fix` role): `python-build-resolver`,
+  `rust-build-resolver`, `java-build-resolver`, `dotnet-build-resolver`,
+  `ruby-build-resolver`, `php-build-resolver`, `swift-build-resolver`. Each
+  carries genuine stack-specific toolchain + error idioms + anti-patterns.
+- `council-default.md` rule 11 (online research MANDATORY across collection,
+  planning, and implementation) — enforced in-context every non-trivial turn
+  via the `hooks/improve-prompt.py` UserPromptSubmit hook, not just documented.
+- `council-default.md` rule 12 (model selection resolves the role→ladder at
+  spawn time).
+
+### Changed
+
+- **Retrospective rules consolidated 3 → 1.** `post-phase-retrospective-review.md`
+  is now the single canonical rule (five-step sweep + dependency-scoped
+  audit); `phase-retrospective-sweep.md` and
+  `principal-level-review-after-each-phase.md` are redirect stubs. ~34 KB of
+  triplicated always-on content collapsed to one authoritative source.
+- **Council speaking is now signal-gated** (`council-default.md` rule 1 + 6,
+  `principal-level-mandate.md`): coverage stays mandatory (every division
+  engages + records a verdict), but depth concentrates on the risk-owning
+  divisions — no-concern divisions give a one-line gated verdict, and the old
+  fixed "2 sentences per division" floor is retired. Shared context in,
+  structured + deduped findings out.
+- `task-intake-due-diligence.md` is trigger-gated (always-fire high-signal
+  core + domain questions on matching triggers), and `council-triggers.md`
+  slimmed (full catalog lives in the `council-rules` skill).
+- `build-error-resolver` narrowed to the **TypeScript/JavaScript** specialist;
+  the three mechanical agents (`build-error-resolver`, `go-build-resolver`,
+  `refactor-cleaner`) re-tiered `opus → sonnet` to match their ladder role.
+- Docs synced: `docs/COUNCIL.md`, `docs/AGENTS.md`, `docs/RULES.md` reflect
+  signal-gating, the model ladder, online-research mandate, and the new
+  resolvers.
+
+Net always-on cold-load: **~283 KB → ~256 KB (~10 % lighter)** despite adding
+the model-selection system, online-research enforcement, and the resolver
+roster.
 
 ## [1.2.0] — 2026-06-28
 

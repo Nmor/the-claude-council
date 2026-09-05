@@ -746,7 +746,7 @@ Idiomatic Go patterns for production code: interface-where-consumed, error wrapp
 - `~/.claude/rules-library/golang/security.md` — Go-specific security patterns
 - `~/.claude/rules-library/common/extreme-lint-policy.md` — strict Go linter config
 - `~/.claude/skills/golang-testing/SKILL.md` — table-driven tests, benchmarks, fuzz
-- `~/.claude/skills/coding-standards/SKILL.md` — language-agnostic floor
+- `~/.claude/skills/coding-quality-rules/SKILL.md` — language-agnostic floor
 - `~/.claude/agents/go-reviewer.md` — Go review (idioms, goroutine safety, race detection)
 - `~/.claude/agents/go-build-resolver.md` — Go build / vet / lint failure fixes
 

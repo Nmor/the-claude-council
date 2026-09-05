@@ -120,6 +120,13 @@ No-bloat (this turn):
   - new dependencies: 0 (or justified: <reason, gates passed>)
 ```
 
+## Tooling
+
+`ponytail` (plugin, MIT) enforces this rule's core in-session: the laziest solution
+that works, stdlib before dependency, no unrequested abstraction. It is a live
+constraint rather than a rule the model must remember to apply — useful precisely
+because speculative generality is written by default, not by decision.
+
 ## Cross-references
 
 - `wiring-and-usage-review.md` — every symbol wired to a live consumer (inert
@@ -148,29 +155,8 @@ edit-time hook.
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- New interface / flag / parameter / endpoint added with no present consumer
-  (rule 1 violation — speculative generality)
-- Two methods / handlers with near-identical bodies shipped instead of one
-  primitive (rule 2 — collapse missed)
-- Same block duplicated 3+ times without extraction (rule 3 — DRY)
-- A broad interface widened (forcing all implementers/mocks to grow) where a
-  narrow new interface would do (rule 4 — segregation missed)
-- Append to a file already past the soft cap instead of a cohesion split
-  (rule 5 weakening)
-- Superseded code left in "for now" in a change that obsoleted it (rule 6)
-- New dependency added for standard-library-equivalent functionality (rule 7)
-- Comment restates the code / obsolete prose retained (rule 8)
-- Padded near-duplicate test cases exercising one path (rule 9)
-
-**Refinement candidates**:
-
-- New anti-pattern entry when a recurring bloat shape appears
-- Tightening of the size-cap split guidance when god-file growth recurs
-- New cross-reference when a sister rule provides a gate the no-bloat audit
-  depends on
-- A mechanical detector promoted to the edit-time hook when a bloat class proves
-  catchable without false positives
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

@@ -270,7 +270,7 @@ closures) for cases where a protocol-with-extension is heavy.
 
 - `~/.claude/skills/swift-actor-persistence/SKILL.md` — sister
   Swift concurrency skill
-- `~/.claude/skills/coding-standards/SKILL.md` — universal baseline
+- `~/.claude/skills/coding-quality-rules/SKILL.md` — universal baseline
 - `~/.claude/rules-library/swift/no-discards.md` — discards / force-unwrap
   bans
 - `~/.claude/rules-library/common/no-ambient-globals.md` — DI principle

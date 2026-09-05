@@ -160,29 +160,11 @@ edit is just the last, cheap step.
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- A code change shipped to fix a runtime failure without a written proven root
-  cause (rule 1 violation — guess-and-patch)
-- A hypothesis coded without a refutation attempt first (rule 2 weakening)
-- A diagnosis taken from a recording/replay/unit-test/default that diverges from
-  the live path (rule 3 violation — validate-the-proxy)
-- A speculative fix deployed while the suspect layer had no observability (rule 4
-  — should have instrumented first)
-- Multiple speculative changes stacked in one deploy/observation (rule 5)
-- A comparison/SLO metric shipped without the dimension it exists to compare
-  (rule 6 — blind comparison metric)
-- A "fixed" claim without the before/after signal on the live path (rule 7 +
-  `no-overclaim.md`)
-
-**Refinement candidates**:
-
-- New proxy class in rule 3's list when a fresh live-vs-proxy divergence bites
-- New observability shape in rule 6 when a failure mode proves unobservable
-- Promotion of a recurring instrument-first pattern into a language/stack skill
-- New cross-reference when a sister rule provides a gate this discipline depends on
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.
 
 ## Provenance
 

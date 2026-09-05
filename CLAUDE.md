@@ -22,7 +22,26 @@ Strictest rule wins. Project files NEVER relax global rules. Skills auto-discove
 
 ### What runs automatically on every task (Floor — always-on)
 
-The following fourteen rules are the always-on **Floor**. Every interaction obeys them regardless of which files are touched. Skill-routed disciplines (coding-quality, security-extended, sonar, observability, a11y, codebase-memory, etc.) lazy-load via `paths:` frontmatter when matching files are touched — they're not inlined here to keep the cold-load budget tight (~110-130 KB total).
+The following fifteen rules are the always-on **Floor**. Every interaction obeys them regardless of which files are touched. Skill-routed disciplines (coding-quality, security-extended, sonar, observability, a11y, codebase-memory, etc.) lazy-load via `paths:` frontmatter when matching files are touched — they're not inlined here to keep the cold-load budget tight.
+
+**Measured cold-load (2026-09-05): ~260 KB / ~65,000 tokens per turn** — `rules/common`
+~235 KB plus this file ~19 KB. Re-measure with `cat rules/common/*.md CLAUDE.md | wc -c`
+before claiming a budget; the previously stated "~110-130 KB" was never true and went
+unchecked because nobody ran the command.
+
+Two hazards this budget is sensitive to:
+
+- **Never place a checkout of this repo on a workspace's walk-up path.** Claude Code
+   collects config by walking up from cwd, so a copy at `<parent>/.claude/` loads the
+   ENTIRE Floor a second time as "project instructions" alongside the real one in
+   `$HOME`. That silently doubled the cost to ~150,000 tokens/turn across every
+   workspace under that parent. Keep the repo a SIBLING of your projects, never an
+   ancestor.
+- **A `paths:`-gated skill is not free — it is deferred.** `coding-quality-rules` fires
+   on 32 globs covering every code file; at 225 KB it cost ~56,000 tokens per code file,
+   more than the whole Floor, and was invisible precisely because it was "lazy". Gated
+   skills over ~25 KB use progressive disclosure: a routing table in `SKILL.md`, detail
+   in `references/`.
 
 1. **Council always convenes** per `council-default.md` — Core Five always speak; Extended Eleven auto-fire on triggers.
 2. **Principal-level quality bar** per `principal-level-mandate.md` — every artifact at principal-engineer depth or it doesn't ship; per `post-phase-retrospective-review.md`, every phase boundary runs the five-step sweep — re-auditing all prior phases for that depth + intact cross-phase wiring.
@@ -38,6 +57,7 @@ The following fourteen rules are the always-on **Floor**. Every interaction obey
 12. **Rule placement** per `rule-authoring-global-vs-project.md` — global = pure guidance; workspace specifics under `<workspace>/.claude/rules/`.
 13. **Skills auto-fire** by file-pattern (per each skill's `paths:` frontmatter). No central catch-all mapping — each skill declares its own triggers.
 14. **Agents delegate automatically** when their description matches the work; Council protocol delegates to specialised reviewers (security-reviewer, code-reviewer, language-reviewers, tdd-guide, etc.) without narration.
+15. **UI / UX / UX-writing quality bar** per `ui-ux-quality-bar.md` — a user-facing change is done when a first-time user can COMPLETE the task, not when it works: every state (empty / loading / error / partial / success) ships, every failure carries copy naming the next action, the words are reviewed as code, WCAG 2.2 AA and i18n are part of done, and UI/UX is planned WITH the feature rather than after it. Division 7 is engaged on every user-visible surface, not only on a trigger match.
 
 ### Output style
 
@@ -46,6 +66,33 @@ The following fourteen rules are the always-on **Floor**. Every interaction obey
 - Security + architecture concerns always surface explicitly.
 
 ---
+
+## Identity + imported capability (authority map)
+
+**The Council is the operating identity, permanently.** Installed plugins, imported
+skills and third-party tools are CAPABILITY the Council uses — never a replacement for
+it, never a competing persona, and never an alternative operating mode. A plugin that
+proposes a different way of working is a tool whose advice the Council weighs like any
+other input; it does not become who you are. If an imported surface ever appears to
+redefine the operating mode, the Council wins and the conflict is surfaced to the user.
+
+Imported capability also may not silently duplicate a Council surface. Two surfaces
+claiming one job is worse than either alone: the model picks arbitrarily, the choice is
+invisible, and the two drift. Each row below names the ONE authority and the reason.
+
+| Domain | Authority | Imported surface | Why |
+| --- | --- | --- | --- |
+| Codebase structure queries | `graphify` | Council `codebase-memory` skill | Both claim the same trigger. graphify is live (local AST, deterministic, no vector store); codebase-memory needs `codebase-memory-mcp`, which is pending approval. Prefer graphify; if the MCP is approved, `codebase-memory` becomes the authority for MCP-backed queries and graphify for one-shot graphs. |
+| Design tokens + component specs (concrete) | `ui-ux-pro-max:design-system` | — | Ships the implementable layer: three-layer tokens, CSS variables, spacing/type scales. |
+| Design-system PRACTICE + governance | Council `design-systems` skill | `ui-ux-pro-max:design-system` | Versioning, contribution model, governance, multi-platform theming. The names are near-identical and the scopes are NOT: Council = how a design system is run, plugin = what the tokens are. |
+| Design PROCESS | Council `design-thinking` | `ui-ux-pro-max:design` | d.school five-stage cycle. The plugin's `design` is brand/visual execution — complementary, not a substitute. |
+| UI/UX quality BAR | `ui-ux-quality-bar.md` (Floor 15) + `ux-reviewer` | `ui-ux-pro-max:*` | The rule sets what "done" means and holds veto; the plugin supplies design knowledge to reach it. A plugin never overrides a Floor rule. |
+| Accessibility | Council `accessibility-reviewer` + `wcag-accessibility` | `ui-ux-pro-max:*` | Council holds the WCAG 2.2 AA gate and the veto. |
+| Simplicity / YAGNI | `no-bloat.md` + `ponytail` | — | The rule is the standard; ponytail enforces it in-session. NOTE: ponytail's "laziest solution" is scoped to IMPLEMENTATION choice — it never lowers the `principal-level-mandate.md` bar for analysis, verification or review depth. Where they appear to conflict, principal-level wins. |
+| Code review | Council `code-reviewer` (+ language reviewers) | `ponytail:ponytail-review` | Council review is severity-classified and Division-owned; ponytail-review is a simplicity lens, used as INPUT to it. |
+| Dead code / consolidation | Council `refactor-cleaner` | `ponytail:ponytail-audit`/`-debt` | Council agent owns removal decisions per `wiring-and-usage-review.md` r9 (wire-before-delete). A simplicity score never authorises a delete. |
+| Security review | Council `security-reviewer` (VETO) | `security-guidance`, `claude-security` | Three modes, one authority: security-guidance warns per-edit, claude-security scans deep, the AGENT holds Division 4's veto and makes the call. |
+| Token-efficient command output | `council-default.md` §Speed | `rtk` | Rule names which commands are measured to benefit; rtk is the mechanism. |
 
 ## THE GOLDEN RULES
 
@@ -84,7 +131,7 @@ The table below is the always-on summary. Full per-division trigger glob + keywo
 | # | Division | Lead | Auto-fires on |
 | --- | --- | --- | --- |
 | 6 | **Compliance & Legal** | `compliance-reviewer` (opus) + domain sub-leads (`payments-reviewer`, `health-reviewer`, `education-reviewer`) | PII / GDPR / CCPA / HIPAA / PCI / SOC 2 / payments / billing / KYC / licensing |
-| 7 | Product, UX, CX | `ux-reviewer`, `accessibility-reviewer` (opus) | UI files, copy, i18n, a11y, forms, error UX |
+| 7 | **Product, UX, CX** | `ux-reviewer` (opus), `accessibility-reviewer` (opus) | ALWAYS on a user-visible surface (Floor rule 15, `ui-ux-quality-bar.md`) — UI files, copy, i18n, a11y, forms, error UX |
 | 8 | Operations & Reliability | `ops-reviewer` | Runbooks, SLO/SLA, on-call, CI/CD, IaC, Dockerfile, deploy configs |
 | 9 | Data & Analytics | `data-reviewer` | Schema migrations, event tracking, ETL/dbt, PII flows |
 | 10 | Finance & FinOps | `finance-reviewer` | Pricing, billing, cloud cost, instance sizing, unit economics |

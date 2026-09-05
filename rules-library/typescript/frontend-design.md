@@ -39,7 +39,7 @@ When creating or modifying any visible UI:
 When working on frontend files, these skills activate together:
 
 1. **frontend-patterns** — Component architecture, state management, hooks, performance, AND visual design quality (typography, color, motion, spatial composition)
-2. **coding-standards** — Code quality, naming, structure, readability
+2. **coding-quality-rules** — Code quality, naming, structure, readability
 3. **security-review** — XSS prevention in dynamic content/styling
 
 All three must be satisfied before frontend work is considered complete.

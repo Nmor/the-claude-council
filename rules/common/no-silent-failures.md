@@ -342,26 +342,8 @@ user-experience layer.
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- False-positive success toast where the optional sub-step actually failed (rule 1 violation pattern)
-- Async op left in "pending forever" terminal state (rule 2 violation)
-- Optimistic UI update without rollback on failure (rule 3 weakening)
-- Webhook handler returning 200 OK while DLQ-routing failures silently (rule 4 weakening)
-- Polling loop with no timeout escalation surfacing as "stuck spinner" UX (rule 6)
-- Confirmation flow mutation that didn't actually apply but reported success (rule 5)
-- Same partial-success pattern recurring across handlers (taxonomy needs new code class)
-- `throw` / `reject` / `raise` shipped in a user-facing path without an accompanying toast / inline validation / banner / state transition (rule 7 violation — the strongest form)
-- Generic ErrorBoundary catch-all relied on as the FIRST UX surface instead of per-action UX (rule 7 weakening)
-- Server returns a typed `error_code` + `message` but the client renders generic "Something went wrong" (rule 7 banned-shape — the `useApiError` composable / hook isn't mapping the code)
-- Sync handler `throw new ValidationError(...)` not caught + surfaced inline on a form (rule 7 sync-path violation)
-- Server controller `throw` without centralised exception-mapping middleware turning into a generic 500 (rule 7 server-side weakening)
-
-**Refinement candidates**:
-
-- New rule when a new false-positive success shape appears in 2+ incidents
-- New cross-reference when a sister rule (no-discards, error-handling-with-context) covers a pattern previously thought unique to this rule
-- Tightening of the "every async op has a known status" rule when a new state-machine gap is observed
-- New entry in the optimistic-rollback pattern table when a new domain case surfaces
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

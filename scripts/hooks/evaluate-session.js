@@ -54,7 +54,10 @@ async function main() {
 
   // Get script directory to find config
   const scriptDir = __dirname;
-  const configFile = path.join(scriptDir, '..', '..', 'skills', 'continuous-learning', 'config.json');
+  // Skill dir is 'continuous-learning-v2' — the unsuffixed name has never existed,
+  // so this lookup silently fell through to the defaults below on every session end
+  // and the configured values were never read (wiring-and-usage-review.md: inert config).
+  const configFile = path.join(scriptDir, '..', '..', 'skills', 'continuous-learning-v2', 'config.json');
 
   // Default configuration
   let minSessionLength = 10;
@@ -62,6 +65,11 @@ async function main() {
 
   // Load config if exists
   const configContent = readFile(configFile);
+  if (!configContent) {
+    // Observable, not silent: a missing config means this evaluator is running on
+    // defaults and the operator's settings are being ignored (no-silent-failures.md r8).
+    console.error(`[evaluate-session] config not found at ${configFile} — running on defaults`);
+  }
   if (configContent) {
     try {
       const config = JSON.parse(configContent);

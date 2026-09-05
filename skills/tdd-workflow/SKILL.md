@@ -454,7 +454,7 @@ of bureaucratic.
 **Negative scope** (NOT what this skill covers):
 
 - Language-specific testing patterns — see `golang-testing`,
-  `python-testing`, `springboot-tdd`, `django-tdd`,
+  `python-testing`, `springboot-testing`, `django-testing`,
   `swift-protocol-di-testing`, `cpp-testing`
 - E2E + browser automation — see `e2e-runner` agent
 - Performance testing — different discipline
@@ -549,8 +549,8 @@ of bureaucratic.
 
 - `~/.claude/skills/golang-testing/SKILL.md` — Go-specific
 - `~/.claude/skills/python-testing/SKILL.md` — Python-specific
-- `~/.claude/skills/springboot-tdd/SKILL.md` — Spring Boot
-- `~/.claude/skills/django-tdd/SKILL.md` — Django
+- `~/.claude/skills/springboot-testing/SKILL.md` — Spring Boot
+- `~/.claude/skills/django-testing/SKILL.md` — Django
 - `~/.claude/skills/swift-protocol-di-testing/SKILL.md` — Swift
 - `~/.claude/skills/cpp-testing/SKILL.md` — C++
 - `~/.claude/rules-library/common/testing.md` — global testing rule

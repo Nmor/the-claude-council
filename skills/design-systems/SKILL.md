@@ -568,7 +568,7 @@ use real trust signals + clearly-labelled placeholders.
 - `frontend-patterns` — implementation layer
 - `vue3-patterns`, `typescript-patterns`, `swift-actor-persistence`,
   `swift-protocol-di-testing` — platform-specific implementation
-- `coding-standards` — naming + style baseline
+- `coding-quality-rules` — naming + style baseline
 - `reuse-first.md` — wrap mature OSS instead of reinventing
 - `semver.md` — versioning policy
 - `deprecation-lifecycle.md` — calendar-anchored deprecation

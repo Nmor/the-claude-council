@@ -6,6 +6,7 @@
   "permissions": {
     "allow": []
   },
+  "model": "default",
   "hooks": {
     "PreToolUse": [
       {
@@ -221,6 +222,15 @@
             "command": "node \"$HOME/.claude/scripts/hooks/parity-gate.js\""
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/gate-marker.js\""
+          }
+        ]
       }
     ],
     "Stop": [
@@ -264,10 +274,113 @@
           }
         ]
       }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/post-compact-memory-reload.js\""
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/subagent-verification-gate.js\""
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/tool-failure-recorder.js\""
+          }
+        ]
+      }
+    ],
+    "PreModelSwitch": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/model-ladder-gate.js\""
+          }
+        ]
+      }
+    ],
+    "TaskCompleted": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/task-completion-gate.js\""
+          }
+        ]
+      }
+    ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/permission-denied-audit.js\""
+          }
+        ]
+      }
     ]
   },
-  "model": "default",
-  "agentPushNotifEnabled": true,
+  "enabledPlugins": {
+    "security-guidance@claude-plugins-official": true,
+    "claude-security@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "ponytail@ponytail": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    },
+    "ui-ux-pro-max-skill": {
+      "source": {
+        "source": "github",
+        "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
+      }
+    }
+  },
   "effortLevel": "xhigh",
-  "switchModelsOnFlag": true
+  "switchModelsOnFlag": true,
+  "agentPushNotifEnabled": true,
+  "skillOverrides": {
+    "django-patterns": "off",
+    "django-patterns": "off",
+    "django-testing": "off",
+    "django-testing": "off",
+    "springboot-patterns": "off",
+    "springboot-patterns": "off",
+    "springboot-testing": "off",
+    "springboot-testing": "off",
+    "java-coding-standards": "off",
+    "rust-patterns": "off",
+    "vue3-patterns": "off",
+    "cpp-testing": "off",
+    "kotlin-patterns": "off"
+  }
 }

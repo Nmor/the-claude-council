@@ -350,22 +350,8 @@ items that lead to big goals."
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- Phase header lacks a sub-step or task list (granularity rule violation)
-- A "task" in the plan spans > 4 hours of work (atomic-task threshold breached)
-- Plan has < 10 tasks for non-trivial work (rule 2 weakening)
-- Tasks describe activity ("investigate X") instead of outcome ("identify Y; report count")
-- Verification predicate missing from a task row (rule 4 weakening)
-- Plan completes without a bloat-removal phase (rule 10 violation)
-- Mid-execution work added without updating the plan + TodoWrite (rule 9 weakening)
-- TodoWrite list has phase-level entries for a 50+-task plan with no task-level mirror
-
-**Refinement candidates**:
-
-- New row in the task-row shape table when a new artifact kind recurs (e.g., new IaC type, new schema migration template)
-- Tightening of the atomic-task time threshold when 4h tasks consistently overrun
-- New cross-reference when a sister rule (verify-before-claim, no-silent-drops, proper-fixes-first) provides a gate the task list must verify
-- New bloat-class row in the rule 10 table when a recurring leftover class emerges from rebuilds (stub redirects, dead config keys, etc.)
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

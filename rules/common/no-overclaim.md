@@ -187,20 +187,8 @@ user-facing rework and trust loss.
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- "Done" claim issued without a verification block this turn (rule violation pattern)
-- User challenges a completion claim and finds it wrong (re-affirm discipline weak)
-- Strong-completion language ("100%", "shipped", "bulletproof") used without proof
-- Same rhetorical phrase ("looks clean", "should be fine") recurring across sessions
-- Verification block missing a gate that later proved load-bearing (gate roster needs extension)
-- Re-claim after the same gate failed in the prior turn (verify-before-claim discipline weak)
-
-**Refinement candidates**:
-
-- New banned-phrase entry when a rhetorical claim recurs without proof
-- New verification gate when a missed dimension produces a false "done" in 2+ retrospectives
-- Tightening of the "verified this turn" definition when stale-verification incidents recur
-- New cross-reference when a sister rule's gate is the proof a "done" claim depended on
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

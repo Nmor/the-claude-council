@@ -251,24 +251,8 @@ baked into all agents, the council, skils and rules."**
 
 ## Learning hooks
 
-Per this very rule (self-referential):
-
-**Signals to watch**:
-
-- Council-mediated task ends without a `learning-candidate` event emitted (rule 1 violation)
-- Candidate auto-applied without user review prompt (rule 2 violation — silent mutation)
-- Candidate observed in 2+ workspaces but never promoted to global (rule 3 weakening — promotion gap)
-- Global rule contradicted 5+ times in 30 days but not flagged for refresh (rule 5 weakening — demotion gap)
-- New rule / skill / agent shipped without `## Learning hooks` section (rule 6 violation — meta-rule)
-- `/learn` invoked but no candidate batch surfaced (continuous-learning-v2 skill drift)
-- Council Phase 2 ends without "Learning signals expected" output (rule 9 weakening)
-- Council Phase 3 ends without "Learning event emitted" confirmation (rule 9 weakening)
-- Learning-events.jsonl accumulates > 100 unreviewed candidates (review cadence weakening)
-- Rule downgraded to "advisory" but still cited as enforced in agents / skills (status drift)
-
-**Refinement candidates**:
-
-- Tightening of the confidence-threshold table when low-confidence approvals prove load-bearing
-- New event-schema field when a recurring learning class needs additional context (e.g., session-id, parent-plan-slug, rule-affected list)
-- New cross-reference when a sister rule changes the artifact shape the loop depends on
-- Promotion of `/learn` from manual invocation to scheduled batch when the user's session cadence makes manual triggering miss candidates
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

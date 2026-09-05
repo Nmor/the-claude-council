@@ -162,7 +162,7 @@ Principal-level JPA / Hibernate patterns: entity modelling, association fetching
 - Spring Boot wiring around the persistence layer — see `springboot-patterns`
 - Raw SQL optimisation outside JPA — see `postgres-patterns`
 - Schema migration safety (squawk, expand-contract) — see `schema-evolution.md` + `database-migrations`
-- Test methodology for repositories — see `springboot-tdd`
+- Test methodology for repositories — see `springboot-testing`
 - DynamoDB / NoSQL patterns — see `dynamodb-patterns`
 
 ## When NOT to use
@@ -210,7 +210,7 @@ Principal-level JPA / Hibernate patterns: entity modelling, association fetching
 ## Cross-References
 
 - `~/.claude/skills/springboot-patterns/SKILL.md` — service / transaction wiring
-- `~/.claude/skills/springboot-tdd/SKILL.md` — `@DataJpaTest` with Testcontainers
+- `~/.claude/skills/springboot-testing/SKILL.md` — `@DataJpaTest` with Testcontainers
 - `~/.claude/skills/database-migrations/SKILL.md` — Flyway / Liquibase patterns
 - `~/.claude/skills/postgres-patterns/SKILL.md` — index design + EXPLAIN
 - `~/.claude/skills/java-coding-standards/SKILL.md` — record / Optional / immutability

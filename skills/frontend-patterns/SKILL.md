@@ -761,7 +761,7 @@ Create depth + atmosphere rather than defaulting to solid colours:
 This skill provides **architectural + visual patterns** for
 frontend development.
 
-- **coding-standards** — code quality: naming, structure,
+- **coding-quality-rules** — code quality: naming, structure,
   readability, immutability
 - **security-review** — XSS prevention in dynamic content + styling
 - **vue3-patterns**, **typescript-patterns** — framework-specific
@@ -778,7 +778,7 @@ architecturally sound.
 
 Frontend architecture patterns for React, React Native, Vue 3, Next.js, SwiftUI, and Flutter: component composition, state management, data fetching, form handling, performance optimisation, accessibility, and visual design quality (typography, color, motion, spatial composition).
 
-**Negative scope**: NOT CSS framework recommendations. NOT generic JS/TS coding style (use `coding-standards`). NOT API contract design (use `api-design`). NOT framework-specific deep idioms (use `vue3-patterns` for Vue, dedicated Swift/Flutter skills).
+**Negative scope**: NOT CSS framework recommendations. NOT generic JS/TS coding style (use `coding-quality-rules`). NOT API contract design (use `api-design`). NOT framework-specific deep idioms (use `vue3-patterns` for Vue, dedicated Swift/Flutter skills).
 
 ## When NOT to use
 

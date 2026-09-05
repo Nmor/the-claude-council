@@ -88,11 +88,11 @@ For each selected category, print the full list of skills below and ask the user
 | Skill | Description |
 |-------|-------------|
 | `backend-patterns` | Backend architecture, API design, server-side best practices for Node.js/Express/Next.js |
-| `coding-standards` | Universal coding standards for TypeScript, JavaScript, React, Node.js |
+| `coding-quality-rules` | Universal coding standards for TypeScript, JavaScript, React, Node.js |
 | `django-patterns` | Django architecture, REST API with DRF, ORM, caching, signals, middleware |
-| `django-security` | Django security: auth, CSRF, SQL injection, XSS prevention |
-| `django-tdd` | Django testing with pytest-django, factory_boy, mocking, coverage |
-| `django-verification` | Django verification loop: migrations, linting, tests, security scans |
+| `django-patterns` | Django security: auth, CSRF, SQL injection, XSS prevention |
+| `django-testing` | Django testing with pytest-django, factory_boy, mocking, coverage |
+| `django-testing` | Django verification loop: migrations, linting, tests, security scans |
 | `frontend-patterns` | React, Next.js, state management, performance, UI patterns |
 | `golang-patterns` | Idiomatic Go patterns, conventions for robust Go applications |
 | `golang-testing` | Go testing: table-driven tests, subtests, benchmarks, fuzzing |
@@ -100,9 +100,9 @@ For each selected category, print the full list of skills below and ask the user
 | `python-patterns` | Pythonic idioms, PEP 8, type hints, best practices |
 | `python-testing` | Python testing with pytest, TDD, fixtures, mocking, parametrization |
 | `springboot-patterns` | Spring Boot architecture, REST API, layered services, caching, async |
-| `springboot-security` | Spring Security: authn/authz, validation, CSRF, secrets, rate limiting |
-| `springboot-tdd` | Spring Boot TDD with JUnit 5, Mockito, MockMvc, Testcontainers |
-| `springboot-verification` | Spring Boot verification: build, static analysis, tests, security scans |
+| `springboot-patterns` | Spring Security: authn/authz, validation, CSRF, secrets, rate limiting |
+| `springboot-testing` | Spring Boot TDD with JUnit 5, Mockito, MockMvc, Testcontainers |
+| `springboot-testing` | Spring Boot verification: build, static analysis, tests, security scans |
 
 **Category: Database (3 skills)**
 
@@ -204,8 +204,8 @@ grep -rn "skills/" $TARGET/skills/
 
 Some skills reference others. Verify these dependencies:
 
-- `django-tdd` may reference `django-patterns`
-- `springboot-tdd` may reference `springboot-patterns`
+- `django-testing` may reference `django-patterns`
+- `springboot-testing` may reference `springboot-patterns`
 - `continuous-learning-v2` references `~/.claude/homunculus/` directory
 - `python-testing` may reference `python-patterns`
 - `golang-testing` may reference `golang-patterns`

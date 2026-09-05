@@ -356,41 +356,20 @@ User directive (verbatim, 2026-06-04): **"add this to the memory and update rule
 to always do always do a review of all past phases/task after each phase/task to
 ensure it is top/principal level job and everything is properly wired."**
 
-Consolidated 2026-07-23 from three overlapping rules
-(`post-phase-retrospective-review.md` + `principal-level-review-after-each-phase.md` +
-`phase-retrospective-sweep.md`) into this single canonical rule, per the
-duplicate-rule guidance in `rule-authoring-global-vs-project.md` (search-and-reuse
-before authoring a sibling; consolidate into the existing canonical + redirect the
-duplicates). No gate was dropped: the five-step sweep, the mechanical wiring
+Consolidated 2026-07-23 from three overlapping rules (this one plus the former
+`principal-level-review-after-each-phase` and `phase-retrospective-sweep`) into this
+single canonical rule, per the duplicate-rule guidance in
+`rule-authoring-global-vs-project.md`. Their redirect stubs were deleted 2026-09-05
+once every reference had migrated, which is what those stubs said would happen — a
+deprecation window that never closes is just permanent cold-load. No gate was dropped: the five-step sweep, the mechanical wiring
 checklist, the ✅/⚠️/❌ taxonomy, the durable audit artefact, the Council Phase-2
 re-check, the STOP-THE-LINE escalation, and the multi-division adversarial audit
 are all preserved.
 
 ## Learning hooks
 
-Per `continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- Phase closeout without the five-step sweep block (Rule 1 violation)
-- Step 2 re-used the same gate as the prior phase's verification (Rule 2 violation)
-- Step 3 (wiring) skipped on a phase touching cross-repo seams (Rule 4 weakening)
-- Step 4 reported "PASS" without naming the layer each prior gate did NOT exercise
-  (Rules 6 + 8 principal-floor weakening)
-- Step 5 follow-up absorbed into "I'll handle it later" without a durable record
-  (`no-silent-drops.md` violation)
-- User reports a regression the prior phase's gates "passed" (Rule 3 weakening)
-- Multi-PR stream with no accumulated retrospective map (Rule 11 weakening)
-- Same miss class across 3+ phases without an automated check added (Rule 10)
-- User-visible fix marked "done" before user confirms (Rule 9 weakening)
-- Council Phase 2 re-check skipped on a materially-touched prior phase (Rule 7)
-- Durable phase-review artefact not written (Rule 12 violation)
-- STOP-THE-LINE signal proceeded past silently (escalation weakening)
-
-**Refinement candidates**:
-
-- New gate-roster row when a new artifact class needs a retrospective gate
-- New recurring-miss-class entry when 3+ phases hit the same class without a check
-- Tightening of the "different-angle gate" requirement when same-gate retros recur
-- New STOP-THE-LINE signal when a recurring escalation condition surfaces
-- New cross-reference when a sister rule provides a gate the sweep depends on
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

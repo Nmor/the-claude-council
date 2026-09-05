@@ -300,22 +300,8 @@ for every coding request they must be able to run locally."**
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- Claim phrase issued without same-turn verification (rule 1 violation)
-- Stale verification block (gate ran earlier turn; files have changed since)
-- Re-affirm under user challenge without re-verification (rule 6 violation)
-- Verification block missing a gate the claim class requires (rule 7 scope mismatch)
-- Manual verification (UI smoke / accessibility / perf) skipped on a UI / a11y / perf change
-- "No-op" claim made without confirming the diff scope is actually no-op
-- Verifiable code change delegated to a sub-agent/tool that cannot run the gate (rule 11 violation)
-- A delegate's edits accepted as "done" without the orchestrator running the gate on them this turn (rule 11)
-
-**Refinement candidates**:
-
-- New row in the "verification scopes by claim type" table when a claim class gains a load-bearing gate
-- New banned claim phrase when a recurring rhetorical pattern slips past the rule
-- Tightening of the "re-run when" triggers when stale verifications recur
-- New cross-reference when a sister rule defines the gate a claim depends on
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

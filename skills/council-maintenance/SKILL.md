@@ -130,6 +130,458 @@ The failure mode it prevents is the one that motivated it — a context window
 spent on instructions for a task nobody is doing, degrading the model's attention
 on the task someone IS doing.
 
+## `rule-authoring-global-vs-project.md` — full text
+
+## Hard rules
+
+### 1. Classify the rule BEFORE writing it
+
+When a directive surfaces during project work, ask:
+
+- Is this guidance applicable to every codebase the user works on?
+  → **global**
+- Is this guidance tied to a specific project's stack, vendor list,
+  architecture, or domain model?
+  → **project**
+- Could it be split into a generic principle + a project-specific
+  config?
+  → **global principle + project config** (the canonical shape)
+
+Default: when in doubt, write the principle in global, the
+specifics in project. Re-classify later if needed.
+
+### 2. Global rules contain ONLY pure guidance
+
+Banned in global (per the broader rule purity sweep):
+
+- Project / workspace names (any client name, any product name,
+  any internal codename — use `<workspace>` / `<project>` /
+  `<vendor>` placeholders instead)
+- Per-project file paths (`/Users/<user>/<workspace>/...`,
+  `frontend/src/components/SpecificComponent.vue`, etc.)
+- Session-specific dates ("session 2026-05-26", "Q4 incident")
+- Incident details that name a specific service, container,
+  vendor, or runtime in a way that ties the rule to one
+  codebase
+- Vendor brand names that come from a specific project's vendor
+  list (vs broadly-available tools the rule must name to give
+  guidance)
+
+Allowed in global:
+
+- Abstract examples (`<some-noisy-container>`, `<workspace>/
+  CLAUDE.md`, `<provider>`)
+- Standards citations (RFC numbers, OWASP ASVS sections, ISO /
+  IEC numbers, NIST publications, IFRS / GAAP / FASB sections,
+  ITIL processes)
+- Broadly-used tool names (Docker, Kubernetes, AWS, Postgres,
+  Redis, Jest, eslint, ruff, clippy, etc.)
+- Industry-standard incident classes ("OOM-killed under load",
+  "thundering herd on cache miss", "credential rotation race")
+  WITHOUT naming the project that hit them
+
+### 3. Project rules live under `<project>/.claude/rules/`
+
+The path `<project>/.claude/rules/<rule>.md` is the canonical
+home for any rule that:
+
+- Names the project's specific vendors, services, container
+  names, endpoint URLs
+- Encodes the project's specific architecture / naming
+  conventions / type system
+- References the project's specific files, modules, or PR
+  history
+- Extends a global rule with project-specific thresholds (e.g.
+  "Sonar S3776 cap is 10 globally; this project allows 12 only
+  in `lib/router/`")
+
+Project rules MAY reference global rules they extend; the
+reference makes the relationship explicit. Project rules MUST
+NOT redeclare or override the global rule's hard limits — they
+can only add stricter project-specific overlays.
+
+### 4. Mid-work rule additions follow the same flow
+
+When a user directive arrives during project work and creates a
+new rule, the agent:
+
+1. Classifies (global vs project) per rules 1-2.
+2. Writes the rule in the correct location.
+3. If the rule belongs partially in both: drafts the global
+   principle (pure guidance) AND the project overlay (specific
+   config), as two files.
+4. Cross-links them.
+5. Updates the workspace `CLAUDE.md` (if the rule is project-
+   side) or the global cross-reference list (if global-side) so
+   the rule is discoverable.
+
+NEVER write a project-specific rule in global "for now,
+refactor later." The refactor never happens; the global rule
+accumulates project debt.
+
+### 5. Continuous improvement of global rules
+
+Global rules + skills + agents are continuously kept clean and
+improved. Triggers:
+
+- Quarterly review: re-read every global rule for accumulated
+  project-specific content; relocate as needed.
+- Post-incident: if the incident reveals a missing rule, add
+  the principle to global (NOT the incident-specific replay).
+- Cross-project pattern recognition: when 2+ workspaces have a
+  similar project-specific rule, the principle deserves
+  promotion to global.
+
+### 6. Demotion path
+
+A global rule that turns out to be project-specific (e.g., it
+references one workspace's specific deployment shape that
+doesn't generalize) is demoted to the affected workspace's
+`.claude/rules/`. The demotion preserves the rule's history via
+`git mv` when both source and destination are in the same git
+repo; otherwise via copy + delete with a note in the new file
+naming the demotion date.
+
+### 7. Promotion path
+
+A project-specific rule that turns out to apply broadly is
+promoted to global. The promotion strips every project-specific
+reference (per rule 2). The original project rule is replaced
+with a one-line redirect: "See `~/.claude/rules/common/<name>.md`."
+
+### 8. The workspace `CLAUDE.md` is the project index
+
+Every workspace `CLAUDE.md` carries a "Project rules" section
+listing every file under `<workspace>/.claude/rules/`, with one-
+line summaries. The global `CLAUDE.md` does NOT enumerate global
+rules (auto-discovery via `rules/common/`); workspace files DO
+enumerate workspace rules because they're not auto-discovered
+the same way.
+
+### 9. Skills + agents follow the same classification
+
+The same global-vs-project split applies to skills and agents:
+
+- Generic skill (e.g., `coding-quality-rules`, `api-design`,
+  `tdd-workflow`) → `~/.claude/skills/`
+- Project skill (e.g., a specific feature's domain skill that
+  only matters in one codebase) → `<project>/.claude/skills/`
+
+Default: skills are MOSTLY global (they encode patterns + best
+practices, not project specifics). Agents are MOSTLY global
+(they encode review / build / test workflows, not project
+specifics).
+
+### 10. The classification decision is recorded
+
+When a new rule lands, the agent's response includes:
+
+```text
+Rule added:
+- Path: ~/.claude/rules/common/<rule>.md  (or workspace path)
+- Classification: global | project
+- Why: <one-line rationale>
+- Cross-references: <related rules>
+```
+
+The classification + rationale go in the rule's "Why this rule
+exists" section for durable record.
+
+## Anti-pattern: project ref in global
+
+```text
+# WRONG — global rule with workspace-specific reference
+"For projects with verify-local.sh (<project-a>, <project-b>,
+<project-c>), add this gate inline."
+
+# RIGHT — abstract reference
+"For projects with a local pre-flight script (typical names:
+infra/verify-local.sh, scripts/preflight.sh), add this gate
+inline."
+```
+
+## Anti-pattern: global principle in project
+
+```text
+# WRONG — project rule restating global principle
+"This project does not allow `// eslint-disable` comments." (the
+global no-discards / extreme-lint-policy rules already say this)
+
+# RIGHT — project rule that extends global with project-specific
+"In this project, `// eslint-disable` is forbidden (per global
+no-discards.md) AND any necessary lint config exception is
+documented in `docs/lint-debt.md` with a re-tightening date."
+```
+
+## Why this rule exists
+
+Without explicit classification, rules accumulate the wrong way:
+each new rule lands wherever was convenient at the moment the
+directive arrived. Over months, global rules absorb every
+project's specifics, becoming a sticky catch-all rather than
+reusable guidance. The reverse also happens — broadly-useful
+patterns land in one workspace and never get shared.
+
+The fix is mechanical: classify on entry, write to the right
+location, demote / promote on review.
+
+User directive (verbatim): **"even when rule updates are request
+when working on a project you are ensure that only rule guides
+make it to global rules and project related rules stay in
+projects. Global rule and all skills and agents always stay
+improved and clean"**.
+
+## `project-scoped-artifacts.md` — full text
+
+## Hard rules
+
+### 1. First-touch detection
+
+A project gets its workspace `.claude/` scaffold when ANY of:
+
+- The user starts a non-trivial Council-mediated task in a
+  workspace that has no `.claude/` directory yet
+- A multi-file refactor, new feature, or integration begins
+- A `git init` happens in a new directory and Claude is used
+  for the first commits
+
+NOT triggered by trivial work (single-line fix, typo, config
+tweak). Trivial work uses inherited global rules only.
+
+### 2. Scaffold structure (canonical)
+
+Every workspace `.claude/` contains:
+
+```text
+<workspace>/.claude/
+├── CLAUDE.md              # workspace-level rules + vendor list
+├── README.md              # how this .claude/ is organised
+├── settings.json          # workspace-scoped settings (optional)
+├── settings.local.json    # per-user overrides (gitignored)
+├── .gitignore             # excludes settings.local.json, plans/, audits/, sessions/ — see rule 11
+├── rules/                 # workspace-specific rules (extend global)
+│   ├── 00-index.md
+│   └── <rule>.md
+├── skills/                # workspace-specific skills
+│   └── <skill>/SKILL.md
+├── agents/                # workspace-specific agents (rare)
+│   └── <agent>.md
+├── plans/                 # multi-phase plan files for this project
+│   └── <slug>.md
+├── memory/                # workspace-specific memories
+│   ├── MEMORY.md          # index of memory files
+│   └── feedback_*.md      # individual memories
+└── audits/                # security audits, learning events
+    ├── learning-events.jsonl
+    ├── bypass-log.jsonl
+    └── <date>/            # dated audit reports
+```
+
+### 3. Scaffold template lives at the global root
+
+The canonical template lives at
+`~/.claude/templates/project-claude-scaffold/`. On first-touch,
+the agent copies the template into the workspace + customises
+the `CLAUDE.md` with the project's name + detected tech stack.
+
+The template is part of the global config; updates to it
+propagate to new project scaffolds. Existing projects do NOT
+auto-update — they evolve at their own pace, with a manual
+diff-and-apply for template improvements.
+
+### 4. Workspace rules ADD to global; never override down
+
+Per `rule-authoring-global-vs-project.md`:
+
+- Workspace rules extend global rules with project-specific
+  specifics (vendor names, file paths, schema fields)
+- Workspace rules MAY raise thresholds (stricter than global)
+- Workspace rules MUST NOT lower thresholds (weaker than global)
+- A workspace rule that contradicts a global rule is a bug; the
+  agent flags it and refuses to apply it
+
+### 5. Learning loop (workspace-side)
+
+After every Council-mediated task in a workspace:
+
+1. The agent emits a `learning-candidate` event to
+   `<workspace>/.claude/audits/learning-events.jsonl`.
+2. The event names: the task summary, what worked, what didn't,
+   a proposed refinement to a workspace rule / skill / agent /
+   memory.
+3. Once per session OR on explicit `/learn` invocation, the
+   agent batches candidates + presents refinements via
+   AskUserQuestion.
+4. Approved refinements update the workspace artifact in the
+   same session.
+5. The candidate event is closed (status: applied / rejected /
+   deferred).
+
+### 6. Promotion path (workspace → global)
+
+A pattern observed in 2+ workspaces is eligible for promotion
+to global:
+
+1. The agent detects the cross-workspace pattern (same rule
+   shape in two `.claude/rules/` dirs).
+2. Surfaces the candidate via AskUserQuestion: "This rule
+   appears in workspaces A and B. Promote to global?"
+3. On approval: extract the generic principle (strip all
+   workspace specifics per
+   `rule-authoring-global-vs-project.md` rule 2); write to
+   `~/.claude/rules/common/<rule>.md`.
+4. Replace the workspace copies with one-line redirects:
+   `> See ~/.claude/rules/common/<rule>.md`.
+
+### 7. Demotion path (global → workspace)
+
+A global rule that turns out to be workspace-specific gets
+demoted:
+
+1. The agent (or user) identifies the demotion candidate
+   (e.g., global rule references one workspace's specific
+   deployment shape).
+2. Surfaces via AskUserQuestion: "This rule has workspace-
+   specific content; relocate to `<workspace>`/.claude/rules/?"
+3. On approval: copy to the workspace; remove from global.
+4. Add a redirect stub in global if the rule was widely
+   referenced: `> Relocated to <workspace>/.claude/rules/<rule>.md`.
+
+### 8. The first significant edit triggers scaffold creation
+
+On first-touch:
+
+1. The agent surfaces: "I'm about to make a non-trivial edit
+   in `<workspace>/`. This workspace has no `.claude/`
+   directory yet. Per
+   `~/.claude/rules/common/project-scoped-artifacts.md`, I'll
+   create the scaffold from
+   `~/.claude/templates/project-claude-scaffold/`. Confirm?"
+2. On user approval: copy the scaffold + initialise
+   `CLAUDE.md` with project name + detected tech stack.
+3. Proceed with the edit, using the now-bootstrapped `.claude/`
+   for plan files, learning events, etc.
+
+If the user declines the scaffold creation, the agent proceeds
+with global rules only, logs the decline in
+`<workspace>/.claude-skipped` file (one-line note), and
+re-prompts on next non-trivial task.
+
+### 9. Plan files belong in the workspace `.claude/plans/`
+
+Project-specific plan files live at
+`<workspace>/.claude/plans/<slug>.md`, NEVER in `~/.claude/plans/`.
+
+The global `~/.claude/plans/` is reserved for plans that govern
+the global config itself (meta-config plans).
+
+### 10. Workspace memories belong in the workspace `.claude/memory/`
+
+Project-specific memories (feedback / project /
+reference) live at `<workspace>/.claude/memory/`. The global
+memory dir at `~/.claude/projects/-Users-APPLE/memory/` holds
+ONLY universal preferences (e.g., "Use pnpm not npm", "React
+19 + SonarLint pitfalls", "Web quality bar").
+
+### 11. Plans + audits are always gitignored + never referenced as repo paths
+
+The workspace `.claude/plans/` and `.claude/audits/` directories
+(and the global `~/.claude/plans/` + `~/.claude/audits/`)
+carry per-session narrative + per-user state that MUST NOT
+enter git history:
+
+- **Plans** — In-flight architectural drafts, rebuild narratives,
+  per-author phase tracking, references to teammates / vendors /
+  customers / customers' specific incidents that don't belong in
+  shared history.
+- **Audits** — Learning-event streams, Council-bypass logs,
+  security audit reports that can leak workspace names, user
+  identifiers, internal vendor names, or sensitive scan output.
+
+Mandatory hygiene:
+
+1. Every `.gitignore` (global + every workspace) MUST include
+   `plans/` and `audits/` as full-directory entries. The
+   `templates/project-claude-scaffold/.gitignore` carries this
+   by default.
+2. No checked-in code file (source, doc, config, agent, skill,
+   rule, command, template) may REFERENCE `plans/` or `audits/`
+   as a REPO LOCATION (e.g., a markdown link pointing at
+   `plans/<slug>` or `audits/<file>` as if it were a repo
+   artifact, or an unquoted path token in agent / skill
+   frontmatter). The only acceptable references are to RUNTIME
+   PATHS that resolve at install time on the user's machine
+   (paths under `~/.claude/plans/`, `<workspace>/.claude/plans/`,
+   `<workspace>/.claude/audits/`).
+3. README / CHANGELOG / docs that previously pointed at a plan
+   or audit file as a repo artifact MUST be rewritten to point
+   at the equivalent stable doc (e.g., `docs/ARCHITECTURE.md`,
+   `docs/COUNCIL.md`).
+4. CI link-integrity checks (per `done-criteria.md`) include
+   a sweep that fails the build if any tracked file references
+   `plans/...` or `audits/...` as a repo path (anchor:
+   `^plans/` or `^audits/` in markdown links, or unquoted
+   path tokens in agent / skill frontmatter).
+5. If a plan needs to be archived for institutional memory,
+   it lives in `~/.claude/.local/plans/` (per-user, gitignored
+   at `.local/`) OR is rewritten into an ADR (per
+   `adr-template.md`) and committed under `docs/adr/` —
+   STRIPPED of every workspace / customer / teammate name.
+
+User directive (verbatim): "plan and claude files should always
+be gitignored and not be referenced in and code file. This
+should be part of all relevant rules and files".
+
+## Tech-stack auto-detection (on scaffold creation)
+
+When the agent creates the workspace scaffold, it detects the
+tech stack from:
+
+| Detector | Signal | Inferred stack |
+| --- | --- | --- |
+| `package.json` | exists | Node / TS / JS |
+| `package.json` → dependencies | `react` | React |
+| `package.json` → dependencies | `vue` | Vue |
+| `package.json` → dependencies | `next` | Next.js |
+| `package.json` → dependencies | `vite` | Vite-based build |
+| `pnpm-lock.yaml` | exists | pnpm package manager |
+| `go.mod` | exists | Go |
+| `requirements.txt` / `pyproject.toml` | exists | Python |
+| `pyproject.toml` → `[tool.poetry]` | exists | Poetry |
+| `Gemfile` | exists | Ruby / Rails |
+| `Cargo.toml` | exists | Rust |
+| `pom.xml` / `build.gradle` | exists | Java / Kotlin |
+| `*.csproj` / `*.sln` | exists | .NET |
+| `Package.swift` | exists | Swift |
+| `pubspec.yaml` | exists | Dart / Flutter |
+| `docker-compose.yml` | exists | Docker-orchestrated dev |
+| `serverless.yml` / `template.yaml` | exists | Serverless framework / SAM |
+| `*.tf` | exists | Terraform |
+| `*.sol` | exists | Solidity / Web3 |
+
+The detected stack drives the initial workspace `CLAUDE.md` —
+which Council divisions auto-engage, which skills auto-fire,
+which agents are most relevant.
+
+## Why this rule exists
+
+Project-specific learnings + plans + memories were historically
+mixed into the global `~/.claude/` directory, polluting the
+shared surface. The cost: every other project the user works
+in inherits irrelevant specifics; global rules drift toward
+"sticky catch-all" rather than reusable guidance.
+
+The fix is mechanical: every workspace has its own `.claude/`;
+project specifics live there; global stays pure.
+
+User directive (verbatim): **"We should not have project
+related files in global folders like ~/.claude/ and global
+claude.md files. As a matter of improvements all cases for
+every project should as part of its planning create and the
+associated, skills, agents, rules etc etc required for that
+project and improved by default with learnings as the project
+proveeds (This is for global and workspace/projects)."**
+
 ## Per-rule learning hooks
 
 ### `competitive-parity-per-phase.md`

@@ -820,7 +820,7 @@ Principal-level pytest methodology: fixtures + scopes + parametrize, hypothesis 
 
 **Negative scope** (NOT what this skill covers):
 
-- Django-specific testing — see `django-tdd`
+- Django-specific testing — see `django-testing`
 - Python language idioms — see `python-patterns`
 - TDD methodology — see `tdd-workflow`
 - Generic test taxonomy — see `testing.md` rule
@@ -874,7 +874,7 @@ Principal-level pytest methodology: fixtures + scopes + parametrize, hypothesis 
 ## Cross-References
 
 - `~/.claude/skills/python-patterns/SKILL.md` — language idioms
-- `~/.claude/skills/django-tdd/SKILL.md` — Django-specific
+- `~/.claude/skills/django-testing/SKILL.md` — Django-specific
 - `~/.claude/skills/tdd-workflow/SKILL.md` — RED-GREEN-REFACTOR
 - `~/.claude/rules-library/common/testing.md` — coverage thresholds
 - `~/.claude/rules-library/common/no-ambient-globals.md` — Clock / RNG injection

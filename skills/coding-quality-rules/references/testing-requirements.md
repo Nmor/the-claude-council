@@ -116,7 +116,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New test-type row when a recurring test class emerges (e.g., chaos test, fuzzing target, snapshot regression)
 - Tightening of the critical-path coverage floor when a regression slips past 95%
-- New cross-reference when a sister skill (django-tdd, springboot-tdd, swift-protocol-di-testing) extends test-type taxonomy
+- New cross-reference when a sister skill (django-testing, springboot-testing, swift-protocol-di-testing) extends test-type taxonomy
 - New "test isolation" failure-mode template when a recurring shared-state contamination class appears
 
 ---

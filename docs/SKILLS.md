@@ -32,7 +32,7 @@ every `SKILL.md` carries:
 
 | Skill | Purpose |
 | ----- | ------- |
-| [`coding-standards`](../skills/coding-standards/) | Universal code quality baseline |
+| [`coding-quality-rules`](../skills/coding-quality-rules/) | Universal code quality baseline |
 | [`tdd-workflow`](../skills/tdd-workflow/) | Red-Green-Refactor; 90% touched / 80% project coverage |
 | [`verification-loop`](../skills/verification-loop/) | After-implementation build/lint/test verification + strategic context management |
 | [`search-first`](../skills/search-first/) | Sweep before write; codebase + sister workspaces + OSS |
@@ -125,13 +125,13 @@ every `SKILL.md` carries:
 | Skill | Purpose |
 | ----- | ------- |
 | [`django-patterns`](../skills/django-patterns/) | Architecture; DRF; ORM; middleware |
-| [`django-security`](../skills/django-security/) | Auth; CSRF; SQL injection; XSS |
-| [`django-tdd`](../skills/django-tdd/) | pytest-django; factory_boy; mocking |
-| [`django-verification`](../skills/django-verification/) | Migrations; linting; coverage; deployment |
+| [`django-patterns`](../skills/django-patterns/) | Auth; CSRF; SQL injection; XSS |
+| [`django-testing`](../skills/django-testing/) | pytest-django; factory_boy; mocking |
+| [`django-testing`](../skills/django-testing/) | Migrations; linting; coverage; deployment |
 | [`springboot-patterns`](../skills/springboot-patterns/) | Layered architecture; REST; caching |
-| [`springboot-security`](../skills/springboot-security/) | Auth; validation; CSRF; secrets |
-| [`springboot-tdd`](../skills/springboot-tdd/) | JUnit 5; Mockito; Testcontainers |
-| [`springboot-verification`](../skills/springboot-verification/) | Build; analysis; coverage; security scans |
+| [`springboot-patterns`](../skills/springboot-patterns/) | Auth; validation; CSRF; secrets |
+| [`springboot-testing`](../skills/springboot-testing/) | JUnit 5; Mockito; Testcontainers |
+| [`springboot-testing`](../skills/springboot-testing/) | Build; analysis; coverage; security scans |
 
 ### Cloud + infrastructure
 
@@ -229,14 +229,14 @@ explicit invocation.
 
 For example, touching a `*.go` file auto-fires:
 
-- **Skills**: `golang-patterns`, `golang-testing`, `coding-standards`,
+- **Skills**: `golang-patterns`, `golang-testing`, `coding-quality-rules`,
   `security-review`, `tdd-workflow`
 - **Agents**: `go-reviewer`, `go-build-resolver`, `tdd-guide`,
   `security-reviewer`
 
 Touching a `*.vue` UI file auto-fires:
 
-- **Skills**: `frontend-patterns`, `vue3-patterns`, `coding-standards`
+- **Skills**: `frontend-patterns`, `vue3-patterns`, `coding-quality-rules`
 - **Agents**: `code-reviewer`
 
 Touching a payments-related file (any of `payments/`, `billing/`,

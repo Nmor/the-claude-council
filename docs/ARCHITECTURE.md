@@ -95,7 +95,7 @@ Auto-discovery: each skill lives in `~/.claude/skills/<name>/SKILL.md`.
 The `auto-skills.md` rule maps file types to the skills that should
 auto-fire when those file types are touched. For example, touching
 a `*.go` file auto-fires `golang-patterns`, `golang-testing`,
-`coding-standards`, `security-review`, `tdd-workflow` skills and the
+`coding-quality-rules`, `security-review`, `tdd-workflow` skills and the
 `go-reviewer`, `go-build-resolver`, `tdd-guide`, `security-reviewer`
 agents.
 

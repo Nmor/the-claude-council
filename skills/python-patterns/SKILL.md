@@ -796,7 +796,7 @@ Pythonic idioms and patterns for production code: dataclasses + `__slots__`, typ
 - `~/.claude/rules-library/python/no-discards.md` — banned Python patterns (bare except, `# noqa`, mutable defaults)
 - `~/.claude/rules-library/common/extreme-lint-policy.md` — strict ruff / mypy config
 - `~/.claude/rules-library/common/no-discards.md` — universal discards (hardcoded creds, `print()` in product code)
-- `~/.claude/skills/coding-standards/SKILL.md` — language-agnostic floor
+- `~/.claude/skills/coding-quality-rules/SKILL.md` — language-agnostic floor
 - `~/.claude/skills/django-patterns/SKILL.md` — Django framework specifics
 - `~/.claude/skills/python-testing/SKILL.md` — pytest + factories + property-based testing
 - `~/.claude/agents/python-reviewer.md` — PEP 8 + type hint + framework review
@@ -1494,7 +1494,7 @@ api_key = os.environ["OPENAI_API_KEY"]  # Raises KeyError if missing
 
 ## Reference
 
-See skill: `django-security` for Django-specific security guidelines (if applicable).
+See skill: `django-patterns` for Django-specific security guidelines (if applicable).
 
 ---
 

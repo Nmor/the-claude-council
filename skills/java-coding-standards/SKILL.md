@@ -161,9 +161,9 @@ Principal-level Java language idioms (Java 21 LTS): records for value types, sea
 
 - Spring Boot framework patterns — see `springboot-patterns`
 - JPA / persistence — see `jpa-patterns`
-- Spring Security — see `springboot-security`
-- Build pipeline + verification — see `springboot-verification`
-- Generic code-quality (cyclomatic, naming, dead-code) — see `coding-standards`
+- Spring Security — see `springboot-patterns`
+- Build pipeline + verification — see `springboot-testing`
+- Generic code-quality (cyclomatic, naming, dead-code) — see `coding-quality-rules`
 
 ## When NOT to use
 
@@ -213,10 +213,10 @@ Principal-level Java language idioms (Java 21 LTS): records for value types, sea
 ## Cross-References
 
 - `~/.claude/skills/springboot-patterns/SKILL.md` — Spring Boot framework
-- `~/.claude/skills/springboot-security/SKILL.md` — security
-- `~/.claude/skills/springboot-tdd/SKILL.md` — testing
+- `~/.claude/skills/springboot-patterns/SKILL.md` — security
+- `~/.claude/skills/springboot-testing/SKILL.md` — testing
 - `~/.claude/skills/jpa-patterns/SKILL.md` — persistence
-- `~/.claude/skills/coding-standards/SKILL.md` — cross-language baseline
+- `~/.claude/skills/coding-quality-rules/SKILL.md` — cross-language baseline
 - `~/.claude/rules-library/common/no-ambient-globals.md` — DI patterns
 - `~/.claude/rules-library/common/error-handling-with-context.md` — wrap with cause
 - `~/.claude/agents/code-reviewer.md` — Java code review delegate

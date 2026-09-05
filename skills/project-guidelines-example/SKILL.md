@@ -539,7 +539,7 @@ When using this template for a new project, confirm:
   the same PR as code
 - `~/.claude/rules-library/common/performance.md` — Claude model
   selection policy (opus default, haiku for mechanical)
-- `~/.claude/skills/coding-standards/` — universal coding
+- `~/.claude/skills/coding-quality-rules/` — universal coding
   standards
 - `~/.claude/skills/api-design/` — REST API design patterns
 - `~/.claude/skills/backend-patterns/` — backend patterns

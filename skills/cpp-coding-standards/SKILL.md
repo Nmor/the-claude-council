@@ -740,7 +740,7 @@ Principal-level C++ coding standards (C++20 / C++23): RAII for every resource, s
 
 - C++ test methodology — see `cpp-testing`
 - CMake build configuration — see `deployment-patterns`
-- Generic code-quality + naming — see `coding-standards`
+- Generic code-quality + naming — see `coding-quality-rules`
 - C-only codebases (use MISRA C / CERT C rules instead — different idioms)
 - Embedded systems with no-RTTI / no-exceptions constraints — defer to project-specific
 
@@ -794,7 +794,7 @@ Principal-level C++ coding standards (C++20 / C++23): RAII for every resource, s
 ## Cross-References
 
 - `~/.claude/skills/cpp-testing/SKILL.md` — GoogleTest + sanitisers
-- `~/.claude/skills/coding-standards/SKILL.md` — cross-language baseline
+- `~/.claude/skills/coding-quality-rules/SKILL.md` — cross-language baseline
 - `~/.claude/skills/security-review/SKILL.md` — memory-safety review
 - `~/.claude/rules-library/common/extreme-lint-policy.md` — strict thresholds
 - `~/.claude/rules-library/cpp/no-discards.md` — banned C++ patterns

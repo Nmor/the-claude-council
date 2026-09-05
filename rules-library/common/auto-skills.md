@@ -19,7 +19,7 @@ Skills:
 
 - **golang-patterns** — Idiomatic Go, interfaces, error handling
 - **golang-testing** — Table-driven tests, subtests, benchmarks, fuzzing
-- **coding-standards** — Universal code quality
+- **coding-quality-rules** — Universal code quality
 - **security-review** — Input validation, auth, secrets
 - **tdd-workflow** — Red-Green-Refactor methodology
 
@@ -34,7 +34,7 @@ Agents:
 
 Skills:
 
-- **coding-standards** — Universal code quality
+- **coding-quality-rules** — Universal code quality
 - **typescript-patterns** — Discriminated unions, branded types, narrowing, strictness flags (TS files only)
 - **frontend-patterns** — React/Vue component patterns, state, hooks
 - **backend-patterns** — Node.js/Express/Next.js server patterns
@@ -57,7 +57,7 @@ Skills:
 
 - **frontend-patterns** — Component architecture, performance, AND visual design quality (typography, color, motion, spatial composition)
 - **vue3-patterns** — Composition API, `<script setup>`, composables, Pinia, reactivity gotchas (Vue files only)
-- **coding-standards** — Code quality and naming
+- **coding-quality-rules** — Code quality and naming
 
 Agents:
 
@@ -69,7 +69,7 @@ Skills:
 
 - **python-patterns** — PEP 8, type hints, Pythonic idioms
 - **python-testing** — pytest, fixtures, mocking, parametrization
-- **coding-standards** — Universal code quality
+- **coding-quality-rules** — Universal code quality
 - **security-review** — Input validation, secrets
 
 Agents:
@@ -83,9 +83,9 @@ Agents:
 Skills:
 
 - **django-patterns** — Architecture, DRF, ORM, middleware
-- **django-security** — Auth, CSRF, SQL injection, XSS
-- **django-tdd** — pytest-django, factory_boy, mocking
-- **django-verification** — Migrations, linting, coverage, deployment
+- **django-patterns** — Auth, CSRF, SQL injection, XSS
+- **django-testing** — pytest-django, factory_boy, mocking
+- **django-testing** — Migrations, linting, coverage, deployment
 
 Agents:
 
@@ -99,7 +99,7 @@ Skills:
 
 - **cpp-coding-standards** — C++ Core Guidelines, modern idioms
 - **cpp-testing** — GoogleTest, CTest, sanitizers (when test files)
-- **coding-standards** — Universal code quality
+- **coding-quality-rules** — Universal code quality
 - **security-review** — Buffer overflows, memory safety
 
 Agents:
@@ -113,7 +113,7 @@ Skills:
 
 - **swift-actor-persistence** — Thread-safe actors, data persistence
 - **swift-protocol-di-testing** — Protocol DI, mock patterns
-- **coding-standards** — Universal code quality
+- **coding-quality-rules** — Universal code quality
 - **security-review** — Keychain, ATS, input validation
 
 Agents:
@@ -126,7 +126,7 @@ Agents:
 
 Skills:
 
-- **coding-standards** — Universal code quality
+- **coding-quality-rules** — Universal code quality
 - **security-review** — Secure storage, network security
 - **tdd-workflow** — Red-Green-Refactor methodology
 
@@ -140,7 +140,7 @@ Agents:
 
 Skills:
 
-- **coding-standards** — Universal code quality
+- **coding-quality-rules** — Universal code quality
 - **security-review** — SQL injection, auth, input validation
 - **tdd-workflow** — Red-Green-Refactor methodology
 
@@ -155,9 +155,9 @@ Skills:
 
 - **java-coding-standards** — Naming, immutability, Optional, streams
 - **springboot-patterns** — Layered architecture, REST, caching
-- **springboot-security** — Auth, validation, CSRF, secrets
-- **springboot-tdd** — JUnit 5, Mockito, Testcontainers
-- **springboot-verification** — Build, analysis, coverage, security scans
+- **springboot-patterns** — Auth, validation, CSRF, secrets
+- **springboot-testing** — JUnit 5, Mockito, Testcontainers
+- **springboot-testing** — Build, analysis, coverage, security scans
 - **jpa-patterns** — Entity design, relationships, queries (when JPA entities)
 
 Agents:
@@ -171,7 +171,7 @@ Agents:
 
 Skills:
 
-- **coding-standards** — Universal code quality
+- **coding-quality-rules** — Universal code quality
 
 Agents:
 

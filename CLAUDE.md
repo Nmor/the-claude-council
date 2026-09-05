@@ -22,7 +22,26 @@ Strictest rule wins. Project files NEVER relax global rules. Skills auto-discove
 
 ### What runs automatically on every task (Floor — always-on)
 
-The following fifteen rules are the always-on **Floor**. Every interaction obeys them regardless of which files are touched. Skill-routed disciplines (coding-quality, security-extended, sonar, observability, a11y, codebase-memory, etc.) lazy-load via `paths:` frontmatter when matching files are touched — they're not inlined here to keep the cold-load budget tight (~110-130 KB total).
+The following fifteen rules are the always-on **Floor**. Every interaction obeys them regardless of which files are touched. Skill-routed disciplines (coding-quality, security-extended, sonar, observability, a11y, codebase-memory, etc.) lazy-load via `paths:` frontmatter when matching files are touched — they're not inlined here to keep the cold-load budget tight.
+
+**Measured cold-load (2026-09-05): ~260 KB / ~65,000 tokens per turn** — `rules/common`
+~235 KB plus this file ~19 KB. Re-measure with `cat rules/common/*.md CLAUDE.md | wc -c`
+before claiming a budget; the previously stated "~110-130 KB" was never true and went
+unchecked because nobody ran the command.
+
+Two hazards this budget is sensitive to:
+
+- **Never place a checkout of this repo on a workspace's walk-up path.** Claude Code
+   collects config by walking up from cwd, so a copy at `<parent>/.claude/` loads the
+   ENTIRE Floor a second time as "project instructions" alongside the real one in
+   `$HOME`. That silently doubled the cost to ~150,000 tokens/turn across every
+   workspace under that parent. Keep the repo a SIBLING of your projects, never an
+   ancestor.
+- **A `paths:`-gated skill is not free — it is deferred.** `coding-quality-rules` fires
+   on 32 globs covering every code file; at 225 KB it cost ~56,000 tokens per code file,
+   more than the whole Floor, and was invisible precisely because it was "lazy". Gated
+   skills over ~25 KB use progressive disclosure: a routing table in `SKILL.md`, detail
+   in `references/`.
 
 1. **Council always convenes** per `council-default.md` — Core Five always speak; Extended Eleven auto-fire on triggers.
 2. **Principal-level quality bar** per `principal-level-mandate.md` — every artifact at principal-engineer depth or it doesn't ship; per `post-phase-retrospective-review.md`, every phase boundary runs the five-step sweep — re-auditing all prior phases for that depth + intact cross-phase wiring.

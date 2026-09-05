@@ -346,7 +346,7 @@ the SSR + hydration discipline (Nuxt 3 / Vite SSR).
 
 - `~/.claude/skills/frontend-patterns/SKILL.md` — generic patterns
 - `~/.claude/skills/typescript-patterns/SKILL.md` — TS depth
-- `~/.claude/skills/coding-standards/SKILL.md` — universal baseline
+- `~/.claude/skills/coding-quality-rules/SKILL.md` — universal baseline
 - `~/.claude/rules-library/common/a11y.md` — accessibility floor
 - `~/.claude/rules-library/common/no-discards.md` — Vue-specific S6299
   (no-bypass-sanitization) ban

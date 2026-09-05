@@ -152,7 +152,7 @@ Principal-level Swift concurrency + persistence: `actor` for thread-safe shared 
 
 **Negative scope** (NOT what this skill covers):
 
-- Generic Swift idioms — see `coding-standards`
+- Generic Swift idioms — see `coding-quality-rules`
 - Protocol-based DI + test doubles — see `swift-protocol-di-testing`
 - iOS-specific UI patterns — out of scope here
 - Cross-platform Swift Server (Vapor) patterns — defer to project-specific
@@ -200,7 +200,7 @@ Principal-level Swift concurrency + persistence: `actor` for thread-safe shared 
 ## Cross-References
 
 - `~/.claude/skills/swift-protocol-di-testing/SKILL.md` — protocol-based DI + tests
-- `~/.claude/skills/coding-standards/SKILL.md` — general Swift style
+- `~/.claude/skills/coding-quality-rules/SKILL.md` — general Swift style
 - `~/.claude/rules-library/common/no-ambient-globals.md` — DI principles applied to Swift
 - `~/.claude/rules-library/common/error-handling-with-context.md` — Swift error wrapping
 - `~/.claude/agents/code-reviewer.md` — Swift code review delegate

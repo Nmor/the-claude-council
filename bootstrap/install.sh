@@ -527,7 +527,7 @@ Next steps:
   2. Read the council protocol: ${PREFIX}/CLAUDE.md
   3. Open the docs:            ${REPO_ROOT}/docs/ARCHITECTURE.md
 
-The 15 Floor rules, 160 Library rules, 121 skills, 32 agents,
+The 24 Floor rules, 160 Library rules, 118 skills, 39 agents,
 33 commands, and 14 hooks are now active for every Claude Code
 session. Floor rules + CLAUDE.md (~240 KB) load on every
 session; the Library + skill bodies load on demand via skill

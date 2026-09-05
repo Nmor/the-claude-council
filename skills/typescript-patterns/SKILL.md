@@ -1,6 +1,6 @@
 ---
 name: typescript-patterns
-description: TypeScript-specific idioms, type-system patterns, narrowing techniques, generics, branded types, and strictness flags. Auto-fires for `.ts` and `.tsx` files alongside `coding-standards` to add TS-specific guidance the universal skill doesn't cover.
+description: TypeScript-specific idioms, type-system patterns, narrowing techniques, generics, branded types, and strictness flags. Auto-fires for `.ts` and `.tsx` files alongside `coding-quality-rules` to add TS-specific guidance the universal skill doesn't cover.
 paths:
   - "**/*.ts"
   - "**/*.tsx"
@@ -21,7 +21,7 @@ paths:
 > runtime utilities: one `fetch` wrapper, one schema validator
 > entry-point, one error envelope, one HTTP client factory.
 
-TypeScript-specific patterns that go beyond universal `coding-standards`. Use when the type-system shape of the code is the question — discriminated unions, narrowing, branded types, conditional types, exhaustiveness.
+TypeScript-specific patterns that go beyond universal `coding-quality-rules`. Use when the type-system shape of the code is the question — discriminated unions, narrowing, branded types, conditional types, exhaustiveness.
 
 ## When to Activate
 
@@ -246,7 +246,7 @@ Library consumers should import types, never your implementation classes.
 
 ## Skill Chain
 
-1. **coding-standards** — universal naming, error handling, immutability
+1. **coding-quality-rules** — universal naming, error handling, immutability
 2. **typescript-patterns** — this skill (TS-specific)
 3. **frontend-patterns** or **backend-patterns** — runtime shape (Vue / Node)
 4. **security-review** — auth, input validation, secret hygiene
@@ -255,7 +255,7 @@ Library consumers should import types, never your implementation classes.
 
 TypeScript-specific idioms for type-safety-first code: discriminated unions, branded types, narrowing, generics, `satisfies`, never-narrowing, exhaustiveness checks, strict mode, and tooling alignment (`tsc`, typescript-eslint, biome).
 
-**Negative scope**: NOT framework-specific patterns (React / Vue / Next each have their own skill). NOT runtime validation library catalogue (Zod / Valibot belong in `api-design` or `backend-patterns`). NOT JavaScript-only patterns (use `coding-standards`).
+**Negative scope**: NOT framework-specific patterns (React / Vue / Next each have their own skill). NOT runtime validation library catalogue (Zod / Valibot belong in `api-design` or `backend-patterns`). NOT JavaScript-only patterns (use `coding-quality-rules`).
 
 ## When NOT to use
 
@@ -302,7 +302,7 @@ TypeScript-specific idioms for type-safety-first code: discriminated unions, bra
 - `~/.claude/rules-library/typescript/no-discards.md` — banned TS patterns
 - `~/.claude/rules-library/common/extreme-lint-policy.md` — strict TS lint config
 - `~/.claude/rules-library/common/no-discards.md` — `console.log`, hardcoded creds, banned discards
-- `~/.claude/skills/coding-standards/SKILL.md` — language-agnostic floor
+- `~/.claude/skills/coding-quality-rules/SKILL.md` — language-agnostic floor
 - `~/.claude/skills/frontend-patterns/SKILL.md` — TS in React / Vue context
 - `~/.claude/skills/api-design/SKILL.md` — response-shape contracts via shared types
 - `~/.claude/agents/code-reviewer.md` — TS review with severity findings
@@ -491,7 +491,7 @@ When creating or modifying any visible UI:
 When working on frontend files, these skills activate together:
 
 1. **frontend-patterns** — Component architecture, state management, hooks, performance, AND visual design quality (typography, color, motion, spatial composition)
-2. **coding-standards** — Code quality, naming, structure, readability
+2. **coding-quality-rules** — Code quality, naming, structure, readability
 3. **security-review** — XSS prevention in dynamic content/styling
 
 All three must be satisfied before frontend work is considered complete.

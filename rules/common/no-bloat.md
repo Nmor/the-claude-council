@@ -120,6 +120,13 @@ No-bloat (this turn):
   - new dependencies: 0 (or justified: <reason, gates passed>)
 ```
 
+## Tooling
+
+`ponytail` (plugin, MIT) enforces this rule's core in-session: the laziest solution
+that works, stdlib before dependency, no unrequested abstraction. It is a live
+constraint rather than a rule the model must remember to apply — useful precisely
+because speculative generality is written by default, not by decision.
+
 ## Cross-references
 
 - `wiring-and-usage-review.md` — every symbol wired to a live consumer (inert

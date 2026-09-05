@@ -126,6 +126,9 @@ UI/UX (this turn):
   `comms-reviewer` (public copy)
 - Skills: `interaction-design`, `design-systems`, `wcag-accessibility`,
   `accessible-forms`, `ux-research`, `frontend-patterns`
+- Plugin: `ui-ux-pro-max` (MIT) — design intelligence across styles, product
+  profiles, font pairings and UX guidelines. This rule sets the BAR; that plugin
+  supplies the knowledge to meet it, which is why they are listed together.
 
 ## Why this rule exists
 

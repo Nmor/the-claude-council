@@ -6,6 +6,7 @@
   "permissions": {
     "allow": []
   },
+  "model": "default",
   "hooks": {
     "PreToolUse": [
       {
@@ -335,10 +336,15 @@
       }
     ]
   },
-  "model": "default",
-  "agentPushNotifEnabled": true,
-  "effortLevel": "xhigh",
-  "switchModelsOnFlag": true,
+  "enabledPlugins": {
+    "security-guidance@claude-plugins-official": true,
+    "claude-security@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "ponytail@ponytail": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
+  },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
       "source": {
@@ -359,13 +365,22 @@
       }
     }
   },
-  "enabledPlugins": {
-    "security-guidance@claude-plugins-official": true,
-    "claude-security@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true,
-    "ponytail@ponytail": true,
-    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
-    "gopls-lsp@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true
+  "effortLevel": "xhigh",
+  "switchModelsOnFlag": true,
+  "agentPushNotifEnabled": true,
+  "skillOverrides": {
+    "django-patterns": "off",
+    "django-security": "off",
+    "django-tdd": "off",
+    "django-verification": "off",
+    "springboot-patterns": "off",
+    "springboot-security": "off",
+    "springboot-tdd": "off",
+    "springboot-verification": "off",
+    "java-coding-standards": "off",
+    "rust-patterns": "off",
+    "vue3-patterns": "off",
+    "cpp-testing": "off",
+    "kotlin-patterns": "off"
   }
 }

@@ -356,12 +356,12 @@ User directive (verbatim, 2026-06-04): **"add this to the memory and update rule
 to always do always do a review of all past phases/task after each phase/task to
 ensure it is top/principal level job and everything is properly wired."**
 
-Consolidated 2026-07-23 from three overlapping rules
-(`post-phase-retrospective-review.md` + `principal-level-review-after-each-phase.md` +
-`phase-retrospective-sweep.md`) into this single canonical rule, per the
-duplicate-rule guidance in `rule-authoring-global-vs-project.md` (search-and-reuse
-before authoring a sibling; consolidate into the existing canonical + redirect the
-duplicates). No gate was dropped: the five-step sweep, the mechanical wiring
+Consolidated 2026-07-23 from three overlapping rules (this one plus the former
+`principal-level-review-after-each-phase` and `phase-retrospective-sweep`) into this
+single canonical rule, per the duplicate-rule guidance in
+`rule-authoring-global-vs-project.md`. Their redirect stubs were deleted 2026-09-05
+once every reference had migrated, which is what those stubs said would happen — a
+deprecation window that never closes is just permanent cold-load. No gate was dropped: the five-step sweep, the mechanical wiring
 checklist, the ✅/⚠️/❌ taxonomy, the durable audit artefact, the Council Phase-2
 re-check, the STOP-THE-LINE escalation, and the multi-division adversarial audit
 are all preserved.

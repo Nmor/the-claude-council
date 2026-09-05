@@ -4320,51 +4320,29 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 # Performance + Model Selection (Always-On, Global)
 
-> Auto-fires on every file. Sister to the Council agent
-> definitions in `~/.claude/agents/`. Defines the canonical
-> model-routing policy for multi-stack development work.
+> Auto-fires on every file. Sister to `model-tier-selection.md` (the CANONICAL
+> model-selection policy) and the Council agent definitions in `~/.claude/agents/`.
+> Model selection defers to `model-tier-selection.md`.
 
-## Model Selection Policy
+## Model selection → canonical in `model-tier-selection.md`
 
-User preference: **opus for coding, reviewing, and planning.**
-Across multiple stacks and languages, quality + broad coverage
-matters more than per-call cost. Reserve haiku only for genuinely
-mechanical work (doc generation, codemap updates, summarisation,
-simple formatting). The intent: every line of code that ships is
-written + reviewed at the highest available quality bar.
+Model selection is owned by `model-tier-selection.md` — the capability-aware
+ladders (role → best → floor), per-install availability with graceful
+degradation, the Fable exclusions (security), and alias-vs-version behavior. Do
+NOT maintain a second agent-model table here; that duplication is what went
+stale. Sources of truth: that rule + each agent's `model:` frontmatter.
 
-| Model | When to use |
+Alias-level summary (see the rule for the full ladders):
+
+| Work | Tier alias |
 | --- | --- |
-| **Opus 4.7** (highest quality + deepest reasoning) | All coding agents; all review agents; all planning agents; all build / refactor agents; all security / database / TDD agents. Multi-stack work means an agent often switches between Go / TS / Python / Java / SQL / IaC in one task — opus carries the broad coverage. |
-| **Sonnet 4.6** | Reserved for cases where opus is genuinely overkill AND haiku is insufficient. Few such cases exist under the opus-preferred policy. |
-| **Haiku 4.5** | Documentation generation, codemap updates, structural summarisation, light formatting passes — work where the output shape is mechanical and the cost-quality trade-off favours speed. |
+| Strategic / long-horizon / hardest non-security | `fable → opus → sonnet` |
+| Security & regulated review; deep + standard review; planning | `opus → sonnet` (Fable excluded from security) |
+| Mechanical build/compile fixes + refactor | `sonnet → haiku` (the build-resolvers + `refactor-cleaner` are **sonnet**) |
+| Search / docs / codemaps | `haiku → sonnet` |
 
-Multi-stack reality: a single review may need to read Go +
-TypeScript + Python + SQL + Terraform + Dockerfiles + YAML in one
-session. Opus's broader knowledge surface handles that without
-quality drops between languages.
-
-## Canonical agent assignments
-
-| Agent | Model | Role |
-| --- | --- | --- |
-| `architect` | opus | System design, scalability trade-offs, ADRs |
-| `planner` | opus | Multi-phase planning, dependency analysis, risk assessment |
-| `security-reviewer` | opus | OWASP + ASVS + STRIDE analysis, threat modelling |
-| `code-reviewer` | opus | Cross-language code review with severity-based findings |
-| `go-reviewer` | opus | Go idioms, concurrency safety, race detection |
-| `python-reviewer` | opus | PEP 8, type hints, framework patterns, security |
-| `database-reviewer` | opus | PostgreSQL optimisation, schema design, RLS, indexing |
-| `tdd-guide` | opus | Test-first design, RED-GREEN-REFACTOR, coverage gate |
-| `refactor-cleaner` | opus | Dead code, duplicates, reuse-first consolidation |
-| `build-error-resolver` | opus | TS/JS/TSX build + type errors |
-| `go-build-resolver` | opus | Go build, vet, lint, module resolution |
-| `e2e-runner` | opus | E2E test design + Playwright orchestration |
-| `doc-updater` | haiku | Doc generation, codemaps, README maintenance |
-
-When adding a NEW agent, default to `opus` unless the role is
-PURELY mechanical (then `haiku`). Sonnet is the exception, not
-the default.
+Aliases (`opus` / `sonnet` / `haiku` / `fable`) auto-resolve to the current model
+of each tier — today `opus` → `claude-opus-5`. Never pin a dated ID.
 
 ## Per-task escalation
 

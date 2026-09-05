@@ -55,7 +55,9 @@ layer the gates didn't exercise. The sweep is the discipline that catches it.
 ## The five-step sweep (the operational spine)
 
 Every phase / task closeout, in order. The Hard Rules below qualify the DEPTH
-each step runs at.
+each step runs at. Steps 1-5 run at every phase/task boundary; **Step 6**
+(competitive-parity, per `competitive-parity-per-phase.md`) is the sixth step,
+run deep at each wave/part-close (light per interior phase).
 
 ### Step 1 — Forward verification (current phase)
 
@@ -132,6 +134,19 @@ cross-reference to the discovery. Follow-ups land in the active plan's phase tas
 list, the TodoWrite list, and `<workspace>/.claude/audits/learning-events.jsonl`
 when a learning candidate. "I'll handle it later" without a durable record is
 forbidden.
+
+### Step 6 — Competitive-parity scan (per `competitive-parity-per-phase.md`)
+
+At a phase / wave / part close, audit what the phase just shipped against what the
+leading competitors already have, and file the gaps as tracked tasks in the next
+wave. Light per phase, deep per wave-close, cumulative against ALL prior phases (not
+just the latest), with the reference competitor set locked per plan. The scan
+produces a durable `Competitive parity (this phase/wave)` block (Just shipped →
+Competitor scan → New parity tasks → Backlog-with-rationale); absent block = absent
+step. New feature dimensions ship their discovery/filter surfaces in the SAME wave
+(the Discovery-parity rider) — built-but-hidden parity work delivers zero value. The
+full trigger, cadence, reference-set, and output-shape rules live in
+`competitive-parity-per-phase.md`; this step is its entry point in the sweep.
 
 ## Hard rules (the depth + discipline each sweep step runs at)
 

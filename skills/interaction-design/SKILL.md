@@ -379,6 +379,53 @@ Per-confirmation discipline avoids "click OK on the third dialog
 because of habit" — the trained-blindness that defeats the
 purpose.
 
+### Pattern 16: Never write like AI — write like a person
+
+Machine-generated copy has recognisable tells: it reads generic,
+inflated, and slightly robotic, and users feel it even when they
+can't name it. UX copy must sound like one person wrote it for
+another. This applies to EVERY user-facing string AND to marketing
+copy, docs, and release notes (per `comms-reviewer`). Grounded in
+plain-language practice: **UK Government Digital Service content
+design + A–Z style guide**, **NN/g "Plain Language"**, **Strunk &
+White "omit needless words"**, **Hemingway** (short sentences,
+strong verbs).
+
+**The AI tells to eliminate (each with the fix):**
+
+| AI tell | Fix |
+| --- | --- |
+| **Em-dash as a default connector** ("held in escrow — visible to both") | A period, comma, or colon. At most ~1 em-dash per screen, only where it genuinely beats a period. |
+| **Adjective / adverb stacking** ("one calm, trustworthy flow", "simple, seamless, effortless") | Cut the adjectives; state the concrete benefit. |
+| **Rule-of-three padding** ("fast, simple, and secure") | Keep only the words that carry meaning; two beats three, one beats two. |
+| **"Not just X, but Y" / "It's not about X, it's Y"** contrast tic | State Y directly. |
+| **Cute inversions / forced symmetry** ("moved by neither", "your work, your rules") | Say the plain thing. |
+| **Inflated verbs + buzzwords**: unlock, elevate, empower, supercharge, streamline, leverage, harness, foster, delve, robust, seamless, effortless, cutting-edge, best-in-class, world-class, next-level, game-changing, revolutionary | A plain verb + a concrete noun. |
+| **Filler + hedging**: simply, just, really, very, truly, actually, "in order to", "the ability to", "helps you to", "designed to", "allows you to" | Delete, or use the direct verb ("lets you" → the verb itself). |
+| **Empty openers**: "In today's fast-paced world", "Whether you're X or Y", "Imagine a world where", "Say goodbye to X" | Lead with the concrete value in the first five words. |
+| **Slogan cadence / Title Case Marketing** ("Get Paid. Stay Protected. Grow Faster.") | Sentence case; one honest sentence. |
+| **Restating the label / over-explaining the obvious** | Trust the user; delete. |
+| **Emoji as emphasis** in product copy (unless the brand voice genuinely is that) | Remove. |
+
+**The positive standard:** specific over vague; concrete nouns +
+strong verbs; short sentences, one idea each; second person; a
+benefit the user can picture; the words a customer would actually
+say out loud. Read every line aloud — if it sounds like a brochure
+or a bot, rewrite it until it sounds like a person.
+
+**Detection (run before shipping copy):** read it aloud; scan for
+every entry in the table above; ask "would a smart colleague say
+this to a customer?" A fast mechanical pass catches the worst tell:
+
+```bash
+# Em-dash / en-dash density + the buzzword list in user-facing copy
+grep -rnE '—|–' src/**/*.{tsx,ts,vue,jsx} | grep -v node_modules
+grep -rniE 'unlock|elevate|seamless|effortless|leverage|robust|supercharge|game-chang|best-in-class|world-class|delve|in today.?s (fast|world)' src
+```
+
+Human-sounding copy is a trust signal in itself: users who feel a
+real person wrote the words trust the product with their money.
+
 ## Anti-Patterns
 
 | Anti-pattern | Why bad | Fix |
@@ -397,6 +444,7 @@ purpose.
 | Notifications without dismiss / settings | Train users to ignore | Always provide control |
 | "Are you sure?" on every action | Habituation defeats safety | Confirm only destructive + irreversible |
 | Microcopy in feature jargon | User doesn't translate | User vocabulary; test with real users |
+| AI-sounding copy (em-dash filler, buzzwords, rule-of-three, "not just X but Y") | Reads generic + untrustworthy; users feel it | Pattern 16 — write like a person; read aloud; scan the tell-list |
 
 ## Verification Checklist
 
@@ -414,6 +462,9 @@ purpose.
 - [ ] Loading states present for any action > 100 ms
 - [ ] Empty states explain why + what next
 - [ ] Microcopy in user vocabulary; verbs on buttons
+- [ ] Copy passes the "never write like AI" scan (Pattern 16): no
+      em-dash filler, no buzzwords, no rule-of-three padding, no
+      "not just X but Y"; reads like a person aloud
 - [ ] Every error_code has a microcopy entry (per
       `error-codes.md`); messages reviewed by writer
 - [ ] Motion respects `prefers-reduced-motion`

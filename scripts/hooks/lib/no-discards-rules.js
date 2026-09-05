@@ -106,6 +106,19 @@ const placeholderRe = new RegExp(
   "i",
 );
 
+// Scaffold-deferral markers signal deliberate incompleteness in CODE — a
+// "scaffold only / stub for now / implement later" comment is a debt, not a
+// shipped feature (user directive 2026-08-11: "I do not want scaffold for any
+// feature. I will always want the full thing"). Comment-scoped + high-precision
+// to avoid false positives; deliberately NOT applied to markdown so plans /
+// memory / docs can DISCUSS scaffolding freely (this rule's own docs included).
+const SCAFFOLD_DEFERRAL =
+  String.raw`scaffold[- ]only|stub(?:bed)? for now|placeholder impl(?:ementation)?|full impl(?:ementation)?\s+later|(?:implement|finish|flesh)(?:\s+this|\s+it|\s+out)?\s+later`;
+const scaffoldDeferralRe = new RegExp(
+  String.raw`(?://|#)\s*[\s\S]*?(${SCAFFOLD_DEFERRAL})|/\*[\s\S]*?(${SCAFFOLD_DEFERRAL})`,
+  "i",
+);
+
 // Suppression directives the hook blocks. One regex per family
 // rather than a single mega-alternation, so adding a new directive
 // is a one-line append.
@@ -228,6 +241,15 @@ const rules = [
     applies: (filePath) =>
       isProdSource(filePath) || isMarkdown(filePath) || isCSS(filePath),
     test: (line) => placeholderRe.test(line),
+  },
+
+  // 2c. scaffold-deferral — ship the full feature, never a "scaffold/stub for
+  //     now / implement later". Code comments only (markdown discusses freely).
+  {
+    id: "scaffold-deferral",
+    level: "block",
+    applies: isProdSource,
+    test: (line) => scaffoldDeferralRe.test(line),
   },
 
   // 3. suppression — never disable a linter; fix the underlying code.

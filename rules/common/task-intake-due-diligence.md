@@ -123,6 +123,31 @@ domain questions above).
 
 For very large plans the rows expand into per-question subsections with bullets.
 
+## Enforcement (hook-backed, not documentation-only)
+
+The intake is salient AND mechanically backed — three layers, so it is not left
+to per-turn discretion:
+
+1. **`improve-prompt.py`** (UserPromptSubmit, global — fires in every workspace)
+   injects the INTAKE-MODE routing on every non-bypass prompt, requiring the intake
+   block as the first response before implementation.
+2. **`intake-gate.js`** (PreToolUse `Edit|Write|MultiEdit`) fires at the
+   file-mutation boundary — the exact point "dove straight into editing" drift
+   happens. If a project SOURCE file is about to change with no intake/plan
+   recorded this session, it surfaces a reminder (default) or hard-blocks
+   (`CLAUDE_INTAKE_GATE=block`; `=off` disables). It skips framework files
+   (`/.claude/`), non-source files, and stays quiet once a plan exists.
+3. **`intake-marker.js`** (PostToolUse `TodoWrite`) records the intake/plan as
+   engaged — producing a TodoWrite plan is the observable proxy for the Phase-0
+   intake, and it satisfies the gate for the session.
+
+A hard block on "did the model WRITE the intake prose" is not mechanically
+possible (it is model text, not a tool call); the gate enforces the observable
+proxy — a plan precedes code mutation on non-trivial work — which converts silent
+skips into a visible signal (or a block) at the boundary. All three ship in every
+install (the installer copies `settings.json` + `scripts/hooks/` + `hooks/`
+wholesale), so the enforcement travels with the rule.
+
 ## Cross-references
 
 - `council-triggers.md` — the domain questions fire on the SAME triggers as the

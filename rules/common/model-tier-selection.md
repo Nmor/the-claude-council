@@ -23,16 +23,18 @@ expensive model). Availability filters that ladder; it never inflates it.
 
 ## Tier capability + availability (primary-source-cited)
 
-Sources (read 2026-07-24): Anthropic Models Overview
+Sources (read 2026-07-27): Anthropic Models Overview
 (`platform.claude.com/docs/en/about-claude/models/overview`), Introducing Claude
 Fable 5 (`.../models/introducing-claude-fable-5-and-claude-mythos-5`), Fable 5 on
-your plan (`support.claude.com/en/articles/15424964`). Refresh per
+your plan (`support.claude.com/en/articles/15424964`). **Claude Opus 5
+(`claude-opus-5`) shipped 2026-07-24 as the new recommended default (unchanged
+$5/$25 pricing); Opus 4.8 is now a legacy model.** Refresh per
 `official-docs-first.md` cadence.
 
 | Tier | Model ID | Capability | Price (in/out per MTok) | Availability |
 | --- | --- | --- | --- | --- |
 | 1 | `claude-fable-5` | Most capable; long-horizon agentic + hardest reasoning | $10 / $50 | **Gated** — included on Max/Team Premium; metered usage-credits on Pro/Team Standard; **unavailable under ZDR** (30-day-retention "Covered Model"); **safety classifiers can refuse** (esp. cyber/bio) |
-| 2 | `claude-opus-4-8` | Anthropic's recommended default for complex agentic + enterprise work | $5 / $25 | Broadly available (all paid plans + API) |
+| 2 | `claude-opus-5` | Anthropic's recommended default for complex agentic + enterprise work (supersedes the now-legacy `claude-opus-4-8`; same $5/$25) | $5 / $25 | Broadly available (all paid plans + API); default on Max, strongest on Pro |
 | 3 | `claude-sonnet-5` | Best speed/intelligence balance; near-Opus on coding/agentic | $3 / $15 ($2/$10 intro → 2026-08-31) | Broadly available |
 | 4 | `claude-haiku-4-5` | Fastest, near-frontier; mechanical + search | $1 / $5 | Broadly available |
 | opt | `claude-mythos-5` | Fable-class WITHOUT refusal classifiers; for defensive-security | $10 / $50 | Project Glasswing invite-only — absent by default |
@@ -134,6 +136,43 @@ result is the source of truth and is passed explicitly on the Agent call —
 overriding the frontmatter upward (to Fable for a Strategic task) or downward
 (to the available floor). Frontmatter defaults SHOULD equal each agent's ladder
 floor so a direct spawn is always sane.
+
+## Alias resolution & version currency
+
+Ladders and agent frontmatter use the bare tier ALIAS (`opus`, `sonnet`,
+`haiku`, `fable`) — never a dated ID. The Claude Code harness resolves the alias
+to the CURRENT model of that tier, so the Council auto-tracks new releases: when
+Anthropic shipped Opus 5, the `opus` alias began resolving to `claude-opus-5`
+with no config change. The dated IDs in the tier table above are the concrete
+models the aliases currently resolve to — cited for pricing / capability /
+exclusion facts and refreshed per `official-docs-first.md` when a new model
+ships; they are NOT selection pins.
+
+Two things are therefore independent:
+
+- **Framework model selection** (this rule) — alias-based, auto-current.
+- **The IDE session model** (`/model` in Claude Code) — a per-user client choice
+  saved as the default. A running session keeps the model it LAUNCHED with, and a
+  saved choice does NOT auto-migrate when a newer version ships UNLESS it is an
+  ALIAS. Refresh with `/model <alias>` or start a new session.
+
+**Making "always the most recent" the default** (per Claude Code
+`code.claude.com/docs/en/model-config.md`, read 2026-07-27): the `settings.json`
+`model` field and `/model` accept either a tier ALIAS (`opus`/`sonnet`/`haiku`/
+`fable` — auto-resolves to the current latest of that tier per provider, upgrading
+as new versions ship) or a full dated ID (`claude-opus-5` — PINNED). Both
+`settings.json` and subagent frontmatter accept a dated ID to pin; the alias is the
+auto-latest form (pinning is available, not API-only). Special aliases: `default`
+(account-recommended latest — Opus 5 on Max), `best` (Fable where available, else
+latest Opus), `opusplan` (Opus in plan mode → Sonnet in execution),
+`opus[1m]`/`sonnet[1m]` (1M context).
+
+**Directive:** model selection ALWAYS uses the most-recent version of the chosen
+tier — configure with the ALIAS form, never a pinned dated ID. This rule's ladders
+and every agent's `model:` frontmatter already use bare aliases (so per-task and
+subagent selection is auto-latest). For the session default, set `settings.json`
+`"model"` to an alias (e.g. `"default"` or `"opus"`). Pinning a dated ID is a
+deliberate, documented exception (reproducibility), never the default.
 
 ## Anti-patterns
 

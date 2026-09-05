@@ -97,6 +97,11 @@ Phase 0. Surface it FIRST, then proceed.
 Either invoke the `prompt-improver` skill (which automates the
 intake) OR produce the intake block inline as your first response.
 
+The intake + a TodoWrite plan MUST precede your first file mutation
+on non-trivial work — the `intake-gate` PreToolUse hook flags an
+un-planned source edit (and hard-blocks it under
+CLAUDE_INTAKE_GATE=block).
+
 == MANDATORY ONLINE RESEARCH (every non-trivial / INTAKE task) ==
 Online research is REQUIRED — during collection, planning, AND
 implementation — and needs no permission. Do NOT plan or write code

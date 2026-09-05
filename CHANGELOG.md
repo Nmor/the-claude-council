@@ -7,6 +7,88 @@ and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+**Cold-load: ~150,240 -> ~64,939 tokens per turn (2026-09-05).** The headline fix
+was not a design change — it was a bug. This repo was checked out at a path that
+is a PARENT of eleven active workspaces, and Claude Code collects config by
+walking up from the working directory, so every session loaded the entire Council
+TWICE: once as "user's private global instructions" from `$HOME`, again as
+"project instructions, checked into the codebase" from the clone. `diff -rq`
+confirmed the two `rules/common` trees were byte-identical. Moving the clone to a
+sibling of the workspaces halved the cold-load on its own. README, `CLAUDE.md` and
+the installer now document the hazard, because any contributor can reproduce it.
+
+Three structural changes followed, all found by measuring rather than assuming:
+
+- **`coding-quality-rules` 225 KB -> 20 KB (91%).** The single largest cost in the
+  system, and invisible *because* it was `paths:`-gated: it fires on 32 globs
+  covering every code file, so touching one `.ts` cost ~56,000 tokens — more than
+  the entire Floor. It was ~20 distinct rules concatenated into one file ("Hard
+  rules" appeared six times as a section header; 76 H1s; zero supporting files).
+  Now progressive disclosure: routing table in `SKILL.md`, 19 files in
+  `references/`, and the two MANDATORY workflows kept inline because they fire on
+  every code change and must never be a lookup. **A gated skill is deferred, not
+  free** — that is now stated in the README and the installer.
+- **Learning hooks -> `council-maintenance` skill (~7,832 tokens/turn).** All 24/24
+  rules carried a `## Learning hooks` section (31,329 B). `continuous-learning-mandate`
+  rule 6 defines these as "what observations matter for REFINING THIS ARTIFACT" —
+  instructions for maintaining the Council, not for doing the task at hand.
+  Collected verbatim into a skill gated on `.claude/rules/**`; each rule keeps a
+  pointer, so the trigger stays on the Floor and only the body moves.
+- **Four event-scoped Floor rules demoted (45,514 -> 14,882 B).** `rule-authoring`,
+  `project-scoped-artifacts`, `plan-completion-before-push` and
+  `model-tier-selection` each keep their Core Principle, a numbered index of their
+  hard rules, and a pointer — a trigger, not a redirect stub. Bodies went into
+  EXISTING gated skills rather than four new ones. `done-criteria`,
+  `competitive-parity` and `continuous-learning` were candidates and are NOT
+  demoted: they fire on a model utterance or a judgment moment, and no hook can
+  precede those.
+
+### Fixed — four inert wirings
+
+- `evaluate-session.js` read `skills/continuous-learning/config.json`; the skill
+  has always been `continuous-learning-v2`. It fell through to hardcoded defaults
+  silently, since it shipped, so configured values were never read. Path fixed
+  (6 config keys now load) and the miss made observable per `no-silent-failures` r8.
+- All eight `django-*` / `springboot-*` skills declared **no `paths:` at all** —
+  unfireable, while `golang-patterns` had 20 globs. Merged 8 -> 4 on the house
+  pattern and gated on real file shapes.
+- Plugins were declared-but-not-materialised: 7 enabled in `settings.json`,
+  3 marketplaces registered, `installed_plugins.json` empty. New
+  `report_plugin_state()` compares declared vs registered vs installed and names
+  the fix; it reports and does not install, since materialising a plugin runs
+  third-party code.
+- A stub migration in this same release rewrote a `should_skip` clause in
+  `verify-standards-citations.sh`, silently exempting a real skill from the
+  citation gate. Clause removed; the skill passes on merit.
+
+### Changed — consolidation
+
+- `django` x4 and `springboot` x4 -> the house 2-skill pattern. The split was
+  structural boilerplate (Purpose / Standards Cited / Anti-Patterns /
+  Cross-References / Verification Checklist each x4), not domain content.
+- `coding-standards` redirect stub retired: 19 inbound references migrated FIRST,
+  then deleted (wire-before-delete). A negative lookbehind kept
+  `cpp-coding-standards` and `java-coding-standards` untouched.
+- Two 2026-07-23 redirect stubs deleted; their own text said they were scheduled
+  for removal once references migrated. They had.
+
+### Documentation
+
+Every published count was stale and is now measured: README badges (122 -> 118
+skills, 22 -> 24 Floor rules, 32 -> 39 agents), the "What's in the box" table
+(hooks 14 -> 25, `CLAUDE.md` ~14 -> ~20 KB, lazy surface ~5.4 -> ~4.8 MB),
+`docs/RULES.md` (Floor count, and a language list naming `solidity` + `terraform`
+which do not exist — 20 -> 18 subfolders), `docs/AGENTS.md` (32 -> 39), and
+`INSTALL.md` (now matches `verify.sh`'s own count). Four Floor rules were
+**entirely undocumented** in `docs/RULES.md` — `competitive-parity-per-phase`,
+`diagnose-before-fixing`, `project-memory` and `ui-ux-quality-bar` — and are now
+listed in their clusters. The task intake is described as trigger-gated rather
+than "29-question" wherever it appeared. `docs/lazy-loading-classification.md`
+keeps its point-in-time figures: its banner declares it a historical record of the
+v1.1.0 split, and rewriting those to today's numbers would destroy its value.
+
+---
+
 The efficiency + specialist release. Cuts the always-on cold-load while
 adding capability-aware model selection and per-stack build specialists —
 efficiency and quality moved together, not traded.

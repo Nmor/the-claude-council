@@ -150,9 +150,10 @@ A non-trivial task flows like this:
 
 1. **Prompt arrives** → `UserPromptSubmit` hook evaluates clarity.
    Vague prompts route through the `prompt-improver` skill which
-   runs the 29-question
+   runs the trigger-gated
    [task-intake-due-diligence](../rules/common/task-intake-due-diligence.md)
-   questionnaire.
+   intake — an always-fire high-signal core plus the domain questions
+   whose triggers match the task.
 2. **Council Phase 0 (Deep Research)** → online research, codebase
    exploration, primary-source citation per
    [`official-docs-first.md`](../rules/common/official-docs-first.md).

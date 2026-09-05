@@ -2,7 +2,7 @@
 
 > Index of every agent shipped with The Claude Council. Agents are
 > delegatable specialists — the Council protocol delegates to them
-> when their expertise is needed. Total: 32 agents organised across
+> when their expertise is needed. Total: 39 agents organised across
 > the 16 Council Divisions. Pair with [COUNCIL.md](COUNCIL.md) for
 > division detail.
 

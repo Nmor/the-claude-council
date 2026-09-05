@@ -2,9 +2,13 @@
 
 > **Note (post-release).** This is the point-in-time Phase B
 > classification from the v1.1.0 lazy-loading split (13 Floor files at
-> the time). The Floor has since grown — as of v1.2.0 it is **22**
-> always-on rules (silent-failure / wiring / no-bloat / payload-validation
-> / phase-retrospective enforcement were added to the Floor). For the
+> the time). The Floor has since grown — it is now **24** always-on rules
+> (silent-failure / wiring / no-bloat / payload-validation /
+> phase-retrospective / diagnose-before-fixing / competitive-parity /
+> ui-ux-quality-bar were added). Four of them — rule-authoring,
+> project-scoped-artifacts, plan-completion-before-push and
+> model-tier-selection — now keep only their trigger + hard-rule index on
+> the Floor, with the full text in a `paths:`-gated skill. For the
 > live counts + the current Floor roster see [`RULES.md`](RULES.md) and
 > the repo `README.md`; this file is kept as the historical record of the
 > original split, not a live catalog.

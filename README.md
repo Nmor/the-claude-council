@@ -22,9 +22,9 @@
 
 *Drop-in `~/.claude/` config — runs on any machine, any project, every IDE.*
 
-[![Skills](https://img.shields.io/badge/skills-122-2ea043?style=for-the-badge)](docs/SKILLS.md)
-[![Rules](https://img.shields.io/badge/rules-22%20Floor%20%2B%20160%20Library-1f6feb?style=for-the-badge)](docs/RULES.md)
-[![Agents](https://img.shields.io/badge/agents-32-8957e5?style=for-the-badge)](docs/AGENTS.md)
+[![Skills](https://img.shields.io/badge/skills-118-2ea043?style=for-the-badge)](docs/SKILLS.md)
+[![Rules](https://img.shields.io/badge/rules-24%20Floor%20%2B%20160%20Library-1f6feb?style=for-the-badge)](docs/RULES.md)
+[![Agents](https://img.shields.io/badge/agents-39-8957e5?style=for-the-badge)](docs/AGENTS.md)
 [![Council](https://img.shields.io/badge/divisions-5%20core%20%2B%2011%20extended-dc7800?style=for-the-badge)](docs/COUNCIL.md)
 [![License](https://img.shields.io/badge/license-MIT-238636?style=for-the-badge)](LICENSE)
 
@@ -55,15 +55,35 @@ architecture, security, compliance, ops, data, finance, risk,
 strategy, people, ESG, ethics, comms, plus the five core technical
 divisions.
 
-This repo is the *complete* config surface — **22 Floor rules**
-(always-loaded, ~283 KB) + **160 Library rules** (lazy-loaded via
-skill triggers, ~1.6 MB), **122 principal-level skills**, **32
-specialist agents**, **33 commands**, a strict Council protocol,
-**14 hook-enforced quality gates**, and project-scoped artifact
-bootstrap. The dual-surface design keeps every session's eager
-cold-load budget around **~300 KB** (Floor + `CLAUDE.md`, down from
-the ~1.7 MB monolith) while preserving every rule's full content
-for on-demand reference via skill `paths:` triggers.
+This repo is the *complete* config surface — **24 Floor rules**
+(always-loaded) + **160 Library rules** (lazy-loaded via skill
+triggers, ~1.2 MB), **118 principal-level skills**, **39 specialist
+agents**, **33 commands**, a strict Council protocol, **25 hook
+scripts across 13 events**, and project-scoped artifact bootstrap.
+The dual-surface design keeps the eager cold-load at **~260 KB /
+~65,000 tokens per turn** (Floor + `CLAUDE.md`) while preserving
+every rule's full content for on-demand reference via skill
+`paths:` triggers.
+
+> **Two hazards that keep that number honest.** Both were real
+> regressions in this repo, and both are invisible until measured.
+>
+> 1. **Never put a clone of this repo on a workspace's walk-up
+>    path.** Claude Code collects config by walking up from the
+>    working directory, so a clone at
+>    `<parent-of-your-projects>/.claude/` gets loaded a *second*
+>    time as "project instructions" alongside the real one in
+>    `$HOME` — silently doubling the cold-load for every project
+>    under that parent. Keep this repo a **sibling** of your
+>    projects, never an ancestor.
+> 2. **A `paths:`-gated skill is deferred, not free.** It costs
+>    nothing until it fires, then costs all of itself. One 225 KB
+>    gated skill here fired on every code file and cost more than
+>    the entire Floor. Keep gated skills under ~25 KB; past that
+>    use progressive disclosure — a routing table in `SKILL.md`,
+>    detail in `references/`. See `skills/coding-quality-rules/`.
+>
+> Re-measure any time: `cat rules/common/*.md CLAUDE.md | wc -c`
 
 **For anyone, on any project.** No org-dependency, no SaaS, no
 telemetry.
@@ -73,7 +93,7 @@ What you get after install:
 ```text
 ┌────────────────────────────────────────────────────────────────────┐
 │                                                                    │
-│   Every prompt        ●  29-question task intake (mandatory)       │
+│   Every prompt        ●  Trigger-gated task intake (mandatory)     │
 │   ────────────►       ●  16 divisions speak (5 always + 11 auto)   │
 │   in every project    ●  Standards-cited research                  │
 │                       ●  Verify-before-claim discipline            │
@@ -143,7 +163,7 @@ IDE — the Council fires on the next prompt.
 ### 1. Always-on, never bypassed
 
 Every prompt routes through **Council Phase 0** (deep research
-plus 29-question intake) → **Phase 1** (5 core divisions speak,
+plus the trigger-gated intake) → **Phase 1** (5 core divisions speak,
 11 extended divisions auto-fire on triggers) → **Phase 2**
 (consensus + named tiebreakers) → **Phase 3** (implementation plus
 post-write verification). Abbreviated mode is a speed knob, not
@@ -212,13 +232,13 @@ system improves itself with every interaction.
 
 | Surface | Path | Count | What it does |
 | --- | --- | --- | --- |
-| **Doctrine** | `CLAUDE.md` | 1 | The Council protocol pointer (~14 KB) — loaded every session |
-| **Floor rules** | `rules/common/` | 22 | Always-loaded; Council protocol, intake, verification, plan structure, project memory, silent-failure / wiring / no-bloat / payload-validation / phase-retrospective enforcement |
+| **Doctrine** | `CLAUDE.md` | 1 | The Council protocol pointer (~20 KB) — loaded every session |
+| **Floor rules** | `rules/common/` | 24 | Always-loaded; Council protocol, intake, verification, plan structure, project memory, silent-failure / wiring / no-bloat / payload-validation / phase-retrospective enforcement |
 | **Library rules** | `rules-library/` | 160 | Lazy-loaded via skill `paths:` triggers; 60 common + 100 language-specific across 20 language subdirs |
-| **Skills** | `skills/` | 122 | Principal-level skills (36 with `paths:` triggers for auto-fire on file globs; rest invoked by slash command or by name) |
-| **Agents** | `agents/` | 32 | Specialist agents organised into the 16 Council divisions |
+| **Skills** | `skills/` | 118 | Principal-level skills (40 with `paths:` triggers for auto-fire on file globs; rest invoked by slash command or by name) |
+| **Agents** | `agents/` | 39 | Specialist agents organised into the 16 Council divisions |
 | **Commands** | `commands/` | 33 | Slash commands — `/learn`, `/evolve`, `/instinct-status`, `/verify`, and more |
-| **Hooks** | `scripts/hooks/` | 14 | PreToolUse + PostToolUse + UserPromptSubmit + PreCompact + SessionStart/End — mechanical enforcement (no-discards, governance-sweep, pre-push gate, Council pre-compact brief) |
+| **Hooks** | `scripts/hooks/` | 25 | PreToolUse + PostToolUse + UserPromptSubmit + PreCompact + SessionStart/End — mechanical enforcement (no-discards, governance-sweep, pre-push gate, Council pre-compact brief) |
 | **Templates** | `templates/` | — | Project-scaffold template + IDE config templates for VS Code, Cursor, Windsurf, JetBrains |
 | **Bootstrap** | `bootstrap/` | 6 | install.sh, install.ps1, verify.sh, verify.ps1, uninstall.sh, uninstall.ps1 |
 | **Docs** | `docs/` | 10 | Architecture, Council, Rules, Skills, Agents, Project-bootstrap, Contributing, lazy-loading classification, no-discards reference, branch-protection guide |
@@ -318,8 +338,8 @@ Per-IDE walkthroughs live in [INSTALL.md](INSTALL.md).
   Workspace contamination in global ......... 0          PASS
   Council divisions ......................... 5 core + 11 extended
 
-  Cold-load budget (Floor + CLAUDE.md) ...... ~300 KB    (was ~1.7 MB)
-  Lazy-load surface (Library + Skills) ...... ~5.4 MB    on demand
+  Cold-load (Floor + CLAUDE.md) ..... ~260 KB / ~65,000 tokens per turn
+  Lazy-load surface (Library + Skills) ...... ~4.8 MB    on demand
 
 ═══════════════════════════════════════════════════════════════
 ```

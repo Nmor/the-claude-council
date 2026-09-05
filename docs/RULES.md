@@ -9,12 +9,12 @@
 
 ## Counts
 
-- **`rules/common/`** — 22 Floor rules (always-loaded every session)
+- **`rules/common/`** — 24 Floor rules (always-loaded every session,
+  ~240 KB; with `CLAUDE.md` that is ~260 KB / ~65,000 tokens per turn)
 - **`rules-library/common/`** — 60 lazy-loaded universal rules
-- **`rules-library/<lang>/`** — 100 language rules across 20 subfolders
+- **`rules-library/<lang>/`** — 100 language rules across 18 subfolders
   (bash, cpp, csharp, dart, dockerfile, golang, html-css, java, kotlin,
-  lua, markdown, python, ruby, rust, solidity, sql, swift, terraform,
-  typescript, yaml)
+  lua, markdown, python, ruby, rust, sql, swift, typescript, yaml)
 
 The clusters below catalog the Floor + the lazy-loaded common rules;
 language rules are listed under
@@ -39,7 +39,7 @@ language rules are listed under
 
 | Rule | Purpose |
 | ---- | ------- |
-| [`task-intake-due-diligence.md`](../rules/common/task-intake-due-diligence.md) | 29-question intake before any non-trivial task |
+| [`task-intake-due-diligence.md`](../rules/common/task-intake-due-diligence.md) | Trigger-gated intake before any non-trivial task |
 | [`plan-task-breakdown.md`](../rules/common/plan-task-breakdown.md) | Long list of small atomic tasks; mandatory bloat-removal phase |
 | [`plan-execution-progress.md`](../rules/common/plan-execution-progress.md) | Structured per-phase progress updates |
 | [`plan-completion-before-push.md`](../rules/common/plan-completion-before-push.md) | Active plan declares commit-policy; no push until plan complete |
@@ -50,6 +50,8 @@ language rules are listed under
 | [`local-testability.md`](../rules-library/common/local-testability.md) | Every change locally testable BEFORE writing |
 | [`done-criteria.md`](../rules/common/done-criteria.md) | Service-migration done checklist |
 | [`proper-fixes-first.md`](../rules-library/common/proper-fixes-first.md) | Root-cause fixes; no shortcuts |
+| [`diagnose-before-fixing.md`](../rules/common/diagnose-before-fixing.md) | Prove the root cause on the LIVE path before editing; instrument first when blind |
+| [`competitive-parity-per-phase.md`](../rules/common/competitive-parity-per-phase.md) | Step 6 of every phase close — audit what shipped against the leading competitors |
 
 ### Code quality + style
 
@@ -123,6 +125,7 @@ language rules are listed under
 | [`data-retention.md`](../rules-library/common/data-retention.md) | TTL + deletion path; automation-enforced; per-regulation minimums |
 | [`a11y.md`](../rules-library/common/a11y.md) | WCAG 2.2 AA minimum; AAA for critical paths |
 | [`i18n.md`](../rules-library/common/i18n.md) | ICU MessageFormat; Intl APIs; BCP 47 locales; RTL mirroring |
+| [`ui-ux-quality-bar.md`](../rules/common/ui-ux-quality-bar.md) | Every state ships; failure copy names the next action; WCAG 2.2 AA is part of done |
 | [`code-of-conduct.md`](../rules-library/common/code-of-conduct.md) | Contributor Covenant v2.1; enforcement team + reporting |
 
 ### Documentation
@@ -141,6 +144,7 @@ language rules are listed under
 | [`local-dev-setup.md`](../rules-library/common/local-dev-setup.md) | One bootstrap command; 30-minute first-run target |
 | [`project-scoped-artifacts.md`](../rules/common/project-scoped-artifacts.md) | Workspace `.claude/` scaffold on first significant work |
 | [`rule-authoring-global-vs-project.md`](../rules/common/rule-authoring-global-vs-project.md) | Classify global vs project before writing |
+| [`project-memory.md`](../rules/common/project-memory.md) | Gitignored `<workspace>/.claude/memory/MEMORY.md` that survives compaction |
 | [`continuous-learning-mandate.md`](../rules/common/continuous-learning-mandate.md) | Every artifact has a learning loop |
 | [`git-workflow.md`](../rules-library/common/git-workflow.md) | Per-org git identity; conventional commits; PR workflow |
 | [`testing.md`](../rules-library/common/testing.md) | Coverage targets; test types; TDD mandate |

@@ -11,6 +11,49 @@ The efficiency + specialist release. Cuts the always-on cold-load while
 adding capability-aware model selection and per-stack build specialists —
 efficiency and quality moved together, not traded.
 
+**Model currency (2026-07-27):** refreshed the framework to Claude Opus 5
+(`claude-opus-5`, shipped 2026-07-24 as the new recommended default; unchanged
+$5/$25 — Opus 4.8 now legacy). Only human-facing citations changed — the `opus`
+alias in agents/ladders auto-tracks the current tier, so no agent frontmatter
+moved. `model-tier-selection.md` gains an "Alias resolution & version currency"
+section; `rules-library/common/performance.md` (a stale duplicate that pinned
+Opus 4.7 and mislabelled the mechanical resolvers as opus) now defers to
+`model-tier-selection.md` as the single source; stale version strings bumped in
+the `coding-quality-rules` aggregate skill, the Cursor IDE-config template,
+`cost-aware-llm-pipeline`, and `prompt-engineering`.
+
+**Intake enforcement (2026-07-27):** task intake is now hook-backed, not
+documentation-only. New `intake-gate.js` (PreToolUse `Edit|Write|MultiEdit`)
+surfaces a reminder at the file-mutation boundary — or hard-blocks under
+`CLAUDE_INTAKE_GATE=block` — when a project source file is about to change with no
+Phase-0 intake/plan recorded this session; `intake-marker.js` (PostToolUse
+`TodoWrite`) satisfies it once a plan exists. It skips framework files (`/.claude/`),
+non-source files, and stays quiet after the first plan (`=off` disables). Both ship
+in every install (the installer copies `settings.json` + `scripts/hooks/` +
+`hooks/` wholesale). `task-intake-due-diligence.md` documents the three-layer
+enforcement and `improve-prompt.py` ties its injection to the gate. A hard block on
+the intake prose itself is not mechanically possible — the gate enforces the
+observable proxy (a plan precedes code mutation), turning silent drift into a
+visible signal.
+
+**Competitive-parity as retrospective Step 6 (2026-09-05):** the
+`competitive-parity-per-phase.md` rule is now committed + wired into the sweep
+(previously an untracked local-only file). `post-phase-retrospective-review.md`
+gains an explicit **Step 6 — Competitive-parity scan**, and `CLAUDE.md` Floor
+rule 7 names it: every wave/part-close audits what shipped against the leading
+competitors (cumulative, reference-set locked per plan), files the gaps as
+next-wave tasks, and ships each new dimension's discovery/filter surface in the
+same wave. New `parity-gate.js` (PostToolUse `Edit|Write|MultiEdit`) surfaces a
+NON-BLOCKING reminder when a `.claude/plans/` file records a phase/wave/part
+close (a retrospective-sweep block, or a wave/phase marked complete) with no
+"Competitive parity" block — fires once per session, `CLAUDE_PARITY_GATE=off`
+silences.
+
+**Diagnose-before-fixing (2026-07-26):** `diagnose-before-fixing.md` committed +
+wired into `CLAUDE.md` Floor rule 6 — a runtime-failure fix requires a PROVEN
+root cause from the LIVE execution path (not a proxy) before the edit; when
+blind, instrument first, never guess-and-patch.
+
 ### Added
 
 - `rules/common/model-tier-selection.md` — capability-aware model ladders

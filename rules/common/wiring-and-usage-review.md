@@ -146,6 +146,40 @@ These are all static, inspectable artifacts — read them now
 `aws ecr describe-repositories`, the IaC in code) rather than discovering the
 block when the scrape/call/Job silently does nothing in prod.
 
+### 9. Remediating FOUND-inert code: WIRE first; delete only after 100% validation
+
+The rules above prevent SHIPPING inert code. The counterpart — what to do when an
+audit/trace FINDS inert code — is where the expensive mistake happens: **a
+wiring-trace produces CANDIDATES, not a delete-list.** Deletion is the LAST resort,
+never the reflex. Apply this fixed order of preference to EACH candidate:
+
+1. **WIRE it (first choice).** If the symbol was deliberately authored for a real
+   purpose that was simply never connected (rich content, a named-but-unbuilt backend,
+   a "for the report" field), connect it to its intended consumer and finish it —
+   **properly implemented (a real implementation, not a stub) and WITHOUT introducing a
+   duplicate** (consolidate to ONE home; never leave the old inline + a new helper both
+   live — per `no-bloat.md` DRY). Add the safeguards the feature needs (flag, guard,
+   by-ear validation for UX). `git blame` is evidence: born in a feature commit and
+   never revisited = unfinished, WIRE it — not garbage.
+2. **DEPRECATE** if a contract blocks safe removal (e.g. buf `breaking: FILE`, a
+   published API, a vendored-stub consumer) — retire via `[deprecated]` / a soft-delete
+   window, not a hard delete.
+3. **DELETE — only after 100% validation** it is genuinely dead AND has no wireable
+   purpose: a newer impl fully replaced it AND is used (remove the redundant
+   DUPLICATE, keep the wired one), or a compat shim with **zero** consumers in ANY
+   repo. "100% validated" means proven, not assumed: grep the symbol across THIS repo
+   + every sibling repo + entry points invoked by IaC/CI/Argo, confirm no cross-repo /
+   out-of-file / dynamic consumer, and cite that evidence. A trace's "inert" label is
+   NOT validation — it is the START of validation.
+
+Beware **(C) FALSE POSITIVES** — a symbol the trace called inert but is actually wired
+(a consumer in ANOTHER repo, an entry point invoked by IaC/CI/Argo, an out-of-file
+caller). VERIFY every finding on the live path (rules 1-8) BEFORE acting. When a
+candidate's classification is unsure, **ASK the owner** rather than default to delete.
+Reflexively deleting an unverified trace's output — especially via a batch/agent
+fan-out — silently removes half-built features and trips over false positives; it is
+the audit-time mirror of the inert-code defect this rule exists to prevent.
+
 ## Anti-patterns
 
 - **Inert validator** — a guard/control defined + unit-tested but never called on
@@ -175,6 +209,11 @@ block when the scrape/call/Job silently does nothing in prod.
   that doesn't exist.
 - **"I'll wire it next phase"** — deferral that leaves an inert symbol shipping
   now; either wire it, delete it, or `BUG(unwired-)` + tell the user.
+- **Reflexive-delete of found-inert** (rule 9) — treating a wiring-trace's output as
+  a delete-list: batch-deleting audited "inert" symbols without per-item wire-vs-delete
+  classification + live-path verification. Silently removes half-built features
+  (should be WIRED) and trips over false positives (symbols wired cross-repo / by an
+  entry point the trace missed).
 
 ## Cross-references
 
@@ -219,6 +258,9 @@ Per `continuous-learning-mandate.md`:
 - A cross-artifact reference (runbook→alert, CLI→command, doc→path) that dangles
   (rule 7 violation)
 - "Wire it next phase" deferral that ships an inert symbol (anti-pattern)
+- Found-inert code deleted without per-item wire-vs-delete classification or live-path
+  verification — esp. a batch/agent fan-out treating a trace as a delete-list (rule 9
+  violation); a deliberately-authored-but-unwired feature deleted instead of wired
 
 **Refinement candidates**:
 

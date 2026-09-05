@@ -335,10 +335,10 @@
   // from Anthropic Claude Code (which lives in ~/.claude/agents/
   // and follows performance.md model policy). Default to a
   // capable Anthropic model; users override per project.
-  "cursor.composer.defaultModel": "claude-sonnet-4-6",
+  "cursor.composer.defaultModel": "claude-sonnet-5",
 
   // Chat tab — same default; consistent model across surfaces.
-  "cursor.chat.defaultModel": "claude-sonnet-4-6",
+  "cursor.chat.defaultModel": "claude-sonnet-5",
   "cursor.chat.alwaysShowChatBeforeTabbing": false,
 
   // Privacy Mode — no prompts / responses sent to Cursor servers

@@ -187,6 +187,26 @@ This means tasks include:
 
 A task that says "fix the thing" is unrecoverable on resume.
 
+### 12. User-facing work ships its UI/UX + accessibility in the SAME plan
+
+Every task that changes user-visible behaviour (a new endpoint's screen, a new
+state/status, copy, an error surface, a money/format change, a flow) carries its
+UI/UX in the SAME plan — never bolted on later:
+
+- The plan enumerates the UI/UX additions / improvements / changes as their own
+  atomic tasks (screen, component, copy, empty/error/loading states, a11y pass),
+  cross-referenced to the backend task they serve.
+- A feature is NOT "done" until its UI/UX ships AND its accessibility pass
+  (WCAG 2.2 AA — keyboard, screen-reader, contrast, focus, targets) is verified.
+- New UI/UX additions/changes discovered mid-execution are ADDED to the plan
+  (per rule 9), never carried only in someone's head.
+- For any project with a UI, the plan has a dedicated UI/UX lane/phase, and every
+  user-facing backend task links to its entry there.
+
+The pattern this prevents: backend features shipping "done" with no screen,
+inconsistent money/format rendering, or an inaccessible flow — UX debt that only
+surfaces at launch. UI/UX is planned WITH the feature, not after it.
+
 ## Canonical plan-marker naming convention (mandatory)
 
 EVERY plan artifact — plan, wave, phase, task, gap, review, finding —

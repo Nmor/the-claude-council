@@ -1,6 +1,6 @@
 ---
 name: design-systems
-description: Principal-level design system practice — design tokens, multi-platform theming, component API design, accessibility built-in, versioning + governance, contribution model, documentation, and the discipline that turns "one team's component library" into a load-bearing capability for every product surface.
+description: Principal-level design system practice — design tokens, multi-platform theming, component API design, accessibility built-in, versioning + governance, contribution model, documentation, and the discipline that turns "one team's component library" into a load-bearing capability for every product surface — including producing high-fidelity, NON-generic ("anti-AI-slop") UIs by building on the real system + curated blocks + design-MCP tooling (shadcn / 21st.dev / Figma).
 ---
 
 # Design Systems
@@ -71,6 +71,16 @@ accessibility implementation (see `wcag-accessibility` +
   reference / explanation)
 - **ISO/IEC 25010** — software product quality model (applied to
   the system as a product)
+- **shadcn/ui** — copy-in, you-own-the-code component model; registry +
+  `components.json` (an ecosystem, not a dependency, as of 2026)
+- **Tailwind CSS v4** — CSS-first `@theme` tokens (OKLCH)
+- **Model Context Protocol (Anthropic, 2024)** — the standard the design MCP
+  servers implement: **shadcn MCP** (registry), **21st.dev "Magic" MCP** (`/ui`),
+  **Figma Dev Mode MCP** (official; Claude Code integration, 2026)
+- **Curated block libraries** — Tailwind Plus, shadcn.io / shadcnblocks,
+  Aceternity UI, Magic UI, 21st.dev (retheme to your tokens; don't ship defaults)
+- **Wathan & Schoger, _Refactoring UI_ (2018)** — spacing / hierarchy / contrast
+  fundamentals that de-generic a layout
 
 ## When to Fire
 
@@ -431,6 +441,54 @@ Major version bumps without codemods strand consumers. Provide:
 A codemod that handles 90% of cases earns goodwill the next
 breaking change will cash in.
 
+### Pattern 16: High-fidelity, non-generic UIs (anti-"AI-slop") + design tooling
+
+LLM-generated (and rushed human) UIs regress to a generic mean — samey hero +
+three-card grid, hand-rolled buttons that don't match the system, raw `#hex` in
+markup, no dark mode, stock art, sometimes fabricated testimonials. "AI-sloppy"
+is a SOURCING failure, not a talent gap: the fix is what you build ON, in this
+impact order.
+
+1. **Build on the REAL design system, never from scratch (the #1 lever).** If a
+   `components/ui/` set + tokens exist (in this or a sibling repo), USE them —
+   port/share, don't reinvent. A hand-authored Button is the tell; the shared
+   cva-variant, token-colored Button is invisible (in the good way). Search first
+   (Pattern 13 + `reuse-first.md`); consume Tier-2/3 tokens; zero raw hex.
+2. **Source polished sections from curated block libraries, then retheme to your
+   tokens** — don't hand-build what a designer already did better: **Tailwind
+   Plus** (official; highest quality; paid), **shadcn.io / shadcnblocks** (large
+   catalog), **Aceternity UI** (animated SaaS landing; Framer Motion), **Magic
+   UI**, **21st.dev**. Copy the block, swap raw values for your tokens, delete
+   the unused.
+3. **Make the MODEL source instead of invent — design MCP servers:**
+   - **shadcn MCP** — reads the project's `components.json` + registry, installs
+     REAL components. PROJECT-scoped: `pnpm dlx shadcn@latest mcp init --client
+     claude` (run in a shadcn-initialised project; no API key for the public
+     registry; a user/global add fails-connect outside a shadcn project).
+   - **21st.dev "Magic" MCP** — `/ui <describe>` generates polished shadcn
+     components (free API key).
+   - **Figma Dev Mode MCP** (official; bidirectional Claude Code, 2026) — point
+     at a real Figma frame for faithful, token-mapped code (Figma auth). If a
+     design exists, design-to-code beats prompt-to-code every time. Or paste a
+     screenshot as the visual target (no MCP needed). Auth/key MCPs are added
+     interactively — `claude mcp list` to verify.
+4. **Ground every build in a NAMED reference aesthetic** (e.g. "Stripe/Linear
+   calm" vs "Vercel bold") — "make it look good" regresses to generic. Add
+   CUSTOM brand assets (a bespoke SVG illustration system, real logo, real
+   photography); generic stock/undraw undoes the uniqueness. Author illustrations
+   in one cohesive visual language, token-colored so they theme in light/dark.
+5. **Enforce constraints from line one:** three-tier tokens (Pattern 1), fixed
+   spacing/type/radius/motion scales, light AND dark as a token swap (Pattern 6),
+   WCAG 2.2 AA (Pattern 5). Constraints make independent sections read as ONE
+   product.
+6. **Verify VISUALLY + iterate:** build → serve → LOOK (both themes, mobile +
+   desktop) → human eye → fix. One-shot high-fidelity is a myth; the review loop
+   is the method (Storybook + visual regression, Pattern 10; paste screenshots
+   for critique).
+
+Honesty gate: never fabricate testimonials, logos, or metrics to fill a design —
+use real trust signals + clearly-labelled placeholders.
+
 ## Anti-Patterns
 
 | Anti-pattern | Why bad | Fix |
@@ -448,6 +506,13 @@ breaking change will cash in.
 | Frozen Figma library not in sync with code | Designers and engineers diverge | Tokens + components from one source |
 | Reinventing date picker / drag-and-drop / charts | Years of effort, ongoing maintenance | Wrap mature OSS per `reuse-first.md` |
 | "Final form" — never deprecate anything | Backlog of un-used legacy | Sunset components after telemetry shows < N usages |
+| Hand-rolling a primitive (Button/Card) when a design-system/shadcn one exists | generic, off-brand "AI-sloppy" UI | port/share the real primitive (Pattern 16.1) |
+| Raw `#hex` / `rgb()` in component markup | can't theme; drifts from brand | semantic tokens only (Pattern 16.1) |
+| "Make it modern" with no named reference | regresses to the generic mean | name a concrete reference aesthetic first (Pattern 16.4) |
+| Generic stock / undraw illustrations | looks like every other template | bespoke, cohesive, token-colored brand assets (Pattern 16.4) |
+| Fabricated testimonials / logos / metrics to fill a layout | dishonest + generic | real trust signals + labelled placeholders |
+| Prompt-to-code when a Figma design exists | ignores the source of truth | Figma Dev Mode MCP / design-to-code (Pattern 16.3) |
+| Shipping without light+dark | half-built; fails real use | dark mode as a token swap (Pattern 6) |
 
 ## Verification Checklist
 
@@ -484,6 +549,13 @@ breaking change will cash in.
       components
 - [ ] OSS reuse: charts / pickers / DnD / lower-level a11y
       primitives wrapped, not reimplemented
+- [ ] Anti-slop: new UI uses the real `components/ui/` primitives + tokens
+      (searched sibling repos first); zero raw hex in markup
+- [ ] Named visual reference chosen; brand assets custom (not stock); light+dark
+      both intentional; verified VISUALLY (both themes, mobile+desktop), not just "build green"
+- [ ] No fabricated testimonials/logos/metrics; honest trust signals + labelled placeholders
+- [ ] Design MCP(s) stood up where they help (shadcn per-project / 21st.dev / Figma);
+      curated blocks rethemed to tokens (not left at library defaults)
 - [ ] Roadmap published; deprecation calendar communicated
 - [ ] Governance ADRs logged for major decisions
 
@@ -555,6 +627,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Multi-platform token export out of sync (web tokens updated, iOS/Android not)
 - Breaking change shipped without semver bump + migration guide
 - Accessibility regression slips past axe-core in CI
+- Hand-rolled primitive shipped when a design-system/shadcn one existed (anti-slop, Pattern 16)
+- UI shipped with no named reference / no dark mode / stock (not custom) art (generic-mean regression)
+- Fabricated testimonials/logos/metrics used to fill a design (honesty violation)
+- A Figma design present but prompt-to-code used instead of the Figma Dev Mode MCP
+- "Build green" claimed done without a visual (both-theme, responsive) check
 
 **Refinement candidates**:
 

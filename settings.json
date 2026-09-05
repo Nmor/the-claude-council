@@ -63,6 +63,15 @@
         ]
       },
       {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/intake-gate.js\""
+          }
+        ]
+      },
+      {
         "matcher": "Grep|Glob",
         "hooks": [
           {
@@ -194,6 +203,24 @@
             "command": "node \"$HOME/.claude/scripts/hooks/research-marker.js\""
           }
         ]
+      },
+      {
+        "matcher": "TodoWrite",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/intake-marker.js\""
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/parity-gate.js\""
+          }
+        ]
       }
     ],
     "Stop": [
@@ -239,7 +266,8 @@
       }
     ]
   },
+  "model": "default",
   "agentPushNotifEnabled": true,
   "effortLevel": "xhigh",
-  "switchModelsOnFlag": false
+  "switchModelsOnFlag": true
 }

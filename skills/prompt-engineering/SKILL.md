@@ -323,7 +323,7 @@ Treat prompts like code:
 - Store in source control with a deterministic ID (e.g.
   `support_classifier_v3.txt`)
 - Tag with a semver / date version
-- Pin the model + version (`anthropic/claude-sonnet-4-6`, not just
+- Pin the model + version (`anthropic/claude-sonnet-5`, not just
   `claude`)
 - Build an evaluation set of 50-500 (input, expected-behaviour)
   pairs that exercises happy paths, edge cases, refusals, and

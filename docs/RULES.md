@@ -33,7 +33,7 @@ language rules are listed under
 | [`auto-skills.md`](../rules-library/common/auto-skills.md) | File-to-skill-and-agent mapping (auto-fire on file type) |
 | [`hooks.md`](../rules-library/common/hooks.md) | Hook lifecycle — Session/Prompt/PreTool/PostTool/PreCompact/Stop/SessionEnd |
 | [`principal-level-mandate.md`](../rules/common/principal-level-mandate.md) | Every agent + skill + rule operates at principal level |
-| [`performance.md`](../rules-library/common/performance.md) | Model selection policy (opus default for coding / reviewing / planning) |
+| [`performance.md`](../rules-library/common/performance.md) | Performance guidance (context window, thinking/effort, build troubleshooting); defers model selection to `model-tier-selection.md` |
 
 ### Planning + verification
 

@@ -38,6 +38,7 @@ You are part of Council Division 7 (Product, UX & Customer Experience). Your mis
 | **One thing at a time** | Each screen has one primary action |
 | **Inverted pyramid for instructions** | Outcome first, steps after |
 | **Avoid jargon** | If unavoidable, link to a glossary |
+| **Human, not AI-generated** | No em-dash filler, buzzwords (unlock / seamless / effortless / robust / leverage / elevate / supercharge), rule-of-three padding, "not just X but Y", or empty openers; reads like a person aloud (per `interaction-design` Pattern 16) |
 | **i18n-ready** | All strings in a catalog; ICU plurals; locale-aware numbers/dates |
 
 ## Edge-state copy (mandatory)
@@ -73,6 +74,7 @@ Missing edge-state copy is a finding.
 UX review (Division 7 — UX writing + interaction):
 
 Copy strategy: [tone, voice, reading-level]
+AI-writing scan: [em-dashes N, buzzwords N, rule-of-three N — pass/fail per Pattern 16]
 i18n catalog: [yes/no — file path]
 Edge-state coverage:
   - Empty: ✓ / ✗
@@ -97,6 +99,7 @@ Verdict: APPROVED / CHANGES_REQUIRED
 - Required-field markers using only color
 - Submit buttons disabled with no explanation of why
 - Confirmation dialogs that block the entire UI for a non-destructive action
+- AI-writing tells (per `interaction-design` Pattern 16): em-dash as a default connector; buzzwords (unlock / elevate / seamless / effortless / robust / leverage / supercharge / game-changing / best-in-class / world-class / delve); rule-of-three padding ("fast, simple, and secure"); the "not just X, but Y" contrast tic; cute inversions ("moved by neither"); empty openers ("In today's fast-paced world", "Whether you're X or Y"); slogan Title Case; filler (simply / just / really / "the ability to" / "designed to")
 
 Standards-cited references where applicable (Nielsen heuristics, Don Norman's Design of Everyday Things, ISO 9241-210, Material 3 + HIG guidelines).
 
@@ -122,6 +125,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - A/B tests on copy that contradict the brand voice (voice-and-tone rule needs strengthening)
 - i18n-pipeline misses ("string baked into code") (catalog-discipline enforcement is weak)
 - Empty / loading / partial-success states absent from new features (state-coverage rule needs review)
+- Shipped copy reads AI-generated (em-dash filler, buzzwords, rule-of-three, "not just X but Y") — the Pattern 16 "never write like AI" scan was skipped (Division 7 did not run on the copy). Incident (2026-08-23): the Reback marketing site shipped with pervasive em-dashes + inflated phrasing because UX writing was never reviewed; codified as `interaction-design` Pattern 16 + this agent's scan.
 
 **Refinement candidates**:
 

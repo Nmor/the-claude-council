@@ -22,7 +22,7 @@ Strictest rule wins. Project files NEVER relax global rules. Skills auto-discove
 
 ### What runs automatically on every task (Floor — always-on)
 
-The following fourteen rules are the always-on **Floor**. Every interaction obeys them regardless of which files are touched. Skill-routed disciplines (coding-quality, security-extended, sonar, observability, a11y, codebase-memory, etc.) lazy-load via `paths:` frontmatter when matching files are touched — they're not inlined here to keep the cold-load budget tight (~110-130 KB total).
+The following fifteen rules are the always-on **Floor**. Every interaction obeys them regardless of which files are touched. Skill-routed disciplines (coding-quality, security-extended, sonar, observability, a11y, codebase-memory, etc.) lazy-load via `paths:` frontmatter when matching files are touched — they're not inlined here to keep the cold-load budget tight (~110-130 KB total).
 
 1. **Council always convenes** per `council-default.md` — Core Five always speak; Extended Eleven auto-fire on triggers.
 2. **Principal-level quality bar** per `principal-level-mandate.md` — every artifact at principal-engineer depth or it doesn't ship; per `post-phase-retrospective-review.md`, every phase boundary runs the five-step sweep — re-auditing all prior phases for that depth + intact cross-phase wiring.
@@ -38,6 +38,7 @@ The following fourteen rules are the always-on **Floor**. Every interaction obey
 12. **Rule placement** per `rule-authoring-global-vs-project.md` — global = pure guidance; workspace specifics under `<workspace>/.claude/rules/`.
 13. **Skills auto-fire** by file-pattern (per each skill's `paths:` frontmatter). No central catch-all mapping — each skill declares its own triggers.
 14. **Agents delegate automatically** when their description matches the work; Council protocol delegates to specialised reviewers (security-reviewer, code-reviewer, language-reviewers, tdd-guide, etc.) without narration.
+15. **UI / UX / UX-writing quality bar** per `ui-ux-quality-bar.md` — a user-facing change is done when a first-time user can COMPLETE the task, not when it works: every state (empty / loading / error / partial / success) ships, every failure carries copy naming the next action, the words are reviewed as code, WCAG 2.2 AA and i18n are part of done, and UI/UX is planned WITH the feature rather than after it. Division 7 is engaged on every user-visible surface, not only on a trigger match.
 
 ### Output style
 
@@ -84,7 +85,7 @@ The table below is the always-on summary. Full per-division trigger glob + keywo
 | # | Division | Lead | Auto-fires on |
 | --- | --- | --- | --- |
 | 6 | **Compliance & Legal** | `compliance-reviewer` (opus) + domain sub-leads (`payments-reviewer`, `health-reviewer`, `education-reviewer`) | PII / GDPR / CCPA / HIPAA / PCI / SOC 2 / payments / billing / KYC / licensing |
-| 7 | Product, UX, CX | `ux-reviewer`, `accessibility-reviewer` (opus) | UI files, copy, i18n, a11y, forms, error UX |
+| 7 | **Product, UX, CX** | `ux-reviewer` (opus), `accessibility-reviewer` (opus) | ALWAYS on a user-visible surface (Floor rule 15, `ui-ux-quality-bar.md`) — UI files, copy, i18n, a11y, forms, error UX |
 | 8 | Operations & Reliability | `ops-reviewer` | Runbooks, SLO/SLA, on-call, CI/CD, IaC, Dockerfile, deploy configs |
 | 9 | Data & Analytics | `data-reviewer` | Schema migrations, event tracking, ETL/dbt, PII flows |
 | 10 | Finance & FinOps | `finance-reviewer` | Pricing, billing, cloud cost, instance sizing, unit economics |

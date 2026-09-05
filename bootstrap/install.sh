@@ -404,7 +404,12 @@ integrate_ide_vscode() {
   local target_dir="${HOME}/.vscode"
   mkdir -p "${target_dir}"
   if [ "${DRY_RUN}" = true ]; then
-    log_info "(dry-run) would: cp ${ext_file} ${target_dir}/extensions.json"
+    # Must name the SAME destination the else-branch writes. A dry run that
+    # reports a different path than it takes is worse than no dry run: it is
+    # the output people read to decide whether to proceed, and a reader who
+    # later finds no extensions.json concludes the install failed when it did
+    # not.
+    log_info "(dry-run) would: cp ${ext_file} ${target_dir}/extensions.recommended.json"
   else
     # User-level recommendations are an opt-in suggestion; don't overwrite
     # an existing list — copy as .recommended for user review.

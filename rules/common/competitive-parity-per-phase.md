@@ -199,8 +199,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Phase / wave closed without the Step 6 parity output block (rule 1
-  + rule 2 violation)
+- Phase / wave closed without the Step 6 parity output block (rule 1 +
+  rule 2 violation)
 - Reference competitor set unchanged for > 12 months (rule 8 signal)
 - New feature dimension shipped without a discovery filter in the
   same wave (Discovery-parity rider violation)

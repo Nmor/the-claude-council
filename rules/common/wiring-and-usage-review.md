@@ -167,8 +167,8 @@ never the reflex. Apply this fixed order of preference to EACH candidate:
 3. **DELETE — only after 100% validation** it is genuinely dead AND has no wireable
    purpose: a newer impl fully replaced it AND is used (remove the redundant
    DUPLICATE, keep the wired one), or a compat shim with **zero** consumers in ANY
-   repo. "100% validated" means proven, not assumed: grep the symbol across THIS repo
-   + every sibling repo + entry points invoked by IaC/CI/Argo, confirm no cross-repo /
+   repo. "100% validated" means proven, not assumed: grep the symbol across THIS repo +
+   every sibling repo + entry points invoked by IaC/CI/Argo, confirm no cross-repo /
    out-of-file / dynamic consumer, and cite that evidence. A trace's "inert" label is
    NOT validation — it is the START of validation.
 

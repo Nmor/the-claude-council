@@ -223,7 +223,7 @@ A healthy install reports:
 == Phase G: No project contamination ==
 
 VERIFICATION SUMMARY
-Inventory: 24 rules.common, 20 lang subfolders, 118 skills, 39 agents, 33 commands
+Inventory: 24 rules.common, 18 lang subfolders, 118 skills, 39 agents, 33 commands
 Checks:    21 passed, 0 failed
 
 ✓ PASS — global Claude config is healthy.

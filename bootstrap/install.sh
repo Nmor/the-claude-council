@@ -138,6 +138,64 @@ report_optional_capability() {
   return 0
 }
 
+# report_plugin_state compares what settings.json DECLARES against what the plugin
+# runtime has actually materialised, and reports the delta.
+#
+# It exists because the three states look identical from the config alone:
+#   declared   — settings.json enabledPlugins + extraKnownMarketplaces (ships with this repo)
+#   registered — plugins/known_marketplaces.json (Claude Code clones the marketplace)
+#   installed  — plugins/installed_plugins.json (the plugin is actually loadable)
+#
+# An operator reading settings.json sees seven enabled plugins and reasonably concludes
+# the capability is live. If installed_plugins.json is still empty, it is not: the
+# Council's authority map credits ponytail with simplicity enforcement and ui-ux-pro-max
+# with design knowledge, and neither is doing anything. That is the inert-config trap in
+# wiring-and-usage-review.md — a declaration that looks enabled and is wired to nothing.
+#
+# REPORTS and does not install, for the same reason as report_optional_capability:
+# materialising a plugin fetches and runs third-party code, which is the operator's
+# decision. Registration is normally automatic on the next Claude Code start.
+report_plugin_state() {
+  command -v python3 >/dev/null 2>&1 || return 0
+  [ -f "${PREFIX}/settings.json" ] || return 0
+
+  python3 - "${PREFIX}" <<'PYEOF'
+import json, os, sys
+prefix = sys.argv[1]
+def load(p, d):
+    try:
+        with open(p) as f: return json.load(f)
+    except Exception: return d
+
+s          = load(os.path.join(prefix, 'settings.json'), {})
+declared   = list(s.get('enabledPlugins', {}))
+markets    = list(s.get('extraKnownMarketplaces', {}))
+registered = list(load(os.path.join(prefix, 'plugins', 'known_marketplaces.json'), {}))
+installed  = list(load(os.path.join(prefix, 'plugins', 'installed_plugins.json'), {}).get('plugins', {}))
+
+print(f"[info] plugins declared: {len(declared)}  marketplaces declared: {len(markets)}"
+      f"  registered: {len(registered)}  installed: {len(installed)}")
+
+missing_m = [m for m in markets if m not in registered]
+if missing_m:
+    print(f"[warn] marketplace(s) not registered yet: {', '.join(missing_m)}")
+    print("[warn]   Claude Code registers these from settings.json on next start.")
+
+if declared and not installed:
+    print("[warn] NO plugins materialised — every enabledPlugins entry is currently INERT.")
+    print("[warn]   settings.json says they are on; plugins/installed_plugins.json is empty.")
+    print("[warn]   Fix in an interactive session:  /plugin   (or: claude plugin install <name>@<marketplace>)")
+    print("[warn]   Affected: " + ", ".join(declared))
+elif declared:
+    absent = [p for p in declared if p.split('@')[0] not in {i.split('@')[0] for i in installed}]
+    if absent:
+        print(f"[warn] declared but not installed: {', '.join(absent)}  -> run /plugin to materialise")
+    else:
+        print("[info] all declared plugins are installed")
+PYEOF
+  return 0
+}
+
 backup_existing() {
   if [ ! -e "${PREFIX}" ]; then
     return 0
@@ -528,11 +586,24 @@ Next steps:
   3. Open the docs:            ${REPO_ROOT}/docs/ARCHITECTURE.md
 
 The 24 Floor rules, 160 Library rules, 118 skills, 39 agents,
-33 commands, and 14 hooks are now active for every Claude Code
-session. Floor rules + CLAUDE.md (~240 KB) load on every
-session; the Library + skill bodies load on demand via skill
-paths: triggers (lazy-load architecture, ~92% cold-load drop
-vs the monolith).
+33 commands, and 25 hooks are now active for every Claude Code
+session. Floor rules + CLAUDE.md (~260 KB / ~65,000 tokens)
+load every turn; Library rules and skill bodies load on demand
+via skill paths: triggers.
+
+Two things that keep that number honest:
+  - Never place a clone of this repo on a workspace's walk-up
+    path (e.g. <parent-of-your-projects>/.claude). Claude Code
+    walks up from cwd, so a clone there loads the WHOLE Floor a
+    second time as "project instructions". Keep it a sibling of
+    your projects, never an ancestor.
+  - A paths:-gated skill is deferred, not free. Keep gated
+    skills under ~25 KB; past that use progressive disclosure
+    (routing table in SKILL.md, detail in references/).
+
+Plugins declared in settings.json are reported above. If any
+are listed as not installed, run /plugin in an interactive
+session — the installer never fetches third-party code for you.
 
 If you backed up an existing ${PREFIX}, the backup is at:
   ${PREFIX}.bak.${TIMESTAMP}
@@ -572,6 +643,8 @@ main() {
   rewrite_paths
   ensure_runtime_dirs
   integrate_ides
+  # Runs after the payload lands, because it reads the INSTALLED settings.json.
+  [ "${DRY_RUN}" = true ] || report_plugin_state
   if [ "${DRY_RUN}" = true ]; then
     log_info "dry-run complete; no changes made"
   else

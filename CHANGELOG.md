@@ -54,6 +54,45 @@ wired into `CLAUDE.md` Floor rule 6 — a runtime-failure fix requires a PROVEN
 root cause from the LIVE execution path (not a proxy) before the edit; when
 blind, instrument first, never guess-and-patch.
 
+### Added — enforcement, UI/UX Floor rule, vetted plugins (2026-09-05)
+
+**Six unenforced rules gained mechanical backing.** Claude Code exposes 32 hook
+events; the Council wired 7. Each of these rules named a control that nothing
+implemented: `PostCompact` (project-memory — PreCompact wrote the brief, nothing
+re-read it), `SubagentStop` (verify-before-claim r11, whose text records the
+incident where subagents denied Bash produced zero verified output),
+`PostToolUseFailure` (no-silent-failures r8), `PreModelSwitch` (model-tier-selection
+— "Fable excluded from security review" was prose enforced by nothing; now blocks),
+`TaskCompleted` (no-overclaim), `PermissionDenied` (council-default r4, which
+specified bypass-log.jsonl and gave it no feed). Plus `gate-marker.js`, added
+because task-completion-gate read a marker nothing wrote — the inert-dependency
+shape wiring-and-usage-review exists to catch, found in our own work.
+
+Every hook is SILENT on the happy path. Hook output enters context, so a chatty
+hook is a per-turn tax that would undo the efficiency release.
+
+**UI / UX / UX-writing is now Floor rule 15** (`ui-ux-quality-bar.md`). The Council
+had three UX agents and seven UX skills and no Floor rule, so Division 7 engaged
+only on a trigger match — backwards for the layer users actually touch. Cites WCAG
+2.2 AA, ISO 9241-11, Nielsen, ARIA APG. `ux-reviewer` raised sonnet -> opus.
+
+**Plugins enabled** (settings.json; no new files): `security-guidance` (per-edit
+warnings — the one security mode the Council lacked), `claude-security` (deep scan),
+`gopls-lsp` / `typescript-lsp` / `pyright-lsp` (Golden Rule 5 demands "IDE
+diagnostics ALL must resolve" while giving Claude no way to see them), `ponytail`
+(126.8k stars, MIT — no-bloat as a live constraint), `ui-ux-pro-max` (125.1k stars,
+MIT — the design knowledge Floor rule 15 requires).
+
+**install.sh** now reports optional capability rather than installing it: which
+language servers are missing, and — separately — when one exists but its directory
+is not on PATH, which is the failure that looks like a broken plugin.
+
+**Measured, not fixed:** skill descriptions total ~9,911 tokens against a ~1%
+listing budget (~2,000), so Claude Code is silently truncating least-used
+descriptions. Capping per-description length does not close a 5x gap; it needs a
+budget-vs-prune decision with /skill-doctor usage data. Tracked in the
+capability-uplift plan.
+
 ### Added
 
 - `rules/common/model-tier-selection.md` — capability-aware model ladders

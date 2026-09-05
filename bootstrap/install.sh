@@ -81,6 +81,61 @@ check_prereqs() {
     log_warn "claude CLI not on PATH — install from https://docs.claude.com/claude-code"
     log_warn "the global config will still install; claude CLI must be installed separately"
   fi
+
+  report_optional_capability
+}
+
+# report_optional_capability names the external binaries the Council's enabled plugins
+# shell out to, and reports which are missing.
+#
+# It REPORTS and does not install. Two reasons: these are third-party tools that belong
+# to the operator's judgement rather than an installer's, and an LSP plugin whose binary
+# is absent fails at runtime with "Executable not found in $PATH" — a failure that reads
+# as the plugin being broken rather than a prerequisite being unmet. Naming it here turns
+# a confusing runtime error into a one-line install.
+#
+# Nothing below is required: the config installs and works without all of it.
+report_optional_capability() {
+  local missing=0
+
+  log_info "checking optional capability (reported, never auto-installed)"
+
+  # Language servers backing the LSP plugins in settings.json enabledPlugins. These give
+  # Claude automatic diagnostics after every edit — what Golden Rule 5 requires.
+  if ! command -v gopls >/dev/null 2>&1; then
+    log_warn "gopls absent -> gopls-lsp inert.  go install golang.org/x/tools/gopls@latest"
+    missing=1
+  fi
+  if ! command -v typescript-language-server >/dev/null 2>&1; then
+    log_warn "typescript-language-server absent -> typescript-lsp inert.  npm i -g typescript-language-server typescript"
+    missing=1
+  fi
+  if ! command -v pyright-langserver >/dev/null 2>&1; then
+    log_warn "pyright-langserver absent -> pyright-lsp inert.  npm i -g pyright"
+    missing=1
+  fi
+
+  # Token-efficiency + codebase-graph tooling referenced by the capability-uplift plan.
+  if ! command -v rtk >/dev/null 2>&1; then
+    log_info  "optional: rtk (token-optimized CLI proxy).  brew tap rtk-ai/tap && brew install rtk"
+  fi
+  if ! command -v graphify >/dev/null 2>&1; then
+    log_info  "optional: graphify (codebase knowledge graph).  uv tool install graphifyy && graphify install --platform claude"
+  fi
+
+  # A language server installed into a directory that is not on PATH is the failure mode
+  # that looks like a broken plugin, so it is called out separately from "not installed".
+  case ":${PATH}:" in
+    *":${HOME}/go/bin:"*) ;;
+    *) [ -x "${HOME}/go/bin/gopls" ] && log_warn "gopls exists in ~/go/bin but that is NOT on PATH — add it to your shell profile" ;;
+  esac
+  case ":${PATH}:" in
+    *":${HOME}/.npm-global/bin:"*) ;;
+    *) [ -x "${HOME}/.npm-global/bin/typescript-language-server" ] && log_warn "typescript-language-server exists in ~/.npm-global/bin but that is NOT on PATH — add it to your shell profile" ;;
+  esac
+
+  [ "${missing}" -eq 0 ] && log_info "all language servers present"
+  return 0
 }
 
 backup_existing() {

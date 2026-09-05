@@ -364,6 +364,8 @@
     "claude-security@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "ponytail@ponytail": true,
-    "ui-ux-pro-max@ui-ux-pro-max-skill": true
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
   }
 }

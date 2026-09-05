@@ -362,6 +362,23 @@ does not cover — none weakens a gate:
    abbreviated Council for trivial work; reuse a prior session's intake / research
    when a similar task was already scoped.
 
+4. **Filter verbose command output at the source.** When `rtk` is installed
+   (`command -v rtk`), route the commands where it MEASURABLY helps through it —
+   chiefly directory listings, which are the worst offenders: a `ls -la` over a
+   large package measured 17,595 -> 1,575 characters, a 91% reduction, on a real
+   Go service. `rtk err <cmd>` and `rtk test <cmd>` likewise return only the
+   failures, which is the part a turn actually needs.
+
+   Scope it to the measured wins and nothing else. On the same codebase `rtk tree`
+   over a flat directory and `rtk read` of a whole file returned NO reduction, so
+   using them buys an extra process and a dependency for nothing. The published
+   "60-90%" is a range across command classes, not a property of the tool — treat
+   any new command as unmeasured until it is measured on the repo at hand.
+
+   Never let it swallow signal: a full file the turn genuinely needs is read in
+   full, and a diagnostic being read for its detail is read raw. Filtering exists
+   to drop noise, not to hide the thing being diagnosed.
+
 The through-line — and why none of this weakens the Council: quality was never
 coming from breadth of ceremony; it comes from the right specialist reasoning
 deeply, over shared context, on the cases that need judgment.

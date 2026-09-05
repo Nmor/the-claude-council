@@ -117,7 +117,7 @@ report_optional_capability() {
 
   # Token-efficiency + codebase-graph tooling referenced by the capability-uplift plan.
   if ! command -v rtk >/dev/null 2>&1; then
-    log_info  "optional: rtk (token-optimized CLI proxy).  brew tap rtk-ai/tap && brew install rtk"
+    log_info  "optional: rtk — council-default.md routes verbose listings through it (91% measured).  brew tap rtk-ai/tap && brew install rtk"
   fi
   if ! command -v graphify >/dev/null 2>&1; then
     log_info  "optional: graphify (codebase knowledge graph).  uv tool install graphifyy && graphify install --platform claude"

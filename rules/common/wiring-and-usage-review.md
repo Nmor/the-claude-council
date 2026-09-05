@@ -253,25 +253,8 @@ for that — it just never ran."
 
 ## Learning hooks
 
-Per `continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- A new symbol shipped with no live-path consumer (rule 1 violation)
-- A control unit-tested but not called on the live path (rule 2 — inert validator)
-- A resource opened without a wired teardown (rule 3 — lifecycle asymmetry)
-- A completion claim without the wiring + usage line (rule 5 weakening)
-- The dead-code detector not run in the gate on a touched file (rule 6 weakening)
-- A cross-artifact reference (runbook→alert, CLI→command, doc→path) that dangles
-  (rule 7 violation)
-- "Wire it next phase" deferral that ships an inert symbol (anti-pattern)
-- Found-inert code deleted without per-item wire-vs-delete classification or live-path
-  verification — esp. a batch/agent fan-out treating a trace as a delete-list (rule 9
-  violation); a deliberately-authored-but-unwired feature deleted instead of wired
-
-**Refinement candidates**:
-
-- New detector row when a language/artifact class gains an unused-symbol tool
-- New anti-pattern entry when a recurring inert-code shape appears
-- Tightening of the "documented entry point" exception when it's used to excuse
-  genuinely-orphan code
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

@@ -260,22 +260,8 @@ break the rule."
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- `git push` executed while plan phases still pending (rule 2 violation — push gate weakening)
-- Active plan does not declare `commit-policy` in its Context (rule 1 violation — implicit policy drift)
-- "Push" inferred from ambiguous user language ("ship", "ready", "looks good") without explicit confirmation (rule 10 weakening)
-- Bug-fix exception claimed without an actual live-failure / explicit-override pair (rule 3 misuse)
-- Multi-repo push approval reused across repos without per-repo confirmation (rule 7 weakening)
-- `git push --tags` or PR creation done mid-plan without explicit per-action authorization (rules 8 + 9 weakening)
-- Verification block missing or stale at push time (rule 6 violation — claim without proof)
-- `--no-verify` / `--no-gpg-sign` used to bypass hooks (rule 5 violation)
-
-**Refinement candidates**:
-
-- New row in the "exception" rule when a recurring time-pressure class (security incident, regulator deadline) emerges with documented user-side authorization shape
-- Tightening of the ambiguous-language list when a new phrase ("let's go", "all good") proves to silently authorize pushes
-- New cross-reference when a sister rule (no-overclaim, verify-before-claim, no-silent-drops) provides a pre-push gate
-- New row in the push-decision response shape when multi-repo / multi-branch / multi-tag pushes recur
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

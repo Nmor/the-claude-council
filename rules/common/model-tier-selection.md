@@ -215,21 +215,8 @@ Fable-tier must degrade cleanly.
 
 ## Learning hooks
 
-Per `continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- A role hardcoded to a model instead of resolved via its ladder (rule violation)
-- Fable selected for a `security-and-regulated-review` role (exclusion breached)
-- Fable routed to mechanical / search / routine review (ladder-floor ignored — waste)
-- A runtime model-unavailable / refusal handled by silent downgrade (no note)
-- Availability config assumed present without the safe default fallback
-- The same install repeatedly hitting a resolved model that isn't actually available (declaration drift — prompt the user to fix the config)
-
-**Refinement candidates**:
-
-- New ladder row when a new Council role class emerges
-- New tier row when Anthropic ships a new model (re-cite + re-order capability)
-- Tightening of an exclusion when a model class proves unfit for a role
-- Promotion of a "metered/credits" nuance into the availability config if
-  cost-throttling a gated model per-task proves load-bearing
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

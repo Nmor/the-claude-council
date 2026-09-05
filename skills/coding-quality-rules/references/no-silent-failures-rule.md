@@ -247,60 +247,6 @@ User directive (verbatim, 2026-06-01): **"Throwing errors
 without surfacing a user facing toast or validation error. Is
 not acceptable."**
 
-### 8. A best-effort swallow is OBSERVABLE — a log is not enough
-
-"Best-effort / never raise into the hot path" is legitimate
-(telemetry must not crash a call). But a `try/except` that
-swallows with ONLY a `logger.warning/exception` is effectively
-silent: nobody watches warning logs, and a recurring failure has
-no rate, no dashboard, no alert. Every swallow MUST be observable:
-
-- **Increment a metric** — a `<thing>_failures_total{reason}`
-  counter alongside any existing failure counters. The log says
-  "this once"; the counter says "N times" and drives an alert.
-- **Have an alert** on that counter (or a burn-rate / non-zero
-  rule), so the failure surfaces without someone grepping logs.
-- **Log at WARNING+** with operation + ids (no PII), never debug.
-- **Never** `except: pass` / `except Exception: pass` with no
-  log AND no metric — the canonical silent failure (hook-blocked).
-
-```python
-# WRONG — best-effort, but invisible: warns and moves on, no metric
-try:
-    await scores.post(...)
-except Exception:
-    logger.warning("score post failed: %s", exc)   # nobody watches
-
-# RIGHT — best-effort AND observable
-try:
-    await scores.post(...)
-except Exception as exc:
-    SCORE_POST_FAILURES_TOTAL.labels(reason=type(exc).__name__).inc()
-    logger.warning("score post failed: %s", exc)    # + an alert on the counter
-```
-
-### 9. Absence-class failures need PROACTIVE detection
-
-The worst silent failures emit NO application log at all — the
-code never runs or the packet never arrives: a scrape blocked by
-a NetworkPolicy, a pod denied creds by an un-applied IAM role, a
-feature OFF by config, a pipeline with zero throughput. A
-try/except cannot catch what never executes. Detect ABSENCE:
-
-- **Dead-man / no-data alerts**: `TargetDown`, "0 events in 10m",
-  "no successful run in N min" — fire when EXPECTED signal is
-  missing (per rule 6, extended from polling to every pipeline /
-  scrape / scheduled job).
-- **Startup effective-config log**: log each load-bearing flag's
-  RESOLVED state at boot (e.g. `feature_x=on`, `feature_y=off`,
-  `integration_z=inactive(no credentials)`) so "why isn't X
-  working?" is answerable from the first log line — a config-inert
-  feature is the silent failure that *looks* enabled (per
-  `wiring-and-usage-review.md` inert-config trap).
-- **Live-path verification** (per `wiring-and-usage-review.md`
-  rule 8): confirm the NETWORK + INFRA path admits the new
-  endpoint/scrape/call at write time, not post-deploy.
-
 ## Cross-references for ancillary discard / silence patterns
 
 These patterns are NOT in this rule (to avoid duplication).
@@ -342,8 +288,32 @@ user-experience layer.
 
 ## Learning hooks
 
-Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+Per `~/.claude/rules/common/continuous-learning-mandate.md`:
+
+**Signals to watch**:
+
+- False-positive success toast where the optional sub-step actually failed (rule 1 violation pattern)
+- Async op left in "pending forever" terminal state (rule 2 violation)
+- Optimistic UI update without rollback on failure (rule 3 weakening)
+- Webhook handler returning 200 OK while DLQ-routing failures silently (rule 4 weakening)
+- Polling loop with no timeout escalation surfacing as "stuck spinner" UX (rule 6)
+- Confirmation flow mutation that didn't actually apply but reported success (rule 5)
+- Same partial-success pattern recurring across handlers (taxonomy needs new code class)
+- `throw` / `reject` / `raise` shipped in a user-facing path without an accompanying toast / inline validation / banner / state transition (rule 7 violation — the strongest form)
+- Generic ErrorBoundary catch-all relied on as the FIRST UX surface instead of per-action UX (rule 7 weakening)
+- Server returns a typed `error_code` + `message` but the client renders generic "Something went wrong" (rule 7 banned-shape — the `useApiError` composable / hook isn't mapping the code)
+- Sync handler `throw new ValidationError(...)` not caught + surfaced inline on a form (rule 7 sync-path violation)
+- Server controller `throw` without centralised exception-mapping middleware turning into a generic 500 (rule 7 server-side weakening)
+
+**Refinement candidates**:
+
+- New rule when a new false-positive success shape appears in 2+ incidents
+- New cross-reference when a sister rule (no-discards, error-handling-with-context) covers a pattern previously thought unique to this rule
+- Tightening of the "every async op has a known status" rule when a new state-machine gap is observed
+- New entry in the optimistic-rollback pattern table when a new domain case surfaces
+
+---
+
+<!-- ============================================================
+     Section: no-discards.md (from rules/common/)
+     ============================================================ -->

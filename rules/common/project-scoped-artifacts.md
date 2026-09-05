@@ -279,23 +279,8 @@ proveeds (This is for global and workspace/projects)."**
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- Non-trivial Council-mediated task in a workspace without `.claude/` directory + no first-touch scaffold offered (rule 1 violation)
-- Scaffold copied but `CLAUDE.md` not customised for project name / tech stack (rule 3 weakening)
-- Project rule LOWERS a global threshold (rule 4 violation — strictest wins)
-- Workspace `.claude/audits/learning-events.jsonl` accumulates candidates without `/learn` batch review (rule 5 weakening)
-- Cross-workspace pattern observed in 2+ projects without promotion proposal (rule 6 weakening)
-- Global rule contradicted in a workspace 5+ times without demotion proposal (rule 7 weakening)
-- Project-specific plan file written to `~/.claude/plans/` instead of `<workspace>/.claude/plans/` (rule 9 violation)
-- Project-specific memory written to `~/.claude/projects/-Users-APPLE/memory/` instead of workspace memory dir (rule 10 violation)
-- Tech-stack auto-detection skipped on first scaffold (heuristic-table gap)
-
-**Refinement candidates**:
-
-- New tech-stack detection row when a new ecosystem signal surfaces (e.g., `bun.lockb`, `deno.json`, `mise.toml`)
-- Tightening of the "first-touch trigger" criteria when trivial-work cases are misclassified as non-trivial
-- New cross-reference when a sister rule (rule-authoring-global-vs-project, continuous-learning-mandate) provides the classification or promotion pipeline
-- New entry in the canonical scaffold structure when a recurring per-project artifact class (e.g., per-project ADR archive, per-project incident log) emerges
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

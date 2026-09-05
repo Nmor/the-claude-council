@@ -185,23 +185,8 @@ execution and progress updates."
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- Phase-header announcement missing before first tool call of that phase (rule 1 weakening)
-- Bulk change (5+ files, directory delete, large data move) reported without before/after counts (rule 2 violation)
-- Verification block missing from a phase end (rule 3 violation)
-- Phase progress update ends without an explicit next-step line (rule 4 weakening)
-- Commit boundary reached without SHA + subject + branch + file count in the progress update (rule 5 weakening)
-- Blocker hit and surfaced as "something went wrong" without root cause + recovery direction (rule 6 violation)
-- Per-tool-call narration omits phase tag in long multi-phase sessions (rule 7 weakening)
-- Plan file not updated after a phase completes (rule 8 weakening — frozen contract anti-pattern)
-- Phase skipped or reordered without explicit user-visible justification (rule 10 violation)
-
-**Refinement candidates**:
-
-- New row in the canonical progress-update shape when a new artifact class (commit / tag / push / migration) needs reporting
-- Tightening of the "bulk change" threshold (currently 5 files) when small-batch silent edits prove load-bearing
-- New cross-reference when a sister rule (verify-before-claim, no-silent-drops) provides a per-phase gate
-- New blocker-shape template when a recurring blocker class (auth-expired, dep-not-installed, env-not-set) emerges
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

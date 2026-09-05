@@ -313,25 +313,8 @@ principal level"**.
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- New agent file written without all required body sections (depth-floor violation)
-- New skill SKILL.md < 500 words (shallow-stub floor breached)
-- Skill missing standards citations with version + section (rule "Standards Cited" weakening)
-- "Best practices recommend" / "studies show" / "common patterns" used without primary source (non-cited claim recurrence)
-- Council Division emits bare boilerplate ("looks fine") or fails to engage its domain — the coverage-guarantee violation (mere brevity is NOT a violation when the one-clause gated verdict shows real engagement)
-- Tactical-only contribution shipped without trade-off + failure-mode + verification signal (breadth weakening)
-- Single-domain reasoning on a cross-cutting topic (e.g., security agent ignoring compliance overlap)
-- Project-specific names / paths / vendor identifiers found in a global artifact (rule "Banned in global" violation)
-- Agent's `model:` is `sonnet` for a domain that warrants opus depth (depth-vs-model mismatch)
-- Redirect stub left undocumented as such (implicit shallowness)
-
-**Refinement candidates**:
-
-- New required section in the agent / skill template when a recurring depth gap surfaces (e.g., new "Cost model" section, new "Rollback signal" section)
-- Tightening of the word-count floor when 500-word skills consistently produce thin outputs
-- New banned vocabulary entry when a non-cited claim shape recurs
-- New cross-reference when a sister rule (rule-authoring-global-vs-project, continuous-learning-mandate, verify-before-claim) provides a gate the depth audit must run
-- Model-tier reassignment when an agent's track record shows opus is genuinely warranted (or genuinely overkill)
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

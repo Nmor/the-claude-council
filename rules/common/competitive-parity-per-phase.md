@@ -195,27 +195,8 @@ part/phase/wave."*
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- Phase / wave closed without the Step 6 parity output block (rule 1 +
-  rule 2 violation)
-- Reference competitor set unchanged for > 12 months (rule 8 signal)
-- New feature dimension shipped without a discovery filter in the
-  same wave (Discovery-parity rider violation)
-- Parity backlog rows without a next-wave target (rule 7 violation)
-- Press-summary citation used as sole source (rule 5 violation)
-- Solo phase that touched user-visible surface skipped Step 6 as
-  "abbreviated" (rule 9 weakening)
-
-**Refinement candidates**:
-
-- New reference-competitor row when a material new entrant emerges
-- New Discovery-parity rider row when a feature class ships without
-  a matching filter surface
-- Tightening the cadence when a wave's parity gap re-opens because
-  the scan didn't catch a competitor's shipment
-- Promotion to a mechanical hook when the "did the wave-close block
-  include Step 6?" check can be automated (grep the plan file for
-  "Competitive parity (this")
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

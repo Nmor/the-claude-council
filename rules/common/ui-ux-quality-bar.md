@@ -152,22 +152,8 @@ cannot complete, discovered after launch when it is most expensive to fix.
 
 ## Learning hooks
 
-Per `continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- A user-facing change shipped with no UI/UX verification block (rule 8)
-- An empty / loading / error state missing from a surface that can reach it (rule 1)
-- A raw exception, status code, or generic message shown to a user (rules 2 + 3)
-- A destructive action confirmed without naming its consequence (rule 4)
-- An a11y failure found AFTER ship that a keyboard pass would have caught (rule 5)
-- Strings hardcoded with i18n deferred to a later phase (rule 6)
-- A backend feature marked done with its UI tracked separately (rule 7)
-- "Scaffold" used as a finish line on a user-facing feature
-
-**Refinement candidates**:
-
-- New anti-pattern row when a copy failure recurs across surfaces
-- New state in rule 1 when a flow class needs one the list omits
-- Promotion of a recurring check into an automated probe (contrast, focus, target size)
-- Tightening of rule 6 when a locale gap ships despite the rule
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

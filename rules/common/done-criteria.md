@@ -245,20 +245,8 @@ acknowledgment when it goes wrong.
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- "Done" claims later proven incomplete (the checklist had a gap — capture which row was missed)
-- Re-claiming "done" after the same gate failed in the prior turn (verification discipline weak)
-- Verification block missing on a completion claim (no-overclaim.md enforcement weak)
-- New language / runtime added to the project without a per-language section here (rule needs extension)
-- Same gate repeatedly fired across services on different bug classes (gate name + scope might need split)
-- Migration / refactor declared "done" then a follow-up reveals leftover references (mechanical sweep step needs reinforcement)
-
-**Refinement candidates**:
-
-- New per-language verification suite row when a language gains presence in the rebuild
-- New checklist row when a missed dimension appears in 2+ retrospectives
-- Tightening of any threshold (coverage, complexity, lint) when chronic miss observed
-- New cross-reference when a sister rule's gate becomes part of every "done" decision
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

@@ -94,24 +94,8 @@ on the floor; the encyclopedia belongs in the skill that fires when it's relevan
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- Division should have engaged but no trigger matched (false-negative — the
-  CLAUDE.md summary or skill catalog needs a broader trigger)
-- Division engaged but had nothing material to add repeatedly (false-positive —
-  trigger needs narrowing in the `council-rules` skill)
-- The `council-rules` skill did NOT load when precise adjudication was needed
-  (its `paths:` gating missed a domain — extend the globs)
-- A new file pattern emerges that no Division claims (new trigger row — add to the
-  skill catalog, and the summary in CLAUDE.md if decision-critical)
-
-**Refinement candidates**:
-
-- New trigger glob / keyword in the `council-rules` skill when a recurring pattern
-  doesn't fire the right Division
-- New `paths:` entry on the `council-rules` skill when a domain's precise catalog
-  is needed but the skill didn't fire
-- Promotion of a trigger from the skill's detail into the CLAUDE.md always-on
-  summary when it proves decision-critical at task start
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

@@ -182,23 +182,8 @@ online."**
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- Task shipped without the always-fire core (rule violation)
-- A domain question's trigger matched but the question didn't fire (gating gap —
-  the trigger map or `council-triggers` needs the link)
-- A domain gap shipped (e.g. an a11y / compliance miss) whose trigger SHOULD have
-  fired the question (trigger too narrow — broaden, per over-include principle)
-- A core question consistently answered shallowly (depth needs reinforcement)
-- N/A rows reappearing in intake output (gating not applied — the rewrite regressed)
-- Online research (Q29) skipped on an external integration
-
-**Refinement candidates**:
-
-- Move a domain question into the always-fire core if it proves near-universal in
-  practice (or the reverse — demote a core question to gated if it's often N/A)
-- New domain question + trigger when a missed dimension recurs in 2+ retrospectives
-- Tightening of a trigger when a domain question fires but is consistently N/A
-- New cross-reference when a sister rule's gate is the proof a question depends on
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

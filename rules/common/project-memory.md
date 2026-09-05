@@ -387,23 +387,8 @@ constraint honestly and mandates the workaround as policy.
 
 ## Learning hooks
 
-Per [`common/continuous-learning-mandate.md`](./continuous-learning-mandate.md):
-
-**Signals to watch**:
-
-- Workspace touched without `.claude/memory/MEMORY.md` and the bootstrap prompt skipped (rule "Mandatory bootstrap" weakening)
-- `.claude/memory/` missing from `.gitignore` on first-touch (rule 4 violation — memory could leak to git history)
-- Memory file referenced as a repo path in a tracked source file (rule 5 violation)
-- PreCompact hook not firing or failing silently (rule 6 violation — durable persistence gap)
-- SessionStart hook reads memory but the agent ignores the loaded state (rule 7 weakening)
-- Memory entry exceeds the 200-line cap on `MEMORY.md` index (rule 12 — index discipline broken)
-- Secrets / PII observed in a memory file (rule 13 violation — escalate to security)
-- Memory entry duplicating plan content (rule 9 — memory is index + state pointers, not plan duplicate)
-- Project memory containing facts that would survive a fresh clone (rule 10 — should be promoted to ADR / docs / project rule)
-
-**Refinement candidates**:
-
-- New per-topic file template when a recurring memory class emerges (e.g., per-cell deployment shape, per-tenant quirks)
-- Tightening of the bloat policy when 200-line cap is exceeded across multiple projects
-- New operator command when a recurring manual memory workflow surfaces (e.g., `/memory-diff` between sessions, `/memory-export` for handoff)
-- New cross-reference when a sister rule (hooks, continuous-learning-mandate) adds a memory consumer
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

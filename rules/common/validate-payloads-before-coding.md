@@ -125,19 +125,8 @@ the cost of a shape-guess is silent wrong behaviour discovered in production.
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- Parser/builder written without a live/fixture/schema validation of the shape (rule 1/3 violation)
-- `data`/payload assumed list-vs-object and proven wrong later (anti-pattern recurrence)
-- Test-write fired at production to learn a shape (rule 2 violation)
-- PII probe committed or left in `/tmp` (rule 5 violation)
-- Field reads empty in prod where data expected → shape was guessed (rule 6 signal)
-- Completion claim on an integration without the payload-validation block (verification weakening)
-
-**Refinement candidates**:
-
-- New ground-truth source row when a project provides a contract registry / recorded-cassette tooling
-- Tightening of the write-payload validation guidance when a safe non-prod write path becomes standard
-- New cross-reference when a sister rule provides the fixture/contract gate
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

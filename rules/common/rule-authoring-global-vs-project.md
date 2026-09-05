@@ -234,24 +234,8 @@ improved and clean"**.
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- New rule file created without first SEARCHING for an existing rule covering the same concern (duplicate-rule risk — reuse-first). Incident 2026-06-05: a `post-phase-principal-audit.md` was created when `post-phase-retrospective-review.md` already existed; the fix was to consolidate into the existing rule + delete the duplicate. ALWAYS `grep`/`ls` `rules/common/` for the concept before authoring; extend the nearest existing rule rather than adding a sibling.
-- New rule written without classification step (rule 1 violation — classify-before-writing)
-- Global rule contains project / workspace / vendor names or session-specific dates (rule 2 violation — purity sweep failed)
-- Workspace rule attempts to LOWER a global threshold (rule 4 violation — strictest wins)
-- "For now, refactor later" comment on a misplaced rule (rule 4 weakening — refactor never lands)
-- Workspace `CLAUDE.md` missing the "Project rules" index section (rule 8 weakening)
-- New skill / agent shipped without classification step (rule 9 weakening)
-- Cross-workspace pattern observed in 2+ projects without promotion proposed (rule 7 promotion gap)
-- Global rule consistently overridden in practice without demotion proposed (rule 6 demotion gap)
-- Classification rationale absent from the agent's response when adding a rule (rule 10 weakening — decision not recorded)
-
-**Refinement candidates**:
-
-- New banned-content row when a recurring project-specific leak class appears in global (e.g., specific cloud region, specific compliance regulator)
-- Tightening of the cross-workspace-pattern detection when 2+ similar rules accumulate without promotion
-- New cross-reference when a sister rule (project-scoped-artifacts, continuous-learning-mandate) provides the promotion / demotion pipeline
-- New per-language guidance when a workspace's stack-specific rule shape proves load-bearing across projects
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

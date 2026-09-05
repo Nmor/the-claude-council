@@ -439,21 +439,8 @@ shortcut."
 
 ## Learning hooks
 
-Per `~/.claude/rules/common/continuous-learning-mandate.md`:
-
-**Signals to watch**:
-
-- Task shipped without a Council verification block (Council bypass attempted)
-- Core Five division speaks in boilerplate ("looks fine") instead of real analysis (rule 1 weakening)
-- Extended Division trigger matched but Division did not engage (council-triggers.md miscalibration)
-- Tiebreaker invoked but the outcome contradicts the tiebreaker matrix (matrix needs review)
-- Veto invoked without explicit documentation in the consensus block (rule 5 enforcement weak)
-- Abbreviated mode degraded into zero-Council in practice (speed-mode discipline weak)
-- Post-implementation review skipped on a Council-mediated task (rule 10 violation)
-
-**Refinement candidates**:
-
-- New trigger row in `council-triggers.md` when a Division consistently engages on a pattern that wasn't in its trigger ruleset
-- Tightening of the tiebreaker matrix when an ambiguity surfaces in practice
-- New row in the task-class table when a new shape of work needs its own Council pacing
-- New cross-reference when Phase 0 / Phase 1 / Phase 2 / Phase 3 protocol gains a load-bearing artifact
+Signals to watch + refinement candidates for this rule live in the
+`council-maintenance` skill, which auto-fires when you touch a rule, skill,
+agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
+instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
+they load then rather than on every turn.

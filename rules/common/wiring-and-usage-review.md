@@ -172,6 +172,13 @@ never the reflex. Apply this fixed order of preference to EACH candidate:
    out-of-file / dynamic consumer, and cite that evidence. A trace's "inert" label is
    NOT validation — it is the START of validation.
 
+**Use a real call graph, not grep, where one is available.** `graphify` (authority per
+`~/.claude/CLAUDE.md`) answers "what calls this, on what path" from deterministic AST
+parsing with every edge explained, which is precisely the question this rule asks and
+precisely where a text search misleads: grep cannot see a call through an interface, a
+generated binding, or a name shared by two packages. Where a graph is available, the
+grep is corroboration, not the trace.
+
 Beware **(C) FALSE POSITIVES** — a symbol the trace called inert but is actually wired
 (a consumer in ANOTHER repo, an entry point invoked by IaC/CI/Argo, an out-of-file
 caller). VERIFY every finding on the live path (rules 1-8) BEFORE acting. When a

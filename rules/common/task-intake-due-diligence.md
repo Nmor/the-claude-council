@@ -39,7 +39,7 @@ These are high-signal for any non-trivial change; they always appear:
 
 | # | Question | Essence | Depth in |
 | --- | --- | --- | --- |
-| 1 | Prior art | Swept codebase + sister workspaces + OSS (GitHub/npm/PyPI/…) + vendors; answer is a list with links, not "found nothing" | `reuse-first.md` |
+| 1 | Prior art | Swept codebase + sister workspaces + OSS (GitHub/npm/PyPI/…) + vendors; answer is a list with links, not "found nothing". Sweep the CODEBASE half with `graphify` where available — "found nothing" from grep is the answer this question most often gets wrong | `reuse-first.md` |
 | 2 | Who did it (provenance) | Internal `git blame`/`log --follow` so intent is askable; external maintainer + last-release date (abandoned = not acceptable) | `reuse-first.md` |
 | 5 | Can it be done better? | SOTA scan (papers/RFCs/talks, last 12-24mo); verdict: (a) canonical still best, (b) documented improvement, (c) known issue we work around | `official-docs-first.md` |
 | 6 | Scalable? | Holds at 10×/100×/1000×? Failure modes at scale (rate limits, pools, backpressure, fan-out); cost shape; named inflection point | — |

@@ -3,7 +3,17 @@ name: codebase-memory
 description: Use the codebase knowledge graph for structural code queries. Triggers on: explore the codebase, understand the architecture, what functions exist, show me the structure, who calls this function, what does X call, trace the call chain, find callers of, show dependencies, impact analysis, dead code, unused functions, high fan-out, refactor candidates, code quality audit, graph query syntax, Cypher query examples, edge types, how to use search_graph.
 ---
 
-# Codebase Memory — Knowledge Graph Tools
+# Codebase Memory
+
+> **Authority note (see the authority map in `~/.claude/CLAUDE.md`).** `graphify` claims
+> the same trigger as this skill — codebase structure and architecture questions. Two
+> skills answering one question is worse than either alone, because the choice between
+> them is invisible.
+>
+> Prefer **graphify** while `codebase-memory-mcp` is unapproved: it is live today (local
+> deterministic AST, no vector store). Once the MCP is approved, THIS skill is the
+> authority for MCP-backed incremental queries against an indexed repo, and graphify is
+> the authority for one-shot graphs over a repo that has not been indexed. — Knowledge Graph Tools
 
 Graph tools return precise structural results in ~500 tokens vs ~80K for grep.
 

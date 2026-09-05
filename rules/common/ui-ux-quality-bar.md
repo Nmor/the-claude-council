@@ -113,6 +113,14 @@ UI/UX (this turn):
 - **Ask-without-reason** — sensitive input requested with no explanation of why.
 - **Confirm-without-consequence** — "Are you sure?" naming neither the act nor its scope.
 
+## Relationship to the design plugin
+
+`ui-ux-pro-max` supplies design KNOWLEDGE (tokens, styles, typography, component specs).
+This rule supplies the BAR and holds the veto through `ux-reviewer` and
+`accessibility-reviewer`. A plugin never overrides a Floor rule: knowledge that would
+ship a surface failing WCAG 2.2 AA, or missing an empty/error state, is refused here.
+The authority map in `~/.claude/CLAUDE.md` records the split.
+
 ## Cross-references
 
 - `principal-level-mandate.md` — the depth bar; this applies it to the user-visible layer

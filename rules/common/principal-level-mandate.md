@@ -264,6 +264,14 @@ Principal-level audit (this turn):
   - Remediation queue: <list of 7 shallow skills>
 ```
 
+## Relationship to simplicity tooling
+
+`ponytail` enforces the laziest IMPLEMENTATION that works (per `no-bloat.md`). That is
+not a licence to lower THIS bar. Simplicity governs the shape of the solution; this rule
+governs the depth of the analysis, verification and review behind it — a one-line fix
+still needs its root cause proven and its gate run. Where the two appear to conflict,
+principal-level wins, and the authority map in `~/.claude/CLAUDE.md` records that.
+
 ## Cross-references
 
 - `extreme-lint-policy.md` — strict thresholds across languages

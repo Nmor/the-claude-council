@@ -5,22 +5,60 @@ description: Principal-level model selection framework — match problem class t
 
 # ML Model Selection
 
+> **Size budget: 22 KB** — `token-budget.mjs --check`.
+
 ## Purpose
 
-Model selection is the deliberate choice of which model family, training procedure, and hyperparameter regime best fits a given problem given constraints on data, compute, latency, interpretability, cost, and risk. The naive approach — "use a transformer for everything" or "just AutoML it" — wastes capital and produces fragile systems. Principal-level model selection starts from the problem (supervised classification? regression? sequence prediction? ranking? anomaly detection? recommendation? generation?), inventories available data (size, quality, distribution, drift), enumerates candidate model families with their characteristic trade-offs, runs disciplined cross-validation with leak-free splits, and reports results with confidence intervals + qualitative caveats. The output is not just "we chose XGBoost" — it's a defensible recommendation with documented rejection rationale for the alternatives.
+Model selection is the deliberate choice of which model family, training procedure, and
+hyperparameter regime best fits a given problem given constraints on data, compute, latency,
+interpretability, cost, and risk. The naive approach — "use a transformer for everything" or "just
+AutoML it" — wastes capital and produces fragile systems. Principal-level model selection starts
+from the problem (supervised classification? regression? sequence prediction? ranking? anomaly
+detection? recommendation? generation?), inventories available data (size, quality, distribution,
+drift), enumerates candidate model families with their characteristic trade-offs, runs disciplined
+cross-validation with leak-free splits, and reports results with confidence intervals + qualitative
+caveats. The output is not just "we chose XGBoost" — it's a defensible recommendation with
+documented rejection rationale for the alternatives.
 
 ## Standards Cited
 
-- **Hastie, Tibshirani, Friedman "The Elements of Statistical Learning" 2e (2009, Springer)** — canonical statistical-learning reference
+- **Hastie, Tibshirani, Friedman "The Elements of Statistical Learning" 2e (2009, Springer)** —
+  canonical statistical-learning reference
 - **Goodfellow, Bengio, Courville "Deep Learning" (2016, MIT Press)** — neural-network foundations
-- **Murphy "Probabilistic Machine Learning" (Vol I + II, 2022-2023, MIT Press)** — modern probabilistic + deep learning text
-- **Géron "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow" 3e** — applied workflow
+- **Murphy "Probabilistic Machine Learning" (Vol I + II, 2022-2023, MIT Press)** — modern
+  probabilistic + deep learning text
+- **Géron "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow" 3e** — applied
+  workflow
 - **NIST AI Risk Management Framework (AI RMF 1.0, 2023)** — governance + measurement
 - **scikit-learn user guide + API stability policy** — sklearn API contract
 - **MLflow + Weights & Biases experiment tracking conventions**
 - **Kaggle competition methodology + grand-master playbooks** — empirical best practices
 - **ACM FAccT (Fairness Accountability Transparency) proceedings** — fairness criteria
 - **EU AI Act + Anthropic Responsible Scaling Policy** — high-risk-system thresholds
+
+- **NIST AI RMF 1.0** — AI risk management framework (Govern / Map /
+  Measure / Manage functions; MEASURE 2 covers model evaluation)
+- **NIST SP 800-218A SSDF for AI** — Secure Software Development
+  Framework profile for AI models (§PW.4, §PW.6, §PW.8)
+- **NIST SP 800-53 Rev 5 §SI-4, §SI-7** — Information system
+  monitoring + software integrity (applies to model + dataset
+  artifacts)
+- **ISO/IEC 23053:2022 §7** — Framework for AI systems using ML
+- **ISO/IEC 23894:2023** — AI risk management
+- **ISO/IEC 42001:2023** — AI management system requirements
+- **OWASP Top 10 for LLM Applications (2025)** — LLM01 Prompt
+  Injection, LLM02 Sensitive Information Disclosure, LLM06
+  Excessive Agency, LLM09 Misinformation, LLM10 Unbounded
+  Consumption
+- **OWASP ML Top 10 (2023)** — ML01-ML10 (adversarial inputs,
+  data poisoning, model inversion, etc.)
+- **CWE-1039** — Automated recognition mechanism with inadequate
+  detection or handling of adversarial input perturbations
+- **CWE-1426** — Improper validation of generative AI output
+- **EU AI Act (Regulation 2024/1689)** — risk-based obligations
+  for general-purpose AI models + high-risk systems
+- **`~/.claude/rules/common/council-triggers.md`** (Division 15) — bias,
+  fairness, dataset provenance, human-in-the-loop gates
 
 ## When to Fire
 
@@ -50,7 +88,10 @@ Model selection is the deliberate choice of which model family, training procedu
 | **Clustering / segmentation** | K-Means / HDBSCAN / Gaussian Mixture | UMAP + clustering for high-dimensional |
 | **Reinforcement learning** | PPO / SAC for continuous; DQN family for discrete | Offline RL (CQL / IQL) when collection is expensive |
 
-The default for tabular ML in 2026 remains gradient-boosted trees. They handle missingness, mixed types, non-linearity, interactions, and produce calibrated probabilities with little tuning. Deep learning for tabular is rarely worth the engineering overhead unless you genuinely have wide data or strong feature-interaction priors.
+The default for tabular ML in 2026 remains gradient-boosted trees. They handle missingness, mixed
+types, non-linearity, interactions, and produce calibrated probabilities with little tuning. Deep
+learning for tabular is rarely worth the engineering overhead unless you genuinely have wide data or
+strong feature-interaction priors.
 
 ### Pattern 2: Disciplined evaluation
 
@@ -92,9 +133,13 @@ def evaluate_model(model_factory, X, y, problem_type: str, groups=None):
 Key discipline:
 
 - **NEVER fit on test**. Hold out a final test set used only ONCE at the end.
-- **Match the split to the data generating process**. IID → stratified k-fold; time series → forward-walking; grouped (multiple rows per user) → group k-fold to avoid leakage.
-- **Report confidence intervals**, not single point metric. If a model is 0.873 ± 0.012 AUC and the alternative is 0.879 ± 0.014, the difference is within noise.
-- **Calibration matters as much as discrimination**. AUC tells you ranking; Brier score tells you whether predicted probabilities are well-calibrated. Production systems often need calibrated probabilities (for decision thresholds), not just rankings.
+- **Match the split to the data generating process**. IID → stratified k-fold; time series →
+  forward-walking; grouped (multiple rows per user) → group k-fold to avoid leakage.
+- **Report confidence intervals**, not single point metric. If a model is 0.873 ± 0.012 AUC and the
+  alternative is 0.879 ± 0.014, the difference is within noise.
+- **Calibration matters as much as discrimination**. AUC tells you ranking; Brier score tells you
+  whether predicted probabilities are well-calibrated. Production systems often need calibrated
+  probabilities (for decision thresholds), not just rankings.
 
 ### Pattern 3: Beyond accuracy — the multi-objective lens
 
@@ -155,7 +200,8 @@ model_evaluation:
     neural: marginal accuracy gain, 20× inference cost, fairness concern, robustness concern
 ```
 
-Multi-objective evaluation prevents the "neural net wins by 0.8% AUC, we ship neural net" trap. The 0.8% gain is often within noise; the cost / latency / interpretability penalty is permanent.
+Multi-objective evaluation prevents the "neural net wins by 0.8% AUC, we ship neural net" trap. The
+0.8% gain is often within noise; the cost / latency / interpretability penalty is permanent.
 
 ### Pattern 4: Foundation models vs classical ML
 
@@ -169,7 +215,9 @@ Multi-objective evaluation prevents the "neural net wins by 0.8% AUC, we ship ne
 | **Time series forecasting** | Some emerging (TimeGPT, Chronos); evaluate | Often classical still wins |
 | **Computer vision** | CLIP for zero-shot; large vision models | Classical CNN / YOLO for production specialised tasks |
 
-Foundation models excel at TASKS WITH LANGUAGE / NATURAL DATA + LOW VOLUME / HIGH DIVERSITY. Classical ML excels at WELL-DEFINED REPEATABLE PROBLEMS + HIGH VOLUME / NARROW DOMAIN. Picking the wrong side wastes 10-100x on cost.
+Foundation models excel at TASKS WITH LANGUAGE / NATURAL DATA + LOW VOLUME / HIGH DIVERSITY.
+Classical ML excels at WELL-DEFINED REPEATABLE PROBLEMS + HIGH VOLUME / NARROW DOMAIN. Picking the
+wrong side wastes 10-100x on cost.
 
 ### Pattern 5: Sample size + complexity matching
 
@@ -183,41 +231,55 @@ Generalisation requires N (data) >> p (parameters). Rough heuristics:
 | 100,000-1M | Tree ensemble (still!); deeper nets; LLM fine-tune cheap |
 | > 1M | Deep learning becomes competitive; tabular still favours trees often |
 
-Over-parameterised models on small data overfit catastrophically. Under-parameterised models on big data leave performance on the table.
+Over-parameterised models on small data overfit catastrophically. Under-parameterised models on big
+data leave performance on the table.
 
 ## Anti-Patterns
 
 ### Anti-pattern 1: Leakage during cross-validation
 
-Computing features (mean, std, target encoding) on the FULL dataset, then splitting into folds. The folds now contain information from each other; CV scores are optimistic by 5-15 AUC points. Fix: compute features WITHIN each fold's training partition only.
+Computing features (mean, std, target encoding) on the FULL dataset, then splitting into folds. The
+folds now contain information from each other; CV scores are optimistic by 5-15 AUC points. Fix:
+compute features WITHIN each fold's training partition only.
 
 ### Anti-pattern 2: Choosing the model that won 1 hyperparameter search
 
-You ran 200 trials of XGBoost on the validation set; selected the best one. The "best" trial is partially noise — it overfit your validation set via 200 trials of multiple-comparisons. Always evaluate the FINAL chosen hyperparameters on a held-out test set you have not seen.
+You ran 200 trials of XGBoost on the validation set; selected the best one. The "best" trial is
+partially noise — it overfit your validation set via 200 trials of multiple-comparisons. Always
+evaluate the FINAL chosen hyperparameters on a held-out test set you have not seen.
 
 ### Anti-pattern 3: Ignoring class imbalance
 
-99% negative class. Model predicts all-negative: 99% accuracy. Useless. Use precision/recall, F1, PR-AUC, lift charts. Set class weights or use SMOTE / under-sampling as appropriate.
+99% negative class. Model predicts all-negative: 99% accuracy. Useless. Use precision/recall, F1,
+PR-AUC, lift charts. Set class weights or use SMOTE / under-sampling as appropriate.
 
 ### Anti-pattern 4: Not comparing to a baseline
 
-If you don't know what "predict the majority class" or "predict the mean" scores, you don't know whether your model is doing anything. Always include trivial baseline.
+If you don't know what "predict the majority class" or "predict the mean" scores, you don't know
+whether your model is doing anything. Always include trivial baseline.
 
 ### Anti-pattern 5: Optimising for benchmark, not business metric
 
-Benchmark says model A is best (AUC). Business cares about precision-at-top-100 (since downstream cost is per-prediction). Model B is worse on AUC but better on precision-at-top-100. Ship B. The eval metric must match the deployment objective.
+Benchmark says model A is best (AUC). Business cares about precision-at-top-100 (since downstream
+cost is per-prediction). Model B is worse on AUC but better on precision-at-top-100. Ship B. The
+eval metric must match the deployment objective.
 
 ### Anti-pattern 6: Foundation model for everything
 
-"Just call Claude" for a 10M-row tabular fraud detection task. Cost: $30,000/day. XGBoost: $5/day, better accuracy. Foundation models cost ~100-1000× per inference vs deployed tree models.
+"Just call Claude" for a 10M-row tabular fraud detection task. Cost: $30,000/day. XGBoost: $5/day,
+better accuracy. Foundation models cost ~100-1000× per inference vs deployed tree models.
 
 ### Anti-pattern 7: Ignoring fairness audit until last minute
 
-Model in production six months. Regulator audit reveals 8% false-positive rate gap across protected groups. Model recall / retrain / litigation. Run fairness audits at validation time, not in production.
+Model in production six months. Regulator audit reveals 8% false-positive rate gap across protected
+groups. Model recall / retrain / litigation. Run fairness audits at validation time, not in
+production.
 
 ### Anti-pattern 8: Not measuring training-serving skew
 
-Feature X is computed via batch SQL pipeline at training time; via real-time stream at serving time. Subtle difference in NULL handling. Production prediction quality degrades silently. Validate that training-time and serving-time features produce identical values for the same input.
+Feature X is computed via batch SQL pipeline at training time; via real-time stream at serving time.
+Subtle difference in NULL handling. Production prediction quality degrades silently. Validate that
+training-time and serving-time features produce identical values for the same input.
 
 ## Verification Checklist
 
@@ -243,7 +305,8 @@ Feature X is computed via batch SQL pipeline at training time; via real-time str
 
 - `~/.claude/skills/mlops-patterns/SKILL.md` — production deployment infrastructure
 - `~/.claude/skills/rag-design/SKILL.md` — when foundation-model RAG is the right architecture
-- `~/.claude/skills/prompt-engineering/SKILL.md` — when prompted foundation model is the right choice
+- `~/.claude/skills/prompt-engineering/SKILL.md` — when prompted foundation model is the right
+  choice
 - `~/.claude/skills/fine-tuning-workflows/SKILL.md` — when fine-tuning a small model wins
 - `~/.claude/skills/cost-aware-llm-pipeline/SKILL.md` — cost-aware routing among models
 - `~/.claude/skills/observability-patterns/SKILL.md` — monitoring deployed models
@@ -253,41 +316,24 @@ Feature X is computed via batch SQL pipeline at training time; via real-time str
 
 The empirical record on model selection mistakes is consistent:
 
-- **Wrong baseline**: teams optimise complex deep models when logistic regression would have served, paying 100× cost for 1% accuracy gain
-- **Leakage**: SimpleAI 2024 study of 75 ML papers found 60% had some form of data leakage; production deployments crash relative to leaky CV scores
-- **Benchmark-business gap**: Kaggle-winning solutions often fail in production because the Kaggle metric ≠ the business metric
-- **Foundation model FOMO**: companies pay enterprise LLM bills for tasks that could run for pennies on classical models
-- **Ignored fairness**: high-profile cases (Apple Card credit limits, COMPAS recidivism, healthcare risk scores) have produced regulatory and reputational fallout
+- **Wrong baseline**: teams optimise complex deep models when logistic regression would have served,
+  paying 100× cost for 1% accuracy gain
+- **Leakage**: SimpleAI 2024 study of 75 ML papers found 60% had some form of data leakage;
+  production deployments crash relative to leaky CV scores
+- **Benchmark-business gap**: Kaggle-winning solutions often fail in production because the Kaggle
+  metric ≠ the business metric
+- **Foundation model FOMO**: companies pay enterprise LLM bills for tasks that could run for pennies
+  on classical models
+- **Ignored fairness**: high-profile cases (Apple Card credit limits, COMPAS recidivism, healthcare
+  risk scores) have produced regulatory and reputational fallout
 
-Principal-level model selection is the antidote: match problem to model family, evaluate disciplined, report multi-objective, document rejection rationale. The patient analyst who runs the baseline first ships smaller, cheaper, more interpretable models that outperform the team that jumped to a transformer.
+Principal-level model selection is the antidote: match problem to model family, evaluate
+disciplined, report multi-objective, document rejection rationale. The patient analyst who runs the
+baseline first ships smaller, cheaper, more interpretable models that outperform the team that
+jumped to a transformer.
 
-In a world where compute is cheap but engineering attention is scarce, the discipline of choosing the right model — and rejecting the wrong one — compounds productivity.
-
-## Standards Cited
-
-- **NIST AI RMF 1.0** — AI risk management framework (Govern / Map /
-  Measure / Manage functions; MEASURE 2 covers model evaluation)
-- **NIST SP 800-218A SSDF for AI** — Secure Software Development
-  Framework profile for AI models (§PW.4, §PW.6, §PW.8)
-- **NIST SP 800-53 Rev 5 §SI-4, §SI-7** — Information system
-  monitoring + software integrity (applies to model + dataset
-  artifacts)
-- **ISO/IEC 23053:2022 §7** — Framework for AI systems using ML
-- **ISO/IEC 23894:2023** — AI risk management
-- **ISO/IEC 42001:2023** — AI management system requirements
-- **OWASP Top 10 for LLM Applications (2025)** — LLM01 Prompt
-  Injection, LLM02 Sensitive Information Disclosure, LLM06
-  Excessive Agency, LLM09 Misinformation, LLM10 Unbounded
-  Consumption
-- **OWASP ML Top 10 (2023)** — ML01-ML10 (adversarial inputs,
-  data poisoning, model inversion, etc.)
-- **CWE-1039** — Automated recognition mechanism with inadequate
-  detection or handling of adversarial input perturbations
-- **CWE-1426** — Improper validation of generative AI output
-- **EU AI Act (Regulation 2024/1689)** — risk-based obligations
-  for general-purpose AI models + high-risk systems
-- **`~/.claude/rules/common/council-triggers.md`** (Division 15) — bias,
-  fairness, dataset provenance, human-in-the-loop gates
+In a world where compute is cheap but engineering attention is scarce, the discipline of choosing
+the right model — and rejecting the wrong one — compounds productivity.
 
 ## Learning hooks
 
@@ -295,10 +341,12 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Transformer / deep model chosen without comparing against linear / tree baseline (over-engineering)
+- Transformer / deep model chosen without comparing against linear / tree baseline
+  (over-engineering)
 - Cross-validation done with leaky splits (test data leaked into training — false-positive accuracy)
 - Single metric reported (accuracy alone — class-imbalance hides false-positive cost)
-- Fairness metrics not measured across demographic axes (per `~/.claude/rules-library/common/security.md` AI ethics)
+- Fairness metrics not measured across demographic axes (per
+  `~/.claude/rules-library/common/security.md` AI ethics)
 - Inference latency / cost not benchmarked against SLO (model picked on accuracy only)
 - Interpretability not considered when the use case is regulated (e.g., credit scoring)
 - Model card / datasheet absent (per `~/.claude/rules/common/task-intake-due-diligence.md` Q24)
@@ -309,6 +357,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New model-family row when a new architecture becomes broadly applicable
-- New cross-reference when a sister skill (mlops-patterns, rag-design, fine-tuning-workflows) adds a selection gate
+- New cross-reference when a sister skill (mlops-patterns, rag-design, fine-tuning-workflows) adds a
+  selection gate
 - New fairness-metric row when a recurring bias class emerges in production
 - Tightening of the baseline-first rule when over-engineering recurs

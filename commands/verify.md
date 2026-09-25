@@ -6,6 +6,8 @@ command: true
 
 # Verification Command
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Run comprehensive verification on current codebase state.
 
 ## Instructions

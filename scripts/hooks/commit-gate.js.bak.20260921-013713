@@ -1,0 +1,101 @@
+#!/usr/bin/env node
+// commit-gate.js
+//
+// PreToolUse Bash hook. BLOCKS `git commit` (exit 2) when the rules that make a
+// commit trustworthy have not actually been met this session. Sister to
+// pre-push-gate.js, which guards the remote; this one guards the history.
+//
+// Enforces, per owner directive "block any push or commit if rule is not checked
+// or obeyed or met":
+//
+//   (a) verify-before-claim.md + done-criteria.md — a verification gate must have
+//       RUN, and must have run AFTER the most recent source edit. A gate that ran
+//       before the edit proves nothing about what is being committed.
+//   (b) functional-test-coverage.md rule 1 — source changed in this session and
+//       coverage was never measured once. Coverage is a measurement, never an
+//       estimate, and a commit is a claim.
+//
+// Passes through untouched: every non-commit Bash call, and commits that touched
+// no source (docs, plans, memory, config-only).
+//
+// Bypass, deliberately explicit and per-process so it cannot leak across shells:
+//   CLAUDE_COMMIT_GATE=off git commit -m "..."
+// Use it when a gate is genuinely unavailable, and say so in the commit body.
+'use strict';
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
+const PREFIX = '[commit-gate] ';
+const isGitCommit = (cmd) =>
+  /(^|[\s;&|`(]+)git(?:\s+-C\s+\S+)?\s+commit(\s|$)/.test(cmd);
+
+// `--amend --no-edit` on an already-verified commit, and `-m` on a revert, do not
+// re-introduce unverified work; the edit/gate timestamps below still govern them.
+const readStamp = (file) => {
+  try {
+    return Number(fs.readFileSync(file, 'utf8')) || 0;
+  } catch {
+    return 0;
+  }
+};
+
+let buf = '';
+process.stdin.setEncoding('utf8');
+process.stdin.on('data', (c) => (buf += c));
+process.stdin.on('end', () => {
+  let cmd = '';
+  let sid = '';
+  try {
+    const payload = JSON.parse(buf);
+    cmd = (payload.tool_input && payload.tool_input.command) || '';
+    sid = payload.session_id || '';
+  } catch {
+    // Not ours to parse; the harness owns the protocol.
+    process.stdout.write(buf);
+    return;
+  }
+
+  if (!isGitCommit(cmd) || !sid || process.env.CLAUDE_COMMIT_GATE === 'off') {
+    process.exit(0);
+  }
+
+  const tmp = os.tmpdir();
+  const lastEdit = readStamp(path.join(tmp, `claude-council-lastedit-${sid}`));
+  const lastGate = readStamp(path.join(tmp, `claude-council-gate-${sid}`));
+  const coverage = fs.existsSync(path.join(tmp, `claude-council-coverage-${sid}`));
+
+  // No source touched this session: nothing for this gate to assert.
+  if (!lastEdit) process.exit(0);
+
+  const reasons = [];
+  if (!lastGate) {
+    reasons.push(
+      'no verification gate has run this session (build / test / lint / vet / type-check). ' +
+        'Per verify-before-claim.md a commit is a claim, and a claim needs same-session proof.'
+    );
+  } else if (lastGate < lastEdit) {
+    const mins = Math.round((lastEdit - lastGate) / 60000);
+    reasons.push(
+      `source changed AFTER the last verification gate ran (${mins} min later). ` +
+        'The earlier run proves nothing about what is staged — re-run the gate.'
+    );
+  }
+  if (!coverage) {
+    reasons.push(
+      'coverage was never measured this session, though source changed. Per ' +
+        'functional-test-coverage.md rule 1 coverage is a measurement and never an ' +
+        'estimate; run the project coverage command before committing.'
+    );
+  }
+
+  if (!reasons.length) process.exit(0);
+
+  process.stderr.write(
+    `${PREFIX}BLOCKED: ${reasons.length} rule(s) not met.\n` +
+      reasons.map((r, i) => `${PREFIX}  ${i + 1}. ${r}\n`).join('') +
+      `${PREFIX}Run the gate, then commit. To override for a genuinely unavailable ` +
+      `gate: CLAUDE_COMMIT_GATE=off git commit ... (and say why in the commit body).\n`
+  );
+  process.exit(2); // block
+});

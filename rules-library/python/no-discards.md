@@ -6,6 +6,8 @@
 > `no-silent-failures.md`, `error-handling-with-context.md`.
 > Tooling: `ruff` (select=ALL), `mypy --strict`,
 > `pyright --strict`, `bandit`, `pylint`, `pytest`.
+>
+> **Size budget: 14 KB** — `token-budget.mjs --check`.
 
 ## Core Principle (Python-specific restatement)
 

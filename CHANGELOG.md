@@ -7,6 +7,70 @@ and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+**A model that hits its plan limit is routed around (2026-09-25).** Claude Code's
+`fallbackModel` skips rate-limit and billing errors, and no hook can switch the model or
+retry (model-config and hooks references, read 2026-09-25). So every Council spawn kept
+asking for an exhausted tier until a person ran `/model`.
+
+- **`model-exhaustion-marker.js`** records a tier when an error names it ("You've hit
+  your Fable limit") and clears it on the next success, from StopFailure, Stop and the
+  Agent PostToolUse events. A session or weekly limit names no tier and marks nothing.
+- **`model-ladder-gate.js`** resolves each ladder without the exhausted tier, falling UP
+  to the nearest stronger model, and denies a spawn that asks for it with the rung to use.
+- **The session model still needs `/model`**: no setting or hook can switch it.
+- **Two files back inside their own size budget** (`lib/bash-writes.js`,
+  `post-edit.test.mjs`); the scaffold memory index now links the topic file it ships.
+- **`docs-sync-gate.js` no longer guesses the project.** With no `cwd` in the payload it
+  judged its own working directory, so it blocked whenever it ran inside a repo with
+  changes. Claude Code always sends `cwd`; without it the gate now allows.
+- **Fake keys in skill examples are placeholders.** CI gitleaks flagged four of them.
+- **`node --test` counts as a verification gate.** The hook suite runs this way, and the
+  commit gate never saw it, so a verified commit could only pass by running another tool.
+
+**Hooks now reach the model (2026-09-21).** Claude Code sends stderr from a hook that
+exits 0 to the debug log only (hooks reference, read 2026-09-21). Every advisory hook
+used that channel, so none of them was ever seen: the intake, research, coverage,
+payload and supersede nudges, the UX-writing and type-check reports, and the soft
+no-discards warnings. Proved on the live path before the fix, then after it.
+
+- **Advice travels as `hookSpecificOutput.additionalContext`** through one helper,
+  `scripts/hooks/lib/advise.js`. A block still uses stderr with exit 2. Stop-family
+  warnings that must not reopen a turn go to the user as `systemMessage`.
+- **No hook echoes its input to stdout.** Each hook gets its own stdin, and Claude Code
+  parses stdout as the hook's own output.
+- **The subagent gate had never fired.** It read `tool_calls`, which SubagentStop does
+  not send; it now reads `agent_transcript_path`.
+- **The claim wall used fields Stop does not define.** It now uses `additionalContext`,
+  prefers `last_assistant_message`, and honours `stop_hook_active`.
+- **The inline dev-server hooks became `dev-server-gate.js`.** A foreground dev server is
+  blocked with a pointer to `run_in_background: true`, Claude Code's own way to keep one
+  running with a readable log; the background form is allowed (the old block refused it).
+  The build-and-test tmux reminder is gone: it was never delivered, and Claude Code now
+  backgrounds a command that outlives its timeout on its own.
+- **Command analysis judges what runs, not what is mentioned**
+  (`lib/command-scan.js`): a `.sh` or `.git/` heredoc target no longer counts as a
+  push, and gate detection has one shared list.
+- **Fixed in the shared libraries**: aliases and package managers answered for
+  inherited names like `constructor`; Bun's text `bun.lock` (default since Bun 1.2)
+  went undetected; the no-discards manifest had duplicated and unreachable branches, a
+  CSS selector bypass, and a setext underline read as a merge conflict.
+- **One verdict per Python `except` shape.** `except ValueError: pass` was blocked on one
+  line and allowed across two, because two rules disagreed. The older per-line rule is
+  retired: a bare or `Exception` / `BaseException` swallow is blocked in either layout, and
+  a named exception is allowed, which is where Ruff S110 and Bandit B110 draw the line by
+  default. One swallow now produces one finding, not two.
+- **Vendored library API is labelled.** Five exports with no caller in this install or
+  upstream (`getRunCommand`, `getExecCommand`, `isMacOS`, `isLinux`, `grepFile`) are kept so
+  the libraries stay in step with `affaan-m/ECC`, and say so in their headers.
+- **Installer**: root-only excludes are anchored, so the project scaffold's
+  `.gitignore`, README and `memory/` template install again. `verify.sh` names a failed
+  code-graph check instead of exiting silently, and skips Claude Code's own
+  `skills/synced/` store.
+- **Skill splits**: 210 links moved into `references/` are rebased; seven skills whose
+  standards had moved out cite them in `SKILL.md` again; the splitter now rebases links,
+  refuses a split that breaks one, and keeps any `## Standards` section.
+- **Tests**: 777 hook tests, from 571; enforcement-layer line coverage 93.9%, from 82.5%.
+
 **Cold-load: ~150,240 -> ~64,939 tokens per turn (2026-09-05).** The headline fix
 was not a design change — it was a bug. This repo was checked out at a path that
 is a PARENT of eleven active workspaces, and Claude Code collects config by

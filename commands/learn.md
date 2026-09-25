@@ -6,6 +6,8 @@ command: true
 
 # /learn - Extract Reusable Patterns
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Analyze the current session and extract any patterns worth saving as skills.
 
 ## Trigger

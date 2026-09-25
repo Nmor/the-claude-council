@@ -12,6 +12,8 @@
 > sister rules don't cover: false-positive success reporting,
 > async state-transition completeness, optimistic-rollback, and
 > partial-success surfacing in webhook / queue handlers.
+>
+> **Size budget: 17 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -292,24 +294,32 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- False-positive success toast where the optional sub-step actually failed (rule 1 violation pattern)
+- False-positive success toast where the optional sub-step actually failed (rule 1 violation
+  pattern)
 - Async op left in "pending forever" terminal state (rule 2 violation)
 - Optimistic UI update without rollback on failure (rule 3 weakening)
 - Webhook handler returning 200 OK while DLQ-routing failures silently (rule 4 weakening)
 - Polling loop with no timeout escalation surfacing as "stuck spinner" UX (rule 6)
 - Confirmation flow mutation that didn't actually apply but reported success (rule 5)
 - Same partial-success pattern recurring across handlers (taxonomy needs new code class)
-- `throw` / `reject` / `raise` shipped in a user-facing path without an accompanying toast / inline validation / banner / state transition (rule 7 violation — the strongest form)
-- Generic ErrorBoundary catch-all relied on as the FIRST UX surface instead of per-action UX (rule 7 weakening)
-- Server returns a typed `error_code` + `message` but the client renders generic "Something went wrong" (rule 7 banned-shape — the `useApiError` composable / hook isn't mapping the code)
-- Sync handler `throw new ValidationError(...)` not caught + surfaced inline on a form (rule 7 sync-path violation)
-- Server controller `throw` without centralised exception-mapping middleware turning into a generic 500 (rule 7 server-side weakening)
+- `throw` / `reject` / `raise` shipped in a user-facing path without an accompanying toast / inline
+  validation / banner / state transition (rule 7 violation — the strongest form)
+- Generic ErrorBoundary catch-all relied on as the FIRST UX surface instead of per-action UX (rule 7
+  weakening)
+- Server returns a typed `error_code` + `message` but the client renders generic "Something went
+  wrong" (rule 7 banned-shape — the `useApiError` composable / hook isn't mapping the code)
+- Sync handler `throw new ValidationError(...)` not caught + surfaced inline on a form (rule 7
+  sync-path violation)
+- Server controller `throw` without centralised exception-mapping middleware turning into a generic
+  500 (rule 7 server-side weakening)
 
 **Refinement candidates**:
 
 - New rule when a new false-positive success shape appears in 2+ incidents
-- New cross-reference when a sister rule (no-discards, error-handling-with-context) covers a pattern previously thought unique to this rule
-- Tightening of the "every async op has a known status" rule when a new state-machine gap is observed
+- New cross-reference when a sister rule (no-discards, error-handling-with-context) covers a pattern
+  previously thought unique to this rule
+- Tightening of the "every async op has a known status" rule when a new state-machine gap is
+  observed
 - New entry in the optimistic-rollback pattern table when a new domain case surfaces
 
 ---

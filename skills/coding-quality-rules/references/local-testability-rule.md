@@ -5,6 +5,8 @@
 > (Q14 test strategy + the environment setup it requires), and
 > `done-criteria.md` (the gate suite that local testability
 > unlocks).
+>
+> **Size budget: 13 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -248,20 +250,27 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Signals to watch**:
 
 - Code written before prerequisite check ran (rule 1 violation — "write-and-hope")
-- Missing prerequisite discovered post-edit instead of pre-edit (env-setup request not issued in time)
+- Missing prerequisite discovered post-edit instead of pre-edit (env-setup request not issued in
+  time)
 - "I'll write it and you can test later" pattern recurrence (rule 4 violation)
 - Code emit without paired verification command (rule 3 weakening)
-- Untestable code shipped without one of {mock layer, recorded fixture, staging deferral, pair-test} chosen (rule 5 weakening)
-- Pre-existing infrastructure assumed present without verification (rule 6 weakening — implicit prereq)
+- Untestable code shipped without one of {mock layer, recorded fixture, staging deferral, pair-test}
+  chosen (rule 5 weakening)
+- Pre-existing infrastructure assumed present without verification (rule 6 weakening — implicit
+  prereq)
 - CI used as primary verification surface rather than local (rule 8 violation)
-- Verification commands in plan file but not surfaced in the per-code-emit response (rule 9 weakening)
+- Verification commands in plan file but not surfaced in the per-code-emit response (rule 9
+  weakening)
 
 **Refinement candidates**:
 
-- New row in the prerequisite-check table when a recurring tool / runtime / service emerges (e.g., new vector DB, new auth provider, new package manager)
-- Tightening of the prereq-detection heuristic when missing-prereq incidents recur for the same shape
+- New row in the prerequisite-check table when a recurring tool / runtime / service emerges (e.g.,
+  new vector DB, new auth provider, new package manager)
+- Tightening of the prereq-detection heuristic when missing-prereq incidents recur for the same
+  shape
 - New cross-language entry in the local-testability matrix when a new framework / stack appears
-- New "deferred verification" template when a recurring untestable class (real Stripe live key, physical device dependency) emerges
+- New "deferred verification" template when a recurring untestable class (real Stripe live key,
+  physical device dependency) emerges
 
 ---
 

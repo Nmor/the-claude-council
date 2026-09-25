@@ -5,24 +5,44 @@ description: SOC 2 Type I and Type II readiness patterns — Trust Service Crite
 
 # SOC 2 Readiness
 
-> Standards: **AICPA Trust Services Criteria (TSC) 2017 with 2022 Points of Focus revision**, **AICPA SSAE 21** (governing standard for SOC 2 engagements), **AICPA SOC 2 Reporting Guide**, **AICPA Description Criteria DC Section 200**, **COSO 2013 Internal Control — Integrated Framework** (the underlying control framework TSC builds on), **ISO/IEC 27001:2022** (significant overlap; many orgs run both).
+> Standards: **AICPA Trust Services Criteria (TSC) 2017 with 2022 Points of Focus revision**,
+> **AICPA SSAE 21** (governing standard for SOC 2 engagements), **AICPA SOC 2 Reporting Guide**,
+> **AICPA Description Criteria DC Section 200**, **COSO 2013 Internal Control — Integrated
+> Framework** (the underlying control framework TSC builds on), **ISO/IEC 27001:2022** (significant
+> overlap; many orgs run both).
+>
+> **Size budget: 27 KB** — `token-budget.mjs --check`.
 
 ## Purpose
 
-SOC 2 (Service Organization Control 2) is the AICPA's audit framework for service organisations that handle customer data. It's the dominant security assurance standard for B2B SaaS in North America — enterprise procurement teams routinely require a current SOC 2 Type II report before signing. Unlike ISO 27001 (a certifiable management system standard), SOC 2 produces an attestation report from a licensed CPA firm describing how the organisation's controls operated over a period.
+SOC 2 (Service Organization Control 2) is the AICPA's audit framework for service organisations that
+handle customer data. It's the dominant security assurance standard for B2B SaaS in North America —
+enterprise procurement teams routinely require a current SOC 2 Type II report before signing. Unlike
+ISO 27001 (a certifiable management system standard), SOC 2 produces an attestation report from a
+licensed CPA firm describing how the organisation's controls operated over a period.
 
-This skill teaches the engineering side of SOC 2: the Trust Service Criteria, what evidence auditors actually look at, how to design control evidence collection so it survives a 6-12 month continuous audit period, and the operational patterns that make Type II audits sustainable rather than fire-drills.
+This skill teaches the engineering side of SOC 2: the Trust Service Criteria, what evidence auditors
+actually look at, how to design control evidence collection so it survives a 6-12 month continuous
+audit period, and the operational patterns that make Type II audits sustainable rather than
+fire-drills.
 
 Two report types matter:
 
-- **Type I** — point-in-time. The auditor verifies controls are DESIGNED appropriately on a specific date. Cheaper, faster, useful for first certification but increasingly insufficient for enterprise deals.
-- **Type II** — continuous period (typically 6-12 months; first audit often 3-6 months to start). The auditor verifies controls OPERATED EFFECTIVELY throughout the period via evidence sampling. This is what enterprise customers actually demand.
+- **Type I** — point-in-time. The auditor verifies controls are DESIGNED appropriately on a specific
+  date. Cheaper, faster, useful for first certification but increasingly insufficient for enterprise
+  deals.
+- **Type II** — continuous period (typically 6-12 months; first audit often 3-6 months to start).
+  The auditor verifies controls OPERATED EFFECTIVELY throughout the period via evidence sampling.
+  This is what enterprise customers actually demand.
 
-The engineering investment is mostly in making evidence automatic — not in writing policies. Policies are easy. Evidence trails that show "this control fired every day for 12 months across thousands of changes" require designed-in instrumentation.
+The engineering investment is mostly in making evidence automatic — not in writing policies.
+Policies are easy. Evidence trails that show "this control fired every day for 12 months across
+thousands of changes" require designed-in instrumentation.
 
 ## Standards Cited
 
-- **AICPA TSC 2017 (Revised 2022) Common Criteria CC1.x** — Control Environment (governance, integrity, ethics)
+- **AICPA TSC 2017 (Revised 2022) Common Criteria CC1.x** — Control Environment (governance,
+  integrity, ethics)
 - **AICPA TSC CC2.x** — Communication and Information
 - **AICPA TSC CC3.x** — Risk Assessment
 - **AICPA TSC CC4.x** — Monitoring Activities
@@ -57,7 +77,8 @@ The engineering investment is mostly in making evidence automatic — not in wri
 
 ### Pattern 1: TSC selection — Security is mandatory, others are opt-in
 
-Every SOC 2 report includes **Security** (the Common Criteria, CC1-CC9). The four additional categories are optional:
+Every SOC 2 report includes **Security** (the Common Criteria, CC1-CC9). The four additional
+categories are optional:
 
 | Category | When to add | Cost vs benefit |
 | --- | --- | --- |
@@ -67,7 +88,9 @@ Every SOC 2 report includes **Security** (the Common Criteria, CC1-CC9). The fou
 | **Confidentiality** | When you process customer-confidential data with retention / disposal contracts | Adds C1.1-C1.2; classification + disposal evidence |
 | **Privacy** | When you process consumer personal info; often skipped in favour of GDPR/CCPA artefacts | Adds P1.1-P8.1; consent, notice, choice evidence |
 
-For most B2B SaaS: **Security + Availability** is the typical scope. Add Confidentiality if your contracts include explicit confidentiality / disposal terms. Privacy is increasingly handled via a separate GDPR/CCPA programme rather than SOC 2 P-criteria.
+For most B2B SaaS: **Security + Availability** is the typical scope. Add Confidentiality if your
+contracts include explicit confidentiality / disposal terms. Privacy is increasingly handled via a
+separate GDPR/CCPA programme rather than SOC 2 P-criteria.
 
 ### Pattern 2: Control matrix — CC6 + CC7 + CC8 are the engineering core
 
@@ -92,7 +115,8 @@ The Common Criteria families most engineering-relevant:
 
 **CC8 Change Management**:
 
-- CC8.1: Authorization, design, development, configuration, documentation, testing, approval, implementation of changes
+- CC8.1: Authorization, design, development, configuration, documentation, testing, approval,
+  implementation of changes
 
 Map each control to evidence sources, then automate evidence collection:
 
@@ -130,7 +154,8 @@ audit_period: 2026-01-01 to 2026-12-31
 
 ### Pattern 3: Evidence-as-code (the only Type II survival strategy)
 
-Manual evidence collection (screenshots, exports, spreadsheets) does not survive 12 months of continuous audit. Automate everything:
+Manual evidence collection (screenshots, exports, spreadsheets) does not survive 12 months of
+continuous audit. Automate everything:
 
 ```typescript
 // Evidence collector — runs daily; writes to immutable evidence store
@@ -187,11 +212,13 @@ async function collectMfaEvidence(): Promise<EvidenceEntry> {
 }
 ```
 
-S3 Object Lock with COMPLIANCE retention prevents tampering — even root cannot delete the evidence within the retention window. This is what auditors trust.
+S3 Object Lock with COMPLIANCE retention prevents tampering — even root cannot delete the evidence
+within the retention window. This is what auditors trust.
 
 ### Pattern 4: CC8.1 — Change management evidence pipeline
 
-Every production change must show: authorization, testing, approval, implementation, post-implementation review. The artefact pipeline:
+Every production change must show: authorization, testing, approval, implementation,
+post-implementation review. The artefact pipeline:
 
 ```yaml
 # .github/workflows/change-management.yml
@@ -237,7 +264,8 @@ jobs:
             --object-lock-retain-until-date $(date -d '+7 years' --iso-8601)
 ```
 
-Auditor samples 25 changes from the period; the script generates the audit trail automatically for each.
+Auditor samples 25 changes from the period; the script generates the audit trail automatically for
+each.
 
 ### Pattern 5: CC7.1 + CC7.2 — Vulnerability + monitoring evidence
 
@@ -322,41 +350,63 @@ If you run on AWS, AWS is a subservice organization. Two methods:
 | **Carve-out** | Default for cloud subservices | Your report excludes the subservice's controls; you rely on AWS's own SOC 2 report (SOC 2+ available from artifact.aws.amazon.com) |
 | **Inclusive** | Rare; if you embed a subservice's controls into your description | Significantly increases scope + cost |
 
-Default: carve out AWS. Mandate: review AWS's SOC 2 annually (CC9.2) + document the complementary user entity controls (CUECs) that AWS expects YOU to implement (e.g., MFA on root, CloudTrail enabled, encryption configured).
+Default: carve out AWS. Mandate: review AWS's SOC 2 annually (CC9.2) + document the complementary
+user entity controls (CUECs) that AWS expects YOU to implement (e.g., MFA on root, CloudTrail
+enabled, encryption configured).
 
 ## Anti-Patterns
 
 ### Anti-Pattern 1: "We'll just take screenshots when the auditor asks"
 
-Type II audits sample 25 instances of each control per period. If you didn't collect evidence on day X, you cannot retroactively. Screenshots are also point-in-time, not "operating effectively over the period." Continuous automated evidence is the only sustainable pattern.
+Type II audits sample 25 instances of each control per period. If you didn't collect evidence on day
+X, you cannot retroactively. Screenshots are also point-in-time, not "operating effectively over the
+period." Continuous automated evidence is the only sustainable pattern.
 
 ### Anti-Pattern 2: Policies that don't match reality
 
-A policy stating "all production changes require 2 approvers" while the GitHub branch protection requires 1 approval is a finding. Auditors compare policies to evidence; gaps surface as control deficiencies. Either fix the policy or fix the enforcement.
+A policy stating "all production changes require 2 approvers" while the GitHub branch protection
+requires 1 approval is a finding. Auditors compare policies to evidence; gaps surface as control
+deficiencies. Either fix the policy or fix the enforcement.
 
 ### Anti-Pattern 3: Single auditor relationship for life
 
-The auditor profession has wildly varying rigor. A weak audit gives customers a false sense of security; a rigorous one improves your security posture. Mid-sized firms (Schellman, A-LIGN, Coalfire, Sensiba) are usually a better match for SaaS than Big Four or boutiques. Switch auditors every 3-5 years for fresh perspective.
+The auditor profession has wildly varying rigor. A weak audit gives customers a false sense of
+security; a rigorous one improves your security posture. Mid-sized firms (Schellman, A-LIGN,
+Coalfire, Sensiba) are usually a better match for SaaS than Big Four or boutiques. Switch auditors
+every 3-5 years for fresh perspective.
 
 ### Anti-Pattern 4: Type I forever
 
-Type I points to control DESIGN at a moment in time. Enterprise customers increasingly require Type II demonstrating control OPERATION over a period. A Type I report becomes "outdated" the moment any control changes; a Type II report covers a continuous period of operation. Plan Type I as a stepping stone to Type II within 6-12 months.
+Type I points to control DESIGN at a moment in time. Enterprise customers increasingly require Type
+II demonstrating control OPERATION over a period. A Type I report becomes "outdated" the moment any
+control changes; a Type II report covers a continuous period of operation. Plan Type I as a stepping
+stone to Type II within 6-12 months.
 
 ### Anti-Pattern 5: Description that hides the system
 
-The "Description of the System" section (per DC Section 200) is the auditor's understanding of what you do. Vague descriptions ("the System provides cloud-based services") fail the description criteria. Specific descriptions name services, data flows, subservice organisations, boundaries, and commitments. Treat the description as the contract — what's outside the description is outside the audit.
+The "Description of the System" section (per DC Section 200) is the auditor's understanding of what
+you do. Vague descriptions ("the System provides cloud-based services") fail the description
+criteria. Specific descriptions name services, data flows, subservice organisations, boundaries, and
+commitments. Treat the description as the contract — what's outside the description is outside the
+audit.
 
 ### Anti-Pattern 6: Bridging letter abuse
 
-A bridging letter says "no material changes between the last report's end date and now." Some organisations request bridging letters quarterly to stretch a report over 2 years. This is increasingly transparent — sophisticated customers ask for the current Type II report, not bridging letters. Plan for continuous Type II with at most 3-month bridging.
+A bridging letter says "no material changes between the last report's end date and now." Some
+organisations request bridging letters quarterly to stretch a report over 2 years. This is
+increasingly transparent — sophisticated customers ask for the current Type II report, not bridging
+letters. Plan for continuous Type II with at most 3-month bridging.
 
 ### Anti-Pattern 7: Treating findings as cosmetic
 
-A control deficiency (especially a "material weakness") in the report is visible to every customer. Findings should be remediated BEFORE the report draft, not after. Audit firms allow remediation during the audit period — use that window aggressively.
+A control deficiency (especially a "material weakness") in the report is visible to every customer.
+Findings should be remediated BEFORE the report draft, not after. Audit firms allow remediation
+during the audit period — use that window aggressively.
 
 ## Verification Checklist
 
-- [ ] Trust Service Criteria selected + documented (Security mandatory; Availability typical addition)
+- [ ] Trust Service Criteria selected + documented (Security mandatory; Availability typical
+  addition)
 - [ ] Description of System current + accurate (DC Section 200)
 - [ ] Control matrix maps every applicable TSC criterion to ≥1 control
 - [ ] Each control has documented owner + evidence source + test procedure
@@ -397,15 +447,30 @@ A control deficiency (especially a "material weakness") in the report is visible
 
 ## Why This Skill Exists
 
-SOC 2 Type II is the most-requested security artefact in North American B2B SaaS sales. A current Type II report covering Security (plus Availability for most) closes deals; the absence of one routes RFPs to competitors. For organisations selling to financial services, healthcare, government contractors, or any regulated industry, it's table stakes.
+SOC 2 Type II is the most-requested security artefact in North American B2B SaaS sales. A current
+Type II report covering Security (plus Availability for most) closes deals; the absence of one
+routes RFPs to competitors. For organisations selling to financial services, healthcare, government
+contractors, or any regulated industry, it's table stakes.
 
-The economic case: a typical SOC 2 Type II costs $30K-$100K annually (auditor fees) plus internal operational overhead. A typical enterprise contract gated by SOC 2 is $50K-$500K+ ARR. The ROI is straightforward for organisations selling enterprise.
+The economic case: a typical SOC 2 Type II costs $30K-$100K annually (auditor fees) plus internal
+operational overhead. A typical enterprise contract gated by SOC 2 is $50K-$500K+ ARR. The ROI is
+straightforward for organisations selling enterprise.
 
-The pain point is that SOC 2 is operational, not project-based. You can't sprint to SOC 2 readiness and be done — the Type II audit period demands evidence collection every day for 6-12 months. Organisations that treat SOC 2 as a quarterly project burn out by the second audit cycle, miss evidence windows, and accumulate findings.
+The pain point is that SOC 2 is operational, not project-based. You can't sprint to SOC 2 readiness
+and be done — the Type II audit period demands evidence collection every day for 6-12 months.
+Organisations that treat SOC 2 as a quarterly project burn out by the second audit cycle, miss
+evidence windows, and accumulate findings.
 
-This skill teaches the operational approach: design evidence collection as code, store immutably, automate sampling, run vulnerability + change + access controls through pipelines that naturally generate audit-quality evidence. The first Type II is hard; subsequent ones become routine because the system was built with audit-in-mind from the start.
+This skill teaches the operational approach: design evidence collection as code, store immutably,
+automate sampling, run vulnerability + change + access controls through pipelines that naturally
+generate audit-quality evidence. The first Type II is hard; subsequent ones become routine because
+the system was built with audit-in-mind from the start.
 
-When the auditor asks "show me how MFA was enforced for the period", the answer is the immutable S3 object showing daily MFA-enforcement evidence with 365 entries — not a frantic screenshot exercise. When the auditor asks "sample 25 production changes", the answer is the change-management evidence pipeline with every PR's authorization + testing + approval + implementation tracked. The systems that pass SOC 2 well are the systems that were instrumented for audit before they were ever audited.
+When the auditor asks "show me how MFA was enforced for the period", the answer is the immutable S3
+object showing daily MFA-enforcement evidence with 365 entries — not a frantic screenshot exercise.
+When the auditor asks "sample 25 production changes", the answer is the change-management evidence
+pipeline with every PR's authorization + testing + approval + implementation tracked. The systems
+that pass SOC 2 well are the systems that were instrumented for audit before they were ever audited.
 
 ## Compliance & Standards Mapping
 
@@ -450,6 +515,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New evidence-pipeline row when a new TSC criterion is added to scope
-- New cross-reference when a sister skill (iso27001-controls, gdpr-ccpa-compliance, owasp-asvs) adds a control gate
+- New cross-reference when a sister skill (iso27001-controls, gdpr-ccpa-compliance, owasp-asvs) adds
+  a control gate
 - New automated-evidence template when an auditor requests new sample type
 - Tightening of the cadence policy when timing drift recurs

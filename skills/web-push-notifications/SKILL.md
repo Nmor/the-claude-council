@@ -5,6 +5,8 @@ description: VAPID-signed Web Push (RFC 8030, 8291, 8292) — subscribe lifecycl
 
 # Web Push + VAPID
 
+> **Size budget: 18 KB** — `token-budget.mjs --check`.
+
 Companion skill to `provider-research` (RFC 8030, 8291, 8292 are the
 canonical sources). Activates whenever Web Push code is touched —
 backend send, service worker subscribe / push event, frontend
@@ -334,18 +336,24 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- VAPID public key hardcoded in client + leaked to repo (per `no-discards.md` hook catches; refinement needed if it slips)
-- Push send blocking the alarm dispatch path (fire-and-forget pattern weakening — alarm latency degraded)
+- VAPID public key hardcoded in client + leaked to repo (per `no-discards.md` hook catches;
+  refinement needed if it slips)
+- Push send blocking the alarm dispatch path (fire-and-forget pattern weakening — alarm latency
+  degraded)
 - 410 / 404 subscription responses ignored (stale-subscription cleanup gap; tokens accumulate)
 - Payload encryption disabled or rolled own (RFC 8291 violation — message hijack risk)
-- TTL = 0 used unconditionally when "deliver if connected" semantics matter (best-effort + persistence confused)
-- Web Push Protocol headers (`Urgency`, `Topic`) absent — quota burned + duplicates not collapsed at push service
+- TTL = 0 used unconditionally when "deliver if connected" semantics matter (best-effort +
+  persistence confused)
+- Web Push Protocol headers (`Urgency`, `Topic`) absent — quota burned + duplicates not collapsed at
+  push service
 - Browser-side `pushManager.subscribe()` errors silently dropped (user thinks subscribed; isn't)
 - Service worker `push` event handler doesn't validate sender / origin
 
 **Refinement candidates**:
 
-- New section when a browser ships new push capability (e.g., richer notification actions, push for native apps via WebPush W3C)
+- New section when a browser ships new push capability (e.g., richer notification actions, push for
+  native apps via WebPush W3C)
 - Quota / burn-rate tracking pattern when push send volumes scale past pilot
 - Multi-endpoint orchestration (FCM + APNs Web + Edge Workers) when reach gaps surface
-- Provider-rotation pattern when one push service has reliability issues (graceful degradation per `~/.claude/rules-library/common/graceful-degradation.md`)
+- Provider-rotation pattern when one push service has reliability issues (graceful degradation per
+  `~/.claude/rules-library/common/graceful-degradation.md`)

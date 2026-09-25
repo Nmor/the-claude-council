@@ -6,6 +6,8 @@ auto_activate: true
 
 # Network Patterns
 
+> **Size budget: 25 KB** — `token-budget.mjs --check`.
+
 ## Purpose
 
 Design and operate networks — whether VPCs in the cloud, hybrid
@@ -450,14 +452,19 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Signals to watch**:
 
 - Security group with `0.0.0.0/0` ingress on a non-public-facing service (least-privilege weakening)
-- CIDR overlap between two VPCs / accounts (peering / Transit Gateway routing breakage waiting to happen)
+- CIDR overlap between two VPCs / accounts (peering / Transit Gateway routing breakage waiting to
+  happen)
 - DNS TTL > 5 min on a service expected to fail over (RPO/RTO weakening)
-- TLS termination at the wrong boundary (e.g., terminated at ALB but backend speaks HTTP across VPC peer)
+- TLS termination at the wrong boundary (e.g., terminated at ALB but backend speaks HTTP across VPC
+  peer)
 - New service deployed without flow logs enabled (compliance + forensic gap)
-- Load balancer health check checking only `/` (200 = healthy) without dependency check (false-positive healthy)
-- Service mesh sidecar added without circuit breaker / timeout / retry config (per `~/.claude/rules-library/common/circuit-breaker.md`)
+- Load balancer health check checking only `/` (200 = healthy) without dependency check
+  (false-positive healthy)
+- Service mesh sidecar added without circuit breaker / timeout / retry config (per
+  `~/.claude/rules-library/common/circuit-breaker.md`)
 - CDN cache key collision causing cross-tenant content leak
-- WAF rule disabled "temporarily" without expiry date (per `~/.claude/rules-library/common/feature-flags.md` lifecycle)
+- WAF rule disabled "temporarily" without expiry date (per
+  `~/.claude/rules-library/common/feature-flags.md` lifecycle)
 - Cross-region traffic without explicit cost forecast (data-transfer cost amplification)
 - Zero-trust posture relaxed for "internal" service (lateral movement risk)
 
@@ -465,5 +472,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New topology pattern row when a new connectivity shape emerges (e.g., Cloud WAN, AWS VPC Lattice)
 - New WAF / NACL template when a new attack class is observed in traffic
-- New cross-reference when a sister skill (cloud-architecture, security-review, observability-patterns) adds a network gate
-- Tightening of the TLS / cipher allowlist when a new vulnerability deprecates a previously-acceptable suite
+- New cross-reference when a sister skill (cloud-architecture, security-review,
+  observability-patterns) adds a network gate
+- Tightening of the TLS / cipher allowlist when a new vulnerability deprecates a
+  previously-acceptable suite

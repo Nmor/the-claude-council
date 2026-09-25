@@ -5,7 +5,10 @@ paths:
 ---
 # Python Coding Style
 
-> This file extends [common/coding-style.md](../common/coding-style.md) with Python specific content.
+> This file extends [common/coding-style.md](../common/coding-style.md) with Python specific
+> content.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Standards
 

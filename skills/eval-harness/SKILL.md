@@ -6,7 +6,10 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 
 # Eval Harness Skill
 
-A formal evaluation framework for Claude Code sessions, implementing eval-driven development (EDD) principles.
+> **Size budget: 14 KB** — `token-budget.mjs --check`.
+
+A formal evaluation framework for Claude Code sessions, implementing eval-driven development (EDD)
+principles.
 
 ## When to Activate
 
@@ -372,16 +375,23 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - Skill / rule / agent shipped without a capability eval (no pass@k baseline)
 - Regression suite missing for a previously-shipped capability (regression coverage gap)
-- pass@k computed on n=1 sample (statistical-significance theatre — need n≥3 typically, n≥10 for high-stakes)
+- pass@k computed on n=1 sample (statistical-significance theatre — need n≥3 typically, n≥10 for
+  high-stakes)
 - Eval prompt drift — eval cases evolve without versioning (apples-vs-oranges across runs)
-- Capability eval green but production behaviour degrades (eval-vs-reality gap; rubric needs sharpening)
+- Capability eval green but production behaviour degrades (eval-vs-reality gap; rubric needs
+  sharpening)
 - Eval cases overlap with training / few-shot examples (data leakage inflates scores)
-- "SHIP IT" status applied without verification block from `~/.claude/rules/common/verify-before-claim.md`
+- "SHIP IT" status applied without verification block from
+  `~/.claude/rules/common/verify-before-claim.md`
 - Eval rubric assesses surface form (string match) instead of semantic correctness
 
 **Refinement candidates**:
 
-- New eval class when a recurring capability surfaces that needs its own pass@k baseline (e.g., security-fix eval, refactor-safety eval)
-- Rubric tightening when capability evals plateau at 100% but real-world performance shows residual gaps
-- Regression suite expansion when a shipped change causes user-reported regression (add the failure case to the suite)
-- pass^k tightening (e.g., pass^5 instead of pass^3) when high-stakes capabilities need stricter regression confidence
+- New eval class when a recurring capability surfaces that needs its own pass@k baseline (e.g.,
+  security-fix eval, refactor-safety eval)
+- Rubric tightening when capability evals plateau at 100% but real-world performance shows residual
+  gaps
+- Regression suite expansion when a shipped change causes user-reported regression (add the failure
+  case to the suite)
+- pass^k tightening (e.g., pass^5 instead of pass^3) when high-stakes capabilities need stricter
+  regression confidence

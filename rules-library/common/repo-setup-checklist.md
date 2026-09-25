@@ -5,6 +5,8 @@
 > `secrets-management.md`, `docker-localhost-binding.md`,
 > `dependency-vulnerabilities.md`, `license-allowlist-gate.md`, and
 > `done-criteria.md`.
+>
+> **Size budget: 12 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -230,13 +232,15 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- New repo opened without the 20-point checklist run on first touch (rule "When this rule fires" weakening)
+- New repo opened without the 20-point checklist run on first touch (rule "When this rule fires"
+  weakening)
 - `.env` found tracked in git on first-touch (item 2 violation)
 - Private key (`*.pem`, `*.key`, `id_rsa*`) found tracked (item 3 violation)
 - Postman / Insomnia collection with real response bodies committed (item 4 violation)
 - `Secret` manifest with raw base64 found (item 5 violation)
 - Lockfile missing on first-touch (item 9 violation)
-- Compose ports on `0.0.0.0` discovered on a developer machine (item 10 violation — sister rule `docker-localhost-binding.md`)
+- Compose ports on `0.0.0.0` discovered on a developer machine (item 10 violation — sister rule
+  `docker-localhost-binding.md`)
 - Container running as root in production stage (item 11 violation)
 - `.env.example` missing or stale relative to `application.yml` / `config.go` (item 14 weakening)
 - CI gates diverge from local pre-flight (item 17 weakening)
@@ -244,7 +248,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New checklist row when a recurring posture gap surfaces (e.g., `dependabot.yml` missing, `CODEOWNERS` missing, secret-scan CI step missing)
+- New checklist row when a recurring posture gap surfaces (e.g., `dependabot.yml` missing,
+  `CODEOWNERS` missing, secret-scan CI step missing)
 - Tightening of the 30-day re-check cadence when posture drift is observed sooner
-- New cross-reference when a sister rule (secrets-management, install-allowlist, docker-localhost-binding) adds a new mechanical check
-- Per-language addendum when a stack-specific item (e.g., `pnpm-lock.yaml` vs `package-lock.json`, `go.sum` integrity) recurs
+- New cross-reference when a sister rule (secrets-management, install-allowlist,
+  docker-localhost-binding) adds a new mechanical check
+- Per-language addendum when a stack-specific item (e.g., `pnpm-lock.yaml` vs `package-lock.json`,
+  `go.sum` integrity) recurs

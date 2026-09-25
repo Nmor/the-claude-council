@@ -5,6 +5,8 @@
 > `no-silent-failures.md`, `error-handling-with-context.md`.
 > Tooling: `errcheck`, `errorlint`, `nilerr`, `staticcheck`,
 > `golangci-lint`, `revive`.
+>
+> **Size budget: 12 KB** — `token-budget.mjs --check`.
 
 ## Core Principle (Go-specific restatement)
 
@@ -55,10 +57,13 @@ if !ok {
 ### 2. Range loops with `_` in destructured position
 
 ```go
-// FORBIDDEN
+// ALLOWED — the blank is the INDEX slot; nothing is discarded
 for _, v := range slice { ... }
-for k, _ := range m { ... }
-for _, x := range cases { ... }   // even in tests
+for _, x := range cases { ... }
+
+// FORBIDDEN — a bound slot thrown away, with a shorter form available
+for k, _ := range m { ... }   // -> for k := range m
+for _ = range ch { ... }      // -> for range ch
 
 // CORRECT — slice value iteration
 for i := range slice {
@@ -85,8 +90,11 @@ for _, r := range "héllo" {  // r is rune
 }
 ```
 
-The rune-iteration exception is the only place `_` survives.
-Every other range-discard is a violation.
+Rune iteration needs no exception any more: `for _, r := range s` is
+an ordinary allowed range loop. It is called out above only because
+`for i := range s { b := s[i] }` iterates BYTES, not runes — the two
+forms mean different things, and the index form is not a drop-in
+replacement for a string.
 
 ### 3. Defer Close without error handling
 

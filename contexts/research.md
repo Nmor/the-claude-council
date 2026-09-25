@@ -1,5 +1,7 @@
 # Research Context
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Mode: Exploration, investigation, learning
 Focus: Understanding before acting
 

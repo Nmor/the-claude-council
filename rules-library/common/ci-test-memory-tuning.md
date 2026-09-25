@@ -4,6 +4,8 @@
 > `vitest.config.*`, `pytest.ini`, `phpunit.xml`, `go.mod` (test
 > directories). Sister to `github-actions-gotchas.md` (especially
 > gotchas 10 + 11), `done-criteria.md`.
+>
+> **Size budget: 10 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -218,8 +220,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- CI test job cancelled at consistent ~5-min mark with post-cleanup `skipped` (Mode A: runner OOM preempt — diagnostic recipe applies)
-- CI test job hits its `timeout-minutes` cap with post-cleanup `success` (Mode B: worker thrash — `--workerIdleMemoryLimit` too aggressive)
+- CI test job cancelled at consistent ~5-min mark with post-cleanup `skipped` (Mode A: runner OOM
+  preempt — diagnostic recipe applies)
+- CI test job hits its `timeout-minutes` cap with post-cleanup `success` (Mode B: worker thrash —
+  `--workerIdleMemoryLimit` too aggressive)
 - `--max-old-space-size × --maxWorkers > 0.75 × runner_total_RAM` (OS headroom budget violated)
 - Diagnostic recipe not run before tuning (mode-recognition skipped → wrong fix applied)
 - `--workerIdleMemoryLimit` set below natural per-test heap (~1.5-2 GB for TS) — recycle thrash
@@ -228,7 +232,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New runner row in the RAM reference table when GitHub Actions ships a new runner size (e.g., 32 GB linux-large, M4 mac)
-- New per-framework tuning section when a new test runner adopts worker recycling (e.g., Vitest worker memory limits, pytest-xdist process recycling)
+- New runner row in the RAM reference table when GitHub Actions ships a new runner size (e.g., 32 GB
+  linux-large, M4 mac)
+- New per-framework tuning section when a new test runner adopts worker recycling (e.g., Vitest
+  worker memory limits, pytest-xdist process recycling)
 - Tightening of the OS-headroom percentage when 75% proves too tight on a recurring stack
-- New cross-reference when a sister rule (github-actions-gotchas, deploy-failures-become-checks) adds a CI symptom pattern
+- New cross-reference when a sister rule (github-actions-gotchas, deploy-failures-become-checks)
+  adds a CI symptom pattern

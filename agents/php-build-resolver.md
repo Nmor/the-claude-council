@@ -7,6 +7,8 @@ model: sonnet
 
 # PHP Build & Static-Analysis Error Resolver
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Get the PHP lint/composer/analysis green with the SMALLEST correct change — root
 cause, never `@phpstan-ignore` / `@psalm-suppress` to hide it. No refactoring.
 

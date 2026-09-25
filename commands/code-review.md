@@ -6,6 +6,8 @@ command: true
 
 # Code Review
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Comprehensive security and quality review of uncommitted changes:
 
 1. Get changed files: git diff --name-only HEAD

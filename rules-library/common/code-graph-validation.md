@@ -7,6 +7,8 @@
 > (per-phase verification block), `no-overclaim.md` (no claim
 > without proof), `proper-fixes-first.md` (root-cause fixes), and
 > `no-silent-drops.md` (don't bury broken wirings).
+>
+> **Size budget: 26 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

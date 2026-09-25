@@ -6,7 +6,10 @@ command: true
 
 # Execute - Multi-Model Collaborative Execution
 
-Multi-model collaborative execution - Get prototype from plan → Claude refactors and implements → Multi-model audit and delivery.
+> **Size budget: 13 KB** — `token-budget.mjs --check`.
+
+Multi-model collaborative execution - Get prototype from plan → Claude refactors and implements →
+Multi-model audit and delivery.
 
 $ARGUMENTS
 
@@ -14,11 +17,15 @@ $ARGUMENTS
 
 ## Core Protocols
 
-- **Language Protocol**: Use **English** when interacting with tools/models, communicate with user in their language
-- **Code Sovereignty**: External models have **zero filesystem write access**, all modifications by Claude
-- **Dirty Prototype Refactoring**: Treat Codex/Gemini Unified Diff as "dirty prototype", must refactor to production-grade code
+- **Language Protocol**: Use **English** when interacting with tools/models, communicate with user
+  in their language
+- **Code Sovereignty**: External models have **zero filesystem write access**, all modifications by
+  Claude
+- **Dirty Prototype Refactoring**: Treat Codex/Gemini Unified Diff as "dirty prototype", must
+  refactor to production-grade code
 - **Stop-Loss Mechanism**: Do not proceed to next phase until current phase output is validated
-- **Prerequisite**: Only execute after user explicitly replies "Y" to `/ccg:plan` output (if missing, must confirm first)
+- **Prerequisite**: Only execute after user explicitly replies "Y" to `/ccg:plan` output (if
+  missing, must confirm first)
 
 ---
 
@@ -85,7 +92,8 @@ EOF",
 
 **Model Parameter Notes**:
 
-- `{{GEMINI_MODEL_FLAG}}`: When using `--backend gemini`, replace with `--gemini-model gemini-3-pro-preview` (note trailing space); use empty string for codex
+- `{{GEMINI_MODEL_FLAG}}`: When using `--backend gemini`, replace with `--gemini-model
+  gemini-3-pro-preview` (note trailing space); use empty string for codex
 
 **Role Prompts**:
 
@@ -105,8 +113,10 @@ TaskOutput({ task_id: "<task_id>", block: true, timeout: 600000 })
 **IMPORTANT**:
 
 - Must specify `timeout: 600000`, otherwise default 30 seconds will cause premature timeout
-- If still incomplete after 10 minutes, continue polling with `TaskOutput`, **NEVER kill the process**
-- If waiting is skipped due to timeout, **MUST call `AskUserQuestion` to ask user whether to continue waiting or kill task**
+- If still incomplete after 10 minutes, continue polling with `TaskOutput`, **NEVER kill the
+  process**
+- If waiting is skipped due to timeout, **MUST call `AskUserQuestion` to ask user whether to
+  continue waiting or kill task**
 
 ---
 
@@ -127,7 +137,8 @@ TaskOutput({ task_id: "<task_id>", block: true, timeout: 600000 })
    - Extract: task type, implementation steps, key files, SESSION_ID
 
 3. **Pre-Execution Confirmation**:
-   - If input is "direct task description" or plan missing `SESSION_ID` / key files: confirm with user first
+   - If input is "direct task description" or plan missing `SESSION_ID` / key files: confirm with
+     user first
    - If cannot confirm user replied "Y" to plan: must confirm again before proceeding
 
 4. **Task Type Routing**:
@@ -144,7 +155,7 @@ TaskOutput({ task_id: "<task_id>", block: true, timeout: 600000 })
 
 `[Mode: Retrieval]`
 
-**Must use MCP tool for quick context retrieval, do NOT manually read files one by one**
+Use the MCP tool for context retrieval. Do **not** read files one by one.
 
 Based on "Key Files" list in plan, call `mcp__ace-tool__search_context`:
 
@@ -259,7 +270,8 @@ mcp__ace-tool__search_context({
    - Input: Changed Diff + target files
    - Focus: Accessibility, design consistency, user experience
 
-Wait for both models' complete review results with `TaskOutput`. Prefer reusing Phase 3 sessions (`resume <SESSION_ID>`) for context consistency.
+Wait for both models' complete review results with `TaskOutput`. Prefer reusing Phase 3 sessions
+(`resume <SESSION_ID>`) for context consistency.
 
 #### 5.2 Integrate and Fix
 

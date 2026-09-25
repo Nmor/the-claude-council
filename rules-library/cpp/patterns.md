@@ -5,6 +5,8 @@
 > **Effective C++ / Effective Modern C++ (Meyers)**, **C++
 > Concurrency in Action (Williams)**, **Modern C++ Design
 > (Alexandrescu)**.
+>
+> **Size budget: 9 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

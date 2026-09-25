@@ -2,6 +2,8 @@
 
 > Auto-fires on every file. Companion to `done-criteria.md`,
 > `no-discards.md`, and `deploy-failures-become-checks.md`.
+>
+> **Size budget: 12 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -184,21 +186,28 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- `os.Create` / `os.WriteFile` / `fs.writeFile` / `open(path, "w")` introduced in production source (Hard rules 1-4 violation)
-- Generated artifact (CSV, PDF, image) written to local FS instead of streamed / object-store-uploaded (use-case mapping violation)
+- `os.Create` / `os.WriteFile` / `fs.writeFile` / `open(path, "w")` introduced in production source
+  (Hard rules 1-4 violation)
+- Generated artifact (CSV, PDF, image) written to local FS instead of streamed /
+  object-store-uploaded (use-case mapping violation)
 - Local cache directory created without request-scoped TTL + cleanup (allowed-exception 1 weakening)
 - Session storage on local FS (rule scope violation — should be Redis / signed cookies)
 - `os.TempDir()` artifact left behind without `defer os.Remove(path)` / `try/finally` cleanup
-- Tests rely on local FS read-back rather than mocked object store / MinIO container (test-isolation drift)
+- Tests rely on local FS read-back rather than mocked object store / MinIO container (test-isolation
+  drift)
 - Mechanical grep gate missing from CI / pre-commit (rule "Mechanical gate" weakening)
 - Sticky-session affinity required because of local FS state (horizontal-scaling block introduced)
 
 **Refinement candidates**:
 
-- New row in the "where to write instead" table when a new artifact class recurs (e.g., generated PDFs needing fonts cache, ML inference temp files)
-- Tightening of the allowlist-exception criteria when transient request-scoped writes prove load-bearing
-- New language entry in the Hard rules when a new ecosystem appears (e.g., Bun's filesystem APIs, Deno's permissions model)
-- New cross-reference when a sister rule (no-discards, secrets-management, idempotency) adds a write-path consumer
+- New row in the "where to write instead" table when a new artifact class recurs (e.g., generated
+  PDFs needing fonts cache, ML inference temp files)
+- Tightening of the allowlist-exception criteria when transient request-scoped writes prove
+  load-bearing
+- New language entry in the Hard rules when a new ecosystem appears (e.g., Bun's filesystem APIs,
+  Deno's permissions model)
+- New cross-reference when a sister rule (no-discards, secrets-management, idempotency) adds a
+  write-path consumer
 
 ---
 

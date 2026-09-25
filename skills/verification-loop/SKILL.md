@@ -5,6 +5,8 @@ description: "A comprehensive verification system for Claude Code sessions."
 
 # Verification Loop Skill
 
+> **Size budget: 15 KB** — `token-budget.mjs --check`.
+
 A comprehensive verification system for Claude Code sessions.
 
 ## When to Use
@@ -352,5 +354,6 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New per-language gate row when a new ecosystem emerges (new test runner, new lint chain)
 - Tightening of the compaction threshold (currently 50 tool calls) when context-loss incidents recur
-- New cross-reference when a sister rule (verify-before-claim, local-testability) adds a verification surface
+- New cross-reference when a sister rule (verify-before-claim, local-testability) adds a
+  verification surface
 - New strategic-compaction trigger when a recurring "context filled mid-task" pattern surfaces

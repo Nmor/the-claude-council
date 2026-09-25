@@ -5,6 +5,8 @@
 > Java Top 10**, **OWASP ASVS 4.0**, **CERT Oracle Coding
 > Standard**, **Spring Security 6**, **JEP 411** (deprecated
 > SecurityManager).
+>
+> **Size budget: 9 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

@@ -9,6 +9,8 @@ description: Principal-level guidance for HIPAA Privacy + Security + Breach Noti
 > Information (ePHI) the system touches lives under a documented
 > control set that survives an OCR audit, an HHS investigation,
 > and a covered-entity Business Associate review.
+>
+> **Size budget: 25 KB** — `token-budget.mjs --check`.
 
 ## Purpose
 
@@ -474,8 +476,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Signals to watch**:
 
 - New cloud service in use for PHI without BAA addendum verified (Anti-pattern 1)
-- ePHI surfacing in operational logs / metrics / traces (Anti-pattern 2; sister rule `observability.md` + `audit-logging.md`)
-- Schema permits a field that the requesting role doesn't have minimum-necessary right to (Anti-pattern 3)
+- ePHI surfacing in operational logs / metrics / traces (Anti-pattern 2; sister rule
+  `observability.md` + `audit-logging.md`)
+- Schema permits a field that the requesting role doesn't have minimum-necessary right to
+  (Anti-pattern 3)
 - De-identification ships with < 18 identifiers stripped or no Expert Determination (Anti-pattern 4)
 - BAA expired / pending for a sub-processor handling PHI (BAA-flowdown gap)
 - Addressable safeguard not implemented + no documented alternative (Anti-pattern 8)
@@ -492,11 +496,15 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New CFR section row when HIPAA NPRM proposals finalize (2024-26 modifications)
 - USCDI version row when ONC publishes v5+
-- State law row when a new state passes HIPAA-overlay law (WA My Health My Data 2024 → other states 2025+)
+- State law row when a new state passes HIPAA-overlay law (WA My Health My Data 2024 → other states
+  2025+)
 - Penalty figure refresh when HHS updates the annual CPI adjustment
-- Enforcement-initiative row when OCR announces a new focus (Right of Access → next focus likely audit-controls / risk-analysis)
-- Cross-reference deepening when sister skill (`clinical-data-patterns`, `gdpr-ccpa-compliance`) gains a HIPAA-overlapping pattern
+- Enforcement-initiative row when OCR announces a new focus (Right of Access → next focus likely
+  audit-controls / risk-analysis)
+- Cross-reference deepening when sister skill (`clinical-data-patterns`, `gdpr-ccpa-compliance`)
+  gains a HIPAA-overlapping pattern
 
 ---
 
-*Last verified: 2026-05-30. Standards refresh cadence: 12 months for CFR + HHS guidance; 6 months for ONC USCDI; quarterly for state-law overlays.*
+*Last verified: 2026-05-30. Standards refresh cadence: 12 months for CFR + HHS guidance; 6 months
+for ONC USCDI; quarterly for state-law overlays.*

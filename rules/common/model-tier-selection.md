@@ -6,6 +6,8 @@
 > `no-quality-compromise-on-cost` guidance (cut waste, never rigor),
 > `no-silent-failures.md` (degradation is surfaced, never silent),
 > `official-docs-first.md` (the tier facts below are primary-source-cited).
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -42,14 +44,65 @@ builds, hardest debugging) where first-shot correctness offsets the 2× premium.
 Everywhere else the ceiling is Opus (quality-critical review) or Sonnet
 (mechanical), so enabling Fable never silently inflates routine cost.
 
+## Hard rule: an unavailable rung falls UP, never down
+
+Availability filters the ladder at spawn. A rung that is *listed* but fails at
+run time (overloaded, timed out, rate-limited, refused with no fallback) is a
+different case: the next attempt takes the **next more capable rung that is
+available**, never a lesser one, and says so. A mechanical spawn whose Sonnet
+rung times out runs on Opus, not Haiku. Quality is never the variable that
+absorbs an outage; cost is.
+
+The same direction holds in the IDE. `fallbackModel` in `~/.claude/settings.json`
+is the session-model chain (`["opus", "sonnet"]` under a Fable session); the
+auto-mode permission classifier has no model setting of its own (Sonnet 5 by
+default; the session's model, or Opus under Fable, only when the `availableModels`
+allowlist excludes Sonnet), so a classifier timeout is **retried after a moment**,
+never routed around with a weaker check.
+
+**A plan limit is not an outage to Claude Code.** `fallbackModel` never fires on rate-limit
+or billing errors, and no hook can switch the model or retry (docs `model-config`, `hooks`,
+read 2026-09-25). So `model-exhaustion-marker.js` records a tier when an error NAMES it
+("You've hit your Fable limit") and clears it on the next success. The ladder gate then
+resolves around it and DENIES a spawn that asks for it, naming the rung to re-spawn on:
+the Council switches with no human step. A session or weekly limit covers every model and
+marks nothing. The SESSION model still needs `/model`; no mechanism exists to switch it.
+
+Owner directive (2026-09-21), verbatim: "if no sonnet we should use opus and this
+should be in the ide and claude council config design."
+
 ## Full text
 
 The hard rules above are the always-on trigger — enough to know the rule applies and
 what it demands. Their full text (worked examples, anti-patterns, tables, procedures)
-lives in the **`council-rules`** skill, which fires on agent + plan files; the `model-ladder-gate.js` PreToolUse hook enforces the ladder mechanically at Agent spawn.
+lives in the **`council-rules`** skill; invoke it, since it does not load by itself.
 
 Read it before acting on this rule. Carrying the full body on the always-on Floor cost
 every turn of every unrelated task for guidance that applies at one specific moment.
+
+## Enforcement — what the hook can and cannot do
+
+`model-ladder-gate.js` runs on two events, and the split matters because a hook cannot do
+what an earlier version of this section claimed:
+
+- **`PreToolUse` on `Agent`** — resolves the spawn's `subagent_type` to its role, resolves
+  the ladder against the models available here, and states which rung that is. It **advises**;
+  it does not substitute. A PreToolUse hook cannot rewrite `tool_input` — the API offers
+  allow, deny or `additionalContext` and nothing else — so "silently pass the right model" is
+  available to no hook. `CLAUDE_MODEL_LADDER=strict` turns an under-provisioned strategic
+  spawn into a refusal; `CLAUDE_MODEL_AVAILABILITY` overrides the availability file.
+- **`PreModelSwitch`** — **blocks** a switch to Fable during security / regulated work, the
+  one case where the wrong rung buys a refusal rather than capability.
+
+**Provenance (2026-09-21).** This replaces the sentence "the `model-ladder-gate.js` PreToolUse
+hook enforces the ladder mechanically at Agent spawn", which was false three ways at once: the
+hook was registered on `PreModelSwitch` only, `settings.json` had no `PreToolUse` matcher for
+`Agent` at all, and the hook held no selection logic — only a refusal. So this install could
+DENY Fable and never FIELD it. `.local/model-availability` listed `fable`, the live catalog
+carried `claude-fable-5-1`, the Agent tool's own schema accepted it, and the only executable
+in the install that mentioned Fable was the one saying no. The user noticed before any gate
+did. A rule asserting that a hook enforces something is not enforcement — and this rule was
+asserting it about its own hook.
 
 ## Cross-references
 
@@ -63,7 +116,6 @@ every turn of every unrelated task for guidance that applies at one specific mom
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

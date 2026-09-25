@@ -5,7 +5,10 @@ description: Go testing patterns including table-driven tests, subtests, benchma
 
 # Go Testing Patterns
 
-Comprehensive Go testing patterns for writing reliable, maintainable tests following TDD methodology.
+> **Size budget: 28 KB** — `token-budget.mjs --check`.
+
+Comprehensive Go testing patterns for writing reliable, maintainable tests following TDD
+methodology.
 
 ## When to Activate
 
@@ -721,11 +724,14 @@ test:
         awk -F'%' '{if ($1 < 80) exit 1}'
 ```
 
-**Remember**: Tests are documentation. They show how your code is meant to be used. Write them clearly and keep them up to date.
+**Remember**: Tests are documentation. They show how your code is meant to be used. Write them
+clearly and keep them up to date.
 
 ## Purpose
 
-Principal-level Go test methodology: table-driven tests + subtests, parallel execution (`t.Parallel()`), race detection, benchmarks (`testing.B`), fuzz testing (Go 1.18+), httptest + testcontainers, coverage with branch tracking, go-cmp for deep equality.
+Principal-level Go test methodology: table-driven tests + subtests, parallel execution
+(`t.Parallel()`), race detection, benchmarks (`testing.B`), fuzz testing (Go 1.18+), httptest +
+testcontainers, coverage with branch tracking, go-cmp for deep equality.
 
 **Negative scope** (NOT what this skill covers):
 
@@ -794,7 +800,11 @@ Principal-level Go test methodology: table-driven tests + subtests, parallel exe
 
 ## Why this skill exists
 
-Go test idioms have a deceptive cleanliness: table-driven tests look simple but capture-in-loop bugs (pre-Go-1.22), missing `t.Helper()`, and lack of `-race` produce hard-to-debug failures. The patterns above codify the production-ready posture: subtests for navigation, parallel-where-safe for speed, go-cmp for diff output, fuzz for parser invariants, testcontainers for integration. Following them produces test suites that run in seconds and catch real bugs (not vibes).
+Go test idioms have a deceptive cleanliness: table-driven tests look simple but capture-in-loop bugs
+(pre-Go-1.22), missing `t.Helper()`, and lack of `-race` produce hard-to-debug failures. The
+patterns above codify the production-ready posture: subtests for navigation, parallel-where-safe for
+speed, go-cmp for diff output, fuzz for parser invariants, testcontainers for integration. Following
+them produces test suites that run in seconds and catch real bugs (not vibes).
 
 ## Compliance & Standards Mapping
 
@@ -827,12 +837,14 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Coverage gate below 80% on a package with active development
 - Benchmarks added without `b.ResetTimer()` before measurement block
 - Fuzz test missing on a parser / decoder / state machine
-- `testify` `assert` used where `require` was needed (test continues with nil receiver, panics later)
+- `testify` `assert` used where `require` was needed (test continues with nil receiver, panics
+  later)
 - `t.Parallel()` skipped where tests are genuinely independent (slow suite)
 
 **Refinement candidates**:
 
 - New testing-package row when a new Go testing facility ships (synctest, fuzzing improvements)
 - Tightening of the coverage floor on packages flagged as critical
-- New cross-reference when a sister rule (golang/no-discards, testing) adds a per-language verification
+- New cross-reference when a sister rule (golang/no-discards, testing) adds a per-language
+  verification
 - New table-driven idiom when generics improve subtest dispatch patterns

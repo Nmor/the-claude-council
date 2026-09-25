@@ -7,6 +7,8 @@ paths:
 # Dart/Flutter Coding Style
 
 > Extends `common/coding-style.md` with Dart/Flutter-specific conventions.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Naming Conventions
 

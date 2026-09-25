@@ -6,7 +6,10 @@ command: true
 
 # Sessions Command
 
-Manage Claude Code session history - list, load, alias, and edit sessions stored in `~/.claude/sessions/`.
+> **Size budget: 12 KB** — `token-budget.mjs --check`.
+
+Manage Claude Code session history - list, load, alias, and edit sessions stored in
+`~/.claude/sessions/`.
 
 ## Usage
 

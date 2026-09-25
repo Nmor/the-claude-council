@@ -7,6 +7,8 @@
 > Specification**, **OpenAPI 3.1**, **AsyncAPI 3.0**,
 > **GitHub Actions workflow syntax**, **Helm Chart authoring
 > best practices**.
+>
+> **Size budget: 17 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -68,7 +70,8 @@ Common public schemas:
 
 - Kubernetes: published per-version at the API server
 - Compose: [`compose-spec/compose-spec`](https://github.com/compose-spec/compose-spec)
-- GitHub Actions: [`SchemaStore github-workflow.json`](https://json.schemastore.org/github-workflow.json)
+- GitHub Actions: [`SchemaStore
+  github-workflow.json`](https://json.schemastore.org/github-workflow.json)
 - OpenAPI: [`OAI/OpenAPI-Specification`](https://github.com/OAI/OpenAPI-Specification)
 - AsyncAPI: [`asyncapi/spec-json-schemas`](https://github.com/asyncapi/spec-json-schemas)
 

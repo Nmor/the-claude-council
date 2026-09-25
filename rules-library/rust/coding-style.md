@@ -5,6 +5,8 @@
 > **RFC track**, **rustfmt default**, **clippy pedantic + nursery
 >
 > - cargo**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

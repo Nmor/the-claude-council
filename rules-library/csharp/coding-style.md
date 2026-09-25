@@ -8,6 +8,8 @@ paths:
 # C# Coding Style
 
 > Extends `common/coding-style.md` with C#-specific conventions.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Naming Conventions
 

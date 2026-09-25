@@ -5,15 +5,21 @@ description: Playwright E2E testing patterns — Page Object Model, configuratio
 
 # E2E Testing Patterns
 
+> **Size budget: 29 KB** — `token-budget.mjs --check`.
+
 Comprehensive Playwright patterns for building stable, fast, and maintainable E2E test suites.
 
 ## Purpose
 
-End-to-end tests verify the system as a user encounters it — across the full HTTP stack, real browser engine, real DOM, real network round-trips to (mocked or real) backends. This skill captures the decision-time patterns + execution patterns + flake-management patterns that separate "we have e2e tests" from "our e2e suite catches real regressions without burning the on-call rotation".
+End-to-end tests verify the system as a user encounters it — across the full HTTP stack, real
+browser engine, real DOM, real network round-trips to (mocked or real) backends. This skill captures
+the decision-time patterns + execution patterns + flake-management patterns that separate "we have
+e2e tests" from "our e2e suite catches real regressions without burning the on-call rotation".
 
 What this skill does NOT cover:
 
-- Unit tests + component tests (sister `tdd-workflow` skill; framework-specific helpers in `vue3-patterns`, `frontend-patterns`).
+- Unit tests + component tests (sister `tdd-workflow` skill; framework-specific helpers in
+  `vue3-patterns`, `frontend-patterns`).
 - API-only contract tests (sister `api-design` skill; `contract-testing.md` rule).
 - Accessibility audits (sister `wcag-accessibility` skill — axe-core in CI is a different gate).
 - Visual regression (separate tooling — Chromatic / Percy / Argos).
@@ -21,9 +27,11 @@ What this skill does NOT cover:
 
 ## When to use
 
-- Adding a critical user journey (signup, checkout, payment, deletion-of-account, plan-tier upgrade).
+- Adding a critical user journey (signup, checkout, payment, deletion-of-account, plan-tier
+  upgrade).
 - Verifying cross-system interactions (web ↔ API ↔ worker ↔ DB) that unit tests cannot reach.
-- Reproducing a production bug whose surface is "user clicked X then Y broke" (the report shape that calls for browser-level repro).
+- Reproducing a production bug whose surface is "user clicked X then Y broke" (the report shape that
+  calls for browser-level repro).
 - Establishing the smoke-test suite that gates every production deploy.
 
 ## When NOT to use
@@ -31,22 +39,32 @@ What this skill does NOT cover:
 - The target is pure backend HTTP — use `supertest` / `axios` / `requests` instead.
 - The target is a CLI tool — use process-spawn assertions.
 - The target is a pure function / module — unit test.
-- The target is a static landing page with no JS — static-HTML parse (per Decision-time pattern #1 below).
-- Coverage gap is at the unit / integration layer — fix THERE first; e2e is the slowest tier of the pyramid.
+- The target is a static landing page with no JS — static-HTML parse (per Decision-time pattern #1
+  below).
+- Coverage gap is at the unit / integration layer — fix THERE first; e2e is the slowest tier of the
+  pyramid.
 
 ## Standards cited
 
-- **Playwright** (Microsoft, latest stable line) — Locators API, `waitForLoadState`, `expect(locator).toBeVisible()` auto-retry semantics.
-- **WCAG 2.2 §2.4.7 (Focus Visible)** + **§2.5.8 (Target Size Minimum)** — e2e tests for keyboard-only journeys + minimum-target-size verification on mobile viewports.
-- **W3C WebDriver BiDi** — the protocol Playwright extends; understanding helps when debugging network-event timing.
-- **CI/CD industry norms** — GitHub Actions / GitLab CI artifact retention (typically 30-90 days for test traces + videos + screenshots).
-- `~/.claude/rules-library/common/testing.md` § "Test pyramid" + § "Critical-path coverage ≥ 95%" — the broader testing rule this skill operationalises.
-- `~/.claude/rules-library/common/extreme-lint-policy.md` § "Coverage" — touched-file ≥ 90% applies to the test files themselves.
-- `~/.claude/rules-library/common/proper-fixes-first.md` § "Healthcheck loosening" — same anti-pattern in test form (bumping test timeout to mask a real slow code path is BANNED).
+- **Playwright** (Microsoft, latest stable line) — Locators API, `waitForLoadState`,
+  `expect(locator).toBeVisible()` auto-retry semantics.
+- **WCAG 2.2 §2.4.7 (Focus Visible)** + **§2.5.8 (Target Size Minimum)** — e2e tests for
+  keyboard-only journeys + minimum-target-size verification on mobile viewports.
+- **W3C WebDriver BiDi** — the protocol Playwright extends; understanding helps when debugging
+  network-event timing.
+- **CI/CD industry norms** — GitHub Actions / GitLab CI artifact retention (typically 30-90 days for
+  test traces + videos + screenshots).
+- `~/.claude/rules-library/common/testing.md` § "Test pyramid" + § "Critical-path coverage ≥ 95%" —
+  the broader testing rule this skill operationalises.
+- `~/.claude/rules-library/common/extreme-lint-policy.md` § "Coverage" — touched-file ≥ 90% applies
+  to the test files themselves.
+- `~/.claude/rules-library/common/proper-fixes-first.md` § "Healthcheck loosening" — same
+  anti-pattern in test form (bumping test timeout to mask a real slow code path is BANNED).
 
 ## Decision-time patterns (BEFORE writing a single test)
 
-These five patterns apply at task-entry — choosing the right approach is more impactful than choosing the right assertion.
+These five patterns apply at task-entry — choosing the right approach is more impactful than
+choosing the right assertion.
 
 ### 1. Static-first decision tree
 
@@ -64,18 +82,22 @@ User task → Is the target STATIC HTML?
         └─ YES → Reconnaissance-then-action pattern (see #3)
 ```
 
-Static-first saves 95% of test boot time + sidesteps the entire browser-flake surface for cases that don't need a browser.
+Static-first saves 95% of test boot time + sidesteps the entire browser-flake surface for cases that
+don't need a browser.
 
 ### 2. Black-box helper scripts (LLM context-window protection)
 
-Helper scripts (`with_server.py`, `wait-for-port.sh`, `seed-test-data.py`, etc.) live in `tests/scripts/` or `tools/`. The rule:
+Helper scripts (`with_server.py`, `wait-for-port.sh`, `seed-test-data.py`, etc.) live in
+`tests/scripts/` or `tools/`. The rule:
 
 ```text
 ✅ DO: Run the script with --help; treat it as a CLI black box.
 ❌ DON'T: Read the script source into context unless --help genuinely doesn't cover what you need.
 ```
 
-Helper-script source can be hundreds of lines that pollute the working context. The script's `--help` output tells the agent exactly what flags exist; that's enough to use it. Only read source when behaviour is ambiguous AND the script needs modification.
+Helper-script source can be hundreds of lines that pollute the working context. The script's
+`--help` output tells the agent exactly what flags exist; that's enough to use it. Only read source
+when behaviour is ambiguous AND the script needs modification.
 
 ### 3. Reconnaissance-then-action
 
@@ -100,7 +122,8 @@ Blind selector guessing produces the bulk of "works locally, flakes in CI" failu
 
 ### 4. Multi-server orchestration
 
-When the e2e suite needs backend + frontend + worker simultaneously, use a server-orchestration helper (canonical pattern: `with_server.py`):
+When the e2e suite needs backend + frontend + worker simultaneously, use a server-orchestration
+helper (canonical pattern: `with_server.py`):
 
 ```bash
 python tests/scripts/with_server.py \
@@ -110,9 +133,12 @@ python tests/scripts/with_server.py \
   -- python tests/run_e2e.py
 ```
 
-The helper starts every server, waits for each port to be ready, runs the test command, then tears down on exit (even on Ctrl+C / test failure). Your test code stays focused on Playwright logic — it never has to know how to launch the servers.
+The helper starts every server, waits for each port to be ready, runs the test command, then tears
+down on exit (even on Ctrl+C / test failure). Your test code stays focused on Playwright logic — it
+never has to know how to launch the servers.
 
-Avoid embedding multi-server lifecycle into `playwright.config.ts` `webServer` block when you have ≥ 3 servers — the config block doesn't sequence dependencies well + leaks processes on test crashes.
+Avoid embedding multi-server lifecycle into `playwright.config.ts` `webServer` block when you have ≥
+3 servers — the config block doesn't sequence dependencies well + leaks processes on test crashes.
 
 ### 5. `networkidle` is a hard requirement before DOM inspection
 
@@ -131,7 +157,8 @@ const button = page.locator('button.submit');
 await button.click();
 ```
 
-Apply this rule everywhere a page transitions: after `goto`, after navigation clicks, after dialog opens, after async fetch triggers.
+Apply this rule everywhere a page transitions: after `goto`, after navigation clicks, after dialog
+opens, after async fetch triggers.
 
 ### When NOT to use a browser at all
 
@@ -142,7 +169,8 @@ Skip Playwright entirely when:
 - The target is a pure function / module → unit test
 - The target is a static landing page (no JS) → static-HTML parse (per #1)
 
-E2E is the slowest, most-brittle layer of the test pyramid. Use it for true cross-system journeys, not for things faster layers cover.
+E2E is the slowest, most-brittle layer of the test pyramid. Use it for true cross-system journeys,
+not for things faster layers cover.
 
 ## Test File Organization
 
@@ -481,16 +509,26 @@ test('trade execution', async ({ page }) => {
 
 ## Cross-references
 
-- Sister rule: `~/.claude/rules-library/common/testing.md` — broader test pyramid, coverage thresholds (≥ 90% touched / ≥ 80% project / ≥ 95% critical-path).
-- Sister rule: `~/.claude/rules-library/common/proper-fixes-first.md` — bumping a test timeout to mask slow code is the same shape as bumping a healthcheck timeout in prod; both are BANNED.
-- Sister rule: `~/.claude/rules-library/common/extreme-lint-policy.md` — the test code itself must pass the same lint bar as product code.
-- Sister rule: `~/.claude/rules-library/common/idempotency.md` — when an e2e test exercises a mutation, the test must be safe to re-run (per `RFC 9110 §9.2.2`).
-- Sister skill: `~/.claude/skills/frontend-patterns/SKILL.md` — component-level testing patterns that sit one layer below e2e.
-- Sister skill: `~/.claude/skills/vue3-patterns/SKILL.md` / `~/.claude/skills/typescript-patterns/SKILL.md` — framework-specific test idioms.
-- Sister skill: `~/.claude/skills/wcag-accessibility/SKILL.md` — accessibility tests (axe-core) belong in a separate CI step.
-- Sister skill: `~/.claude/skills/tdd-workflow/SKILL.md` — RED/GREEN/REFACTOR discipline for unit + integration layers below e2e.
-- Agent that pairs: `~/.claude/agents/e2e-runner.md` — Council Division 5 (Testing & QA) lead for e2e orchestration.
-- Agent that pairs: `~/.claude/agents/tdd-guide.md` — pairs on the test pyramid (writes unit + integration FIRST; this skill covers e2e on top).
+- Sister rule: `~/.claude/rules-library/common/testing.md` — broader test pyramid, coverage
+  thresholds (≥ 90% touched / ≥ 80% project / ≥ 95% critical-path).
+- Sister rule: `~/.claude/rules-library/common/proper-fixes-first.md` — bumping a test timeout to
+  mask slow code is the same shape as bumping a healthcheck timeout in prod; both are BANNED.
+- Sister rule: `~/.claude/rules-library/common/extreme-lint-policy.md` — the test code itself must
+  pass the same lint bar as product code.
+- Sister rule: `~/.claude/rules-library/common/idempotency.md` — when an e2e test exercises a
+  mutation, the test must be safe to re-run (per `RFC 9110 §9.2.2`).
+- Sister skill: `~/.claude/skills/frontend-patterns/SKILL.md` — component-level testing patterns
+  that sit one layer below e2e.
+- Sister skill: `~/.claude/skills/vue3-patterns/SKILL.md` /
+  `~/.claude/skills/typescript-patterns/SKILL.md` — framework-specific test idioms.
+- Sister skill: `~/.claude/skills/wcag-accessibility/SKILL.md` — accessibility tests (axe-core)
+  belong in a separate CI step.
+- Sister skill: `~/.claude/skills/tdd-workflow/SKILL.md` — RED/GREEN/REFACTOR discipline for unit +
+  integration layers below e2e.
+- Agent that pairs: `~/.claude/agents/e2e-runner.md` — Council Division 5 (Testing & QA) lead for
+  e2e orchestration.
+- Agent that pairs: `~/.claude/agents/tdd-guide.md` — pairs on the test pyramid (writes unit +
+  integration FIRST; this skill covers e2e on top).
 - `/e2e` command — generates + runs e2e tests with artifact capture.
 
 ## Why this skill exists
@@ -504,9 +542,15 @@ Most e2e failure modes are predictable + repeating:
 5. `waitForTimeout(N)` magic numbers → passes locally + fails when CI is slower
 6. One huge test file → can't isolate a single failure
 
-The cost of doing it right (data-testid, reconnaissance-then-action, with_server.py, networkidle, per-journey files) is paid ONCE at suite-design time. The cost of doing it wrong is paid every CI run, every on-call rotation, every "flaky test" Slack message, and every regression that snuck past a yellow run nobody trusted.
+The cost of doing it right (data-testid, reconnaissance-then-action, with_server.py, networkidle,
+per-journey files) is paid ONCE at suite-design time. The cost of doing it wrong is paid every CI
+run, every on-call rotation, every "flaky test" Slack message, and every regression that snuck past
+a yellow run nobody trusted.
 
-This skill captures the decision-time patterns (the static-first decision tree, the black-box helper script discipline, the reconnaissance-then-action loop) ALONGSIDE the execution patterns (POM, fixtures, artifacts, CI integration), because the decisions made before the first test is written determine 80% of the suite's eventual quality.
+This skill captures the decision-time patterns (the static-first decision tree, the black-box helper
+script discipline, the reconnaissance-then-action loop) ALONGSIDE the execution patterns (POM,
+fixtures, artifacts, CI integration), because the decisions made before the first test is written
+determine 80% of the suite's eventual quality.
 
 ## Standards Cited
 
@@ -562,8 +606,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Signals to watch**:
 
 - Critical user journey added without E2E coverage (sister `testing.md` rule)
-- Locator uses CSS classes / xpath / `:nth-child` instead of `data-testid` / role / text (brittle locator pattern)
-- `page.waitForTimeout(N)` used instead of `waitForResponse` / `waitForSelector` / `toBeVisible` (flaky timing)
+- Locator uses CSS classes / xpath / `:nth-child` instead of `data-testid` / role / text (brittle
+  locator pattern)
+- `page.waitForTimeout(N)` used instead of `waitForResponse` / `waitForSelector` / `toBeVisible`
+  (flaky timing)
 - Test depends on prod data / shared fixtures (test-isolation drift)
 - Network-mocking absent on external integrations (test couples to vendor uptime)
 - Screenshot / trace artifacts not captured on failure (debugging surface missing)
@@ -572,7 +618,9 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New journey class row when a recurring critical flow emerges (e.g., new auth modality, new payment provider)
+- New journey class row when a recurring critical flow emerges (e.g., new auth modality, new payment
+  provider)
 - Tightening of the locator standard when a new framework's testability API matures
-- New cross-reference when a sister skill (frontend-patterns, wcag-accessibility) adds an E2E-relevant gate
+- New cross-reference when a sister skill (frontend-patterns, wcag-accessibility) adds an
+  E2E-relevant gate
 - New flake-quarantine template when a recurring infra-flake class recurs

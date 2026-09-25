@@ -7,7 +7,10 @@ paths:
 ---
 # TypeScript/JavaScript Hooks
 
-> This file extends [common/hooks.md](../common/hooks.md) with TypeScript/JavaScript specific content.
+> This file extends [common/hooks.md](../common/hooks.md) with TypeScript/JavaScript specific
+> content.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## PostToolUse Hooks
 

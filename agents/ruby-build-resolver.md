@@ -7,6 +7,8 @@ model: sonnet
 
 # Ruby Load & Syntax Error Resolver
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Get the Ruby load/syntax/bundle green with the SMALLEST correct change — root
 cause, never `# rubocop:disable` to hide it. No refactoring, no features.
 

@@ -176,9 +176,10 @@ codebase needs.
 See `<workspace>/.claude/agents/`. Workspace agents are rare —
 prefer global agents.
 
-## Workspace memory
+## Project memory
 
-See `<workspace>/.claude/memory/MEMORY.md` for the index.
+The memory Claude Code loads for this project (`project-memory.md`). Its `MEMORY.md`
+names the active plan on one `Active plan:` line.
 ```
 
 ## Plans
@@ -188,11 +189,12 @@ Per
 +
 [`plan-completion-before-push.md`](../rules/common/plan-completion-before-push.md):
 
-- Project-specific plan files live at
-  `<workspace>/.claude/plans/<slug>.md`, NEVER in `~/.claude/plans/`.
-- The global `~/.claude/plans/` is reserved for plans that govern
-  the global config itself (meta-config plans like the rebuild
-  plan).
+- A plan belongs to a project because the project's memory names it
+  on an `Active plan:` line. Plan mode writes every project's drafts
+  to the shared `~/.claude/plans/`, so the gates never guess from that
+  folder; a project with no line is asked for one.
+- One plan per workspace (`one-plan-per-workspace.md`): new work is a
+  new part or phase of that plan, never a second file.
 - Every plan declares its commit-policy in the Context section:
   `single` (one commit at end), `per-phase` (one per phase
   boundary), or `per-task` (one per atomic task).
@@ -204,11 +206,17 @@ Per
 Per the auto-memory system documented in
 [`../CLAUDE.md`](../CLAUDE.md):
 
-- Workspace memories (project / feedback / reference) live in
-  `<workspace>/.claude/memory/`.
-- Global `~/.claude/projects/-Users-<user>/memory/` holds ONLY
-  universal preferences (e.g., "Use pnpm not npm", "React 19 +
-  SonarLint pitfalls", "Web quality bar").
+- Project memory is Claude Code's auto memory for the project:
+  `~/.claude/projects/<project>/memory/`, keyed by the git repository
+  the session starts in. A project spanning several repositories can
+  share one directory through `autoMemoryDirectory` in each
+  repository's gitignored `.claude/settings.local.json`.
+- A workspace `.claude/memory/` is loaded only when
+  `autoMemoryDirectory` points at it.
+- Preferences meant for every project go in user-level
+  instructions (`~/.claude/rules/`), which every session loads; a
+  memory directory is loaded for one project only.
+- Progress lives in the plan, never in memory.
 - Each memory file carries frontmatter (`name`, `description`,
   `metadata.type`).
 - `MEMORY.md` is an index, not a memory — one-line pointer per

@@ -5,6 +5,8 @@
 > surfaces a user-visible signal), `verify-before-claim.md` (rule 9 — manual
 > verification is mandatory for UI), `plan-task-breakdown.md` (rule 12 — UI/UX ships in
 > the SAME plan as the feature), `done-criteria.md` (the gates a claim runs).
+>
+> **Size budget: 13 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -53,6 +55,35 @@ get the same scrutiny. Buttons name the ACTION ("Send invoice", not "Submit"). N
 is asked for without saying why it is needed when the reason is not obvious — a
 third party's date of birth on a compliance form reads as intrusive until it says it
 prevents a name-only match blocking the wrong person.
+
+**Copy is scanned for AI tells before it ships**, per `ux-reviewer`'s AI-writing scan and
+`interaction-design` Pattern 16: the em-dash as a default connector, buzzwords (unlock /
+seamless / effortless / robust / leverage / elevate / supercharge), rule-of-three padding,
+"not just X but Y", cute inversions, empty openers, and filler (simply / just / the ability
+to). The em-dash is the reliable one: a model reaches for it where a person would choose a
+colon, a full stop or brackets, so it marks a sentence whose punctuation was defaulted
+rather than decided. Fixing it means RE-PUNCTUATING the sentence; swapping the character
+for another dash trades one tic for another.
+
+Mechanically enforced by `~/.claude/scripts/hooks/lib/ux-writing-rules.js`
+(`em-dash-connector`, `buzzword`, `empty-opener`, `not-just-but`), which the
+`post-edit-ux-writing` hook loads at edit time and `rules-scan.js --rules ux-writing`
+runs across a repo. It is its OWN manifest, not a clause bolted onto the no-discards
+rules: that module guards what the code does and this one guards what the product says,
+and a copy rule filed under a name about discarded return values is unfindable by the
+people who own copy.
+
+Scope is lines a reader sees: locale catalogues (every value in one is copy) and
+non-comment lines in JS-like files. Markdown, ADRs and plans are excluded, because the
+rule governs product copy rather than writing about the product. Every rule is a WARN:
+there are legitimate uses of each pattern, and blocking an edit over punctuation trains
+people to switch the hook off. The repo-wide scan is what keeps a backlog visible.
+
+**Why it had to become mechanical.** This bar and Pattern 16 both already said it, and both
+are instructions to a REVIEWER, so they bound only when somebody remembered to run Division
+7 over the copy. That was not remembered twice: a marketing site shipped full of em-dashes
+(2026-08-23), and a legal document was drafted with 27 of them (2026-09-06). A rule that
+depends on being remembered is not enforcement.
 
 ### 4. Destructive and irreversible actions are distinguishable before they happen
 
@@ -153,7 +184,6 @@ cannot complete, discovered after launch when it is most expensive to fix.
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

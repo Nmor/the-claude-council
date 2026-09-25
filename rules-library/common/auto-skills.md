@@ -5,11 +5,17 @@ paths:
 
 # Auto-Skill & Agent Activation
 
-> This rule fires on every file. It ensures all installed skills AND agents are automatically applied based on file context — no slash commands or explicit invocation needed.
+> This rule fires on every file. It ensures all installed skills AND agents are automatically
+> applied based on file context — no slash commands or explicit invocation needed.
+>
+> **Size budget: 50 KB** — `token-budget.mjs --check`.
 
 ## How It Works
 
-When you touch any file, automatically apply the relevant skills from `~/.claude/skills/` AND delegate to the relevant agents from `~/.claude/agents/` based on the file type and context below. Read and follow each skill's SKILL.md guidelines as part of your work. Delegate to agents when their expertise is needed. Do not announce activations — just apply them silently.
+When you touch any file, automatically apply the relevant skills from `~/.claude/skills/` AND
+delegate to the relevant agents from `~/.claude/agents/` based on the file type and context below.
+Read and follow each skill's SKILL.md guidelines as part of your work. Delegate to agents when their
+expertise is needed. Do not announce activations — just apply them silently.
 
 ## File-to-Skill-and-Agent Mapping
 
@@ -35,13 +41,15 @@ Agents:
 Skills:
 
 - **coding-quality-rules** — Universal code quality
-- **typescript-patterns** — Discriminated unions, branded types, narrowing, strictness flags (TS files only)
+- **typescript-patterns** — Discriminated unions, branded types, narrowing, strictness flags (TS
+  files only)
 - **frontend-patterns** — React/Vue component patterns, state, hooks
 - **backend-patterns** — Node.js/Express/Next.js server patterns
 - **security-review** — XSS, injection, auth
 - **tdd-workflow** — Red-Green-Refactor methodology
 - **e2e-testing** — Playwright patterns (when test files)
-- **observability-patterns** — Structured logging, EMF metrics, correlation ids (when handler / lib code)
+- **observability-patterns** — Structured logging, EMF metrics, correlation ids (when handler / lib
+  code)
 
 Agents:
 
@@ -55,8 +63,10 @@ Agents:
 
 Skills:
 
-- **frontend-patterns** — Component architecture, performance, AND visual design quality (typography, color, motion, spatial composition)
-- **vue3-patterns** — Composition API, `<script setup>`, composables, Pinia, reactivity gotchas (Vue files only)
+- **frontend-patterns** — Component architecture, performance, AND visual design quality
+  (typography, color, motion, spatial composition)
+- **vue3-patterns** — Composition API, `<script setup>`, composables, Pinia, reactivity gotchas (Vue
+  files only)
 - **coding-quality-rules** — Code quality and naming
 
 Agents:
@@ -184,7 +194,8 @@ Skills:
 - **api-design** — REST patterns, status codes, pagination, versioning
 - **security-review** — Auth, OWASP, rate limiting
 - **backend-patterns** — Server architecture, DB optimization
-- **aws-serverless-patterns** — Lambda handler shape, async-by-default webhooks, idempotency, cold-start hygiene (when handler files target AWS Lambda)
+- **aws-serverless-patterns** — Lambda handler shape, async-by-default webhooks, idempotency,
+  cold-start hygiene (when handler files target AWS Lambda)
 - **observability-patterns** — Structured logs, EMF metrics, request-id propagation
 
 Agents:
@@ -192,18 +203,23 @@ Agents:
 - **security-reviewer** — Endpoint security, auth bypass, injection
 - **code-reviewer** — API code quality review
 
-### Docker/Deployment (Dockerfile*, docker-compose*, serverless.yml, template.yaml, .github/workflows/*, k8s/*, deploy/*, infra/*)
+### Docker/Deployment
+
+**Triggers:** Dockerfile*, docker-compose*, serverless.yml, template.yaml, .github/workflows/*,
+k8s/*, deploy/*, infra/*
 
 Skills:
 
 - **docker-patterns** — Container security, networking, volumes, compose
 - **deployment-patterns** — CI/CD, health checks, rollback strategies
-- **aws-serverless-patterns** — IAM least privilege, SQS/SNS/EventBridge wiring, canary deploys, reserved concurrency (when `serverless.yml` / SAM / CDK)
+- **aws-serverless-patterns** — IAM least privilege, SQS/SNS/EventBridge wiring, canary deploys,
+  reserved concurrency (when `serverless.yml` / SAM / CDK)
 - **security-review** — No secrets in images, minimal attack surface
 
 Rules (auto-load when any compose / Dockerfile is touched):
 
-- [`docker-localhost-binding.md`](docker-localhost-binding.md) — every host port mapping must be `127.0.0.1:` prefixed on developer machines. Sweep + patch script included.
+- [`docker-localhost-binding.md`](docker-localhost-binding.md) — every host port mapping must be
+  `127.0.0.1:` prefixed on developer machines. Sweep + patch script included.
 
 Agents:
 
@@ -215,7 +231,9 @@ Skills:
 
 - **database-migrations** — Schema changes, rollbacks, zero-downtime
 - **postgres-patterns** — Query optimization, indexing, RLS
-- **dynamodb-patterns** — Single-table design, composite keys, GSI design, conditional writes, BatchWrite chunking, TTL, streams, tenant isolation (when `@aws-sdk/lib-dynamodb` or `@aws-sdk/client-dynamodb` is imported)
+- **dynamodb-patterns** — Single-table design, composite keys, GSI design, conditional writes,
+  BatchWrite chunking, TTL, streams, tenant isolation (when `@aws-sdk/lib-dynamodb` or
+  `@aws-sdk/client-dynamodb` is imported)
 - **security-review** — SQL injection, access control
 
 Agents:
@@ -243,104 +261,186 @@ Agents:
 
 - **doc-updater** — Codemaps, READMEs, guides, documentation generation
 
-### Accessibility-touching UI (`<form>`, `<input>`, ARIA refs, `aria-*` attrs, `role=` attrs, error/validation copy)
+### Accessibility-touching UI
+
+**Triggers:** `<form>`, `<input>`, ARIA refs, `aria-*` attrs, `role=` attrs, error/validation copy
 
 Skills:
 
-- **wcag-accessibility** — WCAG 2.2 AA + AAA, semantic HTML, ARIA 1.2, keyboard, screen reader, contrast, motion, the 9 new SCs
-- **accessible-forms** — Labels, errors, autocomplete, validation timing, multi-step flows, file inputs, date pickers, Redundant Entry + Accessible Authentication SCs
-- **interaction-design** — Affordances, signifiers, feedback, error prevention, recovery, microcopy, motion-as-function
+- **wcag-accessibility** — WCAG 2.2 AA + AAA, semantic HTML, ARIA 1.2, keyboard, screen reader,
+  contrast, motion, the 9 new SCs
+- **accessible-forms** — Labels, errors, autocomplete, validation timing, multi-step flows, file
+  inputs, date pickers, Redundant Entry + Accessible Authentication SCs
+- **interaction-design** — Affordances, signifiers, feedback, error prevention, recovery, microcopy,
+  motion-as-function
 
-### ML / AI / LLM Files (imports `openai`/`anthropic`/`@google-cloud/aiplatform`/`@aws-sdk/client-bedrock-runtime`, prompts/, embeddings/, training/, fine-tune/, RAG pipelines)
+### ML / AI / LLM Files
+
+**Triggers:** imports
+`openai`/`anthropic`/`@google-cloud/aiplatform`/`@aws-sdk/client-bedrock-runtime`, prompts/,
+embeddings/, training/, fine-tune/, RAG pipelines
 
 Skills:
 
-- **prompt-engineering** — Task decomposition, RCIEF structure, few-shot, chain-of-thought, tool-use, versioning, eval
-- **ml-model-selection** — Match problem class to model family, CV with proper splits, cost/latency/interpretability/compliance
-- **rag-design** — Chunking, embeddings, vector storage, hybrid retrieval, reranking, grounding, eval, RAG-vs-fine-tune-vs-long-context
-- **mlops-patterns** — Feature stores, model registry, training pipelines, deployment (online/batch/streaming), drift monitoring, A/B, rollback
-- **fine-tuning-workflows** — When fine-tuning beats prompting + RAG; SFT / DPO / RLHF; LoRA / QLoRA; eval; safety re-tune; deploy; monitor
+- **prompt-engineering** — Task decomposition, RCIEF structure, few-shot, chain-of-thought,
+  tool-use, versioning, eval
+- **ml-model-selection** — Match problem class to model family, CV with proper splits,
+  cost/latency/interpretability/compliance
+- **rag-design** — Chunking, embeddings, vector storage, hybrid retrieval, reranking, grounding,
+  eval, RAG-vs-fine-tune-vs-long-context
+- **mlops-patterns** — Feature stores, model registry, training pipelines, deployment
+  (online/batch/streaming), drift monitoring, A/B, rollback
+- **fine-tuning-workflows** — When fine-tuning beats prompting + RAG; SFT / DPO / RLHF; LoRA /
+  QLoRA; eval; safety re-tune; deploy; monitor
 - **cost-aware-llm-pipeline** — Model routing, budget tracking, retry logic, prompt caching
 
 Agents:
 
-- **ai-ethics-reviewer** — AI safety, fairness, bias, dataset provenance (Council Division 15 — VETO authority)
+- **ai-ethics-reviewer** — AI safety, fairness, bias, dataset provenance (Council Division 15 — VETO
+  authority)
 - **security-reviewer** — Prompt-injection, data exfil, secrets in prompts
 
-### MCP Servers (`*.mcp.json`, `mcp-server/**`, `mcp_servers/**`, `mcp/**`, files importing `@modelcontextprotocol/sdk` (TS/JS), `mcp` or `fastmcp` (Python), `modelcontextprotocol` (any), `tools/<tool-name>.{ts,py}` inside an MCP server)
+### MCP Servers
+
+**Triggers:** `*.mcp.json`, `mcp-server/**`, `mcp_servers/**`, `mcp/**`, files importing
+`@modelcontextprotocol/sdk` (TS/JS), `mcp` or `fastmcp` (Python), `modelcontextprotocol` (any),
+`tools/<tool-name>.{ts,py}` inside an MCP server
 
 Skills:
 
-- **mcp-builder** — Stdio + streamable HTTP transports, tool / resource / prompt primitives, capability negotiation, auth model, idempotency, observability, MCP Inspector testing, 10-question evaluation framework
-- **api-design** — Tool surface design (request / response shapes, idempotency, pagination, error envelope) — sister skill for the API-level concerns inside MCP tool definitions
-- **prompt-engineering** — Prompt + resource design when the MCP server exposes prompt primitives or resource templates the client will compose with
+- **mcp-builder** — Stdio + streamable HTTP transports, tool / resource / prompt primitives,
+  capability negotiation, auth model, idempotency, observability, MCP Inspector testing, 10-question
+  evaluation framework
+- **api-design** — Tool surface design (request / response shapes, idempotency, pagination, error
+  envelope) — sister skill for the API-level concerns inside MCP tool definitions
+- **prompt-engineering** — Prompt + resource design when the MCP server exposes prompt primitives or
+  resource templates the client will compose with
 
 Agents:
 
-- **security-reviewer** — Auth model, secrets handling, supply-chain risk, prompt-injection surface in tool descriptions + responses
-- **code-reviewer** — Tool schema correctness (Zod / JSON Schema), annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`), error-envelope discipline
-- **architect** — Capability negotiation, transport selection (stdio vs streamable HTTP), single-server vs federated design
+- **security-reviewer** — Auth model, secrets handling, supply-chain risk, prompt-injection surface
+  in tool descriptions + responses
+- **code-reviewer** — Tool schema correctness (Zod / JSON Schema), annotations (`readOnlyHint`,
+  `destructiveHint`, `idempotentHint`, `openWorldHint`), error-envelope discipline
+- **architect** — Capability negotiation, transport selection (stdio vs streamable HTTP),
+  single-server vs federated design
 
-### Finance / Accounting / Billing Files (billing/, pricing/, ledger/, accounting/, invoices/, payments/, ifrs/, gaap/, gl/, plans-tier configs, Stripe/Adyen integrations)
+### Finance / Accounting / Billing Files
+
+**Triggers:** billing/, pricing/, ledger/, accounting/, invoices/, payments/, ifrs/, gaap/, gl/,
+plans-tier configs, Stripe/Adyen integrations
 
 Skills:
 
-- **bookkeeping-patterns** — Double-entry, chart of accounts, journal entries, ledger reconciliation, immutable accounting events
-- **ifrs-gaap-reporting** — Balance Sheet / Income Statement / Cash Flow / SOCIE; IFRS 15 + ASC 606 revenue; IFRS 16 + ASC 842 leases; IFRS↔GAAP differences
-- **fp-and-a** — Budget vs actual variance, rolling forecasts, driver-based models, scenario planning, SaaS metrics (ARR/MRR/NRR/CAC/LTV/payback/magic-number/Rule of 40), cohort analysis
-- **valuation-models** — DCF, trading comparables, precedent transactions, LBO, SOTP, VC method, real options
-- **financial-analyst** — Earnings model maintenance, ratio analysis, accounting-quality assessment, channel checks, sector-relative valuation
-- **pci-dss-patterns** — Scope reduction via tokenization, SAQ selection, segmentation, encryption, 12 PCI-DSS requirements mapped to controls
+- **bookkeeping-patterns** — Double-entry, chart of accounts, journal entries, ledger
+  reconciliation, immutable accounting events
+- **ifrs-gaap-reporting** — Balance Sheet / Income Statement / Cash Flow / SOCIE; IFRS 15 + ASC 606
+  revenue; IFRS 16 + ASC 842 leases; IFRS↔GAAP differences
+- **fp-and-a** — Budget vs actual variance, rolling forecasts, driver-based models, scenario
+  planning, SaaS metrics (ARR/MRR/NRR/CAC/LTV/payback/magic-number/Rule of 40), cohort analysis
+- **valuation-models** — DCF, trading comparables, precedent transactions, LBO, SOTP, VC method,
+  real options
+- **financial-analyst** — Earnings model maintenance, ratio analysis, accounting-quality assessment,
+  channel checks, sector-relative valuation
+- **pci-dss-patterns** — Scope reduction via tokenization, SAQ selection, segmentation, encryption,
+  12 PCI-DSS requirements mapped to controls
 
 Agents:
 
 - **finance-reviewer** — Cloud cost, unit economics, pricing impact, ROI (Council Division 10)
-- **compliance-reviewer** — PCI-DSS / SOX / financial-reporting compliance (Council Division 6 — VETO)
+- **compliance-reviewer** — PCI-DSS / SOX / financial-reporting compliance (Council Division 6 —
+  VETO)
 
-### Payments / Escrow / Open-Banking Files (payments/, billing/, checkout/, refund/, chargeback/, subscription/, dunning/, payout/, escrow/, wallet/, ledger/, reconcil/, 3ds/, sca/, psd2/, fapi/, open-banking/, tokeniz/, stripe/, adyen/, square/, braintree/, plaid/, dwolla/, modulr/, kyc/, aml/, sanctions/, ofac/)
+### Payments / Escrow / Open-Banking Files
+
+**Triggers:** payments/, billing/, checkout/, refund/, chargeback/, subscription/, dunning/,
+payout/, escrow/, wallet/, ledger/, reconcil/, 3ds/, sca/, psd2/, fapi/, open-banking/, tokeniz/,
+stripe/, adyen/, square/, braintree/, plaid/, dwolla/, modulr/, kyc/, aml/, sanctions/, ofac/
 
 Skills:
 
-- **payment-processing-patterns** — Idempotency (cache key composition + payload-hash binding + HTTP 409 in-progress); 3DS2 + SCA; network tokenization; subscriptions + dunning; refunds + chargebacks; payouts + Connect; ledger reconciliation; escrow taxonomy (platform-escrow / simple-hold / custodial / third-party agent); trust-account FBO segregation; state MTLs + FinCEN MSB + AMLD6
-- **pci-dss-patterns** — PCI-DSS v4.0 scope reduction via tokenization-at-edge, SAQ selection, CDE segmentation, 12 requirements mapped to engineering controls
-- **bookkeeping-patterns** — Double-entry ledger writes in-transaction with business state; immutable accounting events
-- **security-review** — Section 11 (payment-security): webhook signature verification, idempotency-bypass detection, card-testing / BIN-attack, FAPI 2.0, refund-fraud / chargeback-abuse
+- **payment-processing-patterns** — Idempotency (cache key composition + payload-hash binding + HTTP
+  409 in-progress); 3DS2 + SCA; network tokenization; subscriptions + dunning; refunds +
+  chargebacks; payouts + Connect; ledger reconciliation; escrow taxonomy (platform-escrow /
+  simple-hold / custodial / third-party agent); trust-account FBO segregation; state MTLs + FinCEN
+  MSB + AMLD6
+- **pci-dss-patterns** — PCI-DSS v4.0 scope reduction via tokenization-at-edge, SAQ selection, CDE
+  segmentation, 12 requirements mapped to engineering controls
+- **bookkeeping-patterns** — Double-entry ledger writes in-transaction with business state;
+  immutable accounting events
+- **security-review** — Section 11 (payment-security): webhook signature verification,
+  idempotency-bypass detection, card-testing / BIN-attack, FAPI 2.0, refund-fraud / chargeback-abuse
 - **owasp-asvs** — V2.10 + V5 + V6 + V8 + V11 controls for payment surfaces
 - **soc2-readiness** — Trust Service Criteria for processing integrity
 
 Agents:
 
-- **payments-reviewer** — Payment-specific deep review (idempotency, 3DS/SCA, webhook security, escrow + MTL, reconciliation) — VETO on PCI BLOCKER / PSD2 bypass / sanctions miss / MTL absence (Council Division 4 + 6 overlap)
-- **compliance-reviewer** — PCI-DSS / PSD2 / MTL / AML / OFAC regulatory umbrella (Council Division 6 — VETO)
+- **payments-reviewer** — Payment-specific deep review (idempotency, 3DS/SCA, webhook security,
+  escrow + MTL, reconciliation) — VETO on PCI BLOCKER / PSD2 bypass / sanctions miss / MTL absence
+  (Council Division 4 + 6 overlap)
+- **compliance-reviewer** — PCI-DSS / PSD2 / MTL / AML / OFAC regulatory umbrella (Council Division
+  6 — VETO)
 - **security-reviewer** — Cross-cutting OWASP audit for payment paths (Council Division 4)
-- **finance-reviewer** — Interchange optimisation, processor cost trade-offs, unit economics (Council Division 10)
-- **risk-reviewer** — Chargeback rate thresholds (Visa VAMP / MC ECP), fraud-loss tolerance, settlement risk (Council Division 11)
+- **finance-reviewer** — Interchange optimisation, processor cost trade-offs, unit economics
+  (Council Division 10)
+- **risk-reviewer** — Chargeback rate thresholds (Visa VAMP / MC ECP), fraud-loss tolerance,
+  settlement risk (Council Division 11)
 
-### Healthcare / Clinical / PHI Files (phi/, ephi/, hipaa/, patient/, clinical/, medical/, health/, ehr/, emr/, fhir/, hl7/, dicom/, ccda/, cda/, smart-on-fhir/, healthkit/, health-connect/, telehealth/, encounter/, observation/, medication/, diagnosis/, allergy/, immunization/, procedure/, condition/, lab/, imaging/, prescription/, erx/, icd-10/, snomed/, loinc/, rxnorm/, cpt/, x12/, edi/, eob/, eligibility/, claim/, baa/, business-associate/, 42-cfr-part-2/, substance/, samd/, 21-cfr-part-11/, gxp/)
+### Healthcare / Clinical / PHI Files
+
+**Triggers:** phi/, ephi/, hipaa/, patient/, clinical/, medical/, health/, ehr/, emr/, fhir/, hl7/,
+dicom/, ccda/, cda/, smart-on-fhir/, healthkit/, health-connect/, telehealth/, encounter/,
+observation/, medication/, diagnosis/, allergy/, immunization/, procedure/, condition/, lab/,
+imaging/, prescription/, erx/, icd-10/, snomed/, loinc/, rxnorm/, cpt/, x12/, edi/, eob/,
+eligibility/, claim/, baa/, business-associate/, 42-cfr-part-2/, substance/, samd/, 21-cfr-part-11/,
+gxp/
 
 Skills:
 
-- **hipaa-compliance** — HIPAA Privacy + Security + Breach Notification + HITECH + 42 CFR Part 2; BAAs; minimum-necessary; ePHI encryption; audit controls (§164.312(b)); breach 60-day clock; OCR enforcement patterns
-- **clinical-data-patterns** — FHIR R5 + USCDI v4; HL7 v2 / CDA / CCDA; SMART on FHIR + SMART Health Cards / Links; ICD-10 / SNOMED-CT / LOINC / RxNorm / CPT terminologies; DICOM; telehealth; mHealth (HealthKit / Health Connect)
-- **gdpr-ccpa-compliance** — When EU patients OR California consumer-health-data flows (Washington My Health My Data Act 2024)
-- **security-review** — ePHI-specific controls (encryption at rest + in transit; audit controls; access management)
+- **hipaa-compliance** — HIPAA Privacy + Security + Breach Notification + HITECH + 42 CFR Part 2;
+  BAAs; minimum-necessary; ePHI encryption; audit controls (§164.312(b)); breach 60-day clock; OCR
+  enforcement patterns
+- **clinical-data-patterns** — FHIR R5 + USCDI v4; HL7 v2 / CDA / CCDA; SMART on FHIR + SMART Health
+  Cards / Links; ICD-10 / SNOMED-CT / LOINC / RxNorm / CPT terminologies; DICOM; telehealth; mHealth
+  (HealthKit / Health Connect)
+- **gdpr-ccpa-compliance** — When EU patients OR California consumer-health-data flows (Washington
+  My Health My Data Act 2024)
+- **security-review** — ePHI-specific controls (encryption at rest + in transit; audit controls;
+  access management)
 - **owasp-asvs** — V2 + V6 + V8 + V14 for ePHI surfaces
 
 Agents:
 
-- **health-reviewer** — Clinical + HIPAA + 42 CFR Part 2 + FDA SaMD + state telehealth deep review — VETO on HIPAA BLOCKER / clinical-safety BLOCKER / 42 CFR Part 2 violation / FDA SaMD breach (Council Division 6 + 4 overlap)
-- **compliance-reviewer** — HIPAA / GDPR / state health-privacy regulatory umbrella (Council Division 6 — VETO)
+- **health-reviewer** — Clinical + HIPAA + 42 CFR Part 2 + FDA SaMD + state telehealth deep review —
+  VETO on HIPAA BLOCKER / clinical-safety BLOCKER / 42 CFR Part 2 violation / FDA SaMD breach
+  (Council Division 6 + 4 overlap)
+- **compliance-reviewer** — HIPAA / GDPR / state health-privacy regulatory umbrella (Council
+  Division 6 — VETO)
 - **security-reviewer** — Cross-cutting ePHI security audit (Council Division 4)
-- **ai-ethics-reviewer** — AI in clinical decision support; FDA Predetermined Change Control Plan; bias audit for clinical AI (Council Division 15 — VETO)
-- **accessibility-reviewer** — Patient-portal a11y (Section 1557 ACA + ADA + Section 508 — Council Division 7 — opus)
-- **data-reviewer** — ePHI schema, patient-matching, accounting-of-disclosures storage (Council Division 9)
+- **ai-ethics-reviewer** — AI in clinical decision support; FDA Predetermined Change Control Plan;
+  bias audit for clinical AI (Council Division 15 — VETO)
+- **accessibility-reviewer** — Patient-portal a11y (Section 1557 ACA + ADA + Section 508 — Council
+  Division 7 — opus)
+- **data-reviewer** — ePHI schema, patient-matching, accounting-of-disclosures storage (Council
+  Division 9)
 
-### Education / EdTech / Student-Data Files (lti/, lti-1p3/, scorm/, xapi/, cmi5/, oneroster/, caliper/, qti/, common-cartridge/, badge/, openbadges/, credential/, clr/, lms/, sis/, canvas-api/, schoology/, moodle/, blackboard/, brightspace/, d2l/, google-classroom/, clever*, classlink*, proctor/, proctoring/, grade-passback/, ags/, nrps/, student/, learner/, coppa/, ferpa/, student-privacy/, parental-consent/, vpc/, sopipa/, iep/, 504-plan/, accommodat/, imsmanifest.xml, cmi5.xml)
+### Education / EdTech / Student-Data Files
+
+**Triggers:** lti/, lti-1p3/, scorm/, xapi/, cmi5/, oneroster/, caliper/, qti/, common-cartridge/,
+badge/, openbadges/, credential/, clr/, lms/, sis/, canvas-api/, schoology/, moodle/, blackboard/,
+brightspace/, d2l/, google-classroom/, clever*, classlink*, proctor/, proctoring/, grade-passback/,
+ags/, nrps/, student/, learner/, coppa/, ferpa/, student-privacy/, parental-consent/, vpc/, sopipa/,
+iep/, 504-plan/, accommodat/, imsmanifest.xml, cmi5.xml
 
 Skills:
 
-- **ferpa-coppa-compliance** — FERPA (20 USC §1232g) + COPPA (15 USC §6501-6506 + 16 CFR Part 312 + 2025 FTC Final Rule); GDPR-K (Art 8); CIPA; state student-privacy laws (SOPIPA, NY §2-d, CT 16-189, Student Privacy Pledge); platform compliance K-12 + higher-ed + edtech
-- **edtech-patterns** — LTI 1.3 / LTI Advantage; xAPI 2.0 (IEEE 9274.1.1); cmi5; SCORM 1.2 + 2004; OneRoster 1.2; Caliper 1.2; QTI 3.0; Common Cartridge 1.3; Open Badges 3.0 (W3C VC); AccessForAll 3.0; IRT-based adaptive assessment; UDL 3.0; WCAG 2.2 AAA for learners; proctoring + integrity; learning-analytics ethics
+- **ferpa-coppa-compliance** — FERPA (20 USC §1232g) + COPPA (15 USC §6501-6506 + 16 CFR Part 312 +
+  2025 FTC Final Rule); GDPR-K (Art 8); CIPA; state student-privacy laws (SOPIPA, NY §2-d, CT
+  16-189, Student Privacy Pledge); platform compliance K-12 + higher-ed + edtech
+- **edtech-patterns** — LTI 1.3 / LTI Advantage; xAPI 2.0 (IEEE 9274.1.1); cmi5; SCORM 1.2 + 2004;
+  OneRoster 1.2; Caliper 1.2; QTI 3.0; Common Cartridge 1.3; Open Badges 3.0 (W3C VC); AccessForAll
+  3.0; IRT-based adaptive assessment; UDL 3.0; WCAG 2.2 AAA for learners; proctoring + integrity;
+  learning-analytics ethics
 - **wcag-accessibility** — WCAG 2.2 AA floor + AAA for assessment paths (learner-specific)
 - **accessible-forms** — Assessment + registration form accessibility
 - **gdpr-ccpa-compliance** — When EU minors (GDPR Art 8) or California minors (CA AADC)
@@ -348,32 +448,55 @@ Skills:
 
 Agents:
 
-- **education-reviewer** — EdTech + student-privacy deep review (FERPA + COPPA + state-law + LTI 1.3 + accommodation flow + proctoring bias + AI grader + EWS ethics) — VETO on COPPA / FERPA / 2025 COPPA Final Rule / NY §2-d / WCAG 2.2 AA / Section 504 / proctoring-bias / AI grader without human review / LTI 1.1 in new code (Council Division 6 + 7 overlap)
-- **compliance-reviewer** — FERPA / COPPA / state student-privacy regulatory umbrella (Council Division 6 — VETO)
-- **accessibility-reviewer** — WCAG 2.2 AAA for assessment + accommodation flow + AT compatibility for learners (Council Division 7 — opus)
-- **ai-ethics-reviewer** — AI tutor / grader / EWS / proctoring AI fairness; automated-decision-making under GDPR Art 22 + EU AI Act high-risk (Council Division 15 — VETO)
+- **education-reviewer** — EdTech + student-privacy deep review (FERPA + COPPA + state-law + LTI
+  1.3 +
+  accommodation flow + proctoring bias + AI grader + EWS ethics) — VETO on COPPA / FERPA / 2025
+  COPPA Final Rule / NY §2-d / WCAG 2.2 AA / Section 504 / proctoring-bias / AI grader without human
+  review / LTI 1.1 in new code (Council Division 6 + 7 overlap)
+- **compliance-reviewer** — FERPA / COPPA / state student-privacy regulatory umbrella (Council
+  Division 6 — VETO)
+- **accessibility-reviewer** — WCAG 2.2 AAA for assessment + accommodation flow + AT compatibility
+  for learners (Council Division 7 — opus)
+- **ai-ethics-reviewer** — AI tutor / grader / EWS / proctoring AI fairness;
+  automated-decision-making under GDPR Art 22 + EU AI Act high-risk (Council Division 15 — VETO)
 - **security-reviewer** — LTI / OAuth / JWKS verification (Council Division 4)
-- **ux-reviewer** — Age-appropriate UX (AADC, COPPA child-directed UI patterns, learner-error-recovery copy) (Council Division 7)
-- **data-reviewer** — Student-data schema, accommodation storage, EWS feature engineering (Council Division 9)
+- **ux-reviewer** — Age-appropriate UX (AADC, COPPA child-directed UI patterns,
+  learner-error-recovery copy) (Council Division 7)
+- **data-reviewer** — Student-data schema, accommodation storage, EWS feature engineering (Council
+  Division 9)
 
-### Investment / Portfolio / Trading Files (portfolio/, trading/, orders/, broker/, FIX/, market-data/, allocations/)
+### Investment / Portfolio / Trading Files
+
+**Triggers:** portfolio/, trading/, orders/, broker/, FIX/, market-data/, allocations/
 
 Skills:
 
-- **portfolio-theory** — Markowitz mean-variance, CAPM, factor models, risk budgeting, rebalancing, drawdown + tail-risk
-- **investment-research** — Thesis development, primary research, financial modelling, valuation triangulation, risk identification
-- **investor-due-diligence** — Operational / financial / legal / commercial / tech / ESG / reference diligence; structured red-flag scoring
+- **portfolio-theory** — Markowitz mean-variance, CAPM, factor models, risk budgeting, rebalancing,
+  drawdown + tail-risk
+- **investment-research** — Thesis development, primary research, financial modelling, valuation
+  triangulation, risk identification
+- **investor-due-diligence** — Operational / financial / legal / commercial / tech / ESG / reference
+  diligence; structured red-flag scoring
 - **stock-broker** — Order types, routing, TCA, best execution, Reg NMS / MiFID II, suitability
 
-### Security & Compliance Cross-Cutting (when work touches PII, payments, health data, regulated workflows, SOC 2 / ISO 27001 / GDPR / HIPAA scope)
+### Security & Compliance Cross-Cutting
+
+**Triggers:** when work touches PII, payments, health data, regulated workflows, SOC 2 / ISO 27001 /
+GDPR / HIPAA scope
 
 Skills:
 
-- **owasp-asvs** — OWASP ASVS 4.0.3 control catalogue, L1/L2/L3 mapping, implementation patterns + verification commands
-- **gdpr-ccpa-compliance** — Lawful basis docs, DSR implementation, consent management, cross-border transfers, breach notification, DPIA, RoPA
-- **iso27001-controls** — Annex A 93 controls (Org / People / Physical / Tech), SoA, risk assessment + treatment
-- **soc2-readiness** — Trust Service Criteria (Security / Availability / Processing Integrity / Confidentiality / Privacy), control-to-evidence mapping
-- **pci-dss-patterns** — Cardholder-data scope reduction, tokenization, segmentation, 12 requirements
+- **owasp-asvs** — OWASP ASVS 4.0.3 control catalogue, L1/L2/L3 mapping, implementation patterns +
+  verification commands
+- **gdpr-ccpa-compliance** — Lawful basis docs, DSR implementation, consent management, cross-border
+  transfers, breach notification, DPIA, RoPA
+- **iso27001-controls** — Annex A 93 controls (Org / People / Physical / Tech), SoA, risk
+  assessment +
+  treatment
+- **soc2-readiness** — Trust Service Criteria (Security / Availability / Processing Integrity /
+  Confidentiality / Privacy), control-to-evidence mapping
+- **pci-dss-patterns** — Cardholder-data scope reduction, tokenization, segmentation, 12
+  requirements
 
 Agents:
 
@@ -381,13 +504,19 @@ Agents:
 - **security-reviewer** — Cross-cutting OWASP audit
 - **data-reviewer** — PII flow surfaces, schema governance (Council Division 9)
 
-### Cloud / Infrastructure / Network Files (Terraform / CDK / Pulumi / Helm; k8s/; VPC / subnet / SG configs; CDN configs; DNS configs)
+### Cloud / Infrastructure / Network Files
+
+**Triggers:** Terraform / CDK / Pulumi / Helm; k8s/; VPC / subnet / SG configs; CDN configs; DNS
+configs
 
 Skills:
 
-- **cloud-architecture** — Well-Architected pillars (Op-Excellence / Security / Reliability / Performance / Cost / Sustainability), region/AZ topology, multi-region patterns
-- **network-patterns** — OSI/TCP-IP layering, CIDR design, routing, DNS, TLS, load balancing, CDN, service mesh, network security, zero-trust
-- **datacenter-ops** — Uptime Institute tiers, BICSI/ANSI-TIA-942 cabling, power/cooling/space, PUE/WUE/CUE, capacity, vendor + SLA management
+- **cloud-architecture** — Well-Architected pillars (Op-Excellence / Security / Reliability /
+  Performance / Cost / Sustainability), region/AZ topology, multi-region patterns
+- **network-patterns** — OSI/TCP-IP layering, CIDR design, routing, DNS, TLS, load balancing, CDN,
+  service mesh, network security, zero-trust
+- **datacenter-ops** — Uptime Institute tiers, BICSI/ANSI-TIA-942 cabling, power/cooling/space,
+  PUE/WUE/CUE, capacity, vendor + SLA management
 - **aws-serverless-patterns** — Lambda + API Gateway + Step Functions + EventBridge + SQS/SNS
 
 Agents:
@@ -396,72 +525,113 @@ Agents:
 - **ops-reviewer** — SLO/SLA, runbooks, on-call, deploy posture (Council Division 8)
 - **esg-reviewer** — Carbon footprint, region carbon intensity (Council Division 14)
 
-### Operations / Industrial / Manufacturing / Supply-Chain Files (process docs, production workflows, supply-chain configs, FMEA docs)
+### Operations / Industrial / Manufacturing / Supply-Chain Files
+
+**Triggers:** process docs, production workflows, supply-chain configs, FMEA docs
 
 Skills:
 
-- **lean-manufacturing** — Toyota Production System, JIT, jidoka, kanban, 5S, value-stream mapping, kaizen, takt time
-- **six-sigma** — DMAIC, DMADV, SIPOC, process capability (Cp/Cpk), control charts, DOE, sigma levels
-- **supply-chain-patterns** — APICS CPIM/CSCP, S&OP, demand planning, inventory optimisation, supplier mgmt, bullwhip effect, SCOR model
-- **structural-basics** — Eurocode / AISC / ACI, load paths, structural integrity (when civil / structural engineering scope)
-- **mep-coordination** — ASHRAE, ISO 19650 BIM, MEP coordination, clash detection (when building services scope)
+- **lean-manufacturing** — Toyota Production System, JIT, jidoka, kanban, 5S, value-stream mapping,
+  kaizen, takt time
+- **six-sigma** — DMAIC, DMADV, SIPOC, process capability (Cp/Cpk), control charts, DOE, sigma
+  levels
+- **supply-chain-patterns** — APICS CPIM/CSCP, S&OP, demand planning, inventory optimisation,
+  supplier mgmt, bullwhip effect, SCOR model
+- **structural-basics** — Eurocode / AISC / ACI, load paths, structural integrity (when civil /
+  structural engineering scope)
+- **mep-coordination** — ASHRAE, ISO 19650 BIM, MEP coordination, clash detection (when building
+  services scope)
 
-### Strategy / Innovation / Product Files (roadmaps/, strategy/, ADRs introducing new direction, vision docs, MVP plans, pivot proposals)
+### Strategy / Innovation / Product Files
+
+**Triggers:** roadmaps/, strategy/, ADRs introducing new direction, vision docs, MVP plans, pivot
+proposals
 
 Skills:
 
-- **design-thinking** — Empathise → Define → Ideate → Prototype → Test; HMW questions; divergent + convergent modes
-- **triz-patterns** — TRIZ 40 inventive principles, contradiction matrix, ideal final result, evolution patterns
-- **lean-startup** — Build-measure-learn, validated learning, MVP taxonomy, innovation accounting, pivot types, customer development, engines of growth
+- **design-thinking** — Empathise → Define → Ideate → Prototype → Test; HMW questions; divergent +
+  convergent modes
+- **triz-patterns** — TRIZ 40 inventive principles, contradiction matrix, ideal final result,
+  evolution patterns
+- **lean-startup** — Build-measure-learn, validated learning, MVP taxonomy, innovation accounting,
+  pivot types, customer development, engines of growth
 
 Agents:
 
 - **strategy-reviewer** — Market positioning, build-vs-buy, deprecation (Council Division 12)
 
-### Design / UX Files (`design/`, `figma/`, design tokens, design system configs, component library specs, IA + flows)
+### Design / UX Files
+
+**Triggers:** `design/`, `figma/`, design tokens, design system configs, component library specs,
+IA +
+flows
 
 Skills:
 
-- **ux-research** — Generative + evaluative methods, study design, recruitment, sample sizing, qualitative coding, persona + JTBD synthesis
-- **interaction-design** — Affordances, signifiers, feedback, error prevention + recovery, microcopy, motion as functional language
-- **design-systems** — Design tokens, multi-platform theming, component API design, a11y-built-in, versioning + governance, docs
+- **ux-research** — Generative + evaluative methods, study design, recruitment, sample sizing,
+  qualitative coding, persona + JTBD synthesis
+- **interaction-design** — Affordances, signifiers, feedback, error prevention + recovery,
+  microcopy, motion as functional language
+- **design-systems** — Design tokens, multi-platform theming, component API design, a11y-built-in,
+  versioning + governance, docs
 
 Agents:
 
 - **ux-reviewer** — Information architecture, usability, copy (Council Division 7)
 - **accessibility-reviewer** — WCAG 2.2 + ARIA audit (Council Division 7 — opus)
 
-### Organisation / People / Hiring Files (CONTRIBUTING, CODE_OF_CONDUCT, CODEOWNERS, onboarding docs, hiring rubrics, career-ladder docs, RACI/DACI matrices, org-chart docs, OKR docs)
+### Organisation / People / Hiring Files
+
+**Triggers:** CONTRIBUTING, CODE_OF_CONDUCT, CODEOWNERS, onboarding docs, hiring rubrics,
+career-ladder docs, RACI/DACI matrices, org-chart docs, OKR docs
 
 Skills:
 
-- **org-design** — Team topologies, span of control, reporting structures, DACI/RACI, Conway's Law, scaling 10→1000
+- **org-design** — Team topologies, span of control, reporting structures, DACI/RACI, Conway's Law,
+  scaling 10→1000
 - **okr-framework** — Objectives + Key Results design, deployment, grading, anti-pattern avoidance
-- **hiring-process** — Role definition, sourcing, structured interviewing, bar-raising, calibration, offer, onboarding
-- **performance-management** — Feedback systems, calibration, ratings (or no ratings), career frameworks, PIPs
+- **hiring-process** — Role definition, sourcing, structured interviewing, bar-raising, calibration,
+  offer, onboarding
+- **performance-management** — Feedback systems, calibration, ratings (or no ratings), career
+  frameworks, PIPs
 
 Agents:
 
 - **people-reviewer** — Knowledge mgmt, hiring criteria, dev experience (Council Division 13)
 
-### Negotiation / Communication / Comms Files (vendor contracts, partnership agreements, customer comms, public statements, blog posts, marketing copy, press releases, status-page templates, incident comms templates, RFPs / SOWs / MSAs)
+### Negotiation / Communication / Comms Files
+
+**Triggers:** vendor contracts, partnership agreements, customer comms, public statements, blog
+posts, marketing copy, press releases, status-page templates, incident comms templates, RFPs / SOWs
+/ MSAs
 
 Skills:
 
-- **negotiation-patterns** — Harvard Method, BATNA + ZOPA + reservation, tactical empathy (Voss), preparation, multi-issue tradeoffs, cross-cultural
-- **communication-patterns** — Pyramid Principle, audience analysis, mode selection, executive presence, difficult conversations, listening, cross-cultural delivery
+- **negotiation-patterns** — Harvard Method, BATNA + ZOPA + reservation, tactical empathy (Voss),
+  preparation, multi-issue tradeoffs, cross-cultural
+- **communication-patterns** — Pyramid Principle, audience analysis, mode selection, executive
+  presence, difficult conversations, listening, cross-cultural delivery
 
 Agents:
 
-- **comms-reviewer** — Public-facing artifact review, crisis comms, brand consistency (Council Division 16)
+- **comms-reviewer** — Public-facing artifact review, crisis comms, brand consistency (Council
+  Division 16)
 - **doc-updater** — README / CHANGELOG / RELEASE_NOTES / API docs
 
-### Research / Investigation / Historical Tasks (when work involves research methodology, evidence-based claims, post-mortems with archival reconstruction, organisational history, founding-era documents, institutional memory reconstruction)
+### Research / Investigation / Historical Tasks
+
+**Triggers:** when work involves research methodology, evidence-based claims, post-mortems with
+archival reconstruction, organisational history, founding-era documents, institutional memory
+reconstruction
 
 Skills:
 
-- **research-methods** — Primary/secondary/tertiary sources, quant/qual/mixed methods, literature review, evidence hierarchy, bias identification, statistical inference, reproducibility, citation discipline
-- **historical-analysis** — Primary-source critique, archival methodology, periodisation, oral history, cliometrics, historiography, the fallacies (presentism, Whig, anachronism, hindsight bias)
+- **research-methods** — Primary/secondary/tertiary sources, quant/qual/mixed methods, literature
+  review, evidence hierarchy, bias identification, statistical inference, reproducibility, citation
+  discipline
+- **historical-analysis** — Primary-source critique, archival methodology, periodisation, oral
+  history, cliometrics, historiography, the fallacies (presentism, Whig, anachronism, hindsight
+  bias)
 
 ## Cross-Cutting Skills & Agents (Apply When Relevant)
 
@@ -470,16 +640,20 @@ These activate based on context, not file type:
 Skills:
 
 - **search-first** — Before writing custom code, search for existing solutions
-- **verification-loop** — After implementation, verify build/lint/test pass (also owns strategic-context-management guidance)
+- **verification-loop** — After implementation, verify build/lint/test pass (also owns
+  strategic-context-management guidance)
 - **continuous-learning-v2** — Instinct-based learning, confidence scoring, pattern evolution
-- **backend-patterns** — Server architecture, DB optimization, fire-and-forget side effects, content-hash file caching
-- **cost-aware-llm-pipeline** — LLM cost optimization, model routing, AND regex-first parsing for structured text
+- **backend-patterns** — Server architecture, DB optimization, fire-and-forget side effects,
+  content-hash file caching
+- **cost-aware-llm-pipeline** — LLM cost optimization, model routing, AND regex-first parsing for
+  structured text
 - **prompt-improver** — When user prompt needs clarification (via hook)
 
 Agents:
 
 - **architect** — System design, scalability, technical trade-offs (complex features, new services)
-- **planner** — Implementation plans, phased delivery, risk assessment (complex features, refactoring)
+- **planner** — Implementation plans, phased delivery, risk assessment (complex features,
+  refactoring)
 - **refactor-cleaner** — Dead code removal, unused exports, duplicate detection (cleanup tasks)
 - **doc-updater** — Documentation updates after significant changes
 
@@ -721,17 +895,24 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Signals to watch**:
 
 - File type touched without auto-activating its mapped skill (mapping gap or rule weakening)
-- New file extension / framework arriving without a mapping row (e.g., new IaC tool, new mobile framework)
-- Skill auto-fires but contributes no findings consistently across sessions (low-value skill — refinement candidate)
+- New file extension / framework arriving without a mapping row (e.g., new IaC tool, new mobile
+  framework)
+- Skill auto-fires but contributes no findings consistently across sessions (low-value skill —
+  refinement candidate)
 - Skill fires too late (after edits committed) instead of pre-edit (lifecycle drift)
 - Auto-load global rule missing for a class of work that needs first-touch enforcement
-- Per-language no-discards extension not loaded when matching language file is touched (sister rule weakening)
+- Per-language no-discards extension not loaded when matching language file is touched (sister rule
+  weakening)
 - "What NOT to auto-apply" list grows past 10 entries (meta-skill bloat — refinement audit needed)
-- New skill added under `~/.claude/skills/` without a row in this rule's file-to-skill-and-agent mapping (drift)
+- New skill added under `~/.claude/skills/` without a row in this rule's file-to-skill-and-agent
+  mapping (drift)
 
 **Refinement candidates**:
 
-- New file-type row when a new file extension class becomes common (e.g., `*.sol`, `*.zig`, `*.gleam`, `*.elm`)
+- New file-type row when a new file extension class becomes common (e.g., `*.sol`, `*.zig`,
+  `*.gleam`, `*.elm`)
 - New auto-load global rule row when a sister rule emerges and needs first-touch enforcement
-- Tightening of the cross-cutting skills section when a new universal pattern (e.g., new observability standard, new compliance baseline) needs always-on coverage
-- Promotion of a skill from "What NOT to Auto-Apply" to the active mapping when its triggers become broadly applicable
+- Tightening of the cross-cutting skills section when a new universal pattern (e.g., new
+  observability standard, new compliance baseline) needs always-on coverage
+- Promotion of a skill from "What NOT to Auto-Apply" to the active mapping when its triggers become
+  broadly applicable

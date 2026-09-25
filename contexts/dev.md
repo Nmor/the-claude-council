@@ -1,5 +1,7 @@
 # Development Context
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Mode: Active development
 Focus: Implementation, coding, building features
 

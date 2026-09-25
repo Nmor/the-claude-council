@@ -3,6 +3,8 @@
 > Auto-fires on every `*.sh`, `*.bash`, `*.zsh` file. Standards:
 > **Bash Hackers Wiki**, **Greg's Wiki / BashFAQ**, **Google Shell
 > Style Guide**, **The Linux Command Line (Shotts)**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

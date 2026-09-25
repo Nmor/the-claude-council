@@ -7,6 +7,8 @@
 > `runbook-template.md` (degraded-mode playbook),
 > `no-silent-failures.md` (degradation is COMMUNICATED, never silent).
 > Pattern reference: **Google SRE Book**, **Release It! (Nygard)**.
+>
+> **Size budget: 16 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -357,6 +359,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New criticality tier when a recurring class of feature doesn't fit P0/P1/P2/P3
-- New pattern entry when a canonical fallback shape emerges (e.g., hedged requests, request collapsing)
+- New pattern entry when a canonical fallback shape emerges (e.g., hedged requests, request
+  collapsing)
 - New row in the anti-patterns when a recurring degradation failure mode surfaces
-- New cross-reference when a sister rule (circuit-breaker, feature-flags, observability) defines the mechanism a degradation depends on
+- New cross-reference when a sister rule (circuit-breaker, feature-flags, observability) defines the
+  mechanism a degradation depends on

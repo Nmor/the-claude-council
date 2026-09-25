@@ -4,6 +4,8 @@
 > `*.xcconfig`, `*.xcodeproj/**`, `*.xcworkspace/**`,
 > `Project.yml`, `*.swiftlint.yml`, `.swiftformat` file. Sister to
 > `~/.claude/rules/common/hooks.md`.
+>
+> **Size budget: 10 KB** — `token-budget.mjs --check`.
 
 ## Pre-commit gates
 

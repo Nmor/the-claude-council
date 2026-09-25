@@ -25,6 +25,8 @@
 >   - weak crypto patterns on save
 > - `extreme-lint-policy.md` — `gosec`, `bandit`, `eslint-
 >   plugin-security` mandatory
+>
+> **Size budget: 17 KB** — `token-budget.mjs --check`.
 
 ## OWASP Top 10 mapping
 
@@ -195,7 +197,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New OWASP Top 10 release that changes category names or rankings (taxonomy needs update)
 - New CVE class recurring across multiple repos (new sister rule candidate)
-- New regulation (e.g., DORA, NIS2, EU AI Act) in scope but no compliance section in the umbrella (regulation row needed)
+- New regulation (e.g., DORA, NIS2, EU AI Act) in scope but no compliance section in the umbrella
+  (regulation row needed)
 - STRIDE pass skipped on a non-trivial feature (rule weakening — Phase 0 discipline)
 - Security finding triaged below its CVSS class (severity-SLA drift)
 - Security review degraded into ad-hoc judgement vs structured checklist

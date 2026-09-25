@@ -1,16 +1,6 @@
 ---
 name: council-protocol
 description: Council Conversation Protocol — Phase 0 Deep Research (29-question intake + codebase exploration + online research), Phase 1 Council Discussion (5 Core + 11 Extended divisions), Phase 2 Consensus (GO/NO-GO + vetoes), Phase 3 Implementation, and Post-Implementation Review templates. Plus Research Requirements by Task Type and Conversation Rules (order of speaking, disagreement protocol, escalation). Use when running Council Protocol against any non-trivial task, when authoring plans/ADRs/runbooks, or when delegating to specialized agents in a structured multi-phase flow.
-paths:
-  - "~/.claude/plans/**/*.md"
-  - "**/.claude/plans/**/*.md"
-  - "docs/adr/**/*.md"
-  - "**/docs/adr/**/*.md"
-  - "~/.claude/agents/**/*.md"
-  - "**/.claude/agents/**/*.md"
-  - "docs/runbook*.md"
-  - "**/runbook.md"
-  - "**/runbook-*.md"
 ---
 
 # Council Conversation Protocol
@@ -22,6 +12,8 @@ paths:
 > per-task research requirements + conversation rules + post-
 > implementation review live HERE and lazy-load when a
 > plan / ADR / agent / runbook file is touched.
+>
+> **Size budget: 25 KB** — `token-budget.mjs --check`.
 
 ## When to activate
 
@@ -524,7 +516,8 @@ Remaining items:
 - `~/.claude/rules/common/verify-before-claim.md` — Floor: verification block on every claim
 - `~/.claude/rules/common/no-overclaim.md` — Floor: reserved completion language
 - `~/.claude/rules/common/done-criteria.md` — Floor: service-migration done checklist
-- `~/.claude/skills/council-rules/SKILL.md` — Division personas + Core Five + Extended Eleven detail + Conversation Rules
+- `~/.claude/skills/council-rules/SKILL.md` — Division personas + Core Five + Extended Eleven
+  detail + Conversation Rules
 
 ## Why this skill exists
 

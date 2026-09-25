@@ -6,6 +6,8 @@ paths:
 # Swift Security
 
 > Extends `common/security.md` with Swift/iOS-specific security.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Keychain for Secrets
 

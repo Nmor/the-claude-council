@@ -1,5 +1,7 @@
 # Agent Orchestration
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 ## Available Agents
 
 Located in `~/.claude/agents/`:
@@ -56,7 +58,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Agent not delegated to when its description matches the work (Immediate Agent Usage rule weakening)
+- Agent not delegated to when its description matches the work (Immediate Agent Usage rule
+  weakening)
 - Sequential agent calls when parallel was possible (Parallel Task Execution rule weakening)
 - Complex feature shipped without `planner` agent producing a phased plan
 - Code shipped without `code-reviewer` / language-specific reviewer pass
@@ -67,7 +70,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New row in the "Available Agents" table when a new specialist agent ships (e.g., `accessibility-reviewer`, `data-reviewer`)
-- Tightening of the "Immediate Agent Usage" criteria when an agent's expertise proves load-bearing in retrospectives
-- New parallel-execution template when a recurring fan-out pattern emerges (e.g., three-language security audit)
-- New cross-reference when a sister rule (council-default, council-triggers, performance) defines when an agent must engage
+- New row in the "Available Agents" table when a new specialist agent ships (e.g.,
+  `accessibility-reviewer`, `data-reviewer`)
+- Tightening of the "Immediate Agent Usage" criteria when an agent's expertise proves load-bearing
+  in retrospectives
+- New parallel-execution template when a recurring fan-out pattern emerges (e.g., three-language
+  security audit)
+- New cross-reference when a sister rule (council-default, council-triggers, performance) defines
+  when an agent must engage

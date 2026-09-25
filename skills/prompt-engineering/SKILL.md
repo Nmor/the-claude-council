@@ -8,6 +8,8 @@ description: Principal-level prompt engineering — task decomposition, role + c
 > Prompt design is software engineering — versioned, tested,
 > evaluated, monitored, and refactored. Treat every production
 > prompt as a contract between application logic and the model.
+>
+> **Size budget: 25 KB** — `token-budget.mjs --check`.
 
 ## Purpose
 
@@ -475,13 +477,15 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Prompt without explicit role / context / instruction / examples / format structure (RCIEF weakening)
+- Prompt without explicit role / context / instruction / examples / format structure (RCIEF
+  weakening)
 - New prompt deployed without an eval suite run on the same git ref (regression risk)
 - Few-shot examples that don't cover the failure modes seen in production
 - Tool-use prompt without explicit tool-selection criteria (model hallucinates tool name / args)
 - Chain-of-thought enabled where deterministic output is needed (latency + cost waste)
 - Prompt template version not tracked in source control (drift between dev / staging / prod)
-- Adversarial-prompt-injection defence absent (user input embedded without delimiters / role-tagging)
+- Adversarial-prompt-injection defence absent (user input embedded without delimiters /
+  role-tagging)
 - Output format not validated post-LLM-call (JSON parse failure surface)
 - Token budget not enforced (`max_tokens` unbounded — runaway generation)
 - Provider-specific prompt features used (e.g., Anthropic XML tags) without portability plan
@@ -489,6 +493,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New prompt template row when a new model class ships (e.g., new Claude / GPT / Gemini family)
-- New cross-reference when a sister skill (rag-design, fine-tuning-workflows, cost-aware-llm-pipeline, ml-model-selection) adds a prompt gate
+- New cross-reference when a sister skill (rag-design, fine-tuning-workflows,
+  cost-aware-llm-pipeline, ml-model-selection) adds a prompt gate
 - New eval-suite template when a recurring failure mode emerges
 - Tightening of the prompt-injection defence when an adversarial pattern reaches production

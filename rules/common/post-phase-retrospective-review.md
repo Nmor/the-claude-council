@@ -9,6 +9,8 @@
 > floor), `code-graph-validation.md` (wiring integrity), `no-overclaim.md` (claim
 > discipline), `no-silent-drops.md` (follow-up capture), `council-default.md`
 > (the divisions that run the adversarial audit).
+>
+> **Size budget: 26 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -67,7 +69,9 @@ code; test gate green; lint green; IDE diagnostics zero; manual verification (UI
 smoke / API probe / perf trace) when applicable; docs-sync gate when docs
 touched. The block is captured BEFORE the claim phrase.
 
-### Step 2 — Retrospective verification (dependency-scoped: deep where the change reaches + cheap sweep across all)
+### Step 2 — Retrospective verification (dependency-scoped)
+
+Deep where the change reaches; a cheap mechanical sweep across all the rest.
 
 Re-auditing EVERY prior phase *deeply* at every boundary is O(n²) and spreads
 attention thin — which produces rubber-stamping ("audit fatigue"), the opposite of
@@ -134,6 +138,18 @@ cross-reference to the discovery. Follow-ups land in the active plan's phase tas
 list, the TodoWrite list, and `<workspace>/.claude/audits/learning-events.jsonl`
 when a learning candidate. "I'll handle it later" without a durable record is
 forbidden.
+
+**A follow-up is not a licence to defer your own defect.** This step exists to capture work
+DISCOVERED beyond the change's scope — a gap in a neighbouring system, a missing runbook, a
+second instance of a pattern. It is NOT a place to put a defect the change itself created or
+uncovered inside its own scope: filing one here converts "I found a bug and left it" into
+"I raised a task", which reads as diligence and is the opposite (`functional-test-coverage.md`
+rule 5, and 6a's table of reasons that do not qualify).
+
+The test is scope, not size. Ask: would a reviewer of THIS change expect this fixed in it?
+If yes, it is a defect and belongs in the change. If no, it is a follow-up and belongs here.
+"Too big for this change" is a scoping conversation to have with the owner — not a
+disposition you assign yourself.
 
 ### Step 6 — Competitive-parity scan (per `competitive-parity-per-phase.md`)
 
@@ -361,7 +377,8 @@ Consolidated 2026-07-23 from three overlapping rules (this one plus the former
 single canonical rule, per the duplicate-rule guidance in
 `rule-authoring-global-vs-project.md`. Their redirect stubs were deleted 2026-09-05
 once every reference had migrated, which is what those stubs said would happen — a
-deprecation window that never closes is just permanent cold-load. No gate was dropped: the five-step sweep, the mechanical wiring
+deprecation window that never closes is just permanent cold-load. No gate was dropped: the five-step
+sweep, the mechanical wiring
 checklist, the ✅/⚠️/❌ taxonomy, the durable audit artefact, the Council Phase-2
 re-check, the STOP-THE-LINE escalation, and the multi-division adversarial audit
 are all preserved.
@@ -369,7 +386,6 @@ are all preserved.
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

@@ -12,6 +12,8 @@
 > sister rules don't cover: false-positive success reporting,
 > async state-transition completeness, optimistic-rollback, and
 > partial-success surfacing in webhook / queue handlers.
+>
+> **Size budget: 18 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -343,7 +345,6 @@ user-experience layer.
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

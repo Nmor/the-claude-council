@@ -38,9 +38,14 @@ paths:
 
 # Coding Quality Rules — Universal Discipline
 
-> Migrated 2026-06-02 from 19 files in `~/.claude/rules/common/` as part of the lazy-rules-loading plan. Phase H will delete the originals to close the eager-load loop. Each section below preserves the full content of one source rule; section headings name the rule file of origin.
+> Migrated 2026-06-02 from 19 files in `~/.claude/rules/common/` as part of the lazy-rules-loading
+> plan. Phase H will delete the originals to close the eager-load loop. Each section below preserves
+> the full content of one source rule; section headings name the rule file of origin.
+>
+> **Size budget: 24 KB** — `token-budget.mjs --check`.
 
-This skill bundles 19 cross-cutting rules that apply to every code file. Loading is gated by `paths:` — when ANY code file is touched, this skill activates and the disciplines below apply.
+This skill bundles 19 cross-cutting rules that apply to every code file. Loading is gated by
+`paths:` — when ANY code file is touched, this skill activates and the disciplines below apply.
 
 ## Section index
 
@@ -233,7 +238,9 @@ exists so t
 
 ## Pre-delivery self-audit checklist (MANDATORY)
 
-**Before reporting any code change as complete, run this checklist against every file you touched.** This rule exists because the user has repeatedly observed agents reintroducing lint violations that the codebase already fixed. *Never* deliver code that contains a pattern from this list.
+**Before reporting any code change as complete, run this checklist against every file you touched.**
+This rule exists because the user has repeatedly observed agents reintroducing lint violations that
+the codebase already fixed. *Never* deliver code that contains a pattern from this list.
 
 | # | Pattern to scan for | How to find it | What to do |
 | - | ------------------- | -------------- | ---------- |
@@ -281,14 +288,20 @@ exists so t
 
 ### How to run the audit
 
-For every file you touched in this turn, run **every** grep in the table above. If even one returns a match (other than the documented rune-iteration exception), the change is **not done** — fix the violation and re-run.
+For every file you touched in this turn, run **every** grep in the table above. If even one returns
+a match (other than the documented rune-iteration exception), the change is **not done** — fix the
+violation and re-run.
 
-For Go: also run `go vet ./...`, `staticcheck ./...`, and `golangci-lint run ./...` and require all three to pass with zero output.
+For Go: also run `go vet ./...`, `staticcheck ./...`, and `golangci-lint run ./...` and require all
+three to pass with zero output.
 
 For TS/JS: also run `npx tsc --noEmit` and `npx eslint <file> --max-warnings 0`.
 
-For test files: also run the test (`go test ./<pkg>/... -count=1 -race` or `npx jest --testPathPattern=...`) and require pass.
+For test files: also run the test (`go test ./<pkg>/... -count=1 -race` or `npx jest
+--testPathPattern=...`) and require pass.
 
 ### The "we have fixed this before" rule
 
-If a SonarLint or build warning has been fixed anywhere in this repo before, your new code MUST NOT reintroduce the same pattern. Before delivering any new function, sweep it for the patterns above — this is not optional. The user explicitly tracks rec
+If a SonarLint or build warning has been fixed anywhere in this repo before, your new code MUST NOT
+reintroduce the same pattern. Before delivering any new function, sweep it for the patterns above —
+this is not optional. The user explicitly tracks rec

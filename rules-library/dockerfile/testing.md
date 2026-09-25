@@ -5,6 +5,8 @@
 > **Goss** (image-level assertions), **Trivy / Grype** (CVE),
 > **Dive** (layer analysis), **Dockle** (CIS / hadolint composite),
 > **Testcontainers** (integration), **CIS Docker Benchmark v1.7**.
+>
+> **Size budget: 17 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -358,7 +360,8 @@ Dockerfile.
 
 ### 4. CVE scan blocks the merge
 
-MODERATE+ findings block the PR. Per [`common/dependency-vulnerabilities.md`](../common/dependency-vulnerabilities.md).
+MODERATE+ findings block the PR. Per
+[`common/dependency-vulnerabilities.md`](../common/dependency-vulnerabilities.md).
 
 ### 5. Dive's "wasted space" must be < 10%
 
@@ -468,4 +471,5 @@ Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-lear
 - New tool row when a new container test framework gains adoption (e.g. Container Patrol, Trivenoy)
 - Tightening of the wasted-space threshold when image bloat patterns recur
 - New layer when a regulated workload (FIPS, FedRAMP) requires additional attestation
-- New cross-reference when a sister rule (kubernetes-patterns, helm-patterns) defines orchestrator-level tests
+- New cross-reference when a sister rule (kubernetes-patterns, helm-patterns) defines
+  orchestrator-level tests

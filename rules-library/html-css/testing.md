@@ -8,6 +8,8 @@
 > **Vitest** / **Jest** for component tests, **Testing Library**
 > family (React / Vue / Svelte / DOM), **Lighthouse**, **Chrome
 > User Experience Report**, **Core Web Vitals**.
+>
+> **Size budget: 23 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

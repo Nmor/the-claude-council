@@ -7,6 +7,8 @@ model: sonnet
 
 # Java / Kotlin Build & Compile Error Resolver
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Get the Maven/Gradle build green with the SMALLEST correct change — root cause,
 never `@SuppressWarnings` to hide it. No refactoring, no features.
 

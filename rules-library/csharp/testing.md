@@ -8,6 +8,8 @@ paths:
 # C# Testing
 
 > Extends `common/testing.md` with C#-specific testing conventions.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Minimum Test Coverage: 70%
 

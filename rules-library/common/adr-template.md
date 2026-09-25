@@ -5,6 +5,8 @@
 > `architect` agent. Standards: **Michael Nygard's ADR format**
 > (2011, original definition), **MADR** (Markdown Any Decision
 > Records) format.
+>
+> **Size budget: 12 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -277,7 +279,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - ADR not referenced from the code path that implements it (rule 5 weakening — discoverability gap)
 - Sequential numbering broken / reused (rule 1 violation — stable numbering)
 - Status not updated when an ADR is superseded (rule 2 weakening)
-- ADR cites Stack Overflow / blog post as primary source (rule 6 violation per official-docs-first.md)
+- ADR cites Stack Overflow / blog post as primary source (rule 6 violation per
+  official-docs-first.md)
 - Compliance / security implications missing from a regulated-domain ADR (template weakening)
 - Council Phase 0 architectural output not crystallised into an ADR (council-default.md weakening)
 
@@ -285,5 +288,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New required-section row when an ADR class consistently lacks a load-bearing dimension
 - Tightening of the "Considered options" requirement when ADRs ship with only one option compared
-- New cross-reference when a sister rule (runbook-template, docs-sync-with-code) prescribes companion artifacts
-- New tag taxonomy row when a recurring decision domain emerges (data, security, compliance, AI, etc.)
+- New cross-reference when a sister rule (runbook-template, docs-sync-with-code) prescribes
+  companion artifacts
+- New tag taxonomy row when a recurring decision domain emerges (data, security, compliance, AI,
+  etc.)

@@ -4,6 +4,8 @@
 > file. Standards: **Oracle Java SE 21 spec**, **Google Java Style
 > Guide**, **Effective Java 3e (Bloch)**, **JSR-305** (nullability
 > annotations), **PMD**, **Checkstyle**, **SpotBugs**, **ErrorProne**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

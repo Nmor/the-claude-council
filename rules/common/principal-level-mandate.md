@@ -5,6 +5,8 @@
 > `documentation-requirements.md`, `verify-before-claim.md`. Every
 > skill, every agent, every rule, every plan, every Council
 > contribution operates at PRINCIPAL ENGINEER level — never below.
+>
+> **Size budget: 17 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -54,14 +56,18 @@ model: opus | sonnet | haiku
 ---
 ```
 
-`model: opus` is the default for coding / reviewing / planning agents per global model policy. Reserve `sonnet` for narrow-scope agents where opus is genuinely overkill. `haiku` only for pure-mechanical agents (doc generation, codemap updates).
+`model: opus` is the default for coding / reviewing / planning agents per global model policy.
+Reserve `sonnet` for narrow-scope agents where opus is genuinely overkill. `haiku` only for
+pure-mechanical agents (doc generation, codemap updates).
 
 **Required body sections** (every agent MUST contain these, exact section names flexible):
 
 1. **Identity + mission** — one paragraph naming the principal-level mandate
 2. **Global rules enforced** — explicit cross-references to global rules the agent applies
-3. **Auto-fire triggers** OR equivalent "When to engage" section — file globs / keywords / scope conditions
-4. **Decision authority** — veto / casting vote / advisory + the rationale (for Division leads); for support agents, role within the Division
+3. **Auto-fire triggers** OR equivalent "When to engage" section — file globs / keywords / scope
+   conditions
+4. **Decision authority** — veto / casting vote / advisory + the rationale (for Division leads); for
+   support agents, role within the Division
 5. **Review checklist OR workflow** — explicit checks with severity classification
 6. **Standards cited** — version + section numbers, not vague references
 7. **Output shape OR severity / report template** — structured findings, not narrative
@@ -69,7 +75,8 @@ model: opus | sonnet | haiku
 9. **Pairing model** — which other agents this agent works with on cross-cutting concerns
 10. **When to escalate to user** — explicit triggers
 
-The names of these sections may be project-conventional ("Workflow" / "Review Process" / "Diagnostic Commands" all count toward checklist+workflow); the CONTENT must be present.
+The names of these sections may be project-conventional ("Workflow" / "Review Process" / "Diagnostic
+Commands" all count toward checklist+workflow); the CONTENT must be present.
 
 **Banned in agent files**:
 
@@ -156,7 +163,8 @@ wrong vs the cost of the rigor.
 
 Already governed by `rule-authoring-global-vs-project.md`. Adds:
 
-- Every rule's "Why this rule exists" section names the SPECIFIC failure mode it prevents (no vague "improves quality")
+- Every rule's "Why this rule exists" section names the SPECIFIC failure mode it prevents (no vague
+  "improves quality")
 - Every rule cites the standards it implements (where applicable)
 - Every rule cross-references sister rules + the agents that enforce it
 - Every banned pattern has a named correct alternative
@@ -165,9 +173,13 @@ Already governed by `rule-authoring-global-vs-project.md`. Adds:
 
 Per `council-default.md` + `council-triggers.md`:
 
-- Each division ENGAGES and records a verdict; depth is signal-gated per `council-default.md` — deep (multi-sentence, carrying trade-off + failure-mode + verification signal) on a material finding or cross-division conflict, and a one-line gated verdict with a one-clause reason when nothing material was found (never bare boilerplate)
+- Each division ENGAGES and records a verdict; depth is signal-gated per `council-default.md` — deep
+  (multi-sentence, carrying trade-off + failure-mode + verification signal) on a material finding or
+  cross-division conflict, and a one-line gated verdict with a one-clause reason when nothing
+  material was found (never bare boilerplate)
 - Extended divisions auto-fire on triggers
-- Output is structured (`severity · file:line · claim · owner`, deduped across divisions), not narrative
+- Output is structured (`severity · file:line · claim · owner`, deduped across divisions), not
+  narrative
 - Cites the global rules / standards / RFCs informing the position
 - Names verification signals that confirm the decision
 
@@ -240,8 +252,10 @@ failure gets a remediation PR before the v1.0.0 tag.
 
 NEVER for substantive content. The only acceptable "shallow" cases:
 
-- **Redirect stubs** — one-line "Consolidated into X.md" markers during a deprecation window (per `deprecation-lifecycle.md`). These are explicit short-lived stubs, not principal-level content.
-- **Index / catalog files** — `README.md` of a skill directory listing examples, where the depth lives in the linked files.
+- **Redirect stubs** — one-line "Consolidated into X.md" markers during a deprecation window (per
+  `deprecation-lifecycle.md`). These are explicit short-lived stubs, not principal-level content.
+- **Index / catalog files** — `README.md` of a skill directory listing examples, where the depth
+  lives in the linked files.
 
 Both cases must be DOCUMENTED as such in the file (or in the
 parent's README). Implicit shallowness is rejected.
@@ -314,7 +328,6 @@ principal level"**.
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

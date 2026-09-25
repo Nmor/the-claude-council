@@ -5,7 +5,10 @@ description: Protocol-based dependency injection for testable Swift code — moc
 
 # Swift Protocol-Based Dependency Injection for Testing
 
-Patterns for making Swift code testable by abstracting external dependencies (file system, network, iCloud) behind small, focused protocols. Enables deterministic tests without I/O.
+> **Size budget: 15 KB** — `token-budget.mjs --check`.
+
+Patterns for making Swift code testable by abstracting external dependencies (file system, network,
+iCloud) behind small, focused protocols. Enables deterministic tests without I/O.
 
 ## When to Activate
 
@@ -167,11 +170,14 @@ func testReadError() async {
 
 ## Best Practices
 
-- **Single Responsibility**: Each protocol should handle one concern — don't create "god protocols" with many methods
+- **Single Responsibility**: Each protocol should handle one concern — don't create "god protocols"
+  with many methods
 - **Sendable conformance**: Required when protocols are used across actor boundaries
-- **Default parameters**: Let production code use real implementations by default; only tests need to specify mocks
+- **Default parameters**: Let production code use real implementations by default; only tests need
+  to specify mocks
 - **Error simulation**: Design mocks with configurable error properties for testing failure paths
-- **Only mock boundaries**: Mock external dependencies (file system, network, APIs), not internal types
+- **Only mock boundaries**: Mock external dependencies (file system, network, APIs), not internal
+  types
 
 ## Anti-Patterns to Avoid
 

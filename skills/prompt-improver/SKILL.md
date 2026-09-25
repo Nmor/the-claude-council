@@ -14,6 +14,8 @@ description: Transforms vague or under-specified prompts into actionable, resear
 > `~/.claude/rules/common/plan-execution-progress.md` (intake is
 > the first progress update). The hook lives at
 > `~/.claude/hooks/improve-prompt.py`.
+>
+> **Size budget: 22 KB** — `token-budget.mjs --check`.
 
 ## Purpose
 
@@ -407,7 +409,8 @@ prompt gets the full 29-question intake.
 
 - `~/.claude/CLAUDE.md` — Council protocol the prompt-improver feeds into
 - `~/.claude/hooks/improve-prompt.py` — UserPromptSubmit hook entry
-- `~/.claude/rules/common/task-intake-due-diligence.md` — 29-question intake the improver pre-populates
+- `~/.claude/rules/common/task-intake-due-diligence.md` — 29-question intake the improver
+  pre-populates
 - `~/.claude/rules/common/council-default.md` — Council convenes regardless of clarification
 - `iterative-retrieval` skill — phase-1 codebase research uses this pattern
 - `search-first` skill — also engaged during prompt research
@@ -418,20 +421,28 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Vague prompt slipped past the hook and reached implementation without clarification (router heuristic gap)
-- Clear-but-non-trivial prompt skipped Mode 2 intake (rule weakening — sister `task-intake-due-diligence.md`)
+- Vague prompt slipped past the hook and reached implementation without clarification (router
+  heuristic gap)
+- Clear-but-non-trivial prompt skipped Mode 2 intake (rule weakening — sister
+  `task-intake-due-diligence.md`)
 - Generic option offered to user instead of research-grounded option (anti-pattern 1 recurrence)
 - Question fabricated when research surfaced zero real options (anti-pattern 6)
 - Re-asked context already provided in conversation history (anti-pattern 3 — trust history)
-- "Just do it" override accepted without abbreviated intake (anti-pattern 7 — sister `proper-fixes-first.md`)
-- More than 6 questions issued in a single AskUserQuestion (rule cap exceeded — should stage or convert to ExitPlanMode)
-- Intake Q29 (online sources) empty on an external-integration task (sister `official-docs-first.md` violation)
-- Trivial-mode used for a task that touched user-visible behaviour / security / data shape (router miscategorisation)
+- "Just do it" override accepted without abbreviated intake (anti-pattern 7 — sister
+  `proper-fixes-first.md`)
+- More than 6 questions issued in a single AskUserQuestion (rule cap exceeded — should stage or
+  convert to ExitPlanMode)
+- Intake Q29 (online sources) empty on an external-integration task (sister `official-docs-first.md`
+  violation)
+- Trivial-mode used for a task that touched user-visible behaviour / security / data shape (router
+  miscategorisation)
 
 **Refinement candidates**:
 
 - New row in the routing table when a recurring prompt shape doesn't fit current modes
 - New anti-pattern entry when a question-style failure recurs across 2+ sessions
 - Tightening of the trivial-mode definition when "small" prompts later prove non-trivial
-- New research-radius row (per Phase 1 Clarification) when a new source class (e.g., partner-portal docs, internal RFC archive) becomes load-bearing
-- Promotion of an inline citation pattern to a dedicated "Standards Cited" subsection when a regulatory / RFC anchor recurs across intakes
+- New research-radius row (per Phase 1 Clarification) when a new source class (e.g., partner-portal
+  docs, internal RFC archive) becomes load-bearing
+- Promotion of an inline citation pattern to a dedicated "Standards Cited" subsection when a
+  regulatory / RFC anchor recurs across intakes

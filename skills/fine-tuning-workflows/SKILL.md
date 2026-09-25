@@ -9,6 +9,8 @@ description: Principal-level fine-tuning lifecycle — when fine-tuning beats pr
 > do, costlier to maintain, and irreversible in the sense that the
 > base model evolves under you. Use it when prompting + RAG have
 > demonstrably plateaued, not before. Then do it properly.
+>
+> **Size budget: 30 KB** — `token-budget.mjs --check`.
 
 ## Purpose
 
@@ -62,6 +64,30 @@ classical ML model training (see `ml-model-selection`).
 - **MLflow / W&B / Neptune** — experiment tracking
 - **Anthropic Responsible Scaling Policy + OpenAI Preparedness
   Framework** — model safety eval expectations
+
+- **NIST AI RMF 1.0** — AI risk management framework (Govern / Map /
+  Measure / Manage functions; MEASURE 2 covers model evaluation)
+- **NIST SP 800-218A SSDF for AI** — Secure Software Development
+  Framework profile for AI models (§PW.4, §PW.6, §PW.8)
+- **NIST SP 800-53 Rev 5 §SI-4, §SI-7** — Information system
+  monitoring + software integrity (applies to model + dataset
+  artifacts)
+- **ISO/IEC 23053:2022 §7** — Framework for AI systems using ML
+- **ISO/IEC 23894:2023** — AI risk management
+- **ISO/IEC 42001:2023** — AI management system requirements
+- **OWASP Top 10 for LLM Applications (2025)** — LLM01 Prompt
+  Injection, LLM02 Sensitive Information Disclosure, LLM06
+  Excessive Agency, LLM09 Misinformation, LLM10 Unbounded
+  Consumption
+- **OWASP ML Top 10 (2023)** — ML01-ML10 (adversarial inputs,
+  data poisoning, model inversion, etc.)
+- **CWE-1039** — Automated recognition mechanism with inadequate
+  detection or handling of adversarial input perturbations
+- **CWE-1426** — Improper validation of generative AI output
+- **EU AI Act (Regulation 2024/1689)** — risk-based obligations
+  for general-purpose AI models + high-risk systems
+- **`~/.claude/rules/common/council-triggers.md`** (Division 15) — bias,
+  fairness, dataset provenance, human-in-the-loop gates
 
 ## When to Fire
 
@@ -461,32 +487,6 @@ NOT the right call and this discipline catches that early: weeks
 or months of avoided work, redirected to the lighter tool that
 would have solved the problem.
 
-## Standards Cited
-
-- **NIST AI RMF 1.0** — AI risk management framework (Govern / Map /
-  Measure / Manage functions; MEASURE 2 covers model evaluation)
-- **NIST SP 800-218A SSDF for AI** — Secure Software Development
-  Framework profile for AI models (§PW.4, §PW.6, §PW.8)
-- **NIST SP 800-53 Rev 5 §SI-4, §SI-7** — Information system
-  monitoring + software integrity (applies to model + dataset
-  artifacts)
-- **ISO/IEC 23053:2022 §7** — Framework for AI systems using ML
-- **ISO/IEC 23894:2023** — AI risk management
-- **ISO/IEC 42001:2023** — AI management system requirements
-- **OWASP Top 10 for LLM Applications (2025)** — LLM01 Prompt
-  Injection, LLM02 Sensitive Information Disclosure, LLM06
-  Excessive Agency, LLM09 Misinformation, LLM10 Unbounded
-  Consumption
-- **OWASP ML Top 10 (2023)** — ML01-ML10 (adversarial inputs,
-  data poisoning, model inversion, etc.)
-- **CWE-1039** — Automated recognition mechanism with inadequate
-  detection or handling of adversarial input perturbations
-- **CWE-1426** — Improper validation of generative AI output
-- **EU AI Act (Regulation 2024/1689)** — risk-based obligations
-  for general-purpose AI models + high-risk systems
-- **`~/.claude/rules/common/council-triggers.md`** (Division 15) — bias,
-  fairness, dataset provenance, human-in-the-loop gates
-
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
@@ -495,7 +495,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - Fine-tuning chosen before prompt + RAG ceiling demonstrated (premature fine-tune)
 - SFT / DPO / RLHF chosen without explicit data-quality investment (garbage-in-garbage-out)
-- Training data not vetted for PII / copyright / license (per `~/.claude/rules-library/common/gdpr-ccpa.md`)
+- Training data not vetted for PII / copyright / license (per
+  `~/.claude/rules-library/common/gdpr-ccpa.md`)
 - LoRA / QLoRA adapter merged into base without ablation (regression risk)
 - Eval suite identical to training data (test-set leakage)
 - Safety re-tune skipped after capability fine-tune (jailbreak surface re-opened)
@@ -506,7 +507,9 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New decision-tree row when prompting / RAG / fine-tuning trade-off shifts (e.g., long-context models reduce fine-tune need)
-- New cross-reference when a sister skill (prompt-engineering, rag-design, mlops-patterns, ml-model-selection) adds a fine-tune gate
+- New decision-tree row when prompting / RAG / fine-tuning trade-off shifts (e.g., long-context
+  models reduce fine-tune need)
+- New cross-reference when a sister skill (prompt-engineering, rag-design, mlops-patterns,
+  ml-model-selection) adds a fine-tune gate
 - New safety-eval template when a new jailbreak class emerges
 - Tightening of the data-quality bar when low-quality-corpus failure recurs

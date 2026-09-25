@@ -4,6 +4,8 @@
 > `~/.claude/rules/common/no-discards.md`. Tooling: **detekt**
 > with full config, **ktlint --strict**, **Kotlin compiler
 > -Werror -progressive**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

@@ -5,6 +5,8 @@
 > (workspace-side learning loops), the `continuous-learning-v2`
 > skill (implementation), the `learn` + `evolve` + `instinct-*`
 > commands (operator interface).
+>
+> **Size budget: 11 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -252,7 +254,6 @@ baked into all agents, the council, skils and rules."**
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

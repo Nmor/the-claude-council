@@ -5,6 +5,8 @@ description: Database migration best practices for schema changes, data migratio
 
 # Database Migration Patterns
 
+> **Size budget: 18 KB** — `token-budget.mjs --check`.
+
 Safe, reversible database schema changes for production systems.
 
 ## When to Activate
@@ -20,7 +22,8 @@ Safe, reversible database schema changes for production systems.
 1. **Every change is a migration** — never alter production databases manually
 2. **Migrations are forward-only in production** — rollbacks use new forward migrations
 3. **Schema and data migrations are separate** — never mix DDL and DML in one migration
-4. **Test migrations against production-sized data** — a migration that works on 100 rows may lock on 10M
+4. **Test migrations against production-sized data** — a migration that works on 100 rows may lock
+   on 10M
 5. **Migrations are immutable once deployed** — never edit a migration that has run in production
 
 ## Migration Safety Checklist
@@ -425,7 +428,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Migration not reversible (no down-migration; sister `schema-evolution.md` rule 2 violation)
 - Migration not idempotent (re-run fails — rule 3 violation)
 - `CREATE INDEX` without `CONCURRENTLY` on a > 1M row table (Postgres lock-wait)
-- `ALTER TABLE ... ADD COLUMN ... NOT NULL DEFAULT x` on a populated table without bridge constraint (table rewrite)
+- `ALTER TABLE ... ADD COLUMN ... NOT NULL DEFAULT x` on a populated table without bridge constraint
+  (table rewrite)
 - Schema + data backfill bundled in a single migration (long-transaction lock contention)
 - Column dropped before consumer code removed (deploy ordering violated)
 - Production-only schema change applied manually (no migration file in repo)
@@ -435,6 +439,9 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New row in the anti-pattern table when a recurring migration failure class emerges
-- Tightening of the "test against production size" gate when a recurring slow-migration incident recurs
-- New cross-reference when a sister rule (schema-evolution, dependency-pinning, deploy-failures-become-checks) adds a migration gate
-- New per-engine guidance when a new DB version's online-DDL semantics change (MySQL 8.4, Postgres 17 partitioning)
+- Tightening of the "test against production size" gate when a recurring slow-migration incident
+  recurs
+- New cross-reference when a sister rule (schema-evolution, dependency-pinning,
+  deploy-failures-become-checks) adds a migration gate
+- New per-engine guidance when a new DB version's online-DDL semantics change (MySQL 8.4, Postgres
+  17 partitioning)

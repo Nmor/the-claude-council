@@ -5,6 +5,8 @@
 > kept in sync with code), `task-intake-due-diligence.md` Q26
 > (operational handoff), `error-handling-with-context.md` (every
 > error has a runbook entry referenced by `error_code`).
+>
+> **Size budget: 10 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -202,16 +204,22 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New PagerDuty / Opsgenie alert created without a runbook URL in the payload (rule 1 violation)
 - `error_code` (per `error-codes.md`) added without a corresponding runbook entry (rule 2 weakening)
-- "Diagnose" steps say "check the dashboard" / "look at the logs" without naming the specific metric / query (rule 4 violation)
+- "Diagnose" steps say "check the dashboard" / "look at the logs" without naming the specific metric
+  / query (rule 4 violation)
 - "Fix" step missing the verification signal that confirms recovery (rule 5 weakening)
-- Runbook entry's `Last verified:` footer > 6 months old + system has changed (rule 7 weakening — stale entry)
+- Runbook entry's `Last verified:` footer > 6 months old + system has changed (rule 7 weakening —
+  stale entry)
 - New service deployed without entries for the canonical incident classes (rule 8 weakening)
-- Runbook diff in the SAME PR as the failure-mode introduction missing (sister rule `docs-sync-with-code.md` weakening)
-- On-call escalates an incident the runbook should have resolved without escalation (entry quality gap)
+- Runbook diff in the SAME PR as the failure-mode introduction missing (sister rule
+  `docs-sync-with-code.md` weakening)
+- On-call escalates an incident the runbook should have resolved without escalation (entry quality
+  gap)
 
 **Refinement candidates**:
 
-- New row in the canonical incident-classes table when a recurring class (e.g., DNS-resolution flap, cert-rotation race, vector DB index-rebuild) emerges
+- New row in the canonical incident-classes table when a recurring class (e.g., DNS-resolution flap,
+  cert-rotation race, vector DB index-rebuild) emerges
 - Tightening of the "specific signal" requirement when on-call's queries reveal common ambiguity
-- New cross-reference when a sister rule (observability, error-codes, deploy-failures-become-checks) adds a metric / code the runbook must consume
+- New cross-reference when a sister rule (observability, error-codes, deploy-failures-become-checks)
+  adds a metric / code the runbook must consume
 - New "communicate" template when a recurring incident class needs specific stakeholder routing

@@ -8,6 +8,8 @@
 > parity dimensions are silent drops of user-visible value),
 > `principal-level-mandate.md` (a principal-level artefact ships
 > discoverable, not just built).
+>
+> **Size budget: 11 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -77,7 +79,7 @@ not a "we thought about it" claim.
 
 Every project plan declares its reference set at plan-authoring time
 (a table by domain). Locked = doesn't change mid-wave. Refresh at
-wave-close or annually. Example shape from Unvamp:
+wave-close or annually. Example shape, from a live-events product:
 
 | Domain | Reference competitors (2026) |
 | --- | --- |
@@ -196,7 +198,6 @@ part/phase/wave."*
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

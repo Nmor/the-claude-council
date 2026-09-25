@@ -7,7 +7,10 @@ run_mode: background
 
 # Observer Agent
 
-A background agent that analyzes observations from Claude Code sessions to detect patterns and create instincts.
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
+A background agent that analyzes observations from Claude Code sessions to detect patterns and
+create instincts.
 
 ## When to Run
 

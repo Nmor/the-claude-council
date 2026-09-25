@@ -5,10 +5,13 @@
 > `~/.claude/agents/`. This file holds general performance guidance (context
 > window, thinking/effort, build troubleshooting); **model selection defers to
 > `model-tier-selection.md`.**
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Model selection → canonical in `model-tier-selection.md`
 
-**Model selection is owned by [`model-tier-selection.md`](../../rules/common/model-tier-selection.md).**
+**Model selection is owned by
+[`model-tier-selection.md`](../../rules/common/model-tier-selection.md).**
 It defines the capability-aware ladders (role → best-for-the-job → floor), the
 per-install availability resolution (best model AVAILABLE, graceful degradation),
 the Fable exclusions (security), and the alias-vs-version behavior. Do NOT

@@ -5,23 +5,37 @@ description: Principal-level financial analyst workflow — earnings model maint
 
 # Financial Analyst
 
+> **Size budget: 24 KB** — `token-budget.mjs --check`.
+
 ## Purpose
 
-The financial analyst is the workhorse of the investment process — building and maintaining models, distilling 10-Ks into thesis-relevant insight, conducting channel checks, watching for accounting irregularities, and producing the constant stream of notes, model updates, earnings reactions, and quarterly previews that institutional investors consume. The analyst who scales from junior to principal masters not just spreadsheet mechanics but judgement: which line items matter, which questions to ask management, which industry signals are leading vs lagging, when a thesis is broken vs simply tested. Principal-level analysts also mentor juniors, contribute to firm-wide research culture, and balance the workload of coverage + special projects + new ideas.
+The financial analyst is the workhorse of the investment process — building and maintaining models,
+distilling 10-Ks into thesis-relevant insight, conducting channel checks, watching for accounting
+irregularities, and producing the constant stream of notes, model updates, earnings reactions, and
+quarterly previews that institutional investors consume. The analyst who scales from junior to
+principal masters not just spreadsheet mechanics but judgement: which line items matter, which
+questions to ask management, which industry signals are leading vs lagging, when a thesis is broken
+vs simply tested. Principal-level analysts also mentor juniors, contribute to firm-wide research
+culture, and balance the workload of coverage + special projects + new ideas.
 
-This skill governs the analyst's daily work: maintaining the coverage model, processing earnings, attending capital markets days, writing notes, tracking accounting quality, conducting checks, building sector-comparative analyses, and managing the relationship with portfolio managers.
+This skill governs the analyst's daily work: maintaining the coverage model, processing earnings,
+attending capital markets days, writing notes, tracking accounting quality, conducting checks,
+building sector-comparative analyses, and managing the relationship with portfolio managers.
 
 ## Standards Cited
 
-- **CFA Institute Body of Knowledge — Financial Reporting and Analysis** (2026 edition) — DuPont, ratio analysis, quality of earnings
-- **Penman "Financial Statement Analysis and Security Valuation" 5e** — residual income, accrual analysis
+- **CFA Institute Body of Knowledge — Financial Reporting and Analysis** (2026 edition) — DuPont,
+  ratio analysis, quality of earnings
+- **Penman "Financial Statement Analysis and Security Valuation" 5e** — residual income, accrual
+  analysis
 - **Schilit + Perler "Financial Shenanigans" 4e** — accounting red flags catalog
 - **Beneish (1999, Financial Analysts Journal)** "Detecting GAAP Violation" — M-Score model
 - **Altman (1968) Z-score + Ohlson (1980) O-score** — bankruptcy prediction
 - **Damodaran "Investment Valuation" 3e** + sector-by-sector applied methods
 - **AICPA SAS 145 + PCAOB AS 2110 + AS 2401** — auditor's risk assessment + fraud
 - **FASB ASC 280 / IFRS 8** — segment reporting (analyst's primary disaggregation tool)
-- **AICPA Trust Services Criteria** — informs analyst's understanding of management control environment
+- **AICPA Trust Services Criteria** — informs analyst's understanding of management control
+  environment
 - **Bloomberg + FactSet + Refinitiv** — standard analyst data terminals
 
 ## When to Fire
@@ -176,7 +190,8 @@ FROM coverage
 ORDER BY ev_ebitda_fwd_1y;
 ```
 
-Rank coverage names within sector by valuation, growth, quality, and risk. The cross-sectional view surfaces which names are mispriced relative to peers.
+Rank coverage names within sector by valuation, growth, quality, and risk. The cross-sectional view
+surfaces which names are mispriced relative to peers.
 
 ### Pattern 4: Accounting quality screen — Beneish M-Score
 
@@ -220,7 +235,9 @@ def beneish_m_score(ttm: dict, prior_ttm: dict) -> tuple[float, str]:
     return m_score, classification
 ```
 
-M-Score above -1.78 is not proof of manipulation — it's a signal to deepen forensic accounting work. Pair with: DSO trend, accrual quality (Sloan 1996), gross-to-net revenue trend, related-party transaction footnotes, audit firm changes, restatement history.
+M-Score above -1.78 is not proof of manipulation — it's a signal to deepen forensic accounting work.
+Pair with: DSO trend, accrual quality (Sloan 1996), gross-to-net revenue trend, related-party
+transaction footnotes, audit firm changes, restatement history.
 
 ### Pattern 5: DuPont decomposition
 
@@ -233,7 +250,9 @@ ROE = (Op Margin) × (Asset Turnover) × (Interest Burden) × (Tax Burden) × (L
     = (EBIT / Sales) × (Sales / Assets) × (EBT / EBIT) × (NI / EBT) × (Assets / Equity)
 ```
 
-DuPont reveals what drives ROE — operational efficiency, asset productivity, financial structure, or tax rate. Compare to peers and over time. Declining ROE from declining margins is a quality concern; declining ROE from rising assets (capex investment) may be a growth story.
+DuPont reveals what drives ROE — operational efficiency, asset productivity, financial structure, or
+tax rate. Compare to peers and over time. Declining ROE from declining margins is a quality concern;
+declining ROE from rising assets (capex investment) may be a growth story.
 
 ### Pattern 6: Channel-check discipline
 
@@ -299,43 +318,59 @@ Quarterly screen for forensic red flags:
 
 ### Anti-pattern 1: Confirmation bias model updates
 
-Quarter prints; analyst's model is too optimistic by 8%. Analyst nudges several inputs +2-3% to bring model in line with print, preserving the bullish thesis. Should have asked: what does this miss tell me about my assumptions? When inputs are wrong, the thesis may be wrong.
+Quarter prints; analyst's model is too optimistic by 8%. Analyst nudges several inputs +2-3% to
+bring model in line with print, preserving the bullish thesis. Should have asked: what does this
+miss tell me about my assumptions? When inputs are wrong, the thesis may be wrong.
 
 ### Anti-pattern 2: Following sell-side consensus
 
-The consensus is the average of analysts who often share the same data, the same management calls, the same conferences. Differential edge requires differential view. The analyst who matches consensus has no value-add.
+The consensus is the average of analysts who often share the same data, the same management calls,
+the same conferences. Differential edge requires differential view. The analyst who matches
+consensus has no value-add.
 
 ### Anti-pattern 3: Ignoring non-GAAP-to-GAAP bridge
 
-Companies report adjusted EBITDA, adjusted EPS, etc. The bridge from GAAP to adjusted includes restructuring, stock-based comp, M&A costs, "non-recurring" items. Track every adjustment; flag recurring "non-recurring" items.
+Companies report adjusted EBITDA, adjusted EPS, etc. The bridge from GAAP to adjusted includes
+restructuring, stock-based comp, M&A costs, "non-recurring" items. Track every adjustment; flag
+recurring "non-recurring" items.
 
 ### Anti-pattern 4: Modelling without segment disaggregation
 
-Aggregate revenue + margin tells you less than segment revenue + margin. If management reports 5 segments, model 5 segments. If management doesn't disaggregate, request it or model proxies from regulatory filings.
+Aggregate revenue + margin tells you less than segment revenue + margin. If management reports 5
+segments, model 5 segments. If management doesn't disaggregate, request it or model proxies from
+regulatory filings.
 
 ### Anti-pattern 5: Underweighting cash flow
 
-Net income can be managed via accruals; cash flow from operations is harder to fake. Always compare NI vs CFO trend; the gap (Sloan 1996) is a leading indicator of trouble.
+Net income can be managed via accruals; cash flow from operations is harder to fake. Always compare
+NI vs CFO trend; the gap (Sloan 1996) is a leading indicator of trouble.
 
 ### Anti-pattern 6: Treating sell-side numbers as fact
 
-Sell-side estimates are starting points, not ground truth. Build your own model from line-item assumptions; reference sell-side at the end for sanity check.
+Sell-side estimates are starting points, not ground truth. Build your own model from line-item
+assumptions; reference sell-side at the end for sanity check.
 
 ### Anti-pattern 7: Single-source channel checks
 
-One distributor said "demand is strong." Conclusion: demand is strong. One source is anecdote; ten sources are signal. Always triangulate.
+One distributor said "demand is strong." Conclusion: demand is strong. One source is anecdote; ten
+sources are signal. Always triangulate.
 
 ### Anti-pattern 8: Missing management's incentive structure
 
-Reading the proxy (DEF 14A) tells you what management is paid to do. Comp tied to short-term EBITDA produces different behaviour than comp tied to long-term TSR. Adjust your read of management's tone and decisions accordingly.
+Reading the proxy (DEF 14A) tells you what management is paid to do. Comp tied to short-term EBITDA
+produces different behaviour than comp tied to long-term TSR. Adjust your read of management's tone
+and decisions accordingly.
 
 ### Anti-pattern 9: Ignoring footnotes
 
-The footnotes contain everything material that didn't fit on the face of the financial statements. Lease commitments, off-balance-sheet items, related-party transactions, going-concern language, contingent liabilities. Read them quarterly.
+The footnotes contain everything material that didn't fit on the face of the financial statements.
+Lease commitments, off-balance-sheet items, related-party transactions, going-concern language,
+contingent liabilities. Read them quarterly.
 
 ### Anti-pattern 10: Overreliance on the latest model
 
-A model that updates every day with new prices is noise. The thesis is the model; the model serves the thesis. Update inputs when underlying business reality changes, not when the stock price moves.
+A model that updates every day with new prices is noise. The thesis is the model; the model serves
+the thesis. Update inputs when underlying business reality changes, not when the stock price moves.
 
 ## Verification Checklist
 
@@ -371,14 +406,20 @@ A model that updates every day with new prices is noise. The thesis is the model
 
 ## Why This Skill Exists
 
-The financial analyst is the human in the loop between data and decision. Without rigorous, disciplined analysts:
+The financial analyst is the human in the loop between data and decision. Without rigorous,
+disciplined analysts:
 
 - Earnings surprises go unexplained
-- Accounting irregularities go undetected (Enron, WorldCom, Wirecard, Luckin Coffee — all detected too late by analysts who weren't doing forensic work)
+- Accounting irregularities go undetected (Enron, WorldCom, Wirecard, Luckin Coffee — all detected
+  too late by analysts who weren't doing forensic work)
 - Sector rotations get missed
 - Mispriced securities stay mispriced
 
-The career arc from junior analyst (5 names, 80% model maintenance) to senior analyst (15 names, 60% model maintenance + 40% thesis development) to principal analyst (sector leadership + new ideas + mentoring) is built on disciplined repetition of the workflow above. The principal analyst is not necessarily the smartest — but is the most disciplined. They run the model every quarter, document every channel check, read every footnote, ask every uncomfortable question.
+The career arc from junior analyst (5 names, 80% model maintenance) to senior analyst (15 names, 60%
+model maintenance + 40% thesis development) to principal analyst (sector leadership + new ideas +
+mentoring) is built on disciplined repetition of the workflow above. The principal analyst is not
+necessarily the smartest — but is the most disciplined. They run the model every quarter, document
+every channel check, read every footnote, ask every uncomfortable question.
 
 Edge comes from the patience to do the work that others skip.
 
@@ -414,7 +455,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Earnings model not updated within 48h of company filing (model-staleness)
 - Channel check qualitative only, never quantified (vague "saw growth")
 - Ratio analysis without peer-group benchmarking (context-free numbers)
-- Accounting quality red flag (deferred-revenue spike, days-sales-outstanding lengthening) not investigated
+- Accounting quality red flag (deferred-revenue spike, days-sales-outstanding lengthening) not
+  investigated
 - Footnote disclosure (related-party, contingent liability) glossed over
 - Earnings call transcript not annotated for tone / hedging / new disclosure language
 - Sector-relative valuation ignored (absolute multiples cited without sector context)
@@ -425,6 +467,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New ratio template when a new sector becomes coverage (e.g., crypto-native, AI-infra)
-- New cross-reference when a sister skill (valuation-models, investment-research, portfolio-theory) adds an analyst gate
+- New cross-reference when a sister skill (valuation-models, investment-research, portfolio-theory)
+  adds an analyst gate
 - Tightening of the catalyst-discipline rule when soft-recommendation regression recurs
 - New channel-check template when a recurring qualitative pattern emerges

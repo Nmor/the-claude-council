@@ -4,6 +4,8 @@
 > and any service definition that publishes host ports. Sister to
 > `no-local-fs.md`, `deploy-failures-become-checks.md`, and
 > `docker-deployment.md`.
+>
+> **Size budget: 10 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -189,17 +191,24 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- New compose file shipped with bare `"5432:5432"` / `"6379:6379"` port mapping (Hard rule 1 violation)
+- New compose file shipped with bare `"5432:5432"` / `"6379:6379"` port mapping (Hard rule 1
+  violation)
 - Existing `127.0.0.1:` prefix removed in a refactor (binding-scope regression)
 - `0.0.0.0:` explicit binding on a developer-machine compose (forbidden shape #3-4)
 - Unspecified-host env-interpolated mapping `"${HOST_PORT}:8080"` introduced (forbidden shape #2)
 - Exception (streaming, reverse proxy, ngrok) lacks the inline rationale comment (rule 6 weakening)
-- Detection grep absent from local pre-flight script (sister `deploy-failures-become-checks.md` weakening)
-- Port conflict resolved by switching back to `0.0.0.0:` instead of picking an unused loopback port (rule-violation shortcut)
+- Detection grep absent from local pre-flight script (sister `deploy-failures-become-checks.md`
+  weakening)
+- Port conflict resolved by switching back to `0.0.0.0:` instead of picking an unused loopback port
+  (rule-violation shortcut)
 
 **Refinement candidates**:
 
-- New entry in the allowed-exception list when a recurring legitimate cross-host need surfaces (e.g., new media-streaming protocol, new IoT-device pairing flow)
-- Tightening of the detection grep when YAML formatting variants slip past (e.g., new compose v3.x syntax, Docker Bake)
-- New cross-reference when a sister rule (no-local-fs, secrets-management) provides the broader "developer machine isn't a trusted boundary" baseline
-- Promotion to enforced lint when a project's local-pre-flight gate has caught zero false-positives over 90 days
+- New entry in the allowed-exception list when a recurring legitimate cross-host need surfaces
+  (e.g., new media-streaming protocol, new IoT-device pairing flow)
+- Tightening of the detection grep when YAML formatting variants slip past (e.g., new compose v3.x
+  syntax, Docker Bake)
+- New cross-reference when a sister rule (no-local-fs, secrets-management) provides the broader
+  "developer machine isn't a trusted boundary" baseline
+- Promotion to enforced lint when a project's local-pre-flight gate has caught zero false-positives
+  over 90 days

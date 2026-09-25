@@ -5,6 +5,8 @@ description: Research-before-coding workflow. Search for existing tools, librari
 
 # /search-first — Research Before You Code
 
+> **Size budget: 16 KB** — `token-budget.mjs --check`.
+
 Systematizes the "search for existing solutions before implementing" workflow.
 
 ## Trigger
@@ -172,6 +174,18 @@ Result: 1 package + 1 schema file, no custom validation logic
 - **Over-customizing**: Wrapping a library so heavily it loses its benefits
 - **Dependency bloat**: Installing a massive package for one small feature
 
+| Pattern | Why bad | Correct alternative |
+| --- | --- | --- |
+| Jump to code without grep | Reinvent existing utility | Sweep first per `reuse-first.md` 4-step gate |
+| Search only the current file | Misses module-level / project-level primitives | Escalate radii in order: file → module → project → workspace → ecosystem |
+| Adopt OSS without license + CVE + maintenance check | Inherit unfixable debt | Adoption gate: SPDX allowlist + CVE clean + recent maintenance + tests + docs |
+| Adopt because "the README looks good" | README ≠ code quality | Read source; check publish history; check open + closed issues |
+| Fork the library to fix one thing | Maintenance burden compounds | Send the patch upstream first; fork only as last resort |
+| Wrap an entire library in a thin adapter | Loses library benefits; doubles surface | Extend with prop / parameter / option per `reuse-first.md` rule 3 |
+| Install a 5MB package for one small function | Bundle bloat; supply-chain exposure | Copy the small function with attribution OR write inline |
+| Search only English / official sources | Misses major non-English ecosystems (Chinese / Japanese / Russian OSS) | Multi-language search when the domain is global |
+| Skip the adoption gate "just for a prototype" | Prototype becomes prod; debt entrenches | Same gate for prototype + prod |
+
 ## Purpose
 
 Sweep the codebase, sister workspaces, vetted dependencies,
@@ -225,20 +239,6 @@ adoption gate (license + CVE + maintenance + tests).
 - **`~/.claude/rules-library/common/license-allowlist-gate.md`** —
   SPDX gate on adoption
 
-## Anti-Patterns
-
-| Pattern | Why bad | Correct alternative |
-| --- | --- | --- |
-| Jump to code without grep | Reinvent existing utility | Sweep first per `reuse-first.md` 4-step gate |
-| Search only the current file | Misses module-level / project-level primitives | Escalate radii in order: file → module → project → workspace → ecosystem |
-| Adopt OSS without license + CVE + maintenance check | Inherit unfixable debt | Adoption gate: SPDX allowlist + CVE clean + recent maintenance + tests + docs |
-| Adopt because "the README looks good" | README ≠ code quality | Read source; check publish history; check open + closed issues |
-| Fork the library to fix one thing | Maintenance burden compounds | Send the patch upstream first; fork only as last resort |
-| Wrap an entire library in a thin adapter | Loses library benefits; doubles surface | Extend with prop / parameter / option per `reuse-first.md` rule 3 |
-| Install a 5MB package for one small function | Bundle bloat; supply-chain exposure | Copy the small function with attribution OR write inline |
-| Search only English / official sources | Misses major non-English ecosystems (Chinese / Japanese / Russian OSS) | Multi-language search when the domain is global |
-| Skip the adoption gate "just for a prototype" | Prototype becomes prod; debt entrenches | Same gate for prototype + prod |
-
 ## Verification Checklist
 
 - [ ] 4-radius sweep run (in-file / module / project /
@@ -289,9 +289,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- New component / function / module written without a codebase sweep first (sister `reuse-first.md` rule 1 violation)
+- New component / function / module written without a codebase sweep first (sister `reuse-first.md`
+  rule 1 violation)
 - Same conceptual unit implemented twice in same project (rule of three violated at occurrence 2)
-- Existing primitive copied + modified instead of extended via prop / option / parameter (forking anti-pattern)
+- Existing primitive copied + modified instead of extended via prop / option / parameter (forking
+  anti-pattern)
 - Dependency installed for one small feature when an internal helper exists (dependency-bloat)
 - MCP capability re-implemented as custom code when an existing server provides it
 - Search query too narrow — primitive missed due to naming variance (search heuristic gap)
@@ -299,7 +301,9 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New scoring axis when a recurring evaluation gap appears (e.g., bundle size, cold-start cost, accessibility built-in)
+- New scoring axis when a recurring evaluation gap appears (e.g., bundle size, cold-start cost,
+  accessibility built-in)
 - New OSS-vs-custom heuristic row when a recurring tradeoff class emerges
 - Tightening of the "rule of three" trigger threshold when twin implementations consistently drift
-- New cross-reference when a sister rule (reuse-first, install-allowlist, dependency-vulnerabilities) provides the canonical adoption gate
+- New cross-reference when a sister rule (reuse-first, install-allowlist,
+  dependency-vulnerabilities) provides the canonical adoption gate

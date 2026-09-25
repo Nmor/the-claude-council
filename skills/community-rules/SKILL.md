@@ -15,9 +15,12 @@ paths:
   - "**/SECURITY.md"
 ---
 
-> Migrated 2026-06-02 from `~/.claude/rules/common/` as part of the lazy-rules-loading plan. Phase H will delete the source files to close the eager-load loop.
-
 # community-rules
+
+> Migrated 2026-06-02 from `~/.claude/rules/common/` as part of the lazy-rules-loading plan. Phase H
+> will delete the source files to close the eager-load loop.
+>
+> **Size budget: 17 KB** — `token-budget.mjs --check`.
 
 ## Source files migrated
 
@@ -29,7 +32,7 @@ paths:
      Section: code-of-conduct.md (from rules/common/)
      ============================================================ -->
 
-# Code of Conduct Rule (Always-On, Global)
+## Code of Conduct Rule (Always-On, Global)
 
 > Auto-fires on every file. Sister to `documentation-requirements.md`,
 > `security.md`, `audit-logging.md`. Standards: **Contributor
@@ -39,7 +42,7 @@ paths:
 > context**, **US Title VII / EEOC**, **GDPR Article 6** (reporter
 > data lawful basis).
 
-## Core Principle
+### Core Principle
 
 **Every collaborative codebase, community, organisation, and
 event has a published Code of Conduct that defines expected
@@ -54,7 +57,7 @@ contributors," "we don't know what we'd do if behaviour was a
 problem," or "we tolerate behaviour we shouldn't." None of these
 is acceptable.
 
-## Why every project + organisation needs one
+### Why every project + organisation needs one
 
 | Stakeholder | Why they care |
 | --- | --- |
@@ -65,9 +68,9 @@ is acceptable.
 | **Funders / sponsors** | Open-source funders require a CoC |
 | **Enterprise procurement** | Vendor questionnaires ask about CoC + DEI |
 
-## Hard rules
+### Hard rules
 
-### 1. Adopt the Contributor Covenant (don't write your own)
+#### 1. Adopt the Contributor Covenant (don't write your own)
 
 Per `reuse-first.md` — there's a well-tested standard, used by
 40,000+ open-source projects, including Python, Go, Linux Kernel
@@ -101,7 +104,7 @@ DO NOT: water down the Covenant, add "free speech" carve-outs, or
 write a custom CoC from scratch (you will miss things; lawyers
 review the Covenant; your draft won't be).
 
-### 2. CoC applies to ALL project spaces
+#### 2. CoC applies to ALL project spaces
 
 The CoC's scope is explicit:
 
@@ -116,7 +119,7 @@ The CoC's scope is explicit:
 The scope statement is in the CoC. NO ambiguity about "is the
 Discord covered." It IS covered.
 
-### 3. Enforcement is a documented process
+#### 3. Enforcement is a documented process
 
 Three documented states (Contributor Covenant Enforcement Guidelines):
 
@@ -131,7 +134,7 @@ Each escalation has a published criteria. The committee
 documents the decision (privately); reporters get a status
 update.
 
-### 4. Reports are handled by a TEAM, not the founder
+#### 4. Reports are handled by a TEAM, not the founder
 
 Single-person enforcement creates:
 
@@ -151,7 +154,7 @@ Establish a CoC Committee:
 For small projects: pair maintainers with an external advisor
 (another OSS maintainer; the foundation hosting the project).
 
-### 5. Reporting paths are visible + multiple
+#### 5. Reporting paths are visible + multiple
 
 Every CoC names at least 2 reporting paths:
 
@@ -171,7 +174,7 @@ Reporting documented + visible:
 - In Slack/Discord pinned messages
 - At event registration
 
-### 6. Reporters are protected
+#### 6. Reporters are protected
 
 The CoC explicitly states:
 
@@ -186,7 +189,7 @@ The CoC explicitly states:
 Retaliation is a separate, severe CoC violation. Most reporting
 fears are about retaliation; address it explicitly.
 
-### 7. Pre-publication action: train + simulate
+#### 7. Pre-publication action: train + simulate
 
 Before publishing the CoC:
 
@@ -203,7 +206,7 @@ Before publishing the CoC:
 A CoC published without preparation is a promise the project
 can't keep.
 
-### 8. Audit logging without doxxing
+#### 8. Audit logging without doxxing
 
 Per `audit-logging.md` — moderation actions ARE audited:
 
@@ -223,7 +226,7 @@ Aggregate stats CAN be published (annual transparency reports):
 "In 2026 we received N reports, took action on M, banned K
 contributors permanently." Counts only; no identifying details.
 
-### 9. The CoC is reviewed annually
+#### 9. The CoC is reviewed annually
 
 Communities change; norms evolve; legal landscape shifts. Each
 year:
@@ -237,7 +240,7 @@ year:
 A CoC last updated in 2018 is a CoC that doesn't reflect 2026
 norms.
 
-### 10. CoC applies to everyone including leadership
+#### 10. CoC applies to everyone including leadership
 
 If the project's lead developer harasses contributors, the CoC
 applies to them too. This is the hardest enforcement scenario;
@@ -251,22 +254,22 @@ it's also the most important. Plans:
 
 No-one is above the CoC. The CoC has teeth or it has nothing.
 
-## Common pitfalls
+### Common pitfalls
 
-### Pitfall 1: "We don't need one, we're a small team"
+#### Pitfall 1: "We don't need one, we're a small team"
 
 When you grow + when an incident happens, you'll need one. The
 CoC isn't there for the 99% of interactions that go fine — it's
 there for the 1% that don't.
 
-### Pitfall 2: "Code of Conduct? You mean restricting free speech?"
+#### Pitfall 2: "Code of Conduct? You mean restricting free speech?"
 
 Free speech protects you from the government; it doesn't
 require any community to host any expression. A CoC defines the
 community's terms; participation is voluntary; everyone benefits
 from clarity.
 
-### Pitfall 3: Vague enforcement
+#### Pitfall 3: Vague enforcement
 
 "Be excellent to each other" — what does that mean in practice?
 The CoC names specific behaviours: harassment, doxxing, slurs,
@@ -274,21 +277,21 @@ sexual imagery in shared spaces, sustained disruption.
 Specificity protects reporters AND alleged violators (they know
 what crossed the line).
 
-### Pitfall 4: Enforcement only against newcomers
+#### Pitfall 4: Enforcement only against newcomers
 
 Long-standing contributors who violate the CoC must be held to
 the same standard. The most damaging CoC failure mode: "But
 they've been here forever; they don't really mean it." Yes,
 they do, and they must follow the rules anyway.
 
-### Pitfall 5: Reading the CoC as the only deliverable
+#### Pitfall 5: Reading the CoC as the only deliverable
 
 Adopting Contributor Covenant takes 30 minutes. The hard work is
 the enforcement infrastructure (committee, training, channels,
 record-keeping, transparency reports). The document is the
 START.
 
-## Adapted for organisations (not just OSS)
+### Adapted for organisations (not just OSS)
 
 Companies need internal equivalents:
 
@@ -303,7 +306,7 @@ Companies need internal equivalents:
 The mechanics are the same: published policy, trained team,
 reporting channels, protected reporters, documented enforcement.
 
-## Cross-references
+### Cross-references
 
 - `documentation-requirements.md` — CoC is one of the required
   repo files
@@ -319,7 +322,7 @@ reporting channels, protected reporters, documented enforcement.
 - `secrets-management.md` — committee tools / channels have
   proper access controls
 
-## Standards cited
+### Standards cited
 
 - **Contributor Covenant v2.1** (contributor-covenant.org)
 - **Mozilla Community Participation Guidelines**
@@ -334,7 +337,7 @@ reporting channels, protected reporters, documented enforcement.
 - **Equality Act 2010** (UK)
 - **EU Equal Treatment Directive 2000/78/EC**
 
-## Why this rule exists
+### Why this rule exists
 
 Projects + organisations WITHOUT CoCs lose contributors,
 attract bad actors, and face liability when incidents happen.
@@ -363,7 +366,7 @@ The cost of a CoC + enforcement infrastructure: a few days of
 setup + ongoing committee time. The cost of NOT having one:
 people, trust, and sometimes the entire project.
 
-## Learning hooks
+### Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
@@ -371,7 +374,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New OSS repo created without `CODE_OF_CONDUCT.md` (rule 1 violation)
 - CoC text watered down vs Contributor Covenant baseline (rule 1 weakening)
-- Scope statement missing or ambiguous about specific spaces (Discord, conf parties, social media) — rule 2 weakening
+- Scope statement missing or ambiguous about specific spaces (Discord, conf parties, social media) —
+  rule 2 weakening
 - Enforcement guidelines not documented (the four-tier escalation absent)
 - Single-person enforcement (no committee) — rule 4 violation
 - Reporting paths < 2 OR not visible on website / README / event badges (rule 5 weakening)
@@ -383,9 +387,12 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New row in the published-Covenant adoptions when a new major OSS or org joins (e.g., new foundation, new vendor)
+- New row in the published-Covenant adoptions when a new major OSS or org joins (e.g., new
+  foundation, new vendor)
 - Tightening of the committee composition criteria when conflict-of-interest patterns recur
-- New cross-reference when a sister rule (audit-logging, gdpr-ccpa) provides the moderation-record contract
-- New scenario in the tabletop-simulation library when a recurring incident class emerges (e.g., DM harassment, doxxing via screenshot, AI-generated impersonation)
+- New cross-reference when a sister rule (audit-logging, gdpr-ccpa) provides the moderation-record
+  contract
+- New scenario in the tabletop-simulation library when a recurring incident class emerges (e.g., DM
+  harassment, doxxing via screenshot, AI-generated impersonation)
 
 ---

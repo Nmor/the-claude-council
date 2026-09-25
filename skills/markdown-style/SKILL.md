@@ -8,15 +8,18 @@ paths:
   - "**/*.mdx"
 ---
 
-> Migrated 2026-06-02 from `~/.claude/rules-library/markdown/` as part of the lazy-rules-loading plan. Phase H will delete the source files.
-
 # markdown-style
+
+> Migrated 2026-06-02 from `~/.claude/rules-library/markdown/` as part of the lazy-rules-loading
+> plan. Phase H will delete the source files.
+>
+> **Size budget: 17 KB** — `token-budget.mjs --check`.
 
 <!-- ============================================================
      Section: markdown/coding-style.md
      ============================================================ -->
 
-# Markdown Coding Style
+## Markdown Coding Style
 
 > Auto-fires on every `*.md`, `*.mdc`, `*.markdown` file.
 > Standards: **CommonMark 0.31.2** (specification, Jan 2024),
@@ -24,7 +27,7 @@ paths:
 > set MD001–MD059**, **CommonMark Reference Implementation
 > (cmark)**.
 
-## Core Principle
+### Core Principle
 
 **Markdown is a content surface, not a presentation surface.
 Every committed `*.md` file is portable across CommonMark
@@ -39,12 +42,12 @@ another is a portability bug. A markdown file with 500-char
 lines is a review-hostile bug. A markdown file that renders
 visually but fails markdownlint is technical debt.
 
-## Mandatory markdownlint rules
+### Mandatory markdownlint rules
 
 Every `*.md` file MUST pass these rules. They are the floor;
 projects may tighten further but never relax.
 
-### Headings + structure
+#### Headings + structure
 
 | Rule | What it enforces |
 | --- | --- |
@@ -59,7 +62,7 @@ projects may tighten further but never relax.
 | **MD026** | No trailing punctuation in headings (no `# Title.`) |
 | **MD036** | No emphasis-as-heading — `**Header**` on its own line is a heading; use `### Header` |
 
-### Lists
+#### Lists
 
 | Rule | What it enforces |
 | --- | --- |
@@ -70,7 +73,7 @@ projects may tighten further but never relax.
 | **MD030** | One space between list marker and content — `- item`, NOT `-  item` |
 | **MD032** | Blank line above AND below every list |
 
-### Code blocks
+#### Code blocks
 
 | Rule | What it enforces |
 | --- | --- |
@@ -79,7 +82,7 @@ projects may tighten further but never relax.
 | **MD046** | Code block style consistent — fenced (` ``` `) preferred over indented |
 | **MD048** | Code fence character is backtick — never tilde |
 
-### Whitespace + line length
+#### Whitespace + line length
 
 | Rule | What it enforces |
 | --- | --- |
@@ -89,7 +92,7 @@ projects may tighten further but never relax.
 | **MD013** | Line length cap (100 chars project default; longer tolerated only on unbreakable rows like long table rows or long inline URLs) |
 | **MD047** | File ends with exactly one trailing newline |
 
-### Links + references
+#### Links + references
 
 | Rule | What it enforces |
 | --- | --- |
@@ -100,7 +103,7 @@ projects may tighten further but never relax.
 | **MD052** | Reference-style links (`[text][ref]`) resolve to a definition |
 | **MD053** | Reference link definitions are used |
 
-### Tables
+#### Tables
 
 | Rule | What it enforces |
 | --- | --- |
@@ -108,16 +111,16 @@ projects may tighten further but never relax.
 | **MD056** | Each row has the same number of cells as the header |
 | **MD058** | Blank line above AND below every table |
 
-### HTML
+#### HTML
 
 | Rule | What it enforces |
 | --- | --- |
 | **MD033** | No inline HTML (configure exceptions per project: `<br>`, `<details>` are common allowed elements) |
 | **MD041** | First line of file is a top-level heading (`#`) — no preceding text |
 
-## Hard rules
+### Hard rules
 
-### 1. Language tag on every fenced code block
+#### 1. Language tag on every fenced code block
 
 Every triple-backtick fence carries a language identifier:
 
@@ -132,7 +135,7 @@ The `text` / `console` / `output` tags exist for blocks that
 aren't code (sample console output, plain text). Use them
 explicitly rather than dropping the language.
 
-### 2. Use dashes for unordered lists (MD004)
+#### 2. Use dashes for unordered lists (MD004)
 
 ```markdown
 - First item       ← yes
@@ -146,7 +149,7 @@ explicitly rather than dropping the language.
 The dash is the markdownlint default; consistency across the
 codebase matters more than the choice itself.
 
-### 3. Blank line above and below headings, lists, code
+#### 3. Blank line above and below headings, lists, code
 
 tables (MD022 + MD031 + MD032 + MD058)
 
@@ -172,13 +175,13 @@ Following paragraph.
 Squashed structure (no blank lines) confuses many renderers
 and breaks tooling that walks the AST.
 
-### 4. One top-level heading per file (MD025)
+#### 4. One top-level heading per file (MD025)
 
 The `#` heading is the document title. Sub-sections use `##`,
 `###`, and so on. NEVER two `#` headings in one file — split
 the document or demote one.
 
-### 5. Heading hierarchy increments by one (MD001)
+#### 5. Heading hierarchy increments by one (MD001)
 
 ```markdown
 # Title
@@ -197,7 +200,7 @@ the document or demote one.
 Skipping levels breaks screen-readers + outline-style
 navigation in IDEs.
 
-### 6. Tables have a header row + a separator row
+#### 6. Tables have a header row + a separator row
 
 ```markdown
 | Column A | Column B |
@@ -216,7 +219,7 @@ For alignment:
 | a    | b     | c     |
 ```
 
-### 7. Line length is project-capped (MD013, default 100)
+#### 7. Line length is project-capped (MD013, default 100)
 
 Wrap prose at ~100 chars. Exceptions are tolerated ONLY for:
 
@@ -227,7 +230,7 @@ Wrap prose at ~100 chars. Exceptions are tolerated ONLY for:
 Inline-code that pushes a paragraph over the cap should be
 moved to a fenced block.
 
-### 8. Reference-style links for long URLs
+#### 8. Reference-style links for long URLs
 
 ```markdown
 See the [OWASP Top 10][owasp] for the canonical category list.
@@ -239,14 +242,14 @@ Inline `[text](https://...)` works too — but for repeated
 references or long URLs, the reference-style keeps prose
 readable.
 
-### 9. Code spans use single backticks; code blocks use triple
+#### 9. Code spans use single backticks; code blocks use triple
 
 - Inline code: `` `variableName` `` → `variableName`
 - Block code: triple-backtick fence with a language tag
 - Code containing backticks: use double backticks for the
   inline span — `` `` `code with`backticks`inside` `` ``
 
-### 10. Frontmatter is YAML, fenced with `---`
+#### 10. Frontmatter is YAML, fenced with `---`
 
 Markdown files with frontmatter (e.g., agent / skill files):
 
@@ -266,9 +269,9 @@ Body content starts here.
 The frontmatter block is the FIRST thing in the file — before
 the H1. Empty line after the closing `---`.
 
-## Required tooling
+### Required tooling
 
-### CLI lint (mandatory in every repo)
+#### CLI lint (mandatory in every repo)
 
 ```bash
 # markdownlint-cli2 — the canonical implementation
@@ -278,7 +281,7 @@ npx markdownlint-cli2 "**/*.md" "#node_modules"
 npx markdownlint-cli2 --config .markdownlint.jsonc "**/*.md"
 ```
 
-### Pre-commit hook
+#### Pre-commit hook
 
 Per `~/.claude/rules-library/common/hooks.md`:
 
@@ -295,7 +298,7 @@ if [ -n "$staged_md" ]; then
 fi
 ```
 
-### CI workflow
+#### CI workflow
 
 ```yaml
 - name: Markdown lint
@@ -304,7 +307,7 @@ fi
     globs: '**/*.md'
 ```
 
-## Project config (`.markdownlint.jsonc`)
+### Project config (`.markdownlint.jsonc`)
 
 The canonical strict baseline:
 
@@ -328,9 +331,9 @@ The canonical strict baseline:
 when `<details>` / `<br>` are needed. `MD041` (first line H1)
 is often disabled for files with frontmatter.
 
-## Anti-patterns
+### Anti-patterns
 
-### Anti-pattern 1: Mixing list markers
+#### Anti-pattern 1: Mixing list markers
 
 ```markdown
 - One
@@ -340,7 +343,7 @@ is often disabled for files with frontmatter.
 
 Pick `-` and stick with it.
 
-### Anti-pattern 2: Bare URLs in prose
+#### Anti-pattern 2: Bare URLs in prose
 
 ```markdown
 See https://example.com for more.    ← MD034 violation
@@ -349,7 +352,7 @@ See https://example.com for more.    ← MD034 violation
 Always wrap: `See <https://example.com>` or
 `See [this site](https://example.com)`.
 
-### Anti-pattern 3: Tab characters for indentation
+#### Anti-pattern 3: Tab characters for indentation
 
 ```markdown
     indented with tabs    ← MD010 violation
@@ -358,7 +361,7 @@ Always wrap: `See <https://example.com>` or
 Use spaces (4 spaces for code-block indentation in raw
 markdown; rare — fenced blocks are preferred).
 
-### Anti-pattern 4: Emphasis as heading
+#### Anti-pattern 4: Emphasis as heading
 
 ```markdown
 **Section Title**     ← MD036 violation
@@ -374,7 +377,7 @@ Use a real heading:
 Content.
 ```
 
-### Anti-pattern 5: Skipping heading levels
+#### Anti-pattern 5: Skipping heading levels
 
 ```markdown
 # Title
@@ -384,7 +387,7 @@ Content.
 
 Always increment by one.
 
-### Anti-pattern 6: Trailing whitespace + hidden line-break
+#### Anti-pattern 6: Trailing whitespace + hidden line-break
 
 spaces
 
@@ -393,7 +396,7 @@ many renderers. This is a feature in some content, a bug in
 most. MD009 catches both — configure the project to allow
 two-space line breaks only where intentional.
 
-### Anti-pattern 7: HTML for visual styling
+#### Anti-pattern 7: HTML for visual styling
 
 ```markdown
 <div style="color: red;">Important</div>    ← bad
@@ -404,7 +407,7 @@ Use semantic structure: `**Important**` for bold,
 `> Important` for blockquote, `!!! warning` (in MkDocs /
 similar) for callouts.
 
-## Cross-references
+### Cross-references
 
 - `~/.claude/rules-library/common/extreme-lint-policy.md` — strict
   thresholds (MD013 line length, MD040 fenced code language,
@@ -416,7 +419,7 @@ similar) for callouts.
 - `~/.claude/rules-library/common/documentation-requirements.md` —
   Diátaxis four-quadrant model; markdown is the format
 
-## Standards cited
+### Standards cited
 
 - **CommonMark 0.31.2** — commonmark.org/spec/0.31.2/
   (formal specification, January 2024)
@@ -431,7 +434,7 @@ similar) for callouts.
   syntax extensions, where the project's renderer is
   MkDocs)
 
-## Why this rule exists
+### Why this rule exists
 
 Markdown is the lingua franca of documentation, READMEs,
 ADRs, runbooks, design docs, and the entire CommonMark / GFM
@@ -445,7 +448,7 @@ The cost of running markdownlint per-commit is one CI step.
 The cost of inconsistent docs across hundreds of files is
 unreviewable PRs + readers giving up.
 
-## Learning hooks
+### Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 

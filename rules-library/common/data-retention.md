@@ -10,6 +10,8 @@
 > **HIPAA §164.530(j)** (6-year retention), **SOX §404** (7-year
 > financial), **ISO/IEC 27001 Annex A.8.10** (information
 > deletion).
+>
+> **Size budget: 18 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -334,20 +336,27 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- New table introduced without retention metadata in `docs/data-classification.md` (rule 1 violation)
+- New table introduced without retention metadata in `docs/data-classification.md` (rule 1
+  violation)
 - TTL column / scheduled deletion job missing on a personal-data table (rule 2 weakening)
-- Soft-delete state persisting past the documented grace period without hard-delete cascade (rule 3 weakening)
-- Backup retention exceeds the documented privacy-notice lag without crypto-shredding adopted (rule 4 violation)
+- Soft-delete state persisting past the documented grace period without hard-delete cascade (rule 3
+  weakening)
+- Backup retention exceeds the documented privacy-notice lag without crypto-shredding adopted (rule
+  4 violation)
 - "Anonymisation" applied via hash without k-anonymity ≥ 5 + l-diversity check (rule 5 weakening)
-- DSAR deletion not cascaded to cache / search index / analytics warehouse / third-party processors (rule 3 incomplete)
+- DSAR deletion not cascaded to cache / search index / analytics warehouse / third-party processors
+  (rule 3 incomplete)
 - Legal hold introduced without owner + reason + start-time + expiry metadata (rule 7 weakening)
 - ML training data retained after user-deletion request (rule 9 weakening)
 - Privacy notice lacks per-class retention period (rule 10 violation)
-- Tax / SOX / HIPAA-bound records pruned before the longest applicable retention (regulation-driven floor violated)
+- Tax / SOX / HIPAA-bound records pruned before the longest applicable retention (regulation-driven
+  floor violated)
 
 **Refinement candidates**:
 
-- New regulation row in the retention quick-reference when a new framework emerges (e.g., new EU sector-specific law, US state privacy law)
+- New regulation row in the retention quick-reference when a new framework emerges (e.g., new EU
+  sector-specific law, US state privacy law)
 - Tightening of the cascade enumeration when a recurring "forgot to delete from X" class appears
-- New cross-reference when a sister rule (gdpr-ccpa, audit-logging, schema-evolution) provides the data-class metadata
+- New cross-reference when a sister rule (gdpr-ccpa, audit-logging, schema-evolution) provides the
+  data-class metadata
 - New anonymisation template when a recurring "we hashed the email" misuse class emerges

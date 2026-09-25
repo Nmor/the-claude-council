@@ -3,6 +3,8 @@
 > Auto-fires on every file. Sister to `done-criteria.md`,
 > `extreme-lint-policy.md`, `tdd-workflow` skill, `tdd-guide`
 > agent, `task-intake-due-diligence.md` (Q14 test strategy).
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Coverage thresholds (canonical)
 
@@ -105,7 +107,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Project coverage < 80% (sister `extreme-lint-policy.md` weakening)
 - Critical-path coverage < 95% (auth / payments / data-mutation / multi-tenant isolation)
 - TDD RED-VERIFY skipped — test never confirmed to fail for the right reason (workflow weakening)
-- Mocked external boundary used instead of recorded fixture / contract test (integration-test contract drift)
+- Mocked external boundary used instead of recorded fixture / contract test (integration-test
+  contract drift)
 - Property-based test absent for a parser / validator / state machine (test-type gap)
 - E2E test absent for a critical user journey (test-type gap)
 - Test asserts on `message` instead of `error_code` (sister-rule violation — copy-edit fragility)
@@ -114,7 +117,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New test-type row when a recurring test class emerges (e.g., chaos test, fuzzing target, snapshot regression)
+- New test-type row when a recurring test class emerges (e.g., chaos test, fuzzing target, snapshot
+  regression)
 - Tightening of the critical-path coverage floor when a regression slips past 95%
-- New cross-reference when a sister skill (django-testing, springboot-testing, swift-protocol-di-testing) extends test-type taxonomy
-- New "test isolation" failure-mode template when a recurring shared-state contamination class appears
+- New cross-reference when a sister skill (django-testing, springboot-testing,
+  swift-protocol-di-testing) extends test-type taxonomy
+- New "test isolation" failure-mode template when a recurring shared-state contamination class
+  appears

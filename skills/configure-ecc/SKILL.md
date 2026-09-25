@@ -5,7 +5,11 @@ description: Interactive installer for Everything Claude Code — guides users t
 
 # Configure Everything Claude Code (ECC)
 
-An interactive, step-by-step installation wizard for the Everything Claude Code project. Uses `AskUserQuestion` to guide users through selective installation of skills and rules, then verifies correctness and offers optimization.
+> **Size budget: 22 KB** — `token-budget.mjs --check`.
+
+An interactive, step-by-step installation wizard for the Everything Claude Code project. Uses
+`AskUserQuestion` to guide users through selective installation of skills and rules, then verifies
+correctness and offers optimization.
 
 ## When to Activate
 
@@ -18,8 +22,10 @@ An interactive, step-by-step installation wizard for the Everything Claude Code 
 
 This skill must be accessible to Claude Code before activation. Two ways to bootstrap:
 
-1. **Via Plugin**: `/plugin install everything-claude-code` — the plugin loads this skill automatically
-2. **Manual**: Copy only this skill to `~/.claude/skills/configure-ecc/SKILL.md`, then activate by saying "configure ecc"
+1. **Via Plugin**: `/plugin install everything-claude-code` — the plugin loads this skill
+   automatically
+2. **Manual**: Copy only this skill to `~/.claude/skills/configure-ecc/SKILL.md`, then activate by
+   saying "configure ecc"
 
 ---
 
@@ -34,7 +40,8 @@ git clone https://github.com/affaan-m/everything-claude-code.git /tmp/everything
 
 Set `ECC_ROOT=/tmp/everything-claude-code` as the source for all subsequent copy operations.
 
-If the clone fails (network issues, etc.), use `AskUserQuestion` to ask the user to provide a local path to an existing ECC clone.
+If the clone fails (network issues, etc.), use `AskUserQuestion` to ask the user to provide a local
+path to an existing ECC clone.
 
 ---
 
@@ -81,9 +88,12 @@ Options:
 
 ### 2b: Confirm Individual Skills
 
-For each selected category, print the full list of skills below and ask the user to confirm or deselect specific ones. If the list exceeds 4 items, print the list as text and use `AskUserQuestion` with an "Install all listed" option plus "Other" for the user to paste specific names.
+For each selected category, print the full list of skills below and ask the user to confirm or
+deselect specific ones. If the list exceeds 4 items, print the list as text and use
+`AskUserQuestion` with an "Install all listed" option plus "Other" for the user to paste specific
+names.
 
-**Category: Framework & Language (16 skills)**
+#### Category: Framework & Language (16 skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -104,7 +114,7 @@ For each selected category, print the full list of skills below and ask the user
 | `springboot-testing` | Spring Boot TDD with JUnit 5, Mockito, MockMvc, Testcontainers |
 | `springboot-testing` | Spring Boot verification: build, static analysis, tests, security scans |
 
-**Category: Database (3 skills)**
+#### Category: Database (3 skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -112,7 +122,7 @@ For each selected category, print the full list of skills below and ask the user
 | `jpa-patterns` | JPA/Hibernate entity design, relationships, query optimization, transactions |
 | `postgres-patterns` | PostgreSQL query optimization, schema design, indexing, security |
 
-**Category: Workflow & Quality (8 skills)**
+#### Category: Workflow & Quality (8 skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -123,7 +133,7 @@ For each selected category, print the full list of skills below and ask the user
 | `tdd-workflow` | Enforces TDD with 90% touched / 80% project coverage: unit, integration, E2E |
 | `verification-loop` | Verification and quality loop patterns, plus strategic context-management at logical phase boundaries |
 
-**Standalone**
+#### Standalone
 
 | Skill | Description |
 |-------|-------------|
@@ -137,7 +147,8 @@ For each selected skill, copy the entire skill directory:
 cp -r $ECC_ROOT/skills/<skill-name> $TARGET/skills/
 ```
 
-Note: `continuous-learning` and `continuous-learning-v2` have extra files (config.json, hooks, scripts) — ensure the entire directory is copied, not just SKILL.md.
+Note: `continuous-learning` and `continuous-learning-v2` have extra files (config.json, hooks,
+scripts) — ensure the entire directory is copied, not just SKILL.md.
 
 ---
 
@@ -167,7 +178,8 @@ cp -r $ECC_ROOT/rules-library/golang/* $TARGET/rules/        # if selected
 ```
 
 **Important**: If the user selects any language-specific rules but NOT common rules, warn them:
-> "Language-specific rules extend the common rules. Installing without common rules may result in incomplete coverage. Install common rules too?"
+> "Language-specific rules extend the common rules. Installing without common rules may result in
+> incomplete coverage. Install common rules too?"
 
 ---
 
@@ -196,8 +208,10 @@ grep -rn "skills/" $TARGET/skills/
 
 **For project-level installs**, flag any references to `~/.claude/` paths:
 
-- If a skill references `~/.claude/settings.json` — this is usually fine (settings are always user-level)
-- If a skill references `~/.claude/skills/` or `~/.claude/rules/` — this may be broken if installed only at project level
+- If a skill references `~/.claude/settings.json` — this is usually fine (settings are always
+  user-level)
+- If a skill references `~/.claude/skills/` or `~/.claude/rules/` — this may be broken if installed
+  only at project level
 - If a skill references another skill by name — check that the referenced skill was also installed
 
 ### 4c: Check Cross-References Between Skills
@@ -217,8 +231,10 @@ For each issue found, report:
 
 1. **File**: The file containing the problematic reference
 2. **Line**: The line number
-3. **Issue**: What's wrong (e.g., "references ~/.claude/skills/python-patterns but python-patterns was not installed")
-4. **Suggested fix**: What to do (e.g., "install python-patterns skill" or "update path to .claude/skills/")
+3. **Issue**: What's wrong (e.g., "references ~/.claude/skills/python-patterns but python-patterns
+   was not installed")
+4. **Suggested fix**: What to do (e.g., "install python-patterns skill" or "update path to
+   .claude/skills/")
 
 ---
 
@@ -253,7 +269,8 @@ Options:
    - Security requirements
 3. Edit the rule files in-place at the installation target
 
-**Critical**: Only modify files in the installation target (`$TARGET/`), NEVER modify files in the source ECC repository (`$ECC_ROOT/`).
+**Critical**: Only modify files in the installation target (`$TARGET/`), NEVER modify files in the
+source ECC repository (`$ECC_ROOT/`).
 
 ---
 
@@ -302,13 +319,15 @@ Then print a summary report:
 
 ### "Rules not working"
 
-- Rules are flat files, not in subdirectories: `$TARGET/rules/coding-style.md` (correct) vs `$TARGET/rules-library/common/coding-style.md` (incorrect for flat install)
+- Rules are flat files, not in subdirectories: `$TARGET/rules/coding-style.md` (correct) vs
+  `$TARGET/rules-library/common/coding-style.md` (incorrect for flat install)
 - Restart Claude Code after installing rules
 
 ### "Path reference errors after project-level install"
 
 - Some skills assume `~/.claude/` paths. Run Step 4 verification to find and fix these.
-- For `continuous-learning-v2`, the `~/.claude/homunculus/` directory is always user-level — this is expected and not an error.
+- For `continuous-learning-v2`, the `~/.claude/homunculus/` directory is always user-level — this is
+  expected and not an error.
 
 ## Purpose
 
@@ -423,18 +442,23 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Skill installed without Step 4 verification (hardcoded `~/.claude/` paths break in project-level install)
-- Cross-project skill duplication (same skill installed in N projects instead of promoted to global per `~/.claude/rules/common/rule-authoring-global-vs-project.md`)
+- Skill installed without Step 4 verification (hardcoded `~/.claude/` paths break in project-level
+  install)
+- Cross-project skill duplication (same skill installed in N projects instead of promoted to global
+  per `~/.claude/rules/common/rule-authoring-global-vs-project.md`)
 - Project-level install of a skill that should be global (universal applicability misread)
-- Global install of a skill that should be project-specific (vendor / domain pollution into global surface)
-- `$TARGET/rules/common/` subdirectory used instead of flat `$TARGET/rules/` (project-vs-global install shape confusion)
+- Global install of a skill that should be project-specific (vendor / domain pollution into global
+  surface)
+- `$TARGET/rules/common/` subdirectory used instead of flat `$TARGET/rules/` (project-vs-global
+  install shape confusion)
 - Restart after install skipped — skill auto-discovery doesn't pick up new file
 - `homunculus/` directory created at project level (should be user-level only)
 - Install command misuses `--global` flag when project install was intended (or vice versa)
 
 **Refinement candidates**:
 
-- New installer flag when a recurring install pattern (e.g., bulk-install from a manifest, sync from a shared repo) needs codification
+- New installer flag when a recurring install pattern (e.g., bulk-install from a manifest, sync from
+  a shared repo) needs codification
 - Promotion path automation (workspace → global) per `rule-authoring-global-vs-project.md` rule 7
 - Demotion path documentation when global skill turns out workspace-specific
 - Pre-install validator that flags hardcoded `~/.claude/` paths before the copy step

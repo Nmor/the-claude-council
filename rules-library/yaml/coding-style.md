@@ -9,6 +9,8 @@
 > [yaml.org/spec/1.2.2](https://yaml.org/spec/1.2.2/)),
 > **yamllint 1.38.0** (canonical linter), the per-ecosystem
 > schemas catalogued at [JSON Schema Store](https://www.schemastore.org/).
+>
+> **Size budget: 20 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

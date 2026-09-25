@@ -7,6 +7,8 @@ paths:
 # Go Hooks
 
 > This file extends [common/hooks.md](../common/hooks.md) with Go specific content.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## PostToolUse Hooks
 

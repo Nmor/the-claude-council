@@ -9,7 +9,10 @@ paths:
 
 # C++ Testing Standards
 
-> Auto-activates for C++ test files. Chains with `cpp-testing` skill for GoogleTest patterns and coverage.
+> Auto-activates for C++ test files. Chains with `cpp-testing` skill for GoogleTest patterns and
+> coverage.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Checklist
 

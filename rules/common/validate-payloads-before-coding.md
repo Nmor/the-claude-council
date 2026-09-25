@@ -4,6 +4,8 @@
 > primary-source docs first), `task-intake-due-diligence.md` (Q3 canonical
 > reference, Q7 integration map), `verify-before-claim.md` (verify, don't
 > assume), `proper-fixes-first.md` (root cause, not a guessed shape).
+>
+> **Size budget: 10 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -100,6 +102,32 @@ Payload validation (this turn):
 - **"It compiles, ship it"** — the parser type-checks against the assumed shape;
   type-checking is not shape-validation.
 
+## Enforcement (hook-backed, not documentation-only)
+
+Two hooks, following the research-gate / research-marker pattern:
+
+- **`payload-marker.js`** (PostToolUse `Bash`) records that the session actually looked at a
+  real payload — an outbound call (`curl`, `wget`, `grpcurl`, `openssl s_client`), a fetched
+  `openapi`/`swagger` document, or a recorded fixture. Reading our own source does NOT count:
+  a `grep` tells you what WE believe the shape is, which is the belief this rule exists to
+  check.
+- **`payload-gate.js`** (PreToolUse `Edit|Write|MultiEdit`) fires when an edit decodes a
+  NETWORK response into our own types, in an integration-shaped file, with no such evidence
+  in the session. Tests and fixture paths are exempt — that is where a confirmed shape gets
+  recorded, and gating it would block the very act the rule asks for.
+
+Advisory by default (`CLAUDE_PAYLOAD_GATE=warn`), because the third condition is a heuristic
+and a hard block on a heuristic gets a hook switched off — which makes every other gate
+weaker. `=block` enforces; `=off` disables. Twenty tests pin both halves, including the
+false-positive cases: our own config, a literal byte slice, a test file, a non-source file.
+
+**Why it exists as a gate at all.** This rule had NO enforcement until 2026-09-21, and it is
+the rule that produced the programme's most expensive near-miss. A provider's own OpenAPI
+document (v3.62.1) declared five collections as bare arrays; every live instance returned
+`{count, rows}`. Four working readers were about to be "corrected" to match the document.
+One live call settled it. Nothing had required that call — the rule was correct, loaded, and
+depended entirely on someone choosing to apply it.
+
 ## Cross-references
 
 - `official-docs-first.md` — read the primary-source docs before integration
@@ -126,7 +154,6 @@ the cost of a shape-guess is silent wrong behaviour discovered in production.
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

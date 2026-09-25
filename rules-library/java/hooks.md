@@ -2,6 +2,8 @@
 
 > Auto-fires on every `*.java`, `pom.xml`, `build.gradle`,
 > `build.gradle.kts` file. Sister to `~/.claude/rules/common/hooks.md`.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Pre-commit / pre-push gates (mandatory)
 

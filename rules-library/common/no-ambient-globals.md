@@ -5,6 +5,8 @@
 > `extreme-lint-policy.md`. Standards: **TypeScript strict mode**,
 > **Go module-private**, **Python module discipline**, **Java
 > package-private**, **dependency injection** (Fowler).
+>
+> **Size budget: 18 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -438,20 +440,27 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- New module-level mutable state introduced (singleton cache, shared dict, lazy-init holder) — rule 1 weakening
+- New module-level mutable state introduced (singleton cache, shared dict, lazy-init holder) — rule
+  1 weakening
 - `process.env` / `os.environ` read deep in the call stack instead of at startup (rule 2 violation)
 - `init()` (Go) / `__init__.py` with side effects beyond pure assignment — rule 3 violation
 - `Date.now()` / `time.Now()` called directly in product code (rule 4 — Clock not injected)
-- `Math.random()` / `crypto.randomUUID()` invoked without a seeded RNG injection layer (rule 4 weakening)
-- Logger imported as a module-level singleton instead of bound to the request context (rule 6 violation)
-- DB connection grabbed from a global pool inside a handler instead of context-acquired (rule 7 weakening)
+- `Math.random()` / `crypto.randomUUID()` invoked without a seeded RNG injection layer (rule 4
+  weakening)
+- Logger imported as a module-level singleton instead of bound to the request context (rule 6
+  violation)
+- DB connection grabbed from a global pool inside a handler instead of context-acquired (rule 7
+  weakening)
 - Feature flag client read globally rather than per-request context (rule 8 weakening)
 - Test failures appear under `--shuffle` / `-shuffle` (rule 10 violation — ambient global exists)
 - `gochecknoglobals` / `gochecknoinits` lint disabled in golangci-lint config
 
 **Refinement candidates**:
 
-- New per-language DI pattern row when a new framework's idiom emerges (e.g., new async-local-storage shape, new effect system)
+- New per-language DI pattern row when a new framework's idiom emerges (e.g., new
+  async-local-storage shape, new effect system)
 - Tightening of the test-shuffle gate when randomised order isn't enforced in CI
-- New cross-reference when a sister rule (no-discards, local-testability, idempotency) depends on DI for verification
-- New "acceptable global" entry when a recurring genuinely-stateless pattern (interned strings, compiled regex catalog) needs the carve-out
+- New cross-reference when a sister rule (no-discards, local-testability, idempotency) depends on DI
+  for verification
+- New "acceptable global" entry when a recurring genuinely-stateless pattern (interned strings,
+  compiled regex catalog) needs the carve-out

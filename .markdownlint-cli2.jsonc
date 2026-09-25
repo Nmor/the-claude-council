@@ -1,0 +1,100 @@
+// markdownlint configuration for the Council framework corpus.
+//
+// WHY THIS FILE EXISTS, AND WHY THE NUMBER IS 100.
+//
+// Measured 2026-09-21 across ~/.claude/rules/**: 388 findings, ALL of them MD013
+// (line-length) and not one of any other rule. So the corpus is structurally clean —
+// headings, lists, fences, blockquotes and tables all conform — and the only thing
+// "failing" was a width nobody had ever set.
+//
+// markdownlint's default is 80. This corpus is written at 85-90. Twenty-five of
+// twenty-five Floor rule files exceed 80, which is the signal that 80 is the wrong
+// standard for the corpus rather than the corpus being wrong: a rule that every single
+// file breaks is not enforcing anything, it is just noise that trains people to ignore
+// the linter. Rewrapping two files to 80 inside a corpus of twenty-five at 90 would have
+// made those two the odd ones out and fixed nothing.
+//
+// 100 is chosen to sit above the corpus's natural width with headroom, so a genuinely
+// runaway line still fails. It is a real gate, not a rubber stamp.
+//
+// tables: false — a markdown table row cannot be wrapped without breaking the table. The
+// widest line in the corpus is a 337-character table row, and there is no edit that both
+// shortens it and keeps it a table.
+//
+// code_blocks: false — a fenced block holds commands and sample output. Wrapping a shell
+// command changes what it does, and wrapping sample output makes it stop matching what
+// the tool really prints, which is worse than a long line.
+{
+  "config": {
+    "MD013": {
+      "line_length": 100,
+      "code_blocks": false,
+      "tables": false,
+      "headings": true
+    },
+
+    // MD060 defaults to inferring a table style from the first table it happens to read,
+    // and it inferred "compact". Censused 2026-09-21, the corpus is padded 689 to 92 — so
+    // the inference was picking the 12% and reporting the 88% as wrong. Pinning the real
+    // convention makes the finding list the ~92 tables that genuinely deviate, which is a
+    // list worth burning down, instead of 689 that do not.
+    "MD060": {
+      "style": "padded"
+    },
+
+    // Skills concatenate migrated rule documents, and each carries its own "## Why this rule
+    // exists" / "## Cross-references" under a different parent — the same reason a changelog
+    // repeats "### Added" under every version. Measured 2026-09-21: 68 duplicate-heading
+    // findings in skills/, 47 of them cross-parent. siblings_only keeps the 21 that are real
+    // (the same heading twice under one parent) and stops flagging the structure.
+    "MD024": {
+      "siblings_only": true
+    }
+  },
+
+  // NOTE: markdownlint-cli2 has no "overrides" key. Per-path configuration is done with a
+  // nested config file in the directory concerned, which is why memory folders carry their
+  // own `.markdownlint-cli2.jsonc` disabling MD041 (memory entries are frontmatter + body
+  // by design — the format CLAUDE.md defines for them has no H1). An "overrides" block was
+  // briefly written here and silently did nothing, which is the inert-config trap this
+  // framework has a rule about.
+  //
+  // Scope is the AUTHORED corpus: rules, skills, agents, commands, templates, CLAUDE.md.
+  // Everything ignored below is either generated, a runtime artifact, or somebody else's
+  // code. Linting a session transcript or a captured plan tells you nothing about the
+  // framework and buries the findings that matter — an earlier version of this file
+  // scanned them and reported 6,064 findings in `sessions/` alone, which is noise that
+  // makes the real number unreadable.
+  // WARNING — these globs are APPENDED to any globs given on the command line, not replaced
+  // by them. `markdownlint-cli2 --fix agents/x.md` therefore fixes the WHOLE corpus: a single
+  // file argument reported "Linting: 683 file(s)" on 2026-09-21. The fixers are
+  // rendering-safe, but a corpus-wide rewrite you did not intend can race any other process
+  // editing those files. To act on one path only, pass `--config` pointing at a config with
+  // no globs, or run from a directory whose config does not set them.
+  "globs": ["**/*.md"],
+  "ignores": [
+    "node_modules/**",
+    // Vendored third-party code: a dependency's LICENSE.md is not ours to reformat, and
+    // reformatting one would be a licence modification.
+    "**/site-packages/**",
+    "**/*venv*/**",
+    // Skills synced from the claude.ai account are managed by the sync, not authored here.
+    // A lint fix once renumbered an ordered list and wrapped a URL template in `<>` inside
+    // them — both change what the model reads.
+    "skills/synced/**",
+    "skills/.trash/**",
+    // graphify is installed and updated by the graphify tool; its skill is vendored.
+    "skills/graphify/**",
+    "cache/**",
+    "projects/**",
+    "plugins/**",
+    "sessions/**",
+    "plans/**",
+    "audits/**",
+    "todos/**",
+    "statsig/**",
+    "shell-snapshots/**",
+    "**/.archive/**",
+    ".local/**"
+  ]
+}

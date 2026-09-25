@@ -7,7 +7,10 @@ paths:
 ---
 # TypeScript/JavaScript Patterns
 
-> This file extends [common/patterns.md](../common/patterns.md) with TypeScript/JavaScript specific content.
+> This file extends [common/patterns.md](../common/patterns.md) with TypeScript/JavaScript specific
+> content.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## API Response Format
 

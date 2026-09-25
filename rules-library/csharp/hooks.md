@@ -3,6 +3,8 @@
 > Auto-fires on every `*.cs`, `*.csx`, `*.csproj`, `*.sln`,
 > `*.props`, `*.targets`, `global.json`, `Directory.Build.props`
 > file. Sister to `~/.claude/rules/common/hooks.md`.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Pre-commit gates
 

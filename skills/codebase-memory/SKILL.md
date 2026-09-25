@@ -14,6 +14,8 @@ description: Use the codebase knowledge graph for structural code queries. Trigg
 > deterministic AST, no vector store). Once the MCP is approved, THIS skill is the
 > authority for MCP-backed incremental queries against an indexed repo, and graphify is
 > the authority for one-shot graphs over a repo that has not been indexed. — Knowledge Graph Tools
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 Graph tools return precise structural results in ~500 tokens vs ~80K for grep.
 
@@ -65,7 +67,8 @@ CONTAINS_FILE, CONTAINS_FOLDER, CONTAINS_PACKAGE
 
 ## Cypher Examples (for query_graph)
 
-> Query syntax follows the property-graph model standardised by ISO/IEC 39075:2024 (GQL); `query_graph` accepts a Cypher-compatible subset.
+> Query syntax follows the property-graph model standardised by ISO/IEC 39075:2024 (GQL);
+> `query_graph` accepts a Cypher-compatible subset.
 
 ```cypher
 MATCH (a)-[r:HTTP_CALLS]->(b) RETURN a.name, b.name, r.url_path, r.confidence LIMIT 20
@@ -75,7 +78,8 @@ MATCH (a)-[r:CALLS]->(b) WHERE a.name = 'main' RETURN b.name
 
 ## Gotchas
 
-1. `search_graph(relationship="HTTP_CALLS")` filters nodes by degree — use `query_graph` with Cypher to see actual edges.
+1. `search_graph(relationship="HTTP_CALLS")` filters nodes by degree — use `query_graph` with Cypher
+   to see actual edges.
 2. `query_graph` has a 200-row cap — use `search_graph` with degree filters for counting.
 3. `trace_path` needs exact names — use `search_graph(name_pattern=...)` first.
 4. `direction="outbound"` misses cross-service callers — use `direction="both"`.

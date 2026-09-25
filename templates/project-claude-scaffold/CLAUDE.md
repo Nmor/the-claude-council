@@ -2,6 +2,8 @@
 
 > Workspace-level rules + vendor table. Layered on top of global
 > per `~/.claude/CLAUDE.md`. Strictest wins on conflict.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Tech stack
 

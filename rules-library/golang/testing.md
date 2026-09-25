@@ -7,6 +7,8 @@ paths:
 # Go Testing
 
 > This file extends [common/testing.md](../common/testing.md) with Go specific content.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Framework
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Size budget: 8 KB. Check: wc -c; gate: token-budget.mjs --check.
 /**
  * PostToolUse Hook: TypeScript check after editing .ts/.tsx files
  *
@@ -12,6 +13,7 @@
 const { execFileSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
+const { advise } = require("./lib/advise.js");
 
 const MAX_STDIN = 1024 * 1024; // 1MB limit
 let data = "";
@@ -25,16 +27,14 @@ process.stdin.on("data", (chunk) => {
 });
 
 process.stdin.on("end", () => {
+  let input = {};
   try {
-    const input = JSON.parse(data);
+    input = JSON.parse(data);
     const filePath = input.tool_input?.file_path;
 
     if (filePath && /\.(ts|tsx)$/.test(filePath)) {
       const resolvedPath = path.resolve(filePath);
-      if (!fs.existsSync(resolvedPath)) {
-        process.stdout.write(data);
-        process.exit(0);
-      }
+      if (!fs.existsSync(resolvedPath)) process.exit(0);
       // Find nearest tsconfig.json by walking up (max 20 levels to prevent infinite loop)
       let dir = path.dirname(resolvedPath);
       const root = path.parse(dir).root;
@@ -79,18 +79,18 @@ process.stdin.on("end", () => {
             .slice(0, 10);
 
           if (relevantLines.length > 0) {
-            console.error(
-              "[Hook] TypeScript errors in " + path.basename(filePath) + ":",
+            advise(
+              input,
+              ["[Hook] TypeScript errors in " + path.basename(filePath) + ":", ...relevantLines].join("\n"),
+              "PostToolUse",
             );
-            relevantLines.forEach((line) => console.error(line));
           }
         }
       }
     }
   } catch {
-    // Invalid input — pass through
+    // Unreadable input: nothing to check.
   }
 
-  process.stdout.write(data);
   process.exit(0);
 });

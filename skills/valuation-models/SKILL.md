@@ -5,34 +5,56 @@ description: Principal-level valuation methodologies — DCF, trading comparable
 
 # Valuation Models
 
+> **Size budget: 23 KB** — `token-budget.mjs --check`.
+
 ## Purpose
 
-Valuation translates a business into a price. Every M&A deal, fundraising round, employee option grant, impairment test, fair-value disclosure, and strategic divestiture relies on a defensible valuation. The discipline is not "compute a number" — it is to triangulate a defensible RANGE from multiple methods, document every assumption, run sensitivity around the high-leverage drivers, and explain why the range is the range. A valuation that produces a single number with no sensitivity is professional malpractice; the inputs are uncertain, so the output must be too.
+Valuation translates a business into a price. Every M&A deal, fundraising round, employee option
+grant, impairment test, fair-value disclosure, and strategic divestiture relies on a defensible
+valuation. The discipline is not "compute a number" — it is to triangulate a defensible RANGE from
+multiple methods, document every assumption, run sensitivity around the high-leverage drivers, and
+explain why the range is the range. A valuation that produces a single number with no sensitivity is
+professional malpractice; the inputs are uncertain, so the output must be too.
 
-This skill governs principal-level valuation work: choosing the right method for the asset class, building defensible models in spreadsheets or code, documenting assumptions in an audit-defensible footnote pack, and communicating the result honestly to the audience (board, acquirer, regulator, auditor, employee).
+This skill governs principal-level valuation work: choosing the right method for the asset class,
+building defensible models in spreadsheets or code, documenting assumptions in an audit-defensible
+footnote pack, and communicating the result honestly to the audience (board, acquirer, regulator,
+auditor, employee).
 
 ## Standards Cited
 
-- **CFA Institute Body of Knowledge — Equity Investments + Corporate Issuers** (CFA Program Curriculum, 2026 edition) — canonical methodology for DCF, residual income, dividend discount, multiples
-- **Damodaran "Investment Valuation" 3rd edition** (Wiley, 2012) + ongoing `pages.stern.nyu.edu/~adamodar/` datasets — sector betas, country risk premia, ERP estimates
-- **Koller, Goedhart, Wessels "Valuation: Measuring and Managing the Value of Companies" 7e** (McKinsey, 2020) — ROIC-growth value driver framework, enterprise vs equity bridge
-- **AICPA Accounting and Valuation Guide — Valuation of Privately-Held-Company Equity Securities Issued as Compensation** (2013, updated 2019) — 409A methodology
+- **CFA Institute Body of Knowledge — Equity Investments + Corporate Issuers** (CFA Program
+  Curriculum, 2026 edition) — canonical methodology for DCF, residual income, dividend discount,
+  multiples
+- **Damodaran "Investment Valuation" 3rd edition** (Wiley, 2012) + ongoing
+  `pages.stern.nyu.edu/~adamodar/` datasets — sector betas, country risk premia, ERP estimates
+- **Koller, Goedhart, Wessels "Valuation: Measuring and Managing the Value of Companies" 7e**
+  (McKinsey, 2020) — ROIC-growth value driver framework, enterprise vs equity bridge
+- **AICPA Accounting and Valuation Guide — Valuation of Privately-Held-Company Equity Securities
+  Issued as Compensation** (2013, updated 2019) — 409A methodology
 - **IRS Revenue Ruling 59-60** + **IRC §409A** — fair-market-value standard for tax purposes
-- **IPEV (International Private Equity and Venture Capital) Valuation Guidelines** (December 2022) — quarterly fair-value reporting for PE/VC funds
-- **IFRS 13 Fair Value Measurement** + **ASC 820 Fair Value Measurement** — Level 1/2/3 hierarchy, exit-price standard
-- **AICPA Statement on Standards for Valuation Services (SSVS) No. 1** — engagement scope, conclusion vs calculation, restrictions
-- **Kaplan + Ruback (1995, JF)** "The Valuation of Cash Flow Forecasts" — empirical evidence on DCF vs multiples
-- **Mercer Capital "Buy-Sell Agreements" + AICPA discount studies** — DLOM (discount for lack of marketability) and DLOC (discount for lack of control) ranges
+- **IPEV (International Private Equity and Venture Capital) Valuation Guidelines** (December 2022) —
+  quarterly fair-value reporting for PE/VC funds
+- **IFRS 13 Fair Value Measurement** + **ASC 820 Fair Value Measurement** — Level 1/2/3 hierarchy,
+  exit-price standard
+- **AICPA Statement on Standards for Valuation Services (SSVS) No. 1** — engagement scope,
+  conclusion vs calculation, restrictions
+- **Kaplan + Ruback (1995, JF)** "The Valuation of Cash Flow Forecasts" — empirical evidence on DCF
+  vs multiples
+- **Mercer Capital "Buy-Sell Agreements" + AICPA discount studies** — DLOM (discount for lack of
+  marketability) and DLOC (discount for lack of control) ranges
 
 ## When to Fire
 
-- A new entity is being valued: company being acquired, divested, IPO'd, or 409A-priced for option grants
+- A new entity is being valued: company being acquired, divested, IPO'd, or 409A-priced for option
+  grants
 - A goodwill or intangible impairment test is due (annual or triggering event per ASC 350 / IAS 36)
 - A fund's quarterly NAV requires Level 3 fair-value marks (per IFRS 13 / ASC 820 / IPEV)
 - A fundraising round is pricing — pre-money and post-money valuation negotiation
 - An LBO is being modelled — sponsor needs to know maximum bid for target IRR
 - A break-up or sum-of-the-parts analysis is requested (activist defence, strategic review)
-- An employee or founder requests a valuation conversation — option strike price, secondary sale, tender offer
+- An employee or founder requests a valuation conversation — option strike price, secondary sale,
+  tender offer
 - A regulator, auditor, or court requests a fair-value or solvency opinion
 
 ## Core Patterns
@@ -52,7 +74,8 @@ Every valuation triangulates THREE methods at minimum:
 | Asset-based | Distressed, liquidation scenarios | Floor when going-concern is questionable |
 | Real Options | Optionality-heavy assets (mining, biotech, R&D-stage) | Captures value of waiting / abandoning / expanding |
 
-Output is a "football field" chart: each method produces a range; the overlap zone is the defensible range. Outliers get explained, not dropped.
+Output is a "football field" chart: each method produces a range; the overlap zone is the defensible
+range. Outliers get explained, not dropped.
 
 ### Pattern 2: DCF — disciplined structure
 
@@ -70,14 +93,18 @@ Equity Value = EV - Net Debt - Minority Interest - Preferred Equity
              + Investments in Associates + Excess Cash
 ```
 
-**Forecast period rule of thumb**: 5-10 years for mature businesses; 10-15 years for high-growth where the steady-state isn't reached early. The forecast period must extend until the business has reached a sustainable competitive equilibrium (ROIC ≈ WACC + steady-state spread).
+**Forecast period rule of thumb**: 5-10 years for mature businesses; 10-15 years for high-growth
+where the steady-state isn't reached early. The forecast period must extend until the business has
+reached a sustainable competitive equilibrium (ROIC ≈ WACC + steady-state spread).
 
 **Terminal value sanity checks**:
 
 - g (perpetual growth) must NOT exceed long-run nominal GDP growth (currently ~3.5% USD; ~2% EUR)
-- Terminal value should NOT be > 75% of enterprise value (otherwise the model is mostly a guess about the perpetuity)
+- Terminal value should NOT be > 75% of enterprise value (otherwise the model is mostly a guess
+  about the perpetuity)
 - Compute implied exit multiple (TV / EBITDA_T): should be within 0.5x-1.5x of trading comp range
-- Compute implied ROIC at terminal year: should NOT meaningfully exceed WACC (otherwise the firm is creating value forever, which competition would erode)
+- Compute implied ROIC at terminal year: should NOT meaningfully exceed WACC (otherwise the firm is
+  creating value forever, which competition would erode)
 
 **WACC composition (Koller §11)**:
 
@@ -92,7 +119,8 @@ Re (cost of equity) via CAPM = Rf + β × ERP + country_risk
     country_risk = country-specific spread for emerging markets
 ```
 
-The single highest-impact assumption is usually WACC — a 100 bps WACC change can shift EV by 15-25%. Sensitivity table is mandatory.
+The single highest-impact assumption is usually WACC — a 100 bps WACC change can shift EV by 15-25%.
+Sensitivity table is mandatory.
 
 ### Pattern 3: Trading comparables — calibrate to market
 
@@ -121,13 +149,16 @@ ORDER BY market_cap DESC;
 Peer selection rules:
 
 - 6-12 peers is the sweet spot; <5 is unreliable, >15 is unfocused
-- Same sub-sector AND similar business model (subscription SaaS peers ≠ on-premise software peers even in same SIC)
+- Same sub-sector AND similar business model (subscription SaaS peers ≠ on-premise software peers
+  even in same SIC)
 - Comparable size (within 0.5x-3x market cap range typically)
 - Similar growth profile (SaaS at 30% growth has very different multiple than SaaS at 5%)
-- Same accounting regime (IFRS vs US GAAP — adjust EBITDA for lease treatment per IFRS 16 vs ASC 842)
+- Same accounting regime (IFRS vs US GAAP — adjust EBITDA for lease treatment per IFRS 16 vs
+  ASC 842)
 - Recent financials (latest 10-K + most recent quarter)
 
-Apply the median or mean multiple to the target's metric. Discount for: smaller size (size premium), private status (DLOM 15-30%), key-person dependence, single-customer concentration.
+Apply the median or mean multiple to the target's metric. Discount for: smaller size (size premium),
+private status (DLOM 15-30%), key-person dependence, single-customer concentration.
 
 ### Pattern 4: LBO — solve for the bid
 
@@ -177,7 +208,9 @@ function maximumBid(assumptions: LBOAssumptions): number {
 }
 ```
 
-Sponsors care about IRR + MOIC (multiple of invested capital). Strategic buyers care about EPS accretion + synergies. The two valuations diverge — strategic buyers can typically pay more because they capture synergy NPV that the sponsor cannot.
+Sponsors care about IRR + MOIC (multiple of invested capital). Strategic buyers care about EPS
+accretion + synergies. The two valuations diverge — strategic buyers can typically pay more because
+they capture synergy NPV that the sponsor cannot.
 
 ### Pattern 5: Venture capital method (pre-revenue startups)
 
@@ -189,7 +222,9 @@ Pre-money Valuation = Post-money - New Investment
 Investor Ownership % = New Investment / Post-money
 ```
 
-VC IRR hurdles: 30-40% for seed, 25-30% for Series A, 20-25% for later stages. Account for dilution from future rounds — a Series A investor expecting 25% ownership at IPO needs more like 35-40% at entry to survive Series B/C/D dilution.
+VC IRR hurdles: 30-40% for seed, 25-30% for Series A, 20-25% for later stages. Account for dilution
+from future rounds — a Series A investor expecting 25% ownership at IPO needs more like 35-40% at
+entry to survive Series B/C/D dilution.
 
 ### Pattern 6: Sum-of-the-Parts (conglomerates)
 
@@ -229,49 +264,69 @@ function sumOfTheParts(segments: BusinessSegment[]): {
 }
 ```
 
-Use SOTP when segments are materially different (different growth, different multiples, different end markets). The conglomerate discount reflects investor preference for pure-play exposure plus the corporate-overhead cost of running the holding structure.
+Use SOTP when segments are materially different (different growth, different multiples, different
+end markets). The conglomerate discount reflects investor preference for pure-play exposure plus the
+corporate-overhead cost of running the holding structure.
 
 ## Anti-Patterns
 
 ### Anti-pattern 1: Single point estimate without range
 
-"Our valuation is $487M." → Wrong. The output is a RANGE ($420M-$540M) with explicit assumption sensitivity. The midpoint can be the headline, but the range MUST be reported.
+"Our valuation is $487M." → Wrong. The output is a RANGE ($420M-$540M) with explicit assumption
+sensitivity. The midpoint can be the headline, but the range MUST be reported.
 
 ### Anti-pattern 2: Hockey-stick forecasts with no justification
 
-Year 1 revenue growth 15%, year 2 25%, year 3 45%, year 4 60% — with no explanation of why growth accelerates. Every step-change in the forecast requires a documented business reason (new product launch, geographic expansion, large contract win) tied to operational milestones.
+Year 1 revenue growth 15%, year 2 25%, year 3 45%, year 4 60% — with no explanation of why growth
+accelerates. Every step-change in the forecast requires a documented business reason (new product
+launch, geographic expansion, large contract win) tied to operational milestones.
 
 ### Anti-pattern 3: Terminal value dominating
 
-If terminal value > 80% of EV, the DCF is mostly a guess about the perpetuity. Either extend the forecast period until ROIC stabilises near WACC, or admit the DCF is unreliable for this asset and lean on multiples.
+If terminal value > 80% of EV, the DCF is mostly a guess about the perpetuity. Either extend the
+forecast period until ROIC stabilises near WACC, or admit the DCF is unreliable for this asset and
+lean on multiples.
 
 ### Anti-pattern 4: Picking peers that produce desired answer
 
-"We need EV/Revenue of 8x to justify the deal" → cherry-pick peers with high multiples. The peer set must be objectively defined by sector, size, growth, business model — NOT by output multiple. Document the screen criteria; let the analyst find the same peer set independently.
+"We need EV/Revenue of 8x to justify the deal" → cherry-pick peers with high multiples. The peer set
+must be objectively defined by sector, size, growth, business model — NOT by output multiple.
+Document the screen criteria; let the analyst find the same peer set independently.
 
 ### Anti-pattern 5: Ignoring net debt + equity bridge
 
-Enterprise value ≠ equity value. Bridge: EV − Total Debt + Cash − Minority Interest − Preferred Equity + Investments in Associates = Equity Value. Skipping the bridge gives prices that are wrong by tens of percent.
+Enterprise value ≠ equity value. Bridge: EV − Total Debt + Cash − Minority Interest − Preferred
+Equity + Investments in Associates = Equity Value. Skipping the bridge gives prices that are wrong
+by tens of percent.
 
 ### Anti-pattern 6: Using book value as proxy for fair value
 
-Book value is a historical-cost number adjusted for depreciation. Market value can be 5x book or 0.5x book depending on the business. The only exceptions: pure financial institutions where book ≈ liquidation value, and asset-heavy businesses in liquidation.
+Book value is a historical-cost number adjusted for depreciation. Market value can be 5x book or
+0.5x book depending on the business. The only exceptions: pure financial institutions where book ≈
+liquidation value, and asset-heavy businesses in liquidation.
 
 ### Anti-pattern 7: Modelling perpetual margin expansion
 
-EBITDA margin in year 1: 12%. Year 10 terminal: 35%. → Wrong unless backed by documented operational levers. Competitive markets erode margins toward cost of capital; assume mean-reversion unless the moat is specifically defended.
+EBITDA margin in year 1: 12%. Year 10 terminal: 35%. → Wrong unless backed by documented operational
+levers. Competitive markets erode margins toward cost of capital; assume mean-reversion unless the
+moat is specifically defended.
 
 ### Anti-pattern 8: Forgetting taxes on terminal year
 
-DCF FCFF should use NORMALISED tax rate, not the marginal rate of the terminal year. NOL carryforwards run out; effective rate trends toward statutory.
+DCF FCFF should use NORMALISED tax rate, not the marginal rate of the terminal year. NOL
+carryforwards run out; effective rate trends toward statutory.
 
 ### Anti-pattern 9: Ignoring control premium / illiquidity discount
 
-Control transactions trade 20-40% above minority blocks. Private companies trade 15-30% below comparable public peers (DLOM). Skipping these adjustments distorts the valuation by the full premium/discount.
+Control transactions trade 20-40% above minority blocks. Private companies trade 15-30% below
+comparable public peers (DLOM). Skipping these adjustments distorts the valuation by the full
+premium/discount.
 
 ### Anti-pattern 10: One scenario only
 
-Base case is necessary but not sufficient. Always run: downside (recession, key customer loss, regulation), base (management plan), upside (synergies realised, market share gain). The valuation range is bounded by these scenarios, not just base.
+Base case is necessary but not sufficient. Always run: downside (recession, key customer loss,
+regulation), base (management plan), upside (synergies realised, market share gain). The valuation
+range is bounded by these scenarios, not just base.
 
 ## Verification Checklist
 
@@ -294,8 +349,10 @@ Base case is necessary but not sufficient. Always run: downside (recession, key 
 
 - `~/.claude/skills/fp-and-a/SKILL.md` — operating plan that feeds the DCF forecast
 - `~/.claude/skills/ifrs-gaap-reporting/SKILL.md` — fair-value disclosure under IFRS 13 / ASC 820
-- `~/.claude/skills/portfolio-theory/SKILL.md` — diversification implications of single-asset valuations
-- `~/.claude/skills/investor-due-diligence/SKILL.md` — diligence inputs that validate or invalidate model assumptions
+- `~/.claude/skills/portfolio-theory/SKILL.md` — diversification implications of single-asset
+  valuations
+- `~/.claude/skills/investor-due-diligence/SKILL.md` — diligence inputs that validate or invalidate
+  model assumptions
 - `~/.claude/skills/financial-analyst/SKILL.md` — analyst workflow that produces these models
 - `~/.claude/rules/common/task-intake-due-diligence.md` Q16 (cost model) + Q22 (success criteria)
 - `~/.claude/rules/common/no-overclaim.md` — never present a valuation as a "fact"
@@ -304,12 +361,24 @@ Base case is necessary but not sufficient. Always run: downside (recession, key 
 
 Bad valuations destroy capital. The historical record:
 
-- **Overpayment in M&A**: empirical research (Moeller, Schlingemann, Stulz 2005; Officer 2003) shows acquirer shareholders lose $0.20-$0.40 per dollar overpaid in cash deals. Total US M&A overpayment 1998-2001 alone: estimated $240B in destroyed acquirer value. Most overpayments stem from valuations that triangulated only one method (usually a DCF with rosy assumptions) and ignored the precedent transaction premium signal.
-- **Goodwill impairments**: every Q4 brings a wave of impairments where carrying values exceed fair values. Half could have been prevented if the original acquisition valuation had run downside scenarios.
-- **409A grants priced wrong**: a 409A valuation that undershoots fair value at grant date creates IRC §409A penalty tax for the option-holder (20% federal + state surtax). Companies that DIY 409A end up with employee tax liabilities and rescissions.
-- **Fund NAV marks gone wrong**: PE funds that mark Level 3 assets to a single point estimate without sensitivity get auditor pushback (AICPA SAS 145 risk assessment). Properly triangulated NAV marks with documented assumptions survive examination; lazy marks don't.
+- **Overpayment in M&A**: empirical research (Moeller, Schlingemann, Stulz 2005; Officer 2003) shows
+  acquirer shareholders lose $0.20-$0.40 per dollar overpaid in cash deals. Total US M&A overpayment
+  1998-2001 alone: estimated $240B in destroyed acquirer value. Most overpayments stem from
+  valuations that triangulated only one method (usually a DCF with rosy assumptions) and ignored the
+  precedent transaction premium signal.
+- **Goodwill impairments**: every Q4 brings a wave of impairments where carrying values exceed fair
+  values. Half could have been prevented if the original acquisition valuation had run downside
+  scenarios.
+- **409A grants priced wrong**: a 409A valuation that undershoots fair value at grant date creates
+  IRC §409A penalty tax for the option-holder (20% federal + state surtax). Companies that DIY 409A
+  end up with employee tax liabilities and rescissions.
+- **Fund NAV marks gone wrong**: PE funds that mark Level 3 assets to a single point estimate
+  without sensitivity get auditor pushback (AICPA SAS 145 risk assessment). Properly triangulated
+  NAV marks with documented assumptions survive examination; lazy marks don't.
 
-The discipline of triangulation + sensitivity + scenario + documentation is what separates principal-level valuation from spreadsheet theatre. Every assumption in the model is a hypothesis; the sensitivity table is the test of which hypotheses dominate; the range is the honest output.
+The discipline of triangulation + sensitivity + scenario + documentation is what separates
+principal-level valuation from spreadsheet theatre. Every assumption in the model is a hypothesis;
+the sensitivity table is the test of which hypotheses dominate; the range is the honest output.
 
 ## Learning hooks
 
@@ -331,6 +400,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New methodology row when a new approach becomes standard (e.g., real-options for early-stage)
-- New cross-reference when a sister skill (financial-analyst, investment-research, ifrs-gaap-reporting) adds a valuation gate
+- New cross-reference when a sister skill (financial-analyst, investment-research,
+  ifrs-gaap-reporting) adds a valuation gate
 - Tightening of the sensitivity-table requirement when single-point-estimate regression recurs
 - New scenario template when a new macro regime emerges

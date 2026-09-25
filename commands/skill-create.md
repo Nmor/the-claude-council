@@ -6,6 +6,8 @@ allowed_tools: ["Bash", "Read", "Write", "Grep", "Glob", "WebFetch"]
 
 # /skill-create — Skill Authoring (Local Pattern Extraction + Principal-Level Authoring)
 
+> **Size budget: 32 KB** — `token-budget.mjs --check`.
+
 Build a new Claude skill that meets the global `principal-level-mandate.md` bar. Two modes:
 
 | Mode        | Input                                | Output                                                                                                                                |
@@ -13,33 +15,47 @@ Build a new Claude skill that meets the global `principal-level-mandate.md` bar.
 | **Extract** | Local git history of a project       | A `<project>/.claude/skills/<repo>-patterns/SKILL.md` capturing the team's conventions                                                |
 | **Author**  | A target capability + open questions | A `~/.claude/skills/<name>/` directory with principal-level SKILL.md + optional `scripts/` + `references/` + `assets/` + eval harness |
 
-Both modes ship a skill that passes the depth audit (≥ 500 words substantive content, ≥ 3 standards citations with version + section, ≥ 5 anti-patterns, ≥ 1 verification checklist, ≥ 3 cross-references, zero project-specific contamination in global skills, Learning hooks section present).
+Both modes ship a skill that passes the depth audit (≥ 500 words substantive content, ≥ 3 standards
+citations with version + section, ≥ 5 anti-patterns, ≥ 1 verification checklist, ≥ 3
+cross-references, zero project-specific contamination in global skills, Learning hooks section
+present).
 
 ## When to use
 
-- A recurring task pattern emerges in 2+ sessions and warrants a named, auto-discoverable skill (per `reuse-first.md` rule of three).
-- Anthropic ships a new capability (memory, citations, batch, files API, etc.) that Claude Code projects should adopt with documented patterns.
-- Domain expertise (compliance class, framework idiom, vendor integration) needs a written canonical answer the assistant loads on demand.
-- A team is onboarding to a codebase whose conventions are non-obvious — extract-mode captures them from git.
+- A recurring task pattern emerges in 2+ sessions and warrants a named, auto-discoverable skill (per
+  `reuse-first.md` rule of three).
+- Anthropic ships a new capability (memory, citations, batch, files API, etc.) that Claude Code
+  projects should adopt with documented patterns.
+- Domain expertise (compliance class, framework idiom, vendor integration) needs a written canonical
+  answer the assistant loads on demand.
+- A team is onboarding to a codebase whose conventions are non-obvious — extract-mode captures them
+  from git.
 
 ## When NOT to use
 
-- The pattern only appears once. Per `reuse-first.md`, implement inline; defer extraction until the second occurrence.
-- The capability is already covered by an existing skill (run a sweep first: `ls ~/.claude/skills/`).
-- The "skill" would just be a list of links — that's a doc page, not a skill (per `documentation-requirements.md` Diátaxis quadrants).
-- The scope is project-specific. Per `rule-authoring-global-vs-project.md`, project skills land at `<workspace>/.claude/skills/`, not global.
+- The pattern only appears once. Per `reuse-first.md`, implement inline; defer extraction until the
+  second occurrence.
+- The capability is already covered by an existing skill (run a sweep first: `ls
+  ~/.claude/skills/`).
+- The "skill" would just be a list of links — that's a doc page, not a skill (per
+  `documentation-requirements.md` Diátaxis quadrants).
+- The scope is project-specific. Per `rule-authoring-global-vs-project.md`, project skills land at
+  `<workspace>/.claude/skills/`, not global.
 
 ## Standards cited
 
-- **Anthropic Agent Skills v1.0** (Dec 2025 open standard) — SKILL.md frontmatter + Progressive Disclosure semantics
+- **Anthropic Agent Skills v1.0** (Dec 2025 open standard) — SKILL.md frontmatter + Progressive
+  Disclosure semantics
 - **CommonMark 0.31.2** — SKILL.md body format
 - **JSON Schema Draft 2020-12** — frontmatter schema validation
 - **Diátaxis framework** (Procida) — `references/` content is reference + how-to, not tutorial
 - `~/.claude/rules/common/principal-level-mandate.md` §"Every skill file" — the depth contract
 - `~/.claude/rules-library/common/reuse-first.md` rule of three — extraction trigger
-- `~/.claude/rules/common/continuous-learning-mandate.md` rule 6 — every artifact carries `Learning hooks`
+- `~/.claude/rules/common/continuous-learning-mandate.md` rule 6 — every artifact carries `Learning
+  hooks`
 - `~/.claude/rules/common/rule-authoring-global-vs-project.md` — global-vs-project classification
-- `~/.claude/rules-library/common/no-discards.md` — no suppressions, no banned vocabulary in the new skill
+- `~/.claude/rules-library/common/no-discards.md` — no suppressions, no banned vocabulary in the new
+  skill
 
 ## Mode selection
 
@@ -61,7 +77,9 @@ If no `--mode` is supplied, the command:
 
 ## Extract mode (git-history pattern extractor)
 
-Captures the project's conventions from its commit history. Output lives in `<project>/.claude/skills/<repo>-patterns/SKILL.md` (per `project-scoped-artifacts.md` — project-specific skills are workspace-side, never global).
+Captures the project's conventions from its commit history. Output lives in
+`<project>/.claude/skills/<repo>-patterns/SKILL.md` (per `project-scoped-artifacts.md` —
+project-specific skills are workspace-side, never global).
 
 ### Step 1: gather
 
@@ -92,7 +110,9 @@ git log --oneline -n 200 | cut -d' ' -f2- | head -50
 
 ### Step 3: emit the workspace skill
 
-Output frontmatter follows the same shape as authored skills (see Author mode below). Body sections are populated from the detected patterns. The skill is workspace-scoped — keep project-specific names, vendor lists, file paths in the body where they belong.
+Output frontmatter follows the same shape as authored skills (see Author mode below). Body sections
+are populated from the detected patterns. The skill is workspace-scoped — keep project-specific
+names, vendor lists, file paths in the body where they belong.
 
 ### Step 4 (optional `--instincts`): emit instincts
 
@@ -126,11 +146,13 @@ Before writing anything, gather the inputs the depth contract requires:
 | Cross-references                   | Sister rules / skills / agents already loaded — at least 3                                                                    |
 | Bundled resources needed           | Decide: scripts? references? assets?                                                                                          |
 
-If the user can't answer all of these, the command pauses with a numbered list of open questions (per `prompt-improver` skill's Phase 2 pattern). Do NOT proceed to write SKILL.md with unknowns.
+If the user can't answer all of these, the command pauses with a numbered list of open questions
+(per `prompt-improver` skill's Phase 2 pattern). Do NOT proceed to write SKILL.md with unknowns.
 
 ### Phase 2 — Progressive Disclosure layout
 
-Anthropic Agent Skills v1.0 uses a 3-level loading model. The command scaffolds the directory accordingly:
+Anthropic Agent Skills v1.0 uses a 3-level loading model. The command scaffolds the directory
+accordingly:
 
 ```text
 ~/.claude/skills/<name>/
@@ -156,18 +178,24 @@ Loading semantics (the skill author MUST respect these):
 | **L2 SKILL.md body**     | When triggered    | Full skill body — Purpose / When to use / Standards / Patterns / Anti-patterns / Verification / Cross-refs / Learning hooks | < 500 lines (target 200-400)                        |
 | **L3 bundled resources** | On explicit fetch | `scripts/` + `references/` + `assets/` — content the agent reads only when the task demands it                              | No global cap; per-file < 2000 lines as a guideline |
 
-**Hard rule**: don't dump everything into SKILL.md. If the content is "the agent reads this when it actually does the task" (a long anti-pattern list, a regulation cross-reference, a code-style example library), it belongs in `references/<topic>.md` linked from SKILL.md. The SKILL.md body stays under 500 lines.
+**Hard rule**: don't dump everything into SKILL.md. If the content is "the agent reads this when it
+actually does the task" (a long anti-pattern list, a regulation cross-reference, a code-style
+example library), it belongs in `references/<topic>.md` linked from SKILL.md. The SKILL.md body
+stays under 500 lines.
 
 ### Phase 3 — Description optimisation workflow
 
-The `description:` frontmatter field is what the Claude harness routes against. A vague description = the skill doesn't fire when it should (false negative) or fires when it shouldn't (false positive). The optimisation loop:
+The `description:` frontmatter field is what the Claude harness routes against. A vague description
+= the skill doesn't fire when it should (false negative) or fires when it shouldn't (false
+positive). The optimisation loop:
 
 #### Step 3.1: write 20 trigger-test prompts
 
 Split:
 
 - **10 should-trigger**: prompts where this skill is the right one to fire
-- **10 should-not-trigger**: adjacent prompts that look similar but belong to a different skill (or no skill)
+- **10 should-not-trigger**: adjacent prompts that look similar but belong to a different skill (or
+  no skill)
 
 Write these BEFORE the description. The test set is the spec.
 
@@ -198,7 +226,8 @@ Aim for ~30-60 words. Cover:
 
 #### Step 3.3: automated trigger evaluation
 
-For each of the 20 prompts, run a fast headless Claude (`claude -p <prompt> --output-format=json`) with the candidate `description` injected and inspect whether the skill would fire. Record:
+For each of the 20 prompts, run a fast headless Claude (`claude -p <prompt> --output-format=json`)
+with the candidate `description` injected and inspect whether the skill would fire. Record:
 
 | Prompt      | Expected           | Actual         | Pass?               |
 | ----------- | ------------------ | -------------- | ------------------- |
@@ -209,11 +238,14 @@ Target: ≥ 18/20 correct. Iterate the description until it converges.
 
 #### Step 3.4: record the trigger-test set in evals/
 
-Once the description converges, commit the 20 prompts to `~/.claude/skills/<name>/evals/triggers.json` so future descriptive tweaks can re-run the same test bed.
+Once the description converges, commit the 20 prompts to
+`~/.claude/skills/<name>/evals/triggers.json` so future descriptive tweaks can re-run the same test
+bed.
 
 ### Phase 4 — Eval harness (when --eval)
 
-For skills that materially change agent behaviour (pattern guides, integration playbooks, compliance frameworks), scaffold a full eval harness. Layout:
+For skills that materially change agent behaviour (pattern guides, integration playbooks, compliance
+frameworks), scaffold a full eval harness. Layout:
 
 ```text
 evals/
@@ -228,25 +260,30 @@ evals/
 
 For each candidate revision of the skill:
 
-1. Spawn N **with-skill** subagents in parallel — each runs one `evals.json` case with the new SKILL.md content loaded.
+1. Spawn N **with-skill** subagents in parallel — each runs one `evals.json` case with the new
+   SKILL.md content loaded.
 2. Spawn the same N **baseline** subagents in parallel — same cases, no skill loaded.
 3. Capture per-case: latency, tool-call count, output, pass/partial/fail per the rubric.
 4. Aggregate into `benchmark.json`.
 5. Run an analyst pass (a separate agent with the rubric + both result sets) to surface the deltas.
 6. Present the diff for user review before promoting the new revision.
 
-The harness is overkill for a small skill. Skip `--eval` when the skill is a thin reference card. Use it when the skill is asked to change downstream agent behaviour materially.
+The harness is overkill for a small skill. Skip `--eval` when the skill is a thin reference card.
+Use it when the skill is asked to change downstream agent behaviour materially.
 
 ### Phase 5 — Principle of Lack of Surprise
 
 The skill's behaviour MUST match its description. Banned patterns:
 
-- A skill described as "patterns for X" that smuggles a tool call (e.g., runs `git push`) — the description promises content, not action.
+- A skill described as "patterns for X" that smuggles a tool call (e.g., runs `git push`) — the
+  description promises content, not action.
 - A skill described as "evaluate Y" that auto-applies the fix — evaluation is read-only.
 - A skill that mutates user files when the description claims advisory scope.
 - A skill that exfiltrates context (writes to `/tmp` or external URLs) without saying so.
 
-This rule sits adjacent to security: the agent's downstream caller decides to load this skill based on the description. The skill cannot exceed that scope quietly. If real action is needed, name it explicitly in the description ("Builds X and runs the build; modifies files under `<path>`").
+This rule sits adjacent to security: the agent's downstream caller decides to load this skill based
+on the description. The skill cannot exceed that scope quietly. If real action is needed, name it
+explicitly in the description ("Builds X and runs the build; modifies files under `<path>`").
 
 ## SKILL.md template (canonical body shape)
 
@@ -397,13 +434,18 @@ A `FAIL` in any check blocks the "skill authored" claim. Fix and re-run.
 - `~/.claude/rules/common/continuous-learning-mandate.md` — Learning hooks section is mandatory
 - `~/.claude/rules/common/rule-authoring-global-vs-project.md` — global-vs-project classification
 - `~/.claude/rules/common/project-scoped-artifacts.md` — workspace-side skill storage
-- `~/.claude/rules-library/common/auto-skills.md` — file-to-skill mapping the new skill must register with
-- `~/.claude/rules-library/common/extreme-lint-policy.md` — markdownlint thresholds the SKILL.md must pass
+- `~/.claude/rules-library/common/auto-skills.md` — file-to-skill mapping the new skill must
+  register with
+- `~/.claude/rules-library/common/extreme-lint-policy.md` — markdownlint thresholds the SKILL.md
+  must pass
 - `~/.claude/rules-library/common/no-discards.md` — banned vocabulary the SKILL.md cannot contain
-- `~/.claude/rules-library/common/documentation-requirements.md` — Diátaxis distinction (skill vs doc page)
+- `~/.claude/rules-library/common/documentation-requirements.md` — Diátaxis distinction (skill vs
+  doc page)
 - `~/.claude/rules/common/official-docs-first.md` — primary-source research before authoring
-- `~/.claude/skills/mcp-builder/SKILL.md` — sister skill for building MCP servers (skill-level adjacency)
-- `~/.claude/skills/continuous-learning-v2/SKILL.md` — sister skill that consumes the optional `--instincts` output
+- `~/.claude/skills/mcp-builder/SKILL.md` — sister skill for building MCP servers (skill-level
+  adjacency)
+- `~/.claude/skills/continuous-learning-v2/SKILL.md` — sister skill that consumes the optional
+  `--instincts` output
 - `/instinct-import` / `/instinct-status` / `/evolve` — operator interface for the learning loop
 - `/learn-eval` — self-evaluates an authored skill's quality before save
 
@@ -419,9 +461,12 @@ A `FAIL` in any check blocks the "skill authored" claim. Fix and re-run.
 
 Without a single, opinionated authoring path, skills accumulate in three failure modes:
 
-1. **Shallow stubs** — author writes a few paragraphs, never returns; the skill doesn't pull weight when triggered.
-2. **Wrong location** — global skill contains project-specific vendor names; project skill duplicates a global one.
-3. **Mis-routed triggers** — `description` is vague; the skill fires on the wrong prompts or doesn't fire when it should.
+1. **Shallow stubs** — author writes a few paragraphs, never returns; the skill doesn't pull weight
+   when triggered.
+2. **Wrong location** — global skill contains project-specific vendor names; project skill
+   duplicates a global one.
+3. **Mis-routed triggers** — `description` is vague; the skill fires on the wrong prompts or doesn't
+   fire when it should.
 
 This command makes each of those mechanical:
 
@@ -439,24 +484,33 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- New skill authored without running the description-optimisation 20-prompt eval (Phase 3 weakening — routing risk)
+- New skill authored without running the description-optimisation 20-prompt eval (Phase 3 weakening
+  — routing risk)
 - SKILL.md > 500 lines without `references/` split (Progressive Disclosure L2 budget breached)
 - Bundled script ships without `--help` flag (black-box helper rule weakening)
 - Skill carries side effects not named in its description (Principle of Lack of Surprise violation)
 - Author-mode invoked but post-write verification block skipped
-- Project-specific name introduced into a global skill (sister `rule-authoring-global-vs-project.md` weakening)
+- Project-specific name introduced into a global skill (sister `rule-authoring-global-vs-project.md`
+  weakening)
 - Standards citation without version + section (depth-audit rule 4 violation)
-- Extract-mode used to produce a "skill" with < 3 detected patterns (insufficient signal — should be inline note instead)
+- Extract-mode used to produce a "skill" with < 3 detected patterns (insufficient signal — should be
+  inline note instead)
 - Stub language ("coming soon", "TBD", "placeholder") shipped in a new SKILL.md
-- `Learning hooks` section omitted from a newly-authored skill (rule violation per `continuous-learning-mandate.md` rule 6)
+- `Learning hooks` section omitted from a newly-authored skill (rule violation per
+  `continuous-learning-mandate.md` rule 6)
 - Description recycles vocabulary that already routes to a different skill (false-positive trigger)
 - New skill duplicates an existing one (sister `reuse-first.md` weakening — sweep was skipped)
 
 **Refinement candidates**:
 
 - New row in the verification block when a depth-floor pattern recurs across audits
-- Tightening of the description word-count band (currently ~30-60 words) when routing accuracy data suggests a different sweet spot
-- New cross-reference when a sister command (`/learn-eval`, `/evolve`) gains a load-bearing role in the authoring pipeline
-- New bundled-resource template (`scripts/`, `references/`, `assets/`) when a recurring skill shape needs a starter scaffold
-- Promotion of the 20-prompt trigger-test set from optional to mandatory when description-routing errors recur
-- New Mode entry when a recurring authoring shape (e.g., compliance-framework, vendor-integration, regulation-tracker) deserves its own scaffold
+- Tightening of the description word-count band (currently ~30-60 words) when routing accuracy data
+  suggests a different sweet spot
+- New cross-reference when a sister command (`/learn-eval`, `/evolve`) gains a load-bearing role in
+  the authoring pipeline
+- New bundled-resource template (`scripts/`, `references/`, `assets/`) when a recurring skill shape
+  needs a starter scaffold
+- Promotion of the 20-prompt trigger-test set from optional to mandatory when description-routing
+  errors recur
+- New Mode entry when a recurring authoring shape (e.g., compliance-framework, vendor-integration,
+  regulation-tracker) deserves its own scaffold

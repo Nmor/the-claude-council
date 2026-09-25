@@ -1,5 +1,7 @@
 # Every deploy failure becomes a pre-deploy check (global)
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 ## The rule
 
 When a deployment fails on a documented platform limit (AWS, GCP,
@@ -98,17 +100,23 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Deploy failure on a documented platform limit + no pre-deploy check added in the SAME commit as the fix (core rule violation)
+- Deploy failure on a documented platform limit + no pre-deploy check added in the SAME commit as
+  the fix (core rule violation)
 - Same-shape failure recurs across deploys (codification never happened)
 - Pre-deploy check exists locally but not in CI (local-CI parity gap)
 - Pre-deploy check exists but threshold is soft (warns instead of fails) when failure mode is hard
-- Same check fires more than once in a quarter without an architectural fix considered (rule "When the check fires repeatedly" weakening)
+- Same check fires more than once in a quarter without an architectural fix considered (rule "When
+  the check fires repeatedly" weakening)
 - Verification block reports "deploy green" without naming the pre-deploy checks that ran
 - New platform / vendor adopted without canvassing its documented limits before first deploy
 
 **Refinement candidates**:
 
-- New row in the platform-limits table when a new vendor or service class adopted (e.g., new edge runtime, new K8s admission limit)
-- Tightening of the soft limit when the gap to the documented cap shrinks (e.g., from 90% headroom to 50%)
-- New cross-reference when a sister rule (done-criteria, no-overclaim, runbook-template) provides the verification surface
-- New "architectural fix" template when an architectural pattern (e.g., env-var consolidation, sidecar shedding) recurs across services
+- New row in the platform-limits table when a new vendor or service class adopted (e.g., new edge
+  runtime, new K8s admission limit)
+- Tightening of the soft limit when the gap to the documented cap shrinks (e.g., from 90% headroom
+  to 50%)
+- New cross-reference when a sister rule (done-criteria, no-overclaim, runbook-template) provides
+  the verification surface
+- New "architectural fix" template when an architectural pattern (e.g., env-var consolidation,
+  sidecar shedding) recurs across services

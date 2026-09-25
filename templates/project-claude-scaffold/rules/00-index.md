@@ -4,6 +4,8 @@
 > `~/.claude/rules/common/rule-authoring-global-vs-project.md`.
 > Workspace rules MAY raise thresholds (stricter) but MUST NOT
 > lower them.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Conventions
 
@@ -18,4 +20,5 @@
 
 | Rule | Extends global | Purpose |
 | --- | --- | --- |
+| `functional-test-coverage.md` | `functional-test-coverage.md` | The project's measured coverage baseline, the exact commands that measure it, and the surfaces where a gap costs money. REQUIRED in every project: the global rule sets the discipline, this file carries the specifics. |
 | `<rule.md>` | `<global rule.md>` | `<one-line>` |

@@ -2,6 +2,8 @@
 
 > Auto-fires on every file. Sister to `dependency-vulnerabilities.md`,
 > `license-allowlist-gate.md`, `security.md`, `done-criteria.md`.
+>
+> **Size budget: 11 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -201,7 +203,9 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New row in the 5-layer table when a new enforcement surface emerges (e.g., MCP gateway, IDE plugin)
+- New row in the 5-layer table when a new enforcement surface emerges (e.g., MCP gateway, IDE
+  plugin)
 - Tightening of the SHA-pin lifecycle when a malicious-tag retargeting incident is observed
-- New cross-reference when a sister rule (dependency-vulnerabilities, license-allowlist-gate) provides the gate this enforces
+- New cross-reference when a sister rule (dependency-vulnerabilities, license-allowlist-gate)
+  provides the gate this enforces
 - New exception-flow row when a new exception class (vendor-pending-fix, etc.) recurs

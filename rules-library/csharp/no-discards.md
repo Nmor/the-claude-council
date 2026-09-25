@@ -4,6 +4,8 @@
 > `*.csproj`, `*.sln` file. Extends `~/.claude/rules/common/no-discards.md`.
 > Sister to `extreme-lint-policy.md`. Tooling: Roslyn analyzers,
 > StyleCop, SonarAnalyzer.CSharp, `dotnet format`.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle (C#-specific restatement)
 

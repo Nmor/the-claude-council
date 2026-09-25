@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Size budget: 8 KB. Check: wc -c; gate: token-budget.mjs --check.
 /**
  * PostToolUse Hook: enforce zero-tolerance mechanical coding rules.
  *
@@ -17,13 +18,15 @@
  * agent must never set it itself.
  *
  * Exit codes:
- *   0 — clean (or only soft-warn issues; printed to stderr, not blocking).
+ *   0 — clean, or soft warnings only, sent as advice (lib/advise.js) because
+ *       stderr on exit 0 is never shown to Claude.
  *   2 — at least one blocking violation; the edit is rejected.
  */
 
 const path = require("path");
 const { readFile } = require("../lib/utils");
-const { evaluateFile } = require("./lib/no-discards-rules");
+const { evaluateFile, summariesFor } = require("./lib/no-discards-rules");
+const { advise } = require("./lib/advise.js");
 
 const MAX_STDIN = 1024 * 1024;
 let data = "";
@@ -36,14 +39,11 @@ process.stdin.on("data", (chunk) => {
 });
 
 process.stdin.on("end", () => {
-  if (process.env.CLAUDE_NO_DISCARDS_HOOK === "off") {
-    process.stdout.write(data);
-    process.exit(0);
-    return;
-  }
+  if (process.env.CLAUDE_NO_DISCARDS_HOOK === "off") return passThrough();
 
+  let input = {};
   try {
-    const input = JSON.parse(data);
+    input = JSON.parse(data);
     const filePath = input.tool_input?.file_path;
     if (!filePath) return passThrough();
 
@@ -60,55 +60,47 @@ process.stdin.on("end", () => {
 
     const { blocking, soft } = evaluateFile(filePath, content);
 
-    if (soft.length > 0) {
-      reportIssues(filePath, soft, "WARN", Math.min(soft.length, 6));
+    if (blocking.length === 0) {
+      // A warning alone does not block, so it must travel as advice: stderr on exit 0 is
+      // never shown to Claude.
+      if (soft.length > 0) {
+        advise(input, formatIssues(filePath, soft, "WARN", Math.min(soft.length, 6)), "PostToolUse");
+      }
+      return passThrough();
     }
 
-    if (blocking.length === 0) return passThrough();
+    if (soft.length > 0) {
+      console.error(formatIssues(filePath, soft, "WARN", Math.min(soft.length, 6)));
+    }
 
-    reportIssues(filePath, blocking, "BLOCKED", Math.min(blocking.length, 12));
-    printRuleSummary();
+    console.error(formatIssues(filePath, blocking, "BLOCKED", Math.min(blocking.length, 12)));
+    printRuleSummary(blocking);
     process.exit(2);
   } catch (err) {
-    console.error(`[no-discards] hook error: ${err.message}`);
+    advise(input, `[no-discards] hook error: ${err.message}`, "PostToolUse");
     passThrough();
   }
 });
 
 function passThrough() {
-  process.stdout.write(data);
   process.exit(0);
 }
 
-function reportIssues(filePath, issues, level, previewCount) {
-  console.error(
-    `[no-discards] ${level} — ${issues.length} issue(s) in ${path.basename(filePath)}`,
-  );
+function formatIssues(filePath, issues, level, previewCount) {
+  const lines = [`[no-discards] ${level} — ${issues.length} issue(s) in ${path.basename(filePath)}`];
   for (let i = 0; i < previewCount; i++) {
     const v = issues[i];
-    console.error(`  L${v.line} [${v.rule}] ${v.snippet}`);
+    lines.push(`  L${v.line} [${v.rule}] ${v.snippet}`);
   }
-  if (issues.length > previewCount) {
-    console.error(`  …and ${issues.length - previewCount} more`);
-  }
+  if (issues.length > previewCount) lines.push(`  …and ${issues.length - previewCount} more`);
+  return lines.join("\n");
 }
 
-function printRuleSummary() {
-  const summary = [
-    "underscore-discard : bind every return value (no `_,` / `_ =`)",
-    "placeholder-marker : finish the work or open a real ticket — no T0D0/F1XME-style markers",
-    "suppression        : never use //nolint, eslint-disable, @ts-ignore, noqa",
-    'task-pointer       : comments document WHY, not "plan B2" / "Sonar S1192"',
-    "raw-color          : UI components consume design tokens (no hex/rgb/hsl/oklch)",
-    "console-log        : no console.log in production source",
-    "hardcoded-secret   : never put credentials in source — use env vars",
-    "go-test-naming     : Go test funcs use t.Run subtests, not Test_Foo_Bar",
-    "merge-conflict     : remove leftover diff markers",
-    "important          : drop !important — let design tokens win",
-    "file-too-large     : keep files under 800 LOC (soft warn)",
-  ];
-  console.error("[no-discards] Fix ALL violations and re-edit. Rules:");
-  for (const line of summary) console.error("  " + line);
+// Explain only the rules this edit tripped, from the manifest, so a new rule can never
+// be reported by id with nothing saying what it means.
+function printRuleSummary(blocking) {
+  console.error("[no-discards] Fix ALL violations and re-edit:");
+  for (const line of summariesFor(blocking)) console.error("  " + line);
   console.error(
     "[no-discards] Operator override: export CLAUDE_NO_DISCARDS_HOOK=off",
   );

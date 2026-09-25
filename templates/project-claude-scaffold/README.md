@@ -47,9 +47,11 @@ The bootstrap flow:
 ## Rules of engagement
 
 - Workspace rules ADD to global; never relax a global threshold
-- Project-specific plans live in `<workspace>/.claude/plans/`,
-  NEVER in `~/.claude/plans/`
-- Project memories live in `<workspace>/.claude/memory/`
+- A plan is this project's when its memory names it on an `Active plan:` line
+  (`project-memory.md` rule 4); plans may live in `<workspace>/.claude/plans/`
+- Project memory is the memory Claude Code loads for the project
+  (`project-memory.md` rule 1); `memory/` here is used only if
+  `autoMemoryDirectory` points at it
 - The workspace `CLAUDE.md` is loaded by every session that cd's
   into the workspace
 

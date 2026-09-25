@@ -5,6 +5,8 @@
 > (runbook entries indexed by error code), `no-silent-failures.md`
 > (every failure surfaces a stable code), `api-versioning.md`
 > (codes evolve under a contract).
+>
+> **Size budget: 11 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -237,13 +239,16 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Same `error_code` reused with different semantics across services (taxonomy drift)
 - Code spelling changed after publication (rule 1 violation — codes are stable)
 - Code with sensitive data in the string (rule 6 violation — codes are sanitised)
-- Test asserts on `message` instead of `code` (rule 7 violation; per `error-handling-with-context.md` rule 10)
+- Test asserts on `message` instead of `code` (rule 7 violation; per
+  `error-handling-with-context.md` rule 10)
 - HTTP status disagrees with the code's class table (rule 3 mismatch)
-- New code introduced without UX behaviour + i18n key + runbook entry simultaneously (rule 4 weakening)
+- New code introduced without UX behaviour + i18n key + runbook entry simultaneously (rule 4
+  weakening)
 
 **Refinement candidates**:
 
 - New code class entry when a recurring failure shape needs a stable code
 - New row in the HTTP-status-to-code class table when a new RFC status gains common use
 - Tightening of the deprecation lifecycle steps when soft / hard windows prove too short in practice
-- New cross-reference when a sister rule (runbook-template, i18n) defines artifacts that codes must align to
+- New cross-reference when a sister rule (runbook-template, i18n) defines artifacts that codes must
+  align to

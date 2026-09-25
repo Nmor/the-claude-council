@@ -7,6 +7,8 @@
 > alerts). Standards: **RFC 6585** (HTTP 429 Too Many Requests),
 > **RFC 7231 §6.5.3**, **draft-ietf-httpapi-ratelimit-headers**
 > (the modern Retry-After + rate-limit headers).
+>
+> **Size budget: 12 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -237,7 +239,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Signals to watch**:
 
 - Endpoint shipped without rate limiting (rule 1 weakening — every public endpoint needs limits)
-- Auth endpoint missing per-IP + per-account limits (rule 6 weakening — credential-stuffing exposure)
+- Auth endpoint missing per-IP + per-account limits (rule 6 weakening — credential-stuffing
+  exposure)
 - Rate limit applied only on success path (mistake 1 pattern)
 - Limit fires AFTER the expensive work, not before (mistake 2 — CPU exhaustion before guard)
 - Per-instance in-memory counter used (mistake 3 — distributed counter required)

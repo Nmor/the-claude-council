@@ -7,6 +7,8 @@ model: sonnet
 
 # .NET / C# Build & Compile Error Resolver
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Get `dotnet build` green with the SMALLEST correct change — root cause, never
 `#pragma warning disable` to hide it. No refactoring, no features.
 

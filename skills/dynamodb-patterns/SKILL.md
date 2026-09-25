@@ -5,7 +5,11 @@ description: DynamoDB single-table design, composite keys, GSI design, condition
 
 # DynamoDB Patterns
 
-DynamoDB is a key-value store dressed up as a database. Get the access patterns right at design time and it scales effortlessly; get them wrong and the only fix is a multi-month migration. These patterns prevent the common production-grade mistakes.
+> **Size budget: 20 KB** — `token-budget.mjs --check`.
+
+DynamoDB is a key-value store dressed up as a database. Get the access patterns right at design time
+and it scales effortlessly; get them wrong and the only fix is a multi-month migration. These
+patterns prevent the common production-grade mistakes.
 
 ## When to Activate
 
@@ -18,7 +22,9 @@ DynamoDB is a key-value store dressed up as a database. Get the access patterns 
 
 ## The Core Rule: Access Patterns Define the Schema
 
-In a relational DB, you model the data, then query it. In DynamoDB, you enumerate the QUERIES first, then design keys to make each one a single Query (never a Scan). Skipping this step always ends in a costly redesign.
+In a relational DB, you model the data, then query it. In DynamoDB, you enumerate the QUERIES first,
+then design keys to make each one a single Query (never a Scan). Skipping this step always ends in a
+costly redesign.
 
 For each entity, write down:
 
@@ -26,23 +32,29 @@ For each entity, write down:
 2. **Get specific X** — needs the full PK + SK
 3. **List X sorted by date** — SK should be a date-prefixed string
 
-If your access pattern is "list all rows that match attribute Z" — that's a Scan, and Scans are forbidden in production code paths. Either add a GSI on Z or denormalize.
+If your access pattern is "list all rows that match attribute Z" — that's a Scan, and Scans are
+forbidden in production code paths. Either add a GSI on Z or denormalize.
 
 ## Tenant Isolation: `organization_id` In Every Key
 
-Multi-tenant systems MUST use `organization_id` (or equivalent) as the partition key on every base table. Two reasons:
+Multi-tenant systems MUST use `organization_id` (or equivalent) as the partition key on every base
+table. Two reasons:
 
 1. **Hot-partition prevention** — one tenant's traffic can't dominate another's RCU/WCU.
-2. **Cross-tenant leak prevention** — a forgotten filter on a Query is impossible because the Query's PK requires the org.
+2. **Cross-tenant leak prevention** — a forgotten filter on a Query is impossible because the
+   Query's PK requires the org.
 
 Allowed deviations:
 
-- Tables keyed by a server-minted unique id (e.g. `connection_id`, `webhook_event_id`) where the org is on a GSI.
+- Tables keyed by a server-minted unique id (e.g. `connection_id`, `webhook_event_id`) where the org
+  is on a GSI.
 - Lookup tables (Slack workspace → org, share token → diagram) where the key IS the lookup value.
 
-Both deviations require a defense-in-depth check at read time: confirm the resolved row's `organization_id` matches the caller's.
+Both deviations require a defense-in-depth check at read time: confirm the resolved row's
+`organization_id` matches the caller's.
 
-A custom ESLint rule (or equivalent static check) should enforce this on every new `QueryCommand` / `GetCommand` / `UpdateCommand` / `DeleteCommand`.
+A custom ESLint rule (or equivalent static check) should enforce this on every new `QueryCommand` /
+`GetCommand` / `UpdateCommand` / `DeleteCommand`.
 
 ## Composite Sort Keys For Hierarchies
 
@@ -54,20 +66,26 @@ PK: organization_id        SK: TEAM#<team_id>
 PK: organization_id        SK: TEAM#<team_id>#MEMBER#<user_id>
 ```
 
-A single Query with `begins_with(SK, "TEAM#<team_id>")` returns the team plus every member in one round-trip.
+A single Query with `begins_with(SK, "TEAM#<team_id>")` returns the team plus every member in one
+round-trip.
 
 ## GSI Design
 
 Each GSI is a separate table in cost. Don't add one casually. Rules:
 
-- **PK = the dimension you query by**, not the original PK. If you query by `(workspace_id)`, the GSI PK is `workspace_id`.
-- **Project only what callers need** (`KEYS_ONLY` or `INCLUDE`). Default `ALL` doubles your storage cost for the table.
-- **Sparse indexes** — set the GSI key only on rows that participate in the index (e.g. `is_published` only present when `true`). Indexed rows = cost; sparse means cheap.
-- **Eventually consistent reads only** — GSIs don't support strong consistency. If you need read-your-writes guarantees, query the base table.
+- **PK = the dimension you query by**, not the original PK. If you query by `(workspace_id)`, the
+  GSI PK is `workspace_id`.
+- **Project only what callers need** (`KEYS_ONLY` or `INCLUDE`). Default `ALL` doubles your storage
+  cost for the table.
+- **Sparse indexes** — set the GSI key only on rows that participate in the index (e.g.
+  `is_published` only present when `true`). Indexed rows = cost; sparse means cheap.
+- **Eventually consistent reads only** — GSIs don't support strong consistency. If you need
+  read-your-writes guarantees, query the base table.
 
 ## Conditional Writes For Atomicity
 
-DynamoDB has no transactions across partitions, but `ConditionExpression` makes single-item updates atomic. Use them everywhere a race could land an inconsistent state:
+DynamoDB has no transactions across partitions, but `ConditionExpression` makes single-item updates
+atomic. Use them everywhere a race could land an inconsistent state:
 
 ```ts
 // "Claim this idempotency key" — fails if already claimed
@@ -87,7 +105,8 @@ await ddb.send(new UpdateCommand({
 }));
 ```
 
-A `ConditionalCheckFailedException` is the success-as-failure signal — catch it and treat it as the "already happened" branch.
+A `ConditionalCheckFailedException` is the success-as-failure signal — catch it and treat it as the
+"already happened" branch.
 
 ## Atomic Counters
 
@@ -107,7 +126,8 @@ Concurrent increments compose correctly without a lock.
 
 ## BatchWriteItem: Chunk + Retry Unprocessed
 
-`BatchWriteItem` accepts at most 25 items per call. It can also return `UnprocessedItems` if the batch hits write capacity. Always chunk + retry:
+`BatchWriteItem` accepts at most 25 items per call. It can also return `UnprocessedItems` if the
+batch hits write capacity. Always chunk + retry:
 
 ```ts
 const CHUNK = 25;
@@ -126,7 +146,8 @@ Naive `BatchWrite` callers leak rows under burst load. Don't.
 
 ## TTL For Ephemeral Data
 
-Mark transient rows with `ttl: <epoch_seconds>`. DynamoDB sweeps expired rows (within ~48 hours) for free. Use it for:
+Mark transient rows with `ttl: <epoch_seconds>`. DynamoDB sweeps expired rows (within ~48 hours) for
+free. Use it for:
 
 - Idempotency keys (4-day window for Stripe; 6-hour for Slack)
 - WebSocket connection rows
@@ -138,13 +159,15 @@ The TTL attribute name is set per-table in `TimeToLiveSpecification` — typical
 
 ## Streams For Fan-Out
 
-Enable `StreamSpecification: NEW_AND_OLD_IMAGES` on any table whose mutations another system needs to know about. A Lambda subscribed to the stream replaces:
+Enable `StreamSpecification: NEW_AND_OLD_IMAGES` on any table whose mutations another system needs
+to know about. A Lambda subscribed to the stream replaces:
 
 - Cron jobs that scan for changes
 - Application-layer dual writes to a second store
 - "After-write" hooks scattered across handlers
 
-Stream Lambdas must be idempotent — DynamoDB delivers at-least-once. They get retried with exponential backoff and finally land in a DLQ.
+Stream Lambdas must be idempotent — DynamoDB delivers at-least-once. They get retried with
+exponential backoff and finally land in a DLQ.
 
 ## Pagination Always
 
@@ -165,30 +188,37 @@ async function queryAllItems<T>(params: QueryCommandInput): Promise<T[]> {
 }
 ```
 
-Single-page Query results lie about completeness. Always loop, or apply an explicit `Limit` and surface "there are more" to the caller.
+Single-page Query results lie about completeness. Always loop, or apply an explicit `Limit` and
+surface "there are more" to the caller.
 
 ## Hot-Partition Avoidance
 
-A single PK that takes >3000 RCU or >1000 WCU per second hot-partitions and throttles, regardless of table-level capacity. Defenses:
+A single PK that takes >3000 RCU or >1000 WCU per second hot-partitions and throttles, regardless of
+table-level capacity. Defenses:
 
 - Multi-tenant: `organization_id` partitioning naturally spreads load
-- Single-tenant high-write workloads: append a write-shard suffix (`organization_id#<0-19>`) and Query each shard at read time
+- Single-tenant high-write workloads: append a write-shard suffix (`organization_id#<0-19>`) and
+  Query each shard at read time
 - Global counters: don't use one row; use sharded counters and aggregate
 
 Watch CloudWatch's `ConsumedWriteCapacityUnits` per-partition to spot a hot key before it pages you.
 
 ## Don't Use Scans In Production
 
-A Scan reads every row in the table. At 10k rows it's an annoyance; at 10M it's an outage. The two legitimate Scan use cases:
+A Scan reads every row in the table. At 10k rows it's an annoyance; at 10M it's an outage. The two
+legitimate Scan use cases:
 
 - One-shot data migrations / backfills (run from a script, not a request handler)
 - Nightly integrity walkers (audit chain verification, GDPR sweep)
 
-Both should respect a `MAX_ROWS` cap and emit "I hit the cap" telemetry so an unbounded scan can't silently exhaust memory.
+Both should respect a `MAX_ROWS` cap and emit "I hit the cap" telemetry so an unbounded scan can't
+silently exhaust memory.
 
 ## Single-Table vs Multi-Table
 
-The "official" DynamoDB design pattern is single-table — one table holds every entity, distinguished by `PK` / `SK` shapes. Pros: every query is a single Query. Cons: schemas are encoded in code, not the table; new entities are easy but new queries on existing entities require GSIs or rewrites.
+The "official" DynamoDB design pattern is single-table — one table holds every entity, distinguished
+by `PK` / `SK` shapes. Pros: every query is a single Query. Cons: schemas are encoded in code, not
+the table; new entities are easy but new queries on existing entities require GSIs or rewrites.
 
 Multi-table is the simpler default. Use single-table when:
 
@@ -196,7 +226,8 @@ Multi-table is the simpler default. Use single-table when:
 - You're running thousands of orgs and want to consolidate read capacity
 - You have a stable, well-understood entity model
 
-If unsure, start multi-table. It's easier to migrate towards single-table when access patterns settle than the reverse.
+If unsure, start multi-table. It's easier to migrate towards single-table when access patterns
+settle than the reverse.
 
 ## Common Smells
 
@@ -220,7 +251,10 @@ If unsure, start multi-table. It's easier to migrate towards single-table when a
 
 ## Purpose
 
-Principal-level DynamoDB design: single-table modelling with composite PK + GSI overload, conditional writes for idempotency, BatchWriteItem chunking, item-collection size limits, TTL for retention, Streams for change capture, tenant isolation, on-demand vs provisioned capacity choice, transactional writes.
+Principal-level DynamoDB design: single-table modelling with composite PK + GSI overload,
+conditional writes for idempotency, BatchWriteItem chunking, item-collection size limits, TTL for
+retention, Streams for change capture, tenant isolation, on-demand vs provisioned capacity choice,
+transactional writes.
 
 **Negative scope** (NOT what this skill covers):
 
@@ -233,7 +267,8 @@ Principal-level DynamoDB design: single-table modelling with composite PK + GSI 
 
 - Workloads needing complex JOIN / aggregation queries (use Postgres or Athena)
 - Strong-consistency multi-row transactions exceeding 100 items per TX (DDB transaction limit)
-- Workloads with unpredictable / spiky access patterns where provisioned capacity model wastes budget (use on-demand only)
+- Workloads with unpredictable / spiky access patterns where provisioned capacity model wastes
+  budget (use on-demand only)
 - Data with strong relational integrity needs (FKs, RLS-style policies)
 
 ## Standards Cited
@@ -292,7 +327,11 @@ Principal-level DynamoDB design: single-table modelling with composite PK + GSI 
 
 ## Why this skill exists
 
-DynamoDB rewards single-table design and punishes relational reflexes: developers coming from RDBMS create table-per-entity, run Scan on the hot path, and discover at scale that the system charges per RCU and throttles under load. The patterns above codify the principal-level posture: single-table + overloaded GSI + Query-everywhere + idempotency-via-conditional-write + tenant-isolated-via-IAM. Apps following these defaults scale to millions of requests-per-second at predictable cost.
+DynamoDB rewards single-table design and punishes relational reflexes: developers coming from RDBMS
+create table-per-entity, run Scan on the hot path, and discover at scale that the system charges per
+RCU and throttles under load. The patterns above codify the principal-level posture: single-table +
+overloaded GSI + Query-everywhere + idempotency-via-conditional-write + tenant-isolated-via-IAM.
+Apps following these defaults scale to millions of requests-per-second at predictable cost.
 
 ## Learning hooks
 
@@ -303,7 +342,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Cross-tenant scan / query without `tenant_id` PK prefix (multi-tenant isolation weakening)
 - BatchWrite > 25 items in one call without chunking (DDB hard limit)
 - Conditional write missing on idempotency-sensitive write (double-execute risk)
-- Hot partition pattern emerges (single PK absorbs > 1000 RCU/s or 1000 WCU/s) — composite-key redesign needed
+- Hot partition pattern emerges (single PK absorbs > 1000 RCU/s or 1000 WCU/s) — composite-key
+  redesign needed
 - GSI projected attributes set to ALL when only specific attrs are read (cost inflation)
 - Stream consumer not handling `OLD_IMAGE` for tombstone-style deletes
 - TTL attribute set in code but `TimeToLiveSpecification` not in IaC (DDB silently ignores)
@@ -316,4 +356,5 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New access-pattern row when a new query shape appears (e.g., reverse-chronological by org)
 - New conditional-write template when idempotency is required on a new operation class
 - New GSI design rule when a cost overrun is traced to overprojection
-- New cross-reference when a sister skill (aws-serverless-patterns, postgres-patterns, dynamodb-patterns) adds a related pattern
+- New cross-reference when a sister skill (aws-serverless-patterns, postgres-patterns,
+  dynamodb-patterns) adds a related pattern

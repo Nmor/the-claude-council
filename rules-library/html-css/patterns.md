@@ -9,6 +9,8 @@
 > Components (Heydon Pickering)**, **Every Layout (Andy Bell +
 > Heydon Pickering)**, **CUBE CSS (Andy Bell)**, **Design Tokens
 > Community Group spec**.
+>
+> **Size budget: 21 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

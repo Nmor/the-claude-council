@@ -7,6 +7,8 @@
 > "nothing simple please" and "clean, extensive and proper fixes
 > always". Every shortcut taken is a rule violation, even when the
 > user is waiting for output.
+>
+> **Size budget: 14 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -259,20 +261,31 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Container `docker stop`-ed to "free resources" rather than CPU/memory-limited (banned pattern 1 recurrence)
-- Healthcheck `timeout` / `retries` / `start_period` bumped without naming an underlying slow code path (banned pattern 2 recurrence)
-- Config env-var name guessed from a README instead of canonical loader source (banned pattern 3 — `official-docs-first.md` weakening)
-- Secret pushed to vault without format-validation against the consumer's expected shape (banned pattern 4 recurrence)
-- Credential rotation done step-by-step rather than via an atomic script (banned pattern 5 recurrence)
-- Startup error silenced by removing the offending config / feature instead of fixing the value (banned pattern 6 recurrence)
-- Migration half-completed and left running; consumer of half-state undocumented (banned pattern 7 recurrence)
+- Container `docker stop`-ed to "free resources" rather than CPU/memory-limited (banned pattern 1
+  recurrence)
+- Healthcheck `timeout` / `retries` / `start_period` bumped without naming an underlying slow code
+  path (banned pattern 2 recurrence)
+- Config env-var name guessed from a README instead of canonical loader source (banned pattern 3 —
+  `official-docs-first.md` weakening)
+- Secret pushed to vault without format-validation against the consumer's expected shape (banned
+  pattern 4 recurrence)
+- Credential rotation done step-by-step rather than via an atomic script (banned pattern 5
+  recurrence)
+- Startup error silenced by removing the offending config / feature instead of fixing the value
+  (banned pattern 6 recurrence)
+- Migration half-completed and left running; consumer of half-state undocumented (banned pattern 7
+  recurrence)
 - Proper-fix audit rows ticked without verification this turn (audit weakening)
 - "I'll come back to it next session" markers introduced (any TODO-shape silent defer)
-- Time-pressure context used as justification to skip the audit (rule 8 "I'm being rushed" failure mode)
+- Time-pressure context used as justification to skip the audit (rule 8 "I'm being rushed" failure
+  mode)
 
 **Refinement candidates**:
 
-- New row in the banned-pattern list when a new shortcut class recurs (e.g., `kubectl delete pod` to recover, `restart-loop` to mask leak, dependency downgrade to escape a bug)
+- New row in the banned-pattern list when a new shortcut class recurs (e.g., `kubectl delete pod` to
+  recover, `restart-loop` to mask leak, dependency downgrade to escape a bug)
 - Tightening of the proper-fix audit when a row consistently gets ticked without real verification
-- New cross-reference when a sister rule (no-silent-failures, no-overclaim, deploy-failures-become-checks) provides the underlying gate the shortcut bypassed
-- New "atomic rotation" template when a new credential class (signing key, OAuth client, vault token) recurs
+- New cross-reference when a sister rule (no-silent-failures, no-overclaim,
+  deploy-failures-become-checks) provides the underlying gate the shortcut bypassed
+- New "atomic rotation" template when a new credential class (signing key, OAuth client, vault
+  token) recurs

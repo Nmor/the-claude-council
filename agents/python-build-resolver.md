@@ -7,6 +7,8 @@ model: sonnet
 
 # Python Build & Type Error Resolver
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Get the Python build / import / type-check green with the SMALLEST correct change
 — root cause, never suppression. No refactoring, no features.
 

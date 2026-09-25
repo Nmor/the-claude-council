@@ -6,6 +6,8 @@ auto_activate: true
 
 # Datacenter Operations
 
+> **Size budget: 26 KB** — `token-budget.mjs --check`.
+
 ## Purpose
 
 Operate physical datacenter infrastructure — whether owned, leased
@@ -467,11 +469,13 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Generator load-bank test skipped or deferred past schedule (Tier-III/IV concurrent-maintainability weakening)
+- Generator load-bank test skipped or deferred past schedule (Tier-III/IV concurrent-maintainability
+  weakening)
 - UPS battery age past manufacturer's recommended replacement (silent SPOF accumulation)
 - PUE creeping up quarter-over-quarter (cooling efficiency / airflow management drift)
 - Cabling not labelled to BICSI / TIA-942 (operational MTTR balloon)
-- Visitor / contractor unescorted-access exception log gap (compliance + physical-security weakening)
+- Visitor / contractor unescorted-access exception log gap (compliance + physical-security
+  weakening)
 - Capacity headroom < 6 months without expansion plan
 - Vendor SLA breach not actioned within contractual window
 - DCIM data stale > 90 days (rack-level capacity reporting drift)
@@ -481,6 +485,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New tier-mapping row when a customer SLA shifts tier requirement
-- New cross-reference when a sister skill (cloud-architecture, esg-reviewer, ops-reviewer) adds a DC gate
+- New cross-reference when a sister skill (cloud-architecture, esg-reviewer, ops-reviewer) adds a DC
+  gate
 - New operational-handoff checklist row when a recurring incident class emerges
 - Tightening of the PUE / WUE / CUE target when ESG commitments tighten

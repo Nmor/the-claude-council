@@ -5,6 +5,8 @@
 > **OWASP Kotlin / Android**, **OWASP ASVS 4.0**, **OWASP Mobile
 > Top 10** (when Android), **Spring Security 6** (when Spring),
 > **Android Lint security checks**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

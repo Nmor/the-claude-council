@@ -3,6 +3,8 @@
 > Auto-fires on every file. Sister to `model-tier-selection.md` (the CANONICAL
 > model-selection policy) and the Council agent definitions in `~/.claude/agents/`.
 > Model selection defers to `model-tier-selection.md`.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Model selection → canonical in `model-tier-selection.md`
 
@@ -129,7 +131,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- New coding / reviewing / planning agent created with `model: sonnet` (opus-default policy weakening)
+- New coding / reviewing / planning agent created with `model: sonnet` (opus-default policy
+  weakening)
 - New agent on `model: haiku` for non-mechanical work (haiku scope violation)
 - Cross-language session pivots show quality drop (opus's broader knowledge surface not engaged)
 - Context window > 80% full and no strategic compaction taken (context discipline weakening)
@@ -140,10 +143,14 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New agent role row when a recurring expertise gap surfaces (e.g., Solidity reviewer, Terraform refactor specialist)
-- Tightening of the haiku scope when a doc-class artifact proves to need depth (codemap quality drops)
-- New escalation row when an agent's track record on a domain warrants per-task model bump (e.g., security-incident response → opus by default)
-- New cross-reference when a sister rule (council-default, verification-loop skill) provides the canonical delegation flow
+- New agent role row when a recurring expertise gap surfaces (e.g., Solidity reviewer, Terraform
+  refactor specialist)
+- Tightening of the haiku scope when a doc-class artifact proves to need depth (codemap quality
+  drops)
+- New escalation row when an agent's track record on a domain warrants per-task model bump (e.g.,
+  security-incident response → opus by default)
+- New cross-reference when a sister rule (council-default, verification-loop skill) provides the
+  canonical delegation flow
 
 ---
 

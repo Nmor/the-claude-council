@@ -4,6 +4,8 @@
 > `analysis_options.yaml` file. Extends
 > `~/.claude/rules/common/no-discards.md`. Tooling: `dart analyze`,
 > `dart format`, `flutter analyze`, `dart_code_metrics`.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

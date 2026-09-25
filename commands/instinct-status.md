@@ -6,6 +6,8 @@ command: true
 
 # Instinct Status Command
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Shows all learned instincts with their confidence scores, grouped by domain.
 
 ## Implementation

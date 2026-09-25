@@ -6,6 +6,8 @@ command: true
 
 # Update Codemaps
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Analyze the codebase structure and generate token-lean architecture documentation.
 
 ## Step 1: Scan Project Structure

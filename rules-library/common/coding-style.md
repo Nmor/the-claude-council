@@ -1,5 +1,7 @@
 # Coding Style
 
+> **Size budget: 13 KB** — `token-budget.mjs --check`.
+
 ## Immutability (CRITICAL)
 
 ALWAYS create new objects, NEVER mutate existing ones:
@@ -10,7 +12,8 @@ WRONG:  modify(original, field, value) → changes original in-place
 CORRECT: update(original, field, value) → returns new copy with change
 ```
 
-Rationale: Immutable data prevents hidden side effects, makes debugging easier, and enables safe concurrency.
+Rationale: Immutable data prevents hidden side effects, makes debugging easier, and enables safe
+concurrency.
 
 ## File Organization
 
@@ -138,11 +141,17 @@ DO NOT WRITE:
   fails the test. The same rule applies to method receivers,
   function parameters, and channel reads. The hook treats every
   `_` left-hand-side as a discard.
-- `for _, v := range slice` and other range-loop discards. Iterate
-  by index instead: `for i := range slice { v := slice[i]; ... }`.
-  For maps: `for k := range m { v := m[k]; ... }`. For channels:
-  `for v := range ch`. **There is no canonical-idiom exception** —
-  every value Go returns is part of the contract and must be bound.
+- `for k, _ := range m` and `for _ = range ch` — each binds a slot
+  and then throws it away when a shorter form exists that does not:
+  `for k := range m`, `for range ch`.
+  **`for _, v := range s` is NOT a discard** (owner decision,
+  2026-09-06). The blank there is the index slot, not a dropped
+  return value: the index was never produced for a caller to use,
+  and `for i := range s { v := s[i] }` costs a line and a bounds
+  read at every site to say the same thing. This rule and the hook
+  had disagreed outright for months — the rule forbade the form the
+  hook exempted — which is what made trees look full of discards
+  nothing was catching.
 - `defer file.Close()` and `defer func() { _ = x.Close() }()` —
   Close errors must be logged. Correct shape:
 
@@ -208,15 +217,21 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Deep nesting (> 4 levels) recurring in new code
 - User input not validated at system boundary (validation-at-boundary weakening)
 - Errors swallowed in UI-facing code (no user-friendly message surfaced)
-- Comment introduced with banned tokens (Sonar rule IDs, ticket numbers, "legacy" / "byte-identical" / "preserved" framing)
+- Comment introduced with banned tokens (Sonar rule IDs, ticket numbers, "legacy" / "byte-identical"
+  / "preserved" framing)
 - TODO / FIXME / XXX markers introduced (banned per Comments section)
-- Suppression directive (`// nolint`, `// eslint-disable`, `# noqa`, `@ts-ignore`) attempted (PostToolUse hook blocked)
-- Hardcoded credential prefix detected (hook blocked: `sk-proj-`, `sk_live_`, `ghp_`, `AKIA…`, `Bearer eyJ…`)
+- Suppression directive (`// nolint`, `// eslint-disable`, `# noqa`, `@ts-ignore`) attempted
+  (PostToolUse hook blocked)
+- Hardcoded credential prefix detected (hook blocked: `sk-proj-`, `sk_live_`, `ghp_`, `AKIA…`,
+  `Bearer eyJ…`)
 - Raw color literal added to UI source (hook blocked: hex / rgb / hsl / oklch)
 
 **Refinement candidates**:
 
 - New row in the "banned vocabulary" comment table when a new refactor-history phrasing recurs
-- Tightening of the file-LOC warning threshold (currently 800) when small files consistently produce cleaner reviews
-- New cross-reference when a sister rule (no-discards, no-silent-failures, no-silent-drops) provides the canonical home for a banned pattern
-- New hardcoded-credential prefix entry when a new vendor's key shape appears (e.g., new OAuth provider, new cloud)
+- Tightening of the file-LOC warning threshold (currently 800) when small files consistently produce
+  cleaner reviews
+- New cross-reference when a sister rule (no-discards, no-silent-failures, no-silent-drops) provides
+  the canonical home for a banned pattern
+- New hardcoded-credential prefix entry when a new vendor's key shape appears (e.g., new OAuth
+  provider, new cloud)

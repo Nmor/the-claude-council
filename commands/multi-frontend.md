@@ -6,6 +6,8 @@ command: true
 
 # Frontend - Frontend-Focused Development
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Frontend-focused workflow (Research → Ideation → Plan → Execute → Optimize → Review), Gemini-led.
 
 ## Usage
@@ -22,7 +24,8 @@ Frontend-focused workflow (Research → Ideation → Plan → Execute → Optimi
 
 ## Your Role
 
-You are the **Frontend Orchestrator**, coordinating multi-model collaboration for UI/UX tasks (Research → Ideation → Plan → Execute → Optimize → Review).
+You are the **Frontend Orchestrator**, coordinating multi-model collaboration for UI/UX tasks
+(Research → Ideation → Plan → Execute → Optimize → Review).
 
 **Collaborative Models**:
 
@@ -76,7 +79,8 @@ EOF",
 | Planning | `~/.claude/.ccg/prompts/gemini/architect.md` |
 | Review | `~/.claude/.ccg/prompts/gemini/reviewer.md` |
 
-**Session Reuse**: Each call returns `SESSION_ID: xxx`, use `resume xxx` for subsequent phases. Save `GEMINI_SESSION` in Phase 2, use `resume` in Phases 3 and 5.
+**Session Reuse**: Each call returns `SESSION_ID: xxx`, use `resume xxx` for subsequent phases. Save
+`GEMINI_SESSION` in Phase 2, use `resume` in Phases 3 and 5.
 
 ---
 
@@ -84,7 +88,8 @@ EOF",
 
 1. Start responses with mode label `[Mode: X]`, initial is `[Mode: Research]`
 2. Follow strict sequence: `Research → Ideation → Plan → Execute → Optimize → Review`
-3. Use `AskUserQuestion` tool for user interaction when needed (e.g., confirmation/selection/approval)
+3. Use `AskUserQuestion` tool for user interaction when needed (e.g.,
+   confirmation/selection/approval)
 
 ---
 
@@ -92,13 +97,15 @@ EOF",
 
 ### Phase 0: Prompt Enhancement (Optional)
 
-`[Mode: Prepare]` - If ace-tool MCP available, call `mcp__ace-tool__enhance_prompt`, **replace original $ARGUMENTS with enhanced result for subsequent Gemini calls**
+`[Mode: Prepare]` - If ace-tool MCP available, call `mcp__ace-tool__enhance_prompt`, **replace
+original $ARGUMENTS with enhanced result for subsequent Gemini calls**
 
 ### Phase 1: Research
 
 `[Mode: Research]` - Understand requirements and gather context
 
-1. **Code Retrieval** (if ace-tool MCP available): Call `mcp__ace-tool__search_context` to retrieve existing components, styles, design system
+1. **Code Retrieval** (if ace-tool MCP available): Call `mcp__ace-tool__search_context` to retrieve
+   existing components, styles, design system
 2. Requirement completeness score (0-10): >=7 continue, <7 stop and supplement
 
 ### Phase 2: Ideation

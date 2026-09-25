@@ -4,6 +4,8 @@
 > backed by X", or "stripped of Y". DO NOT declare any of those phrases until
 > every check below passes. Apply this checklist BEFORE saying "done" — never
 > after, never as an afterthought.
+>
+> **Size budget: 13 KB** — `token-budget.mjs --check`.
 
 ## Why this exists
 
@@ -225,6 +227,23 @@ the verification block captures the counts: `dangling: N,
 dead: M, unwired: K`. Zero on each row OR explicit user-approved
 deferral.
 
+### 16. No un-escalated deferrals were introduced
+
+A task is not finished if it left a defect behind that nobody was asked about. Before any
+"done" claim, confirm all three:
+
+- [ ] Every defect this change UNCOVERED was fixed, or pinned per
+      `functional-test-coverage.md` rule 6 with `decision-owner:` and `decision-needed:`
+      present in the code.
+- [ ] Every such pin was PUT TO the owner in the same turn. Writing it down is not asking.
+- [ ] No deferral vocabulary was added to source or tests without that justification —
+      the `deferral-gate.js` hook blocks this at write time, so a clean run of it is the
+      evidence, not a memory of having been careful.
+
+The distinction that makes this checkable: a FOLLOW-UP is work discovered BEYOND this
+change's scope, and is legitimate. A DEFERRAL is a defect found INSIDE this change's scope
+and left unfixed. The second is never "done", however neatly it is filed.
+
 ## Done means done
 
 You may only say "done" / "fully X-backed" / "X stripped" / "complete" when
@@ -246,7 +265,6 @@ acknowledgment when it goes wrong.
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

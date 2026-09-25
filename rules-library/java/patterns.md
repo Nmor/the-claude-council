@@ -3,6 +3,8 @@
 > Auto-fires on every `*.java` file. Standards: **Effective Java
 > 3e**, **Spring Boot 3.x reference**, **Microservices patterns
 > (Richardson)**, **DDD (Evans)**, **Clean Architecture (Martin)**.
+>
+> **Size budget: 9 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

@@ -3,6 +3,8 @@
 > Auto-fires on every file. Sister to `no-discards.md` (which already
 > blocks hardcoded creds on save), `docker-localhost-binding.md`, and
 > `security-controls-org-wide.md`.
+>
+> **Size budget: 12 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -244,11 +246,13 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Long-term AWS access key (`AKIA...`) found in `~/.aws/credentials` (rule 1 violation — Keychain via aws-vault required)
+- Long-term AWS access key (`AKIA...`) found in `~/.aws/credentials` (rule 1 violation — Keychain
+  via aws-vault required)
 - `.env` tracked by git (rule 3 violation)
 - Private key (`*.pem`, `*.key`, `id_rsa*`) found in repo (rule 6 violation)
 - Postman / Insomnia collection committed with real response bodies (rule 5 violation)
-- Kubernetes `Secret` manifest with raw `data:` (rule 7 violation — Sealed/External Secrets required)
+- Kubernetes `Secret` manifest with raw `data:` (rule 7 violation — Sealed/External Secrets
+  required)
 - Rotation done step-by-step instead of via atomic script (per `proper-fixes-first.md`)
 - Suspected exposure: scrub attempted before rotation (rule 9 violation — rotate FIRST)
 - Pre-commit hook missing or not catching the leak in CI
@@ -257,6 +261,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New vault provider row when a new secrets manager gains adoption
-- Tightening of the rotation cadence table when a regulator (PCI / SOC2) updates frequency requirements
+- Tightening of the rotation cadence table when a regulator (PCI / SOC2) updates frequency
+  requirements
 - New banned-pattern entry when a new credential prefix shape recurs
-- New cross-reference when a sister rule (no-discards, install-allowlist) provides complementary hook enforcement
+- New cross-reference when a sister rule (no-discards, install-allowlist) provides complementary
+  hook enforcement

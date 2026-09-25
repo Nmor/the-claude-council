@@ -6,6 +6,8 @@ command: true
 
 # Orchestrate Command
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Sequential agent workflow for complex tasks.
 
 ## Usage

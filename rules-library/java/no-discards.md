@@ -3,6 +3,8 @@
 > Auto-fires on every `*.java` file. Extends
 > `~/.claude/rules/common/no-discards.md`. Tooling: ErrorProne,
 > SpotBugs, PMD, Checkstyle, NullAway, SonarJava.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

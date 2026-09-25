@@ -6,6 +6,8 @@ command: true
 
 # Build and Fix
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Incrementally fix build and type errors with minimal, safe changes.
 
 ## Step 1: Detect Build System

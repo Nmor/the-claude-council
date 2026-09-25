@@ -3,6 +3,8 @@
 > Auto-fires on every `*.rb`, `Gemfile`, `config/*.rb` file. Sister
 > to `~/.claude/rules/common/security.md`. Tooling: **Brakeman**,
 > **bundler-audit**, **rubocop-rspec**, **dawnscanner**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

@@ -6,7 +6,10 @@ paths:
 
 # Lua Coding Standards
 
-> Auto-activates for Lua source files. Used by the call-center-product for scripting and configuration.
+> Auto-activates for Lua source files. Used by the call-center-product for scripting and
+> configuration.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Checklist
 

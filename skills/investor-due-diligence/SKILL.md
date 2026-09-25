@@ -5,23 +5,41 @@ description: Principal-level due-diligence methodology for evaluating fund manag
 
 # Investor Due Diligence
 
+> **Size budget: 27 KB** — `token-budget.mjs --check`.
+
 ## Purpose
 
-Due diligence is the structured verification step before committing capital — to a fund manager, a private company, an M&A target, a real estate purchase, or a strategic partnership. It tests the marketing narrative against independent evidence. Done well, diligence catches the deal-killer before close: the undisclosed customer concentration, the unsigned contract, the litigation timeline, the technology debt, the manager's prior fund's mark-to-myth NAV. Done badly, it produces a thick binder that nobody reads and an investment that blows up six months later from a risk that diligence would have surfaced with a single phone call.
+Due diligence is the structured verification step before committing capital — to a fund manager, a
+private company, an M&A target, a real estate purchase, or a strategic partnership. It tests the
+marketing narrative against independent evidence. Done well, diligence catches the deal-killer
+before close: the undisclosed customer concentration, the unsigned contract, the litigation
+timeline, the technology debt, the manager's prior fund's mark-to-myth NAV. Done badly, it produces
+a thick binder that nobody reads and an investment that blows up six months later from a risk that
+diligence would have surfaced with a single phone call.
 
-Principal-level diligence is multi-disciplinary: operational, financial, commercial, legal, technical, regulatory, ESG, reference, and management diligence each producing findings; cross-functional integration of findings into a deal memo with explicit go/no-go criteria; clear documentation of unresolved risks at close (and the contractual mechanisms — reps, warranties, escrows, indemnifications — that handle them).
+Principal-level diligence is multi-disciplinary: operational, financial, commercial, legal,
+technical, regulatory, ESG, reference, and management diligence each producing findings;
+cross-functional integration of findings into a deal memo with explicit go/no-go criteria; clear
+documentation of unresolved risks at close (and the contractual mechanisms — reps, warranties,
+escrows, indemnifications — that handle them).
 
-This skill governs the diligence lifecycle: scoping the work, organising the diligence workstream, executing each functional area with the right experts, integrating findings, identifying red flags, negotiating risk-mitigating deal terms, and producing the investment committee memo.
+This skill governs the diligence lifecycle: scoping the work, organising the diligence workstream,
+executing each functional area with the right experts, integrating findings, identifying red flags,
+negotiating risk-mitigating deal terms, and producing the investment committee memo.
 
 ## Standards Cited
 
 - **AICPA SOP 14-1** + **PCAOB AS 2110** — risk assessment standards informing financial diligence
-- **CFA Institute Body of Knowledge — Alternative Investments + Private Markets** (2026 edition) — private fund + private company diligence framework
+- **CFA Institute Body of Knowledge — Alternative Investments + Private Markets** (2026 edition) —
+  private fund + private company diligence framework
 - **CFA Institute Asset Manager Code of Professional Conduct** — manager diligence standards
-- **ILPA (Institutional Limited Partners Association) Due Diligence Questionnaire 2.0** — canonical LP-side DDQ for PE/VC manager selection
+- **ILPA (Institutional Limited Partners Association) Due Diligence Questionnaire 2.0** — canonical
+  LP-side DDQ for PE/VC manager selection
 - **AIMA (Alternative Investment Management Association) DDQ** — hedge fund manager diligence
-- **ABA Mergers and Acquisitions Committee — Model Stock Purchase Agreement** — reps and warranties framework
-- **Bain "Mergers & Acquisitions Report"** + **McKinsey "M&A practice" research** — commercial diligence frameworks
+- **ABA Mergers and Acquisitions Committee — Model Stock Purchase Agreement** — reps and warranties
+  framework
+- **Bain "Mergers & Acquisitions Report"** + **McKinsey "M&A practice" research** — commercial
+  diligence frameworks
 - **FCPA / UK Bribery Act / OECD Anti-Bribery Convention** — anti-corruption diligence
 - **OFAC / EU / UN sanctions lists** — sanctions screening
 - **SOC 2 Type II reports + ISO 27001 certifications** — IT/security diligence
@@ -101,7 +119,9 @@ diligence_scope:
       scope: 8_customers, 3_former_employees, 2_competitors, 1_supplier
 ```
 
-Scope must match the cheque size. A $250K seed investment doesn't justify a $200K diligence bill; an $80M growth equity investment must justify $400-800K of advisor fees. The investment committee approves scope, not just the deal.
+Scope must match the cheque size. A $250K seed investment doesn't justify a $200K diligence bill; an
+$80M growth equity investment must justify $400-800K of advisor fees. The investment committee
+approves scope, not just the deal.
 
 ### Pattern 2: Quality of Earnings (QoE) — the central financial diligence
 
@@ -109,7 +129,8 @@ A QoE report independently re-derives the target's normalised EBITDA. The dilige
 
 1. Confirms historical revenue with bank deposits, invoices, AR aging
 2. Tests revenue recognition policy against ASC 606 / IFRS 15
-3. Identifies one-time items (non-recurring revenue, restructuring charges, owner perks, related-party transactions)
+3. Identifies one-time items (non-recurring revenue, restructuring charges, owner perks,
+   related-party transactions)
 4. Normalises EBITDA: remove non-recurring, add back add-backs management proposes
 5. Re-derives working capital normalised level
 6. Tests inventory completeness (FIFO/LIFO consistency, slow-moving reserves)
@@ -132,7 +153,8 @@ Adjustments Rejected: $1.7M of owner discretionary expenses (travel, family sala
 Quality Score: B+  (one customer 22% concentration; otherwise clean)
 ```
 
-A "B+" QoE is acceptable; "C" usually requires price reduction or escrow; "D" is grounds for walking away.
+A "B+" QoE is acceptable; "C" usually requires price reduction or escrow; "D" is grounds for walking
+away.
 
 ### Pattern 3: Commercial diligence — independent market view
 
@@ -148,7 +170,8 @@ Commercial diligence answers: is the market real, is it growing, can the company
 | **Channel partner health** | Partner concentration, partner economics | Channel risk assessment |
 | **Substitute threats** | Adjacent technologies, vertical integration by customers | Substitute risk matrix |
 
-Independent customer references are the highest-signal diligence output. Management's reference list is biased upward; lost-prospect interviews uncover the weaknesses management hides.
+Independent customer references are the highest-signal diligence output. Management's reference list
+is biased upward; lost-prospect interviews uncover the weaknesses management hides.
 
 ### Pattern 4: Manager diligence (LP allocating to a fund)
 
@@ -200,7 +223,9 @@ manager_diligence:
     - 2+ service providers (auditor, fund admin)
 ```
 
-The "PME comparison" (Public Market Equivalent) — Kaplan-Schoar 2005 methodology — adjusts manager IRR for the public-market return the LP could have earned with the same cash flow timing. Many "top-quartile" managers fail PME tests once adjusted for beta exposure.
+The "PME comparison" (Public Market Equivalent) — Kaplan-Schoar 2005 methodology — adjusts manager
+IRR for the public-market return the LP could have earned with the same cash flow timing. Many
+"top-quartile" managers fail PME tests once adjusted for beta exposure.
 
 ### Pattern 5: Technology + cybersecurity diligence (for tech targets)
 
@@ -243,7 +268,8 @@ technology_diligence:
     - compensation benchmarks
 ```
 
-A SaaS target's technology diligence drives both the deal price (technical debt = required investment = lower EBITDA) and the integration plan post-close.
+A SaaS target's technology diligence drives both the deal price (technical debt = required
+investment = lower EBITDA) and the integration plan post-close.
 
 ### Pattern 6: Red-flag scoring + go/no-go decision
 
@@ -276,9 +302,13 @@ def evaluate_deal(red_flags: list[RedFlag]) -> dict:
 
 Examples of severity classification:
 
-- **BLOCKER**: fraud detected; undisclosed material litigation; sanctions hit on UBO; CFIUS-rejectable; auditor going-concern qualification
-- **MATERIAL**: customer concentration > 25% with no contractual protections; tech debt requiring 20%+ of revenue in next 2 years; pending regulatory action with material exposure; key person not contractually committed
-- **MINOR**: documentation gaps (resolvable post-close); minor compliance findings; non-critical SOC2 exceptions
+- **BLOCKER**: fraud detected; undisclosed material litigation; sanctions hit on UBO;
+  CFIUS-rejectable; auditor going-concern qualification
+- **MATERIAL**: customer concentration > 25% with no contractual protections; tech debt requiring
+  20%+ of revenue in next 2 years; pending regulatory action with material exposure; key person not
+  contractually committed
+- **MINOR**: documentation gaps (resolvable post-close); minor compliance findings; non-critical
+  SOC2 exceptions
 - **INFORMATIONAL**: nice-to-knows; cultural insights; integration considerations
 
 ### Pattern 7: Investment committee memo
@@ -301,43 +331,62 @@ The IC memo is 15-25 pages plus appendices. Structure:
 
 ### Anti-pattern 1: Confirmation diligence
 
-"We already decided to do the deal; the diligence is just paperwork." Diligence MUST be empowered to kill the deal. The IC chair pre-commits: any BLOCKER finding triggers automatic re-vote; any 5+ MATERIAL findings trigger re-pricing.
+"We already decided to do the deal; the diligence is just paperwork." Diligence MUST be empowered to
+kill the deal. The IC chair pre-commits: any BLOCKER finding triggers automatic re-vote; any 5+
+MATERIAL findings trigger re-pricing.
 
 ### Anti-pattern 2: Management-provided references only
 
-Management hands a curated list of customer references. ALL will say nice things. Independent references — from lost prospects, churned customers, former employees, competitors, and randomly-selected current customers — produce the differential signal.
+Management hands a curated list of customer references. ALL will say nice things. Independent
+references — from lost prospects, churned customers, former employees, competitors, and
+randomly-selected current customers — produce the differential signal.
 
 ### Anti-pattern 3: Skipping QoE on small deals
 
-"It's only $5M; we'll skip QoE." A $5M deal that turns into a $5M loss is the same dollar impact as catching it pre-close on a $50M deal with a 10% adjustment. Right-size, don't skip.
+"It's only $5M; we'll skip QoE." A $5M deal that turns into a $5M loss is the same dollar impact as
+catching it pre-close on a $50M deal with a 10% adjustment. Right-size, don't skip.
 
 ### Anti-pattern 4: Underweighting cyber diligence
 
-A target with poor cybersecurity is a liability. Post-close breach attribution can flow back to the acquirer; M&A regulatory framework now treats cyber as material. Cyber diligence is not optional for any tech-touching deal.
+A target with poor cybersecurity is a liability. Post-close breach attribution can flow back to the
+acquirer; M&A regulatory framework now treats cyber as material. Cyber diligence is not optional for
+any tech-touching deal.
 
 ### Anti-pattern 5: Failing to verify "we are profitable"
 
-Management says "we just turned EBITDA positive last quarter." QoE reveals one-time deferred revenue recognition pulled forward. Always re-derive quarterly trends from raw data, not management's reported numbers.
+Management says "we just turned EBITDA positive last quarter." QoE reveals one-time deferred revenue
+recognition pulled forward. Always re-derive quarterly trends from raw data, not management's
+reported numbers.
 
 ### Anti-pattern 6: Ignoring base rates on manager track record
 
-Fund III performance after Fund I + II generates an attractive IRR. Empirical research (Kaplan-Schoar, Harris-Jenkinson-Kaplan): persistence of top-quartile performance from Fund N to Fund N+1 is ~30-40% in PE, lower in hedge funds. Pay for proven persistence skeptically.
+Fund III performance after Fund I + II generates an attractive IRR. Empirical research
+(Kaplan-Schoar, Harris-Jenkinson-Kaplan): persistence of top-quartile performance from Fund N to
+Fund N+1 is ~30-40% in PE, lower in hedge funds. Pay for proven persistence skeptically.
 
 ### Anti-pattern 7: Heroic Synergy Assumptions in M&A
 
-"We'll save $50M from procurement synergies." Empirical: 60-70% of announced synergies are never realised. Risk-weight every synergy line item; assume diss-synergies (revenue lost to customer churn during integration) at 5-15% of target revenue.
+"We'll save $50M from procurement synergies." Empirical: 60-70% of announced synergies are never
+realised. Risk-weight every synergy line item; assume diss-synergies (revenue lost to customer churn
+during integration) at 5-15% of target revenue.
 
 ### Anti-pattern 8: Missing key-person commitments
 
-The thesis depends on the founder. The founder isn't contractually committed beyond 24 months. After 24 months, the founder retires and the company underperforms. Insist on multi-year retention agreements with claw-back, escrow, or earn-out structures.
+The thesis depends on the founder. The founder isn't contractually committed beyond 24 months. After
+24 months, the founder retires and the company underperforms. Insist on multi-year retention
+agreements with claw-back, escrow, or earn-out structures.
 
 ### Anti-pattern 9: Trusting unverified financial projections
 
-Management's projection: 30% CAGR for 5 years. Triangulate: does the bottoms-up customer model support 30%? Does the sales capacity ramp support it? Does the channel partner program? Does the TAM allow it without market-share inflection? Numbers fall apart with any pressure.
+Management's projection: 30% CAGR for 5 years. Triangulate: does the bottoms-up customer model
+support 30%? Does the sales capacity ramp support it? Does the channel partner program? Does the TAM
+allow it without market-share inflection? Numbers fall apart with any pressure.
 
 ### Anti-pattern 10: Sanctions + UBO screening skipped
 
-PEP (politically exposed person), OFAC sanctions, UN sanctions, EU sanctions screening on all UBOs (ultimate beneficial owners) is mandatory. Failure to screen creates legal exposure for the investor regardless of intent. Use Refinitiv, Dow Jones, or similar databases.
+PEP (politically exposed person), OFAC sanctions, UN sanctions, EU sanctions screening on all UBOs
+(ultimate beneficial owners) is mandatory. Failure to screen creates legal exposure for the investor
+regardless of intent. Use Refinitiv, Dow Jones, or similar databases.
 
 ## Verification Checklist
 
@@ -367,28 +416,36 @@ PEP (politically exposed person), OFAC sanctions, UN sanctions, EU sanctions scr
 ## Cross-References
 
 - `~/.claude/skills/valuation-models/SKILL.md` — valuation outputs that feed deal pricing
-- `~/.claude/skills/investment-research/SKILL.md` — public-market research methodology, partially reused for private
+- `~/.claude/skills/investment-research/SKILL.md` — public-market research methodology, partially
+  reused for private
 - `~/.claude/skills/portfolio-theory/SKILL.md` — portfolio context for sizing the commitment
 - `~/.claude/skills/financial-analyst/SKILL.md` — financial analysis underlying the QoE
 - `~/.claude/skills/ifrs-gaap-reporting/SKILL.md` — accounting standards driving QoE adjustments
 - `~/.claude/skills/iso27001-controls/SKILL.md` — cyber/security control review framework
 - `~/.claude/skills/soc2-readiness/SKILL.md` — SOC 2 attestations the target should hold
-- `~/.claude/rules/common/no-overclaim.md` — diligence findings reported honestly, including unresolved risk
+- `~/.claude/rules/common/no-overclaim.md` — diligence findings reported honestly, including
+  unresolved risk
 
 ## Why This Skill Exists
 
-Failed acquisitions are the most expensive mistakes in business — $500B+ of US M&A overpayment value-destruction documented in academic literature (Moeller-Schlingemann-Stulz 2005). Failed fund commitments destroy LP returns over decades. The root causes are nearly always identified by post-mortems as: insufficient or biased due diligence.
+Failed acquisitions are the most expensive mistakes in business — $500B+ of US M&A overpayment
+value-destruction documented in academic literature (Moeller-Schlingemann-Stulz 2005). Failed fund
+commitments destroy LP returns over decades. The root causes are nearly always identified by
+post-mortems as: insufficient or biased due diligence.
 
 Specific failure patterns that proper diligence catches:
 
 - **HP-Autonomy (2011)**: $11B write-down from accounting irregularities QoE would have detected
-- **Bayer-Monsanto (2018)**: $63B deal; subsequent $11B Roundup litigation that environmental + legal diligence flagged but was deprioritised
+- **Bayer-Monsanto (2018)**: $63B deal; subsequent $11B Roundup litigation that environmental +
+  legal diligence flagged but was deprioritised
 - **Time Warner-AOL (2000)**: cultural + technology mismatch ignored; $99B in value destroyed
 - **Theranos (multiple)**: customer references that were never independently verified
 - **Madoff feeders**: operational diligence skipped on the audit firm (one-man shop)
 - **Adam Neumann / WeWork**: governance red flags visible in pre-IPO process, ignored due to FOMO
 
-The discipline of multi-workstream, independent-reference, red-flag-scoring diligence with empowered IC veto is what separates institutional capital allocators from amateurs. It costs 1-2% of deal size in fees. It saves multiples of deal size in avoided disasters.
+The discipline of multi-workstream, independent-reference, red-flag-scoring diligence with empowered
+IC veto is what separates institutional capital allocators from amateurs. It costs 1-2% of deal size
+in fees. It saves multiples of deal size in avoided disasters.
 
 Trust, but verify. Then verify again with a different source. Then write it down.
 
@@ -435,6 +492,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New diligence-workstream row when a new asset class emerges
-- New cross-reference when a sister skill (financial-analyst, valuation-models, investment-research, soc2-readiness, pci-dss-patterns) adds a diligence gate
+- New cross-reference when a sister skill (financial-analyst, valuation-models, investment-research,
+  soc2-readiness, pci-dss-patterns) adds a diligence gate
 - New red-flag scoring rubric row when a recurring deal-breaker class emerges
 - Tightening of the IC-veto criteria when post-close surprises recur

@@ -6,6 +6,8 @@ auto_activate: true
 
 # Hiring Process
 
+> **Size budget: 29 KB** — `token-budget.mjs --check`.
+
 ## Purpose
 
 Build and operate a hiring process that consistently selects high-
@@ -60,6 +62,62 @@ communications written.
   practitioner benchmark data
 - **DORA "State of DevOps" report** — correlation between
   psychological safety + hiring quality + team performance
+
+- **ISO 9001:2015 + 2026 revision** — Quality management systems
+  (process approach, risk-based thinking, leadership)
+- **ISO 9004:2018** — Quality management — quality of an
+  organization (sustained success)
+- **ISO 31000:2018** — Risk management guidelines
+- **ISO 14001:2015** — Environmental management
+- **ISO 45001:2018** — Occupational health and safety
+- **ASQ Body of Knowledge — Six Sigma Black Belt** — DMAIC, DMADV,
+  SIPOC, Cp/Cpk, DOE, control charts
+- **APICS CPIM / CSCP Body of Knowledge** — Supply chain operations
+  reference, S&OP, demand planning, SCOR model
+- **PMBOK Guide 7th Edition + PMI Standard for Project
+  Management** — Project + portfolio + program management
+- **Lean Enterprise Institute — Toyota Production System** — JIT,
+  jidoka, kanban, kaizen, value-stream mapping, takt time
+- **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
+  engineering basis (when civil / structural scope)
+- **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
+  - digital coordination (when AEC scope)
+- **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
+  Matrix** — Systematic innovation methodology
+- **Stanford d.school + IDEO Field Guide** — Design thinking
+  process (Empathise / Define / Ideate / Prototype / Test)
+- **The Lean Startup (Ries 2011) + Customer Development (Blank)** —
+  Build-measure-learn loop, MVP taxonomy, pivot types
+- **Team Topologies (Skelton + Pais 2019)** — Stream-aligned /
+  platform / enabling / complicated-subsystem teams + interaction
+  modes
+- **OKRs — Measure What Matters (Doerr 2018)** + **Andy Grove's
+  HPM** — Objectives + Key Results, CFR, stretch goals
+- **The Five Dysfunctions of a Team (Lencioni)** + **High Output
+  Management (Grove)** — People + culture frameworks
+- **Getting to Yes (Fisher + Ury) + Never Split the Difference
+  (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
+
+### Cross-cutting engineering standards
+
+- **ISO/IEC/IEEE 12207:2017** — Software life cycle processes
+  (process-engineering applies to software-delivery workflows)
+- **ISO/IEC 25010:2011 §6** — Quality model (process maturity
+  feeds product quality characteristics)
+- **ISO/IEC 33001:2015** — Process assessment concepts +
+  vocabulary (foundation for SPICE / Automotive SPICE)
+- **ISO/IEC 33020:2019** — Process measurement framework for
+  process capability assessment
+- **NIST SP 800-160 Vol 1 Rev 1 + Vol 2 Rev 1** — Engineering
+  trustworthy secure systems + cyber resiliency
+- **NIST SP 800-218 SSDF §PO** — Prepare the organization
+  (process governance + role definitions)
+- **NIST SP 800-53 Rev 5 §PM** — Program management controls
+  (apply to any organisational process)
+- **OWASP SAMM v2** — Software Assurance Maturity Model
+  (process-maturity assessment framework)
+- **CWE-1059** — Insufficient technical documentation (process
+  workflows MUST be documented)
 
 ## When to Fire
 
@@ -440,64 +498,6 @@ and onboarding infrastructure. The cost of an amateur hiring system
 is years of compounding talent debt, unrecoverable cultural
 erosion, and competitive disadvantage in every market where
 talent is the limit.
-
-## Standards Cited
-
-- **ISO 9001:2015 + 2026 revision** — Quality management systems
-  (process approach, risk-based thinking, leadership)
-- **ISO 9004:2018** — Quality management — quality of an
-  organization (sustained success)
-- **ISO 31000:2018** — Risk management guidelines
-- **ISO 14001:2015** — Environmental management
-- **ISO 45001:2018** — Occupational health and safety
-- **ASQ Body of Knowledge — Six Sigma Black Belt** — DMAIC, DMADV,
-  SIPOC, Cp/Cpk, DOE, control charts
-- **APICS CPIM / CSCP Body of Knowledge** — Supply chain operations
-  reference, S&OP, demand planning, SCOR model
-- **PMBOK Guide 7th Edition + PMI Standard for Project
-  Management** — Project + portfolio + program management
-- **Lean Enterprise Institute — Toyota Production System** — JIT,
-  jidoka, kanban, kaizen, value-stream mapping, takt time
-- **Eurocode 0/1/2/3 + AISC 360 + ACI 318** — Structural
-  engineering basis (when civil / structural scope)
-- **ASHRAE Handbook + ISO 19650 (BIM)** — Building services + MEP
-  - digital coordination (when AEC scope)
-- **TRIZ — Altshuller's 40 Inventive Principles + Contradiction
-  Matrix** — Systematic innovation methodology
-- **Stanford d.school + IDEO Field Guide** — Design thinking
-  process (Empathise / Define / Ideate / Prototype / Test)
-- **The Lean Startup (Ries 2011) + Customer Development (Blank)** —
-  Build-measure-learn loop, MVP taxonomy, pivot types
-- **Team Topologies (Skelton + Pais 2019)** — Stream-aligned /
-  platform / enabling / complicated-subsystem teams + interaction
-  modes
-- **OKRs — Measure What Matters (Doerr 2018)** + **Andy Grove's
-  HPM** — Objectives + Key Results, CFR, stretch goals
-- **The Five Dysfunctions of a Team (Lencioni)** + **High Output
-  Management (Grove)** — People + culture frameworks
-- **Getting to Yes (Fisher + Ury) + Never Split the Difference
-  (Voss)** — Negotiation: BATNA / ZOPA / tactical empathy
-
-### Cross-cutting engineering standards
-
-- **ISO/IEC/IEEE 12207:2017** — Software life cycle processes
-  (process-engineering applies to software-delivery workflows)
-- **ISO/IEC 25010:2011 §6** — Quality model (process maturity
-  feeds product quality characteristics)
-- **ISO/IEC 33001:2015** — Process assessment concepts +
-  vocabulary (foundation for SPICE / Automotive SPICE)
-- **ISO/IEC 33020:2019** — Process measurement framework for
-  process capability assessment
-- **NIST SP 800-160 Vol 1 Rev 1 + Vol 2 Rev 1** — Engineering
-  trustworthy secure systems + cyber resiliency
-- **NIST SP 800-218 SSDF §PO** — Prepare the organization
-  (process governance + role definitions)
-- **NIST SP 800-53 Rev 5 §PM** — Program management controls
-  (apply to any organisational process)
-- **OWASP SAMM v2** — Software Assurance Maturity Model
-  (process-maturity assessment framework)
-- **CWE-1059** — Insufficient technical documentation (process
-  workflows MUST be documented)
 
 ## Learning hooks
 

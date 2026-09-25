@@ -6,6 +6,8 @@ command: true
 
 # Test Coverage
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Analyze test coverage, identify gaps, and generate missing tests to reach 80%+ coverage.
 
 ## Step 1: Detect Test Framework

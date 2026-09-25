@@ -5,6 +5,8 @@
 > Injection Cheat Sheet**, **POSIX shell command-injection
 > taxonomy**, **CWE-78 (OS Command Injection)**, **CWE-77 (Command
 > Injection)**, **CWE-88 (Argument Injection)**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

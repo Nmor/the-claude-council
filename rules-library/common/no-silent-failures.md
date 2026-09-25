@@ -9,3 +9,5 @@
 > (now incl. rule 8 "observable best-effort swallow = metric + alert,
 > not just a log" and rule 9 "absence-class failures need proactive
 > detection: dead-man alerts + startup effective-config log").
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.

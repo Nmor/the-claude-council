@@ -11,18 +11,24 @@ paths:
   - "**/analysis_options.yaml"
 ---
 
-> Migrated 2026-06-02 from `~/.claude/rules-library/dart/` as part of the lazy-rules-loading plan. Phase H will delete the source files.
-
 # dart-flutter-patterns
+
+> Migrated 2026-06-02 from `~/.claude/rules-library/dart/` as part of the lazy-rules-loading plan.
+> Phase H will delete the source files.
+>
+> **Size budget: 29 KB** — `token-budget.mjs --check`.
 
 ## Standards Cited
 
-- **Dart Language Specification 3.x** (dart.dev/guides/language/spec) — null safety, sealed classes, records
+- **Dart Language Specification 3.x** (dart.dev/guides/language/spec) — null safety, sealed classes,
+  records
 - **Effective Dart** (dart.dev/effective-dart) — style + usage + design + documentation
 - **Flutter Material Design 3** (m3.material.io) — token system + adaptive theming
 - **WCAG 2.2 §1.4.11** (W3C Recommendation, October 2023) — non-text contrast 3:1 for UI components
-- **WCAG 2.2 §2.5.8** (W3C Recommendation, October 2023) — target size minimum 24×24 CSS pixels (Flutter: 48dp)
-- **OWASP Mobile Top 10 2024 M1** (owasp.org/www-project-mobile-top-10) — improper credential usage (Dart secure storage discipline)
+- **WCAG 2.2 §2.5.8** (W3C Recommendation, October 2023) — target size minimum 24×24 CSS pixels
+  (Flutter: 48dp)
+- **OWASP Mobile Top 10 2024 M1** (owasp.org/www-project-mobile-top-10) — improper credential usage
+  (Dart secure storage discipline)
 - **CWE-798** — Use of Hard-coded Credentials (no API keys in source)
 - **ECMAScript Internationalization API** — `intl` package follows the same locale model
 
@@ -38,11 +44,11 @@ paths:
 
 ---
 
-# Dart/Flutter Coding Style
+## Dart/Flutter Coding Style
 
 > Extends `common/coding-style.md` with Dart/Flutter-specific conventions.
 
-## Naming Conventions
+### Naming Conventions
 
 - Classes/enums/typedefs: `UpperCamelCase`
 - Libraries/packages/directories/files: `lowercase_with_underscores`
@@ -50,7 +56,7 @@ paths:
 - Constants: `lowerCamelCase` (not SCREAMING_SNAKE)
 - Private members: prefix with `_`
 
-## Immutability
+### Immutability
 
 Use `final` by default. Prefer immutable widgets and data classes.
 
@@ -68,7 +74,7 @@ class User {
 }
 ```
 
-## Flutter Widget Patterns
+### Flutter Widget Patterns
 
 - Extract widgets into methods only when reusing; prefer separate widget classes
 - Keep `build()` methods small (<40 lines)
@@ -76,7 +82,7 @@ class User {
 - Prefer `StatelessWidget` over `StatefulWidget` when possible
 - Use Riverpod/Bloc/Provider for state management (not raw `setState`)
 
-## Error Handling
+### Error Handling
 
 ```dart
 try {
@@ -89,7 +95,7 @@ try {
 }
 ```
 
-## Effective Dart
+### Effective Dart
 
 - Follow Effective Dart guidelines
 - Use `dart format` for formatting
@@ -102,13 +108,13 @@ try {
      Section: dart/hooks.md
      ============================================================ -->
 
-# Dart / Flutter Hooks
+## Dart / Flutter Hooks
 
 > Auto-fires on every `*.dart`, `pubspec.yaml`, `pubspec.lock`,
 > `analysis_options.yaml`, `build.yaml` file. Sister to
 > `~/.claude/rules-library/common/hooks.md`.
 
-## Pre-commit gates
+### Pre-commit gates
 
 `.githooks/pre-commit`:
 
@@ -132,7 +138,7 @@ set -euo pipefail
 flutter test --coverage      # OR `dart test` for pure-Dart packages
 ```
 
-## CI workflow
+### CI workflow
 
 ```yaml
 name: Flutter CI
@@ -209,7 +215,7 @@ jobs:
       - run: flutter build ios --release --no-codesign
 ```
 
-## `pubspec.yaml` pinning
+### `pubspec.yaml` pinning
 
 ```yaml
 name: myapp
@@ -242,7 +248,7 @@ dev_dependencies:
 
 Lockfile (`pubspec.lock`) committed to git.
 
-## `analysis_options.yaml` (strict)
+### `analysis_options.yaml` (strict)
 
 ```yaml
 include: package:flutter_lints/flutter.yaml
@@ -295,7 +301,7 @@ linter:
     - prefer_typing_uninitialized_variables
 ```
 
-## `dart_code_metrics` (deeper analysis)
+### `dart_code_metrics` (deeper analysis)
 
 ```yaml
 # analysis_options.yaml (or .metrics.yaml)
@@ -339,7 +345,7 @@ dart_code_metrics:
     - prefer-single-widget-per-file
 ```
 
-## Cross-references
+### Cross-references
 
 - `~/.claude/rules-library/common/hooks.md`
 - `~/.claude/rules-library/common/extreme-lint-policy.md`
@@ -356,23 +362,23 @@ dart_code_metrics:
      Section: dart/no-discards.md
      ============================================================ -->
 
-# Dart / Flutter — No-Discards Extension
+## Dart / Flutter — No-Discards Extension
 
 > Auto-fires on every `*.dart`, `pubspec.yaml`, `pubspec.lock`,
 > `analysis_options.yaml` file. Extends
 > `~/.claude/rules-library/common/no-discards.md`. Tooling: `dart analyze`,
 > `dart format`, `flutter analyze`, `dart_code_metrics`.
 
-## Core Principle
+### Core Principle
 
 **Every Future is awaited or explicitly handled; null safety is
 non-negotiable; no `_` in catch parameters that swallow errors;
 analyzer runs at strictest level with every recommended_lint and
 flutter_lints rule enforced.**
 
-## Banned patterns
+### Banned patterns
 
-### 1. Unawaited futures
+#### 1. Unawaited futures
 
 ```dart
 // FORBIDDEN
@@ -395,7 +401,7 @@ void handle() {
 
 Lint: `unawaited_futures: error`. ENFORCED.
 
-### 2. Empty catch / catch with `_` swallow
+#### 2. Empty catch / catch with `_` swallow
 
 ```dart
 // FORBIDDEN
@@ -413,7 +419,7 @@ try {
 
 Lint: `empty_catches: error`, `avoid_catches_without_on_clauses: error`.
 
-### 3. Null assertion `!` without justification
+#### 3. Null assertion `!` without justification
 
 ```dart
 // FORBIDDEN — bang propagates type holes
@@ -429,7 +435,7 @@ return user.name;
 return user?.name ?? 'Anonymous';
 ```
 
-### 4. `dynamic` type
+#### 4. `dynamic` type
 
 ```dart
 // FORBIDDEN
@@ -440,7 +446,7 @@ Map<String, Object?> parse(String json) =>
     jsonDecode(json) as Map<String, Object?>;
 ```
 
-### 5. `print()` in production code
+#### 5. `print()` in production code
 
 ```dart
 // FORBIDDEN
@@ -454,7 +460,7 @@ _log.fine('debug', x);
 
 Lint: `avoid_print: error`.
 
-### 6. Unfreezable mutable state
+#### 6. Unfreezable mutable state
 
 ```dart
 // FORBIDDEN — public mutable list leaks
@@ -470,7 +476,7 @@ class Service {
 }
 ```
 
-### 7. Missing `const` on widgets (Flutter)
+#### 7. Missing `const` on widgets (Flutter)
 
 ```dart
 // FORBIDDEN — rebuilds unnecessarily
@@ -482,7 +488,7 @@ const Text('Hello');
 
 Lint: `prefer_const_constructors: error`.
 
-### 8. setState during build (Flutter)
+#### 8. setState during build (Flutter)
 
 ```dart
 // FORBIDDEN — assertion failure at runtime
@@ -502,7 +508,7 @@ Widget build(BuildContext ctx) {
 }
 ```
 
-## Required `analysis_options.yaml`
+### Required `analysis_options.yaml`
 
 ```yaml
 include: package:flutter_lints/flutter.yaml
@@ -543,7 +549,7 @@ linter:
     - use_super_parameters
 ```
 
-## Verification block
+### Verification block
 
 ```text
 Dart analyze (this turn):
@@ -553,7 +559,7 @@ Dart analyze (this turn):
   - dart_code_metrics: 0 issues
 ```
 
-## Cross-references
+### Cross-references
 
 - `~/.claude/rules-library/common/no-discards.md`
 - `~/.claude/rules-library/common/no-silent-failures.md`
@@ -561,7 +567,7 @@ Dart analyze (this turn):
 - Effective Dart guide (dart.dev/effective-dart)
 - Flutter best practices
 
-## Why this rule exists
+### Why this rule exists
 
 Dart's optional null safety era ended with sound null safety
 in 2.12 — yet `!` and `dynamic` still let codebases regress.
@@ -575,7 +581,7 @@ mandatory async-awaiting closes both.
      Section: dart/patterns.md
      ============================================================ -->
 
-# Dart / Flutter Patterns
+## Dart / Flutter Patterns
 
 > Auto-fires on every `*.dart`, `pubspec.yaml`, `pubspec.lock`,
 > `analysis_options.yaml` file. Standards: **Effective Dart**
@@ -583,7 +589,7 @@ mandatory async-awaiting closes both.
 > **Flutter Performance Best Practices**, **Material 3 / Cupertino
 > design guidelines**.
 
-## Core Principle
+### Core Principle
 
 **Const-everywhere for widgets (every constructor that CAN be
 const IS const); separate widget tree (build) from app state
@@ -592,7 +598,7 @@ null safety enforced; async via Future + Stream; never block the
 event loop; widgets are cheap, rebuilds are cheap when state is
 scoped.**
 
-## Project layout
+### Project layout
 
 ```text
 lib/
@@ -620,7 +626,7 @@ lib/
     └── ...
 ```
 
-## State management — pick ONE per project
+### State management — pick ONE per project
 
 | Library | When to use |
 | --- | --- |
@@ -666,7 +672,7 @@ class OrderListView extends ConsumerWidget {
 }
 ```
 
-## Immutable models — `freezed`
+### Immutable models — `freezed`
 
 ```dart
 @freezed
@@ -686,7 +692,7 @@ class Order with _$Order {
 `freezed` generates: `==`, `hashCode`, `copyWith`, JSON
 serialisation, sealed-union variants.
 
-## Sealed unions for state
+### Sealed unions for state
 
 ```dart
 @freezed
@@ -704,7 +710,7 @@ String describe(OrderState state) => switch (state) {
 };
 ```
 
-## Widget construction — const everywhere possible
+### Widget construction — const everywhere possible
 
 ```dart
 // WRONG — rebuilds child every parent rebuild
@@ -732,7 +738,7 @@ class Parent extends StatelessWidget {
 
 Lint `prefer_const_constructors: error` enforces.
 
-## Theme + design system
+### Theme + design system
 
 ```dart
 // theme/app_theme.dart
@@ -763,7 +769,7 @@ Container(
 )
 ```
 
-## Routing
+### Routing
 
 ```dart
 // go_router — the modern Flutter standard
@@ -781,7 +787,7 @@ final router = GoRouter(
 );
 ```
 
-## Async patterns
+### Async patterns
 
 ```dart
 // Always await Futures
@@ -806,7 +812,7 @@ Stream<Order> watchOrders() async* {
 }
 ```
 
-## Reuse-first
+### Reuse-first
 
 | Use case | Library |
 | --- | --- |
@@ -827,7 +833,7 @@ Stream<Order> watchOrders() async* {
 
 Per `~/.claude/rules-library/common/reuse-first.md`.
 
-## Performance
+### Performance
 
 ```dart
 // Use ListView.builder for long lists (lazy)
@@ -842,7 +848,7 @@ ListView.builder(
 // flutter_inspector to find heavy widgets
 ```
 
-## Cross-references
+### Cross-references
 
 - `~/.claude/rules-library/common/patterns.md`
 - `~/.claude/rules-library/common/reuse-first.md`
@@ -867,25 +873,25 @@ paths:
 
 ---
 
-# Dart/Flutter Security
+## Dart/Flutter Security
 
 > Extends `common/security.md` with Dart/Flutter-specific security.
 
-## Secure Storage
+### Secure Storage
 
 Use `flutter_secure_storage` for tokens and secrets. Never store in SharedPreferences.
 
-## Network Security
+### Network Security
 
 - Use HTTPS only
 - Pin certificates for sensitive APIs
 - Validate all server responses with Codable/JSON serialization
 
-## Input Validation
+### Input Validation
 
 Validate all user input before API calls. Use form validators and sanitize HTML content.
 
-## Platform Channels
+### Platform Channels
 
 Validate all data crossing platform channel boundaries. Never trust native-side input.
 
@@ -903,13 +909,13 @@ paths:
 
 ---
 
-# Dart/Flutter Testing
+## Dart/Flutter Testing
 
 > Extends `common/testing.md` with Dart/Flutter-specific testing conventions.
 
-## Minimum Test Coverage: 70%
+### Minimum Test Coverage: 70%
 
-## Testing Frameworks
+### Testing Frameworks
 
 - Unit tests: `package:test`
 - Widget tests: `package:flutter_test`
@@ -936,7 +942,7 @@ testWidgets('LoginButton shows loading indicator', (tester) async {
 });
 ```
 
-## Mocking
+### Mocking
 
 Use `mocktail` (preferred) or `mockito` for mocking:
 

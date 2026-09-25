@@ -4,6 +4,8 @@
 > `examples/**` file. Standards: built-in `cargo test`, **proptest**,
 > **insta** (snapshot), **mockall** (mocks), **tokio-test**,
 > **wiremock**, **criterion** (bench).
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

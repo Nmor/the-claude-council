@@ -6,6 +6,8 @@ command: true
 
 # Checkpoint Command
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Create or verify a checkpoint in your workflow.
 
 ## Usage

@@ -1,3 +1,4 @@
+// Size budget: 16 KB. Check: wc -c; gate: token-budget.mjs --check.
 /**
  * Session Manager Library for Claude Code
  * Provides core session CRUD operations for listing, loading, and managing sessions

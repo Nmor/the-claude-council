@@ -5,7 +5,10 @@ description: Use only when writing/updating/fixing C++ tests, configuring Google
 
 # C++ Testing (Agent Skill)
 
-Agent-focused testing workflow for modern C++ (C++17/20) using GoogleTest/GoogleMock with CMake/CTest.
+> **Size budget: 19 KB** — `token-budget.mjs --check`.
+
+Agent-focused testing workflow for modern C++ (C++17/20) using GoogleTest/GoogleMock with
+CMake/CTest.
 
 ## When to Use
 
@@ -323,7 +326,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 
 ## Purpose
 
-Principal-level C++ test methodology: GoogleTest fixtures + parameterised tests, CTest integration, sanitiser-instrumented runs in CI, fuzz testing for parser/serializer paths, benchmark harness (Google Benchmark), code coverage via gcov / llvm-cov.
+Principal-level C++ test methodology: GoogleTest fixtures + parameterised tests, CTest integration,
+sanitiser-instrumented runs in CI, fuzz testing for parser/serializer paths, benchmark harness
+(Google Benchmark), code coverage via gcov / llvm-cov.
 
 **Negative scope** (NOT what this skill covers):
 
@@ -340,10 +345,13 @@ Principal-level C++ test methodology: GoogleTest fixtures + parameterised tests,
 
 ## Standards Cited
 
-- **GoogleTest 1.15 User Manual** (`google.github.io/googletest/`) — fixture, parameterised, typed, death tests
+- **GoogleTest 1.15 User Manual** (`google.github.io/googletest/`) — fixture, parameterised, typed,
+  death tests
 - **Google Benchmark 1.9+** (`github.com/google/benchmark`) — microbenchmark harness
-- **CTest 3.30+ Documentation** (`cmake.org/cmake/help/latest/manual/ctest.1.html`) — test orchestration
-- **AddressSanitizer / UBSan / TSan / MSan documentation** (`clang.llvm.org/docs/AddressSanitizer.html`) — runtime instrumentation
+- **CTest 3.30+ Documentation** (`cmake.org/cmake/help/latest/manual/ctest.1.html`) — test
+  orchestration
+- **AddressSanitizer / UBSan / TSan / MSan documentation**
+  (`clang.llvm.org/docs/AddressSanitizer.html`) — runtime instrumentation
 - **libFuzzer / AFL++** — fuzz testing
 - **OpenSSF Scorecard** — supply-chain checks
 - **CWE-787 / CWE-416 / CWE-119** — memory-safety bug classes sanitisers detect
@@ -387,7 +395,11 @@ Principal-level C++ test methodology: GoogleTest fixtures + parameterised tests,
 
 ## Why this skill exists
 
-C++ tests that don't run with AddressSanitizer + UBSan are passing tests with hidden landmines — use-after-free + buffer overflow happen silently in production and present as crashes weeks later. CI-instrumented runs catch these at PR time. Add fuzz testing for parsers + GoogleBenchmark for perf-critical paths, and the suite serves both correctness AND regression detection. The cost is one CMake flag per build mode; the benefit is C++ code that doesn't ship the next memory-safety CVE.
+C++ tests that don't run with AddressSanitizer + UBSan are passing tests with hidden landmines —
+use-after-free + buffer overflow happen silently in production and present as crashes weeks later.
+CI-instrumented runs catch these at PR time. Add fuzz testing for parsers + GoogleBenchmark for
+perf-critical paths, and the suite serves both correctness AND regression detection. The cost is one
+CMake flag per build mode; the benefit is C++ code that doesn't ship the next memory-safety CVE.
 
 ## Compliance & Standards Mapping
 
@@ -417,7 +429,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - ThreadSanitizer skipped on concurrent code (data race undetected)
 - Test linking against production binary instead of test target (link-cycle issue)
 - Mock framework abuse (over-mocking — testing the mock, not the code)
-- Flaky test attributed to "timing" instead of root-cause fix (per `~/.claude/rules-library/common/proper-fixes-first.md`)
+- Flaky test attributed to "timing" instead of root-cause fix (per
+  `~/.claude/rules-library/common/proper-fixes-first.md`)
 - Coverage gate not enforcing per-module minimum
 - Death-test absent on assert-fail / abort-able paths
 - `ASSERT_EQ` used where `EXPECT_EQ` would let later assertions run (test-stop weakening)
@@ -426,6 +439,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New sanitizer row when a new compiler sanitizer ships (e.g., MemorySanitizer on Clang)
-- New cross-reference when a sister skill (cpp-coding-standards, tdd-workflow, security-review) adds a C++ test gate
+- New cross-reference when a sister skill (cpp-coding-standards, tdd-workflow, security-review) adds
+  a C++ test gate
 - New mocking template when a recurring shape emerges (e.g., GMock for callback interfaces)
 - Tightening of the test-runtime budget when slow tests recur

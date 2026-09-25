@@ -4,17 +4,54 @@
     "autoCompactEnabled": "false"
   },
   "permissions": {
-    "allow": []
+    "allow": [],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(~/.aws/credentials)",
+      "Read(~/.aws/config)",
+      "Read(~/.ssh/id_*)",
+      "Read(~/.ssh/*_rsa)",
+      "Read(~/.ssh/*_ed25519)",
+      "Read(~/.netrc)",
+      "Read(~/.npmrc)",
+      "Read(~/.config/gh/hosts.yml)",
+      "Read(~/.docker/config.json)",
+      "Read(~/.kube/config)",
+      "Read(~/.claude/.local/cloudflare-token)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.p12)",
+      "Read(**/*.pfx)",
+      "Read(**/id_rsa)",
+      "Read(**/id_ed25519)",
+      "Read(**/secrets.yaml)",
+      "Read(**/secrets.yml)",
+      "Read(**/terraform.tfstate)",
+      "Read(**/terraform.tfstate.backup)"
+    ]
   },
-  "model": "default",
+  "skillOverrides": {
+    "django-patterns": "off",
+    "django-testing": "off",
+    "springboot-patterns": "off",
+    "springboot-testing": "off",
+    "java-coding-standards": "off",
+    "rust-patterns": "off",
+    "vue3-patterns": "off",
+    "cpp-testing": "off",
+    "kotlin-patterns": "off"
+  },
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "Agent|Task",
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const i=JSON.parse(d);const cmd=i.tool_input?.command||'';if(process.platform!=='win32'&&/(npm run dev\\b|pnpm( run)? dev\\b|yarn dev\\b|bun run dev\\b)/.test(cmd)){console.error('[Hook] BLOCKED: Dev server must run in tmux for log access');console.error('[Hook] Use: tmux new-session -d -s dev \\\"npm run dev\\\"');console.error('[Hook] Then: tmux attach -t dev');process.exit(2)}}catch{}console.log(d)})\""
+            "command": "node \"$HOME/.claude/scripts/hooks/model-ladder-gate.js\""
           }
         ]
       },
@@ -23,7 +60,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const i=JSON.parse(d);const cmd=i.tool_input?.command||'';if(process.platform!=='win32'&&!process.env.TMUX&&/(npm (install|test)|pnpm (install|test)|yarn (install|test)?|bun (install|test)|cargo build|make\\b|docker\\b|pytest|vitest|playwright)/.test(cmd)){console.error('[Hook] Consider running in tmux for session persistence');console.error('[Hook] tmux new -s dev  |  tmux attach -t dev')}}catch{}console.log(d)})\""
+            "command": "node \"$HOME/.claude/scripts/hooks/dev-server-gate.js\""
+          },
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/commit-gate.js\""
           }
         ]
       },
@@ -69,6 +110,19 @@
           {
             "type": "command",
             "command": "node \"$HOME/.claude/scripts/hooks/intake-gate.js\""
+          },
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/test-coverage-gate.js\""
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/supersede-proof.js\""
           }
         ]
       },
@@ -79,6 +133,36 @@
             "type": "command",
             "command": "~/.claude/hooks/cbm-code-discovery-gate",
             "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/deferral-gate.js\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/payload-gate.js\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/destructive-command-gate.js\"",
+            "timeout": 10
           }
         ]
       }
@@ -157,6 +241,10 @@
           {
             "type": "command",
             "command": "node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const i=JSON.parse(d);const cmd=i.tool_input?.command||'';if(/gh pr create/.test(cmd)){const out=i.tool_output?.output||'';const m=out.match(/https:\\/\\/github.com\\/[^/]+\\/[^/]+\\/pull\\/\\d+/);if(m){console.error('[Hook] PR created: '+m[0]);const repo=m[0].replace(/https:\\/\\/github.com\\/([^/]+\\/[^/]+)\\/pull\\/\\d+/,'$1');const pr=m[0].replace(/.*\\/pull\\/(\\d+)/,'$1');console.error('[Hook] To review: gh pr review '+pr+' --repo '+repo)}}}catch{}console.log(d)})\""
+          },
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/test-coverage-marker.js\""
           }
         ]
       },
@@ -197,6 +285,24 @@
         ]
       },
       {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/supersede-proof-marker.js\""
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/docs-sync-marker.js\""
+          }
+        ]
+      },
+      {
         "matcher": "WebSearch|WebFetch",
         "hooks": [
           {
@@ -231,6 +337,25 @@
             "command": "node \"$HOME/.claude/scripts/hooks/gate-marker.js\""
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/post-edit-ux-writing.js\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/payload-marker.js\"",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "Stop": [
@@ -240,6 +365,11 @@
           {
             "type": "command",
             "command": "node \"$HOME/.claude/scripts/hooks/check-console-log.js\""
+          },
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/docs-sync-gate.js\"",
+            "timeout": 10
           }
         ]
       }
@@ -366,21 +496,11 @@
     }
   },
   "effortLevel": "xhigh",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "xhigh"
+    }
+  },
   "switchModelsOnFlag": true,
-  "agentPushNotifEnabled": true,
-  "skillOverrides": {
-    "django-patterns": "off",
-    "django-patterns": "off",
-    "django-testing": "off",
-    "django-testing": "off",
-    "springboot-patterns": "off",
-    "springboot-patterns": "off",
-    "springboot-testing": "off",
-    "springboot-testing": "off",
-    "java-coding-standards": "off",
-    "rust-patterns": "off",
-    "vue3-patterns": "off",
-    "cpp-testing": "off",
-    "kotlin-patterns": "off"
-  }
+  "agentPushNotifEnabled": true
 }

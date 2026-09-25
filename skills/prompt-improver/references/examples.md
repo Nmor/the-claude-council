@@ -1,6 +1,9 @@
 # Comprehensive Examples of Prompt Improvement
 
-This reference provides real-world examples showing the complete flow from vague prompts through research, question formulation, and execution.
+> **Size budget: 25 KB** — `token-budget.mjs --check`.
+
+This reference provides real-world examples showing the complete flow from vague prompts through
+research, question formulation, and execution.
 
 ## Table of Contents
 
@@ -227,7 +230,8 @@ Finding: Service layer pattern, repository pattern common
 2. "Yes, match ProductService"
 
 **Execution:**
-Extract UserService class following ProductService pattern, move business logic from users.ts to service/UserService.ts, keep controller thin.
+Extract UserService class following ProductService pattern, move business logic from users.ts to
+service/UserService.ts, keep controller thin.
 
 ---
 
@@ -367,7 +371,8 @@ Findings: "Must support mobile app" mentioned
 3. ["Login/register endpoints", "Role-based access control"]
 
 **Execution:**
-Implement JWT authentication with refresh tokens, support both HttpOnly cookies (web) and Authorization header (mobile), create login/register endpoints with role-based access control.
+Implement JWT authentication with refresh tokens, support both HttpOnly cookies (web) and
+Authorization header (mobile), create login/register endpoints with role-based access control.
 
 ---
 
@@ -770,7 +775,8 @@ implement caching
 3. "1 minute"
 
 **Execution:**
-Implement Redis caching for product catalog and user profiles with 1-minute TTL, configure Redis connection, add cache middleware to those endpoints.
+Implement Redis caching for product catalog and user profiles with 1-minute TTL, configure Redis
+connection, add cache middleware to those endpoints.
 
 ---
 
@@ -797,4 +803,5 @@ Implement Redis caching for product catalog and user profiles with 1-minute TTL,
 - Bypass prefix detected (`*`, `/`, `#`)
 - User explicitly opted out of evaluation
 
-These examples demonstrate the spectrum from clear to vague and show how research findings directly inform specific, actionable questions.
+These examples demonstrate the spectrum from clear to vague and show how research findings directly
+inform specific, actionable questions.

@@ -4,6 +4,8 @@
 > `migrations/**` file. Standards: **pgTAP** (Postgres), **utPLSQL**
 > (Oracle), **tSQLt** (SQL Server), **Testcontainers** (any DB),
 > **db-unit-test** patterns.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

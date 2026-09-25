@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Size budget: 9 KB. Check: wc -c; gate: token-budget.mjs --check.
 /**
  * Stop Hook (Session End) - Persist learnings when session ends
  *

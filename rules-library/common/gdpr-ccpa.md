@@ -10,6 +10,8 @@
 > **LGPD (Brazil)**, **POPIA (South Africa)**, **PIPEDA (Canada)**,
 > **APPI (Japan)**, **PDPA (Singapore)**, **ISO/IEC 27701:2019**
 > (Privacy Information Management).
+>
+> **Size budget: 21 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -390,11 +392,14 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Cross-border transfer without SCC / adequacy / DPF citation (rule 6 weakening)
 - DPIA missing on a high-risk processing change (rule 7 weakening)
 - Breach-notification clock not started within 72h discovery window (rule 8 weakening)
-- Special-category data (Article 9) stored without field-level encryption (rule 4 + rule 8 weakening)
+- Special-category data (Article 9) stored without field-level encryption (rule 4 + rule 8
+  weakening)
 
 **Refinement candidates**:
 
 - New jurisdiction entry when a regulator adds a national-law variant (e.g., PIPEDA, LGPD update)
 - New row in the RoPA template when a new processor class becomes common
-- Tightening of consent UI requirements when a CJEU / supervisory-authority ruling adds a new constraint
-- New cross-reference when a sister rule (data-retention, audit-logging) provides the evidence DSAR / breach response depends on
+- Tightening of consent UI requirements when a CJEU / supervisory-authority ruling adds a new
+  constraint
+- New cross-reference when a sister rule (data-retention, audit-logging) provides the evidence DSAR
+  / breach response depends on

@@ -12,6 +12,8 @@ description: Scan a Claude Code configuration surface (`.claude/` directory, `CL
 > (publisher review before adoption), `~/.claude/rules-library/common/secrets-management.md`
 > (vault-first secret storage), `~/.claude/rules-library/common/repo-setup-checklist.md`
 > (20-point first-touch checklist).
+>
+> **Size budget: 20 KB** — `token-budget.mjs --check`.
 
 ## Purpose
 

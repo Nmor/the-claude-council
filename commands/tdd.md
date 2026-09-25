@@ -5,6 +5,8 @@ description: Enforce test-driven development workflow. Scaffold interfaces, gene
 
 # TDD Command
 
+> **Size budget: 10 KB** — `token-budget.mjs --check`.
+
 This command invokes the **tdd-guide** agent to enforce test-driven development methodology.
 
 ## What This Command Does

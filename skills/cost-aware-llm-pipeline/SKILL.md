@@ -5,7 +5,10 @@ description: Cost optimization patterns for LLM API usage — model routing by t
 
 # Cost-Aware LLM Pipeline
 
-Patterns for controlling LLM API costs while maintaining quality. Combines model routing, budget tracking, retry logic, and prompt caching into a composable pipeline.
+> **Size budget: 23 KB** — `token-budget.mjs --check`.
+
+Patterns for controlling LLM API costs while maintaining quality. Combines model routing, budget
+tracking, retry logic, and prompt caching into a composable pipeline.
 
 ## When to Activate
 
@@ -42,7 +45,8 @@ def select_model(
 
 ### 2. Immutable Cost Tracking
 
-Track cumulative spend with frozen dataclasses. Each API call returns a new tracker — never mutates state.
+Track cumulative spend with frozen dataclasses. Each API call returns a new tracker — never mutates
+state.
 
 ```python
 from dataclasses import dataclass
@@ -161,11 +165,13 @@ def process(text: str, config: Config, tracker: CostTracker) -> tuple[Result, Co
 
 ## Best Practices
 
-- **Start with the cheapest model** and only route to expensive models when complexity thresholds are met
+- **Start with the cheapest model** and only route to expensive models when complexity thresholds
+  are met
 - **Set explicit budget limits** before processing batches — fail early rather than overspend
 - **Log model selection decisions** so you can tune thresholds based on real data
 - **Use prompt caching** for system prompts over 1024 tokens — saves both cost and latency
-- **Never retry on authentication or validation errors** — only transient failures (network, rate limit, server error)
+- **Never retry on authentication or validation errors** — only transient failures (network, rate
+  limit, server error)
 
 ## Anti-Patterns to Avoid
 
@@ -523,7 +529,9 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New routing-table row when a new model class becomes economically attractive (e.g., Haiku 5, Llama 4)
+- New routing-table row when a new model class becomes economically attractive (e.g., Haiku 5,
+  Llama 4)
 - New cache-key template when a recurring high-cost call pattern emerges
-- New cross-reference when a sister skill (rag-design, prompt-engineering, ml-model-selection) adds a cost-aware pattern
+- New cross-reference when a sister skill (rag-design, prompt-engineering, ml-model-selection) adds
+  a cost-aware pattern
 - Tightening of the regex-vs-LLM boundary when a new structured-text class becomes routine

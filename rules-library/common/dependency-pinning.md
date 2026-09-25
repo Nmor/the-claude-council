@@ -7,6 +7,8 @@
 > semantics). Standards: **Semantic Versioning 2.0.0**, **PEP 440**
 > (Python), **OCI** (container images), **NPM Semver range syntax**,
 > **Go Module Versioning**.
+>
+> **Size budget: 19 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -430,14 +432,19 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `pnpm install` (without `--frozen-lockfile`) in CI — rule 1 weakening
 - Lockfile not committed (`.gitignore` lists `package-lock.json`) — rule 1 violation
 - `engines.node: "22.4.0"` (exact) instead of range — over-pinning anti-pattern
-- Pre-release version (`-rc.1`, `-beta.4`) appearing in lockfile without explicit opt-in (rule 8 weakening)
+- Pre-release version (`-rc.1`, `-beta.4`) appearing in lockfile without explicit opt-in (rule 8
+  weakening)
 - Renovate / Dependabot not configured + `pinDigests: true` missing (rule 5 weakening)
-- Vendoring (`node_modules/` committed) without documented offline / regulated justification (rule 10 violation)
+- Vendoring (`node_modules/` committed) without documented offline / regulated justification (rule
+  10 violation)
 - Verification block shows un-pinned deps but PR merged anyway (CI gate weakening)
 
 **Refinement candidates**:
 
-- New ecosystem row in the range-syntax table when a new package manager emerges (e.g., `bun`, `deno`, new Python tools)
+- New ecosystem row in the range-syntax table when a new package manager emerges (e.g., `bun`,
+  `deno`, new Python tools)
 - Tightening of the auto-merge policy when minor / patch auto-merges break consumers
-- New cross-reference when a sister rule (dependency-overrides-not-exceptions, license-allowlist-gate, install-allowlist) tightens the pinning contract
-- New row in the pinning-strategies table when a new artifact class (Lambda layers, K8s sidecar images, Browser extensions) needs a documented pinning approach
+- New cross-reference when a sister rule (dependency-overrides-not-exceptions,
+  license-allowlist-gate, install-allowlist) tightens the pinning contract
+- New row in the pinning-strategies table when a new artifact class (Lambda layers, K8s sidecar
+  images, Browser extensions) needs a documented pinning approach

@@ -4,6 +4,8 @@
 > (use latest stable versions), `done-criteria.md` (every "done"
 > requires the gate to be green), and `security.md` (broader OWASP /
 > supply-chain hardening).
+>
+> **Size budget: 14 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -299,9 +301,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- CVE published in a dep the project uses but no PR opened within 7 days (Renovate / Dependabot misconfigured)
+- CVE published in a dep the project uses but no PR opened within 7 days (Renovate / Dependabot
+  misconfigured)
 - HIGH / MODERATE finding suppressed via `audit-ignore` / per-line comment (rule 1 weakening)
-- MODERATE backlog growing > 5 entries in `docs/security-advisories.md` (rule 8 weakening — exception drift)
+- MODERATE backlog growing > 5 entries in `docs/security-advisories.md` (rule 8 weakening —
+  exception drift)
 - `--audit-level=high` (instead of `moderate`) configured (rule 8 weakening — floor relaxation)
 - Local pre-flight script lacks the dep-audit step (rule 1 weakening — local-CI parity gap)
 - Pre-deploy gate diverges from CI gate (rule 9 weakening)
@@ -310,7 +314,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New scanner row when a new ecosystem ships (e.g., new Wasm registry, new mobile SDK store) and OSV-Scanner / npm-audit coverage gap
-- Tightening of the MODERATE floor when a recurring CVE class shows MODERATE underestimates real exploitability
-- New cross-reference when a sister rule (dependency-overrides-not-exceptions, install-allowlist, license-allowlist-gate) provides the toolkit to close a finding
-- New exception template when a recurring "upstream patch pending" / "dev-only dep" / "reachability mitigated" class emerges
+- New scanner row when a new ecosystem ships (e.g., new Wasm registry, new mobile SDK store) and
+  OSV-Scanner / npm-audit coverage gap
+- Tightening of the MODERATE floor when a recurring CVE class shows MODERATE underestimates real
+  exploitability
+- New cross-reference when a sister rule (dependency-overrides-not-exceptions, install-allowlist,
+  license-allowlist-gate) provides the toolkit to close a finding
+- New exception template when a recurring "upstream patch pending" / "dev-only dep" / "reachability
+  mitigated" class emerges

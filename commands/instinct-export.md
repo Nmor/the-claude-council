@@ -6,6 +6,8 @@ command: /instinct-export
 
 # Instinct Export Command
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Exports instincts to a shareable format. Perfect for:
 
 - Sharing with teammates

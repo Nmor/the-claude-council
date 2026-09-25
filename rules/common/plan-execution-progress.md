@@ -4,6 +4,8 @@
 > `no-overclaim.md`, `verify-before-claim.md`, `plan-task-breakdown.md`,
 > and any active plan file under `~/.claude/plans/` or
 > `<project>/.claude/plans/`.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -89,16 +91,21 @@ session navigable.
 
 ### 8. Plan-file is the source of truth — and it stays current
 
-When a phase completes, the agent updates the plan file to reflect
-the new state (mark the phase ✓, add a one-line outcome note). The
-plan is a living artifact, not a frozen contract.
+When a TASK completes — not only a phase — the agent updates the plan file: tick it, add a
+one-line outcome (commit, gate result), and add any work the task discovered as new tasks.
+The plan is a living artifact, not a frozen contract, and it is what survives compaction.
 
-### 9. TodoWrite reflects real state
+**Enforced, not remembered.** `docs-sync-gate.js` (Stop) will not let a turn end while code
+changed this session after the plan was last updated; `commit-gate.js` refuses a commit whose
+code is newer than the plan. Both read git, so a change made through Bash counts the same as
+an Edit. Docs are enforced at commit and push (`plan-completion-before-push.md`).
 
-The TodoWrite list mirrors the plan's phase / task boundaries
-(per `plan-task-breakdown.md`). As tasks finish, they move to
-`completed` IMMEDIATELY — not batched at end of session. The user
-can read the todo list at any moment and see exact progress.
+### 9. The task list reflects real state
+
+Where the harness offers a task tool (TodoWrite), it mirrors the plan's task boundaries and
+tasks move to `completed` IMMEDIATELY — never batched. Where it does not, the plan file IS the
+task list and rule 8 is the whole obligation. Never assume a task tool exists: a gate keyed
+only to TodoWrite never fired in a harness without it, which is how plans went stale unseen.
 
 ### 10. No silent skip-and-continue
 
@@ -186,7 +193,6 @@ execution and progress updates."
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

@@ -6,6 +6,8 @@
 > (research before writing), `task-intake-due-diligence.md` Q20.
 > Standards: **Diátaxis framework**, **CommonMark**, **OpenAPI 3.1**,
 > **Conventional Comments**, **arc42**, **C4 Model**.
+>
+> **Size budget: 17 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -403,7 +405,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Signals to watch**:
 
 - Feature shipped without a doc page (docs-sync-with-code.md violation — feature is not done)
-- Diátaxis quadrants mixed in a single artifact (tutorial pivots into reference, etc.) — rule 1 weakening
+- Diátaxis quadrants mixed in a single artifact (tutorial pivots into reference, etc.) — rule 1
+  weakening
 - Reference doc hand-written instead of generated (rule 3 violation — drift inevitable)
 - README missing the canonical sections (rule 4 weakening)
 - Doc examples not tested (rule 5 weakening — examples rot)
@@ -416,5 +419,6 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New required README section when a recurring user need surfaces as a question on day one
 - Tightening of the "examples are tested" enforcement when documentation rot is observed
-- New cross-reference when a sister rule (adr-template, runbook-template) defines an artifact this rule references
+- New cross-reference when a sister rule (adr-template, runbook-template) defines an artifact this
+  rule references
 - New row in the per-language doc-tools table when a tool becomes the team's choice

@@ -6,6 +6,8 @@ paths:
 # Python Testing
 
 > This file extends [common/testing.md](../common/testing.md) with Python specific content.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Framework
 

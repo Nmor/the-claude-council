@@ -7,6 +7,8 @@
 > Vendors: **Unleash** (OSS), **Flagsmith** (OSS), **OpenFeature**
 > (CNCF spec), **GrowthBook** (OSS), **LaunchDarkly** (SaaS),
 > **Statsig** (SaaS), **Optimizely** (SaaS).
+>
+> **Size budget: 17 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -354,9 +356,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Signals to watch**:
 
 - Flag created without owner / expiry / decision criteria (rule 1 weakening)
-- Flag at 100% rollout for > 14 days without cleanup PR (rule 10 weakening — flag spaghetti accumulating)
+- Flag at 100% rollout for > 14 days without cleanup PR (rule 10 weakening — flag spaghetti
+  accumulating)
 - Flag evaluation buried in the data layer instead of at boundary (rule 3 violation)
-- Client-side flag used for a security / payment / admin path (rule 5 violation — leaks via devtools)
+- Client-side flag used for a security / payment / admin path (rule 5 violation — leaks via
+  devtools)
 - Flag SDK timeout / fallback missing (rule 6 weakening — fault tolerance gap)
 - Multiple nested flag checks for related behaviour (anti-pattern 1 — flag spaghetti)
 - Flag-as-config use case found (anti-pattern 3 — config belongs elsewhere)
@@ -367,5 +371,6 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New flag-category row when a recurring use case doesn't fit the current 5 categories
 - Tightening of the cleanup-by-D+14 SLA when stale flags accumulate
-- New cross-reference when a sister rule (graceful-degradation, audit-logging) defines the surface a flag depends on
+- New cross-reference when a sister rule (graceful-degradation, audit-logging) defines the surface a
+  flag depends on
 - New vendor row when an OpenFeature provider gains adoption

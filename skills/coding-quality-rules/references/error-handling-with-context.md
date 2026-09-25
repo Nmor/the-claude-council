@@ -4,6 +4,8 @@
 > `no-silent-failures.md`, `no-silent-drops.md`,
 > `observability-patterns` skill. Companion to language-specific
 > error handling guidance in each language's rule subdirectory.
+>
+> **Size budget: 16 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -297,10 +299,12 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Bare `return err` / `raise X` / `throw e` without context wrap shipping (wrapping discipline weakening)
+- Bare `return err` / `raise X` / `throw e` without context wrap shipping (wrapping discipline
+  weakening)
 - Error chain lost on the way through a layer (`%v` instead of `%w`, no `from err`, no `cause:`)
 - Test asserting on `message` instead of `error_code` (rule 10 enforcement weak)
-- Error code drift — new codes added without updating `docs/error-codes.md` (registry-of-truth discipline weak)
+- Error code drift — new codes added without updating `docs/error-codes.md` (registry-of-truth
+  discipline weak)
 - Sensitive data leaking through the client response envelope (sanitization at boundary missing)
 - Same `error_code` reused with different semantics across services (taxonomy needs review)
 - Log entry without `request_id` / `trace_id` / `error_code` (structured-fields discipline weak)
@@ -309,7 +313,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New error-code class entry when a recurring failure shape needs a stable code
 - New required-field entry when a context dimension proves load-bearing in production debugging
-- Tightening of the EXP test rubric on `error_code` assertions when chronic copy-fragile tests observed
+- Tightening of the EXP test rubric on `error_code` assertions when chronic copy-fragile tests
+  observed
 - New per-language wrapping example when a language enters the rebuild
 
 ---

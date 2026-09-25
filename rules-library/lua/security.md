@@ -5,6 +5,8 @@
 > commonly embedded (Redis scripts, OpenResty / nginx, Neovim,
 > Roblox, game engines, WoW addons, embedded devices). Each
 > embedding context has its own threat model.
+>
+> **Size budget: 9 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

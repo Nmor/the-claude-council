@@ -16,9 +16,12 @@ paths:
   - "**/intl/**"
 ---
 
-> Migrated 2026-06-02 from `~/.claude/rules/common/` as part of the lazy-rules-loading plan. Phase H will delete the source files to close the eager-load loop.
-
 # i18n-rules
+
+> Migrated 2026-06-02 from `~/.claude/rules/common/` as part of the lazy-rules-loading plan. Phase H
+> will delete the source files to close the eager-load loop.
+>
+> **Size budget: 21 KB** — `token-budget.mjs --check`.
 
 ## Source files migrated
 
@@ -30,7 +33,7 @@ paths:
      Section: i18n.md (from rules/common/)
      ============================================================ -->
 
-# Internationalisation (i18n) Rule (Always-On, Global)
+## Internationalisation (i18n) Rule (Always-On, Global)
 
 > Auto-fires on every file. Sister to `a11y.md` (RTL + text
 > expansion overlap), `error-codes.md` (codes are i18n keys),
@@ -40,7 +43,7 @@ paths:
 > tags), **ECMA-402** (Intl API), **RFC 5646** (language tags),
 > **W3C Internationalization Working Group**.
 
-## Core Principle
+### Core Principle
 
 **Every user-facing string, number, date, currency, address, and
 plural form is locale-aware. The system is designed to support
@@ -52,9 +55,9 @@ date/number formats, currency, RTL layout, name ordering, address
 formats, sort orders, search collation, calendar systems, and
 locale-aware error messages.
 
-## Hard rules
+### Hard rules
 
-### 1. No hardcoded user-facing strings
+#### 1. No hardcoded user-facing strings
 
 Every user-visible string lives in a translation catalog
 (`.json`, `.po`, `.xliff`, `.properties`, `.yml`). Code
@@ -71,7 +74,7 @@ toast.success(t('orders.placed.success'));
 The catalog is the source of truth; translators work on the
 catalog; code never embeds untranslated strings.
 
-### 2. Use ICU Message Format for plurals + interpolation
+#### 2. Use ICU Message Format for plurals + interpolation
 
 ICU MessageFormat (CLDR-based) handles plural rules across all
 languages — including languages with multiple plural forms
@@ -92,7 +95,7 @@ NEVER concatenate translated fragments: `"You have " + count + "
 orders"` is grammatically wrong in many languages. Always pass
 the full sentence through the formatter.
 
-### 3. Use the platform Intl API
+#### 3. Use the platform Intl API
 
 ECMA-402 (Intl) is universally available. Never hand-roll
 formatting:
@@ -131,7 +134,7 @@ Equivalent APIs exist in every modern language (Java
 `java.text.MessageFormat`, Python `babel`, Go `golang.org/x/text`,
 Ruby `R18n`, etc.).
 
-### 4. Locale identification: BCP 47
+#### 4. Locale identification: BCP 47
 
 The canonical format is BCP 47:
 
@@ -149,7 +152,7 @@ The user's locale is stored on their profile + sent in
 const userLocale = Intl.getCanonicalLocales(req.user.locale ?? req.acceptsLanguages())[0];
 ```
 
-### 5. RTL languages mirror layout
+#### 5. RTL languages mirror layout
 
 Arabic, Hebrew, Persian, Urdu, and other RTL languages reverse
 the reading direction. The layout MUST mirror:
@@ -167,7 +170,7 @@ the reading direction. The layout MUST mirror:
 Test with at least one RTL locale (Arabic or Hebrew) — the
 mirroring catches a class of "assumed left-to-right" bugs.
 
-### 6. Currency + payment locale
+#### 6. Currency + payment locale
 
 Different from display locale. A user in Germany browsing in
 English might still expect prices in EUR:
@@ -183,7 +186,7 @@ English might still expect prices in EUR:
 | **Address format** | Per country (use a library — Google Address Components or `i18n-postal-address`) |
 | **Name format** | Per culture (first/last vs family/given vs single name) |
 
-### 7. Text expansion + truncation
+#### 7. Text expansion + truncation
 
 English → German: ~30% longer on average. English → French:
 ~25% longer. English → Russian: ~40% longer. Buttons + labels
@@ -197,7 +200,7 @@ designed for English break in other languages:
   (visible markers + accented characters + 30% padding) to surface
   unlocalised strings + truncation issues
 
-### 8. Locale-aware errors
+#### 8. Locale-aware errors
 
 Per `error-codes.md` — codes are stable; messages translate.
 Every error code has an i18n key:
@@ -217,7 +220,7 @@ Error details that contain dynamic values (required vs available
 balance) use ICU placeholders + Intl.NumberFormat for the
 currency display.
 
-### 9. Translation memory + glossary
+#### 9. Translation memory + glossary
 
 The translation infrastructure is more than catalog files:
 
@@ -236,7 +239,7 @@ Translators are not engineers — providing CONTEXT (where this
 string appears, max length, gender/number variants) is the
 engineering team's job.
 
-### 10. Locale fallback chain
+#### 10. Locale fallback chain
 
 User's preferred locale is `ko-KR`. The catalog has:
 
@@ -253,9 +256,9 @@ Untranslated strings should NEVER show as keys to the user
 (`orders.placed.success` visible in the UI is a bug). They show
 in the fallback language.
 
-## Specific concerns
+### Specific concerns
 
-### Plurals across languages
+#### Plurals across languages
 
 | Language | Plural forms | Categories |
 | --- | --- | --- |
@@ -269,7 +272,7 @@ in the fallback language.
 Hard-coding "1 item" / "{N} items" assumes English plurals; it
 breaks in 6+ languages. Use ICU `plural` selector.
 
-### Date / time
+#### Date / time
 
 | Format | Considerations |
 | --- | --- |
@@ -280,7 +283,7 @@ breaks in 6+ languages. Use ICU `plural` selector.
 | **First week** | ISO 8601 week 1 = first week with ≥ 4 days in the new year; US sometimes differs |
 | **12 vs 24-hour clock** | Locale-determined |
 
-### Address formats
+#### Address formats
 
 | Country | Format quirks |
 | --- | --- |
@@ -294,7 +297,7 @@ breaks in 6+ languages. Use ICU `plural` selector.
 Use a library (Google Maps Address Components, `i18n-postal-
 address`, Stripe Address Element) rather than hand-rolling.
 
-### Name formats
+#### Name formats
 
 | Culture | Order |
 | --- | --- |
@@ -308,7 +311,7 @@ Form: `first_name` + `last_name` is culturally biased. Use
 `given_name` + `family_name` (CLDR terminology) OR a single
 `full_name` field with a hint about ordering.
 
-### Search + sort collation
+#### Search + sort collation
 
 - Locale-aware sort: German `ä` sorts with `a` in DIN-1; with
   `ae` in DIN-2 (phonebook); Swedish sorts `ä` after `z`
@@ -320,9 +323,9 @@ Form: `first_name` + `last_name` is culturally biased. Use
   arr.sort((a, b) => new Intl.Collator('de').compare(a, b));
   ```
 
-## Per-stack tooling
+### Per-stack tooling
 
-### Web (JS / TS)
+#### Web (JS / TS)
 
 - **react-intl** / **formatjs** — ICU MessageFormat in React
 - **next-intl** — Next.js i18n
@@ -331,7 +334,7 @@ Form: `first_name` + `last_name` is culturally biased. Use
 - **lingui** — type-safe i18n
 - **lit-localize** — Web Components
 
-### Mobile
+#### Mobile
 
 - **iOS**: NSLocalizedString + `.strings` files + `.stringsdict`
   for plurals
@@ -339,7 +342,7 @@ Form: `first_name` + `last_name` is culturally biased. Use
 - **React Native**: `i18next` + `react-native-localize`
 - **Flutter**: `flutter_localizations` + ARB files
 
-### Backend
+#### Backend
 
 - **Node.js**: `@formatjs/intl` + `Intl`
 - **Java**: `java.text.MessageFormat`, `ResourceBundle`, ICU4J
@@ -348,16 +351,16 @@ Form: `first_name` + `last_name` is culturally biased. Use
 - **Ruby**: Rails i18n + `i18n-tasks`
 - **.NET**: `IStringLocalizer<>` + `.resx` files
 
-## Anti-patterns
+### Anti-patterns
 
-### Anti-pattern 1: "We'll add languages later"
+#### Anti-pattern 1: "We'll add languages later"
 
 Adding i18n after launch is 5-10x more expensive than building
 i18n-aware from day one. Every concatenated string, every
 hardcoded date format, every fixed-width button becomes a
 multi-week refactor.
 
-### Anti-pattern 2: Auto-translate at runtime
+#### Anti-pattern 2: Auto-translate at runtime
 
 Google Translate API on every request is slow, expensive,
 inconsistent, and produces unprofessional output for product
@@ -365,7 +368,7 @@ strings. Use it ONLY for user-generated content (comments,
 reviews) — and even then, with a "translated by machine"
 disclaimer.
 
-### Anti-pattern 3: Localising only the UI
+#### Anti-pattern 3: Localising only the UI
 
 A localised UI that emails English receipts, sends English SMS
 codes, and shows English error messages on backend failures is
@@ -373,14 +376,14 @@ not localised. ALL user-facing surfaces — including
 transactional emails, SMS, push notifications, PDFs, support
 chat — go through the same i18n pipeline.
 
-### Anti-pattern 4: One developer translates
+#### Anti-pattern 4: One developer translates
 
 The developer's "best-effort French" is worse than no translation
 (it loses trust). Use professional translators or native
 speakers; reserve machine translation for high-velocity / low-
 quality-need surfaces with disclaimers.
 
-### Anti-pattern 5: Number / currency string concatenation
+#### Anti-pattern 5: Number / currency string concatenation
 
 ```typescript
 // WRONG
@@ -393,7 +396,7 @@ return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(amo
 Currency placement (€100 vs 100€), thousands separator, decimal
 separator, decimal precision (JPY has none) — all vary by locale.
 
-## Cross-references
+### Cross-references
 
 - `a11y.md` — RTL layouts, text expansion, screen-reader pronunciation
 - `error-codes.md` — codes have i18n keys
@@ -404,7 +407,7 @@ separator, decimal precision (JPY has none) — all vary by locale.
 - `feature-flags.md` — feature availability can vary by locale
 - `audit-logging.md` — audit timestamps stored UTC
 
-## Standards cited
+### Standards cited
 
 - **Unicode CLDR (Common Locale Data Repository)** — the canonical
   i18n data
@@ -416,7 +419,7 @@ separator, decimal precision (JPY has none) — all vary by locale.
 - **ISO 3166-1 alpha-2** — Country codes
 - **W3C i18n Working Group recommendations**
 
-## Why this rule exists
+### Why this rule exists
 
 Most products start in English + one market. The "let's localise
 later" plan looks reasonable until customer success starts
@@ -446,19 +449,21 @@ Build i18n-aware on day one even when launching in one language;
 the catalog + Intl approach has zero overhead and saves quarter-
 long retrofits later.
 
-## Learning hooks
+### Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
 - Hardcoded user-facing string shipped (rule 1 weakening — every string lives in catalog)
-- Plural form expressed via `count === 1 ? "item" : "items"` (rule 2 violation — ICU MessageFormat required)
+- Plural form expressed via `count === 1 ? "item" : "items"` (rule 2 violation — ICU MessageFormat
+  required)
 - Hand-rolled number / date / currency formatter shipped (rule 3 weakening — Intl API mandatory)
 - Locale identifier non-BCP-47 (rule 4 weakening)
 - RTL layout missing on new UI for a locale that requires it (rule 5 weakening)
 - Currency placement / decimal separator / thousands separator hardcoded (anti-pattern 5)
-- Transactional email / SMS / push not routed through the i18n pipeline (anti-pattern 3 — partial localisation)
+- Transactional email / SMS / push not routed through the i18n pipeline (anti-pattern 3 — partial
+  localisation)
 - Auto-translate API used as the sole translation source for product strings (anti-pattern 2)
 - Locale fallback chain produces visible key strings to users (rule 10 weakening)
 
@@ -466,7 +471,9 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New locale row when a launch locale gains support, including its plural form count + RTL flag
 - New tooling row when a TMS / translation memory vendor becomes the team's choice
-- Tightening of the "no concatenation" rule when a new context-sensitive surface (e.g., voice / chat) emerges
-- New cross-reference when a sister rule (a11y, error-codes) defines the i18n key shape the catalog must align to
+- Tightening of the "no concatenation" rule when a new context-sensitive surface (e.g., voice /
+  chat) emerges
+- New cross-reference when a sister rule (a11y, error-codes) defines the i18n key shape the catalog
+  must align to
 
 ---

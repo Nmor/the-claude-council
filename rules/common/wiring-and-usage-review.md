@@ -5,6 +5,8 @@
 > validators), `verify-before-claim.md` (the verification block),
 > `done-criteria.md` (the gates), `principal-level-mandate.md` (depth bar),
 > `no-overclaim.md` (no "done" without proof).
+>
+> **Size budget: 21 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -164,13 +166,35 @@ never the reflex. Apply this fixed order of preference to EACH candidate:
 2. **DEPRECATE** if a contract blocks safe removal (e.g. buf `breaking: FILE`, a
    published API, a vendored-stub consumer) — retire via `[deprecated]` / a soft-delete
    window, not a hard delete.
-3. **DELETE — only after 100% validation** it is genuinely dead AND has no wireable
-   purpose: a newer impl fully replaced it AND is used (remove the redundant
-   DUPLICATE, keep the wired one), or a compat shim with **zero** consumers in ANY
-   repo. "100% validated" means proven, not assumed: grep the symbol across THIS repo +
+3. **DELETE — the OWNER's decision, never yours, and never because something is
+   unfinished.** "No caller yet", "not wired", "half-built" and "dead code" describe
+   work that REMAINS, not waste; every one of those goes to step 1 and gets built.
+   The only removable thing is a proven DUPLICATE of a replacement that is already
+   wired and already carries everything the original did — and even then you do not
+   remove it. You bring the owner the evidence and the recommendation, keep both
+   sides wired, and wait for their answer. An agent never deletes; an orchestrator
+   never decides it alone.
+
+   "100% validated" means proven, not assumed: grep the symbol across THIS repo +
    every sibling repo + entry points invoked by IaC/CI/Argo, confirm no cross-repo /
    out-of-file / dynamic consumer, and cite that evidence. A trace's "inert" label is
-   NOT validation — it is the START of validation.
+   NOT validation — it is the START of validation. Note that this evidence only
+   qualifies a candidate for the owner's decision; it never authorises the delete.
+
+   **When the justification is "a newer impl replaced it", the SUPERSEDE PROOF of
+   `no-bloat.md` rule 6a is MANDATORY before the delete.** "Newer" is not "better",
+   and "roughly equivalent" is not a proof. Enumerate, in writing, that the
+   replacement carries forward every INPUT, OUTPUT (field-by-field — a flat→nested
+   reshape or a renamed key breaks every existing consumer), ERROR BRANCH, SIDE
+   EFFECT (audit / metric / cache / notify), and GUARD (authz / ownership /
+   rate-limit / idempotency) the deleted path had — plus that every consumer is
+   migrated in the SAME change and the tests moved or were replaced with
+   equivalent-or-better coverage. If any axis fails, **extend the replacement until
+   it genuinely covers the original** (make the superior thing actually superior)
+   or deprecate on a documented window instead of deleting. A supersede that
+   quietly drops a nullable field, collapses four typed errors into one 500, or
+   loses an ownership check is a regression dressed as a cleanup — and it ships
+   green, because the deleted code took its own tests with it.
 
 **Use a real call graph, not grep, where one is available.** `graphify` (authority per
 `~/.claude/CLAUDE.md`) answers "what calls this, on what path" from deterministic AST
@@ -189,6 +213,13 @@ the audit-time mirror of the inert-code defect this rule exists to prevent.
 
 ## Anti-patterns
 
+- **Delete-because-unfinished** — removing a symbol, route, component, column or
+  test because it has no caller, isn't wired yet, or is half-built. That state IS
+  the work; the answer is always to wire it and finish it. The delete is worse than
+  the gap it closes: it silently retires a feature somebody intended, it looks like
+  tidy cleanup in review, and the loss is invisible until a user asks for the
+  feature. Owner's directive, verbatim: "you wire and build whats missing and not
+  delete because something isn't fully built. It is never ever do."
 - **Inert validator** — a guard/control defined + unit-tested but never called on
   the live path. (The most dangerous: a security control that does nothing.)
 - **Orphan symbol** — a function/class/endpoint with zero inbound references,
@@ -254,7 +285,6 @@ for that — it just never ran."
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

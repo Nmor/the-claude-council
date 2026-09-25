@@ -6,7 +6,10 @@ version: 2.0.0
 
 # Continuous Learning v2 - Instinct-Based Architecture
 
-An advanced learning system that turns your Claude Code sessions into reusable knowledge through atomic "instincts" - small learned behaviors with confidence scoring.
+> **Size budget: 19 KB** — `token-budget.mjs --check`.
+
+An advanced learning system that turns your Claude Code sessions into reusable knowledge through
+atomic "instincts" - small learned behaviors with confidence scoring.
 
 ## When to Activate
 
@@ -280,7 +283,8 @@ Confidence evolves over time:
 
 ## Why Hooks vs Skills for Observation?
 
-> "v1 relied on skills to observe. Skills are probabilistic—they fire ~50-80% of the time based on Claude's judgment."
+> "v1 relied on skills to observe. Skills are probabilistic—they fire ~50-80% of the time based on
+> Claude's judgment."
 
 Hooks fire **100% of the time**, deterministically. This means:
 
@@ -307,7 +311,8 @@ v2 is fully compatible with v1:
 
 - [Skill Creator](https://skill-creator.app) - Generate instincts from repo history
 - [Homunculus](https://github.com/humanplane/homunculus) - Inspiration for v2 architecture
-- [The Longform Guide](https://x.com/affaanmustafa/status/2014040193557471352) - Continuous learning section
+- [The Longform Guide](https://x.com/affaanmustafa/status/2014040193557471352) - Continuous learning
+  section
 
 ---
 
@@ -420,18 +425,27 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Council-mediated task finishes without a `learning-candidate` event written to `audits/learning-events.jsonl` (mandate rule 1 weakening)
+- Council-mediated task finishes without a `learning-candidate` event written to
+  `audits/learning-events.jsonl` (mandate rule 1 weakening)
 - Candidate emitted with `confidence < 0.6` but auto-applied anyway (review-policy violation)
-- Candidate with same shape emitted 5+ times across sessions without surfacing for promotion (workspace → global promotion gap)
-- Approved refinement landed without updating the targeted artifact in the same session (loop-closure gap)
-- Contradicted rule (`rule-contradiction` event) accumulating ≥ 5 contradictions without refresh review (mandate rule 5 weakening)
-- Confidence scoring drifts (same pattern oscillates between 0.5 and 0.85 across sessions — calibration needed)
-- Hook events (PostToolUse, SessionEnd, SessionStart) firing without producing candidates (instrumentation gap)
+- Candidate with same shape emitted 5+ times across sessions without surfacing for promotion
+  (workspace → global promotion gap)
+- Approved refinement landed without updating the targeted artifact in the same session
+  (loop-closure gap)
+- Contradicted rule (`rule-contradiction` event) accumulating ≥ 5 contradictions without refresh
+  review (mandate rule 5 weakening)
+- Confidence scoring drifts (same pattern oscillates between 0.5 and 0.85 across sessions —
+  calibration needed)
+- Hook events (PostToolUse, SessionEnd, SessionStart) firing without producing candidates
+  (instrumentation gap)
 - Operator commands (`/learn`, `/evolve`, `/instinct-*`) failing silently or returning empty batches
 
 **Refinement candidates**:
 
-- New event shape when a recurring learning class (e.g., cross-tool failure correlation, latent rule conflict) needs its own schema
-- Confidence-calibration update when scoring proves systematically too-high or too-low against user approval rates
+- New event shape when a recurring learning class (e.g., cross-tool failure correlation, latent rule
+  conflict) needs its own schema
+- Confidence-calibration update when scoring proves systematically too-high or too-low against user
+  approval rates
 - Promotion / demotion automation when the manual review batches stay stuck for > 4 weeks
-- New operator command when a recurring manual workflow surfaces (e.g., `/learn-cluster` to group candidates by target artifact)
+- New operator command when a recurring manual workflow surfaces (e.g., `/learn-cluster` to group
+  candidates by target artifact)

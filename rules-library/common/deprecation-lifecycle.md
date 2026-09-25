@@ -8,6 +8,8 @@
 > (deprecation notices live in docs). Standards: **RFC 8594**
 > (Sunset HTTP header), **draft-ietf-httpapi-deprecation-header**,
 > **Semantic Versioning 2.0.0**.
+>
+> **Size budget: 17 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -406,8 +408,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Deprecation marked but cutoff date missing or open-ended (anti-pattern 1 — permanent deprecation)
 - Allowlist extension granted ad-hoc without fresh acknowledgment (rule 5 weakening)
 - Replacement not shipped + stable BEFORE Announce (rule 3 violation)
-- Communication channel mismatch — internal teams notified, paid API consumers not (rule 2 weakening)
-- Usage metrics not tracked during deprecation window (rule 4 weakening — flying blind on migration progress)
+- Communication channel mismatch — internal teams notified, paid API consumers not (rule 2
+  weakening)
+- Usage metrics not tracked during deprecation window (rule 4 weakening — flying blind on migration
+  progress)
 - Stage 3 / 4 reversal attempted (rule 9 — late reversal creates new debt)
 - Migration tooling absent for a mechanical migration (rule 7 weakening)
 
@@ -415,5 +419,6 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New runway-minimum row when an audience class (e.g., mobile SDK consumers) proves slower
 - Tightening of the audit-log shape (rule 6) when forensics needs a dimension currently missing
-- New cross-reference when a sister rule (api-versioning, semver) defines the version semantics this depends on
+- New cross-reference when a sister rule (api-versioning, semver) defines the version semantics this
+  depends on
 - New per-language annotation example when a language gains a canonical deprecation marker

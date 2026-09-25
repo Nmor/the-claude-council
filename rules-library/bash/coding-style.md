@@ -5,6 +5,8 @@
 > `.zshrc`. Standards: **Bash Reference Manual (GNU)**, **Google
 > Shell Style Guide**, **ShellCheck**, **shfmt**, **POSIX sh
 > spec** (when portability required).
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

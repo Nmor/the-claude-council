@@ -4,6 +4,8 @@
 > file. Sister to `~/.claude/rules/common/testing.md`. Standards:
 > **JUnit 5 (Jupiter)**, **AssertJ**, **Mockito 5**, **Testcontainers**,
 > **Spring Boot Test**, **JaCoCo**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

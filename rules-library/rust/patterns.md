@@ -3,6 +3,8 @@
 > Auto-fires on every `*.rs` file. Standards: **Rust API Guidelines**,
 > **Rust Design Patterns book (rust-unofficial)**, **Tokio Tutorial**,
 > **The Rustonomicon**, **Effective Rust (David Drysdale)**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

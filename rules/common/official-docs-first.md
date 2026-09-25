@@ -2,6 +2,10 @@
 
 > Auto-fires on every file. Sister to `done-criteria.md`, `no-discards.md`,
 > `no-silent-failures.md`, and `docs-sync-with-code.md`.
+>
+> **Size budget: 12 KB.** Check with `wc -c`; check the whole Floor with
+> `node ~/.claude/scripts/token-budget.mjs`. Always-on, so every byte is paid on every
+> turn — per `no-bloat.md` rules 5 and 10.
 
 ## Core Principle
 
@@ -68,6 +72,29 @@ rejection codes, retry semantics, content-encoding requirements).
    substitute for the official docs.** The provider's docs win on any
    behaviour question. The library may be out of date, may handle a
    scope the provider has since removed, may omit edge cases.
+
+7. **Read for the EFFICIENT pattern, not only for a call that works.** Most
+   providers offer several shapes for the same job, and the cheapest correct one is
+   documented. Before the integration is written, answer these in the plan and write
+   the answers down:
+
+   - **Batch or per-item?** One request for N things, or N requests.
+   - **Push or pull?** A webhook the provider sends, or a poll paid on every cycle.
+   - **Paginated or unbounded?** What this endpoint does at a thousand rows. At a
+     million.
+   - **Filtered server-side or client-side?** Who discards the rows nobody wanted.
+   - **Incremental or full?** A cursor since last time, or the whole collection each
+     time.
+   - **Partial or whole?** Whether you can ask for the fields you render rather than
+     every field.
+   - **Cached or recomputed?** What is stable enough to keep, and what invalidates it.
+
+   If the provider offers a better shape and the code does not use it, say why. "I did
+   not know it existed" is the answer this rule exists to prevent — and it is the one
+   that produces the expensive integrations, because nothing in the code review shows
+   it. A wrong-pattern integration passes every gate: it compiles, it is typed, its
+   tests are green, and it returns the right answer. It is simply paying N times what
+   the documented shape costs, on every call, forever (per `no-bloat.md` rule 10).
 
 ## What "canonical" looks like per common providers
 
@@ -177,7 +204,6 @@ incident.
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

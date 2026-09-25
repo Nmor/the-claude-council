@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Size budget: 20 KB. Check: wc -c; gate: token-budget.mjs --check.
 #
 # code-graph-validate.sh — Incremental code-graph validator for the
 # `~/.claude/` global config surface.
@@ -199,8 +200,10 @@ else
   SKILL_BROKEN=0
   for d in "${SKILLS_DIR}"/*/; do
     [ -d "${d}" ] || continue
-    SKILL_COUNT=$((SKILL_COUNT + 1))
     NAME=$(basename "${d}")
+    # Claude Code's own store of account-synced skills, not a shipped skill.
+    [ "${NAME}" = synced ] && continue
+    SKILL_COUNT=$((SKILL_COUNT + 1))
     SKILL_FILE="${d}SKILL.md"
 
     if [ ! -f "${SKILL_FILE}" ]; then

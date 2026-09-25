@@ -6,6 +6,8 @@
 > binding.md` (port binding), `documentation-requirements.md`
 > (README + setup docs), `dependency-pinning.md` (reproducible
 > versions), `task-intake-due-diligence.md` Q14.
+>
+> **Size budget: 17 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -443,11 +445,13 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- New repo's bootstrap takes > 30 minutes for a fresh-clone developer (rule 1 violation — frictionful first-run)
+- New repo's bootstrap takes > 30 minutes for a fresh-clone developer (rule 1 violation —
+  frictionful first-run)
 - Tool version not pinned via `.nvmrc` / `.tool-versions` / equivalent (rule 2 weakening)
 - Service dependency not in `docker-compose.yml` (rule 3 weakening — implicit local install)
 - Real cloud credentials required for local dev (rule 4 violation — secrets-on-disk drift)
-- Secret checked-in to `.env` instead of populated from vault (rule 4 + `secrets-management.md` weakening)
+- Secret checked-in to `.env` instead of populated from vault (rule 4 + `secrets-management.md`
+  weakening)
 - DB seed script not idempotent (rule 5 weakening)
 - Local-vs-CI gate divergence (`pnpm verify` ≠ CI gate set) — rule 7 violation
 - Dev container `postCreateCommand` broken on a fresh pull (rule 8 weakening)
@@ -456,9 +460,12 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New row in the prod-parity table when a recurring service class (vector DB, search engine, ML model server) emerges
+- New row in the prod-parity table when a recurring service class (vector DB, search engine, ML
+  model server) emerges
 - Tightening of the bootstrap time budget when 30-min target consistently slips
-- New cross-language template when a stack (React Native, Flutter, Tauri, Solidity) needs platform-specific bootstrap
-- New "mock adapter" entry when a recurring external dep (real Stripe / Twilio / SendGrid) needs a documented local substitute
+- New cross-language template when a stack (React Native, Flutter, Tauri, Solidity) needs
+  platform-specific bootstrap
+- New "mock adapter" entry when a recurring external dep (real Stripe / Twilio / SendGrid) needs a
+  documented local substitute
 
 ---

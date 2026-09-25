@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Size budget: 8 KB. Check: wc -c; gate: token-budget.mjs --check.
 /**
  * Strategic Compact Suggester
  *
@@ -18,14 +19,16 @@ const path = require('path');
 const {
   getTempDir,
   writeFile,
-  log
+  readStdinJson
 } = require('../lib/utils');
+const { advise } = require('./lib/advise.js');
 
 async function main() {
-  // Track tool call count (increment in a temp file)
-  // Use a session-specific counter file based on session ID from environment
-  // or parent PID as fallback
-  const sessionId = process.env.CLAUDE_SESSION_ID || 'default';
+  // Count per session. Claude Code passes the session id on stdin, not in the
+  // environment, so reading only CLAUDE_SESSION_ID put every session on the machine
+  // on one shared `default` counter.
+  const input = await readStdinJson();
+  const sessionId = input.session_id || process.env.CLAUDE_SESSION_ID || 'default';
   const counterFile = path.join(getTempDir(), `claude-tool-count-${sessionId}`);
   const rawThreshold = parseInt(process.env.COMPACT_THRESHOLD || '50', 10);
   const threshold = Number.isFinite(rawThreshold) && rawThreshold > 0 && rawThreshold <= 10000
@@ -63,12 +66,12 @@ async function main() {
 
   // Suggest compact after threshold tool calls
   if (count === threshold) {
-    log(`[StrategicCompact] ${threshold} tool calls reached - consider /compact if transitioning phases`);
+    advise(input, `[StrategicCompact] ${threshold} tool calls reached - consider /compact if transitioning phases`);
   }
 
   // Suggest at regular intervals after threshold (every 25 calls from threshold)
   if (count > threshold && (count - threshold) % 25 === 0) {
-    log(`[StrategicCompact] ${count} tool calls - good checkpoint for /compact if context is stale`);
+    advise(input, `[StrategicCompact] ${count} tool calls - good checkpoint for /compact if context is stale`);
   }
 
   process.exit(0);

@@ -7,6 +7,8 @@ paths:
 # Go Security
 
 > This file extends [common/security.md](../common/security.md) with Go specific content.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Secret Management
 

@@ -4,6 +4,8 @@
 > `Containerfile`. Standards: **OCI Image Specification 1.1.1**,
 > **BuildKit Frontend 1.20+**, **Distroless Containers (Google)**,
 > **Wolfi OS** (Chainguard), **Twelve-Factor App** (Heroku).
+>
+> **Size budget: 22 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -521,14 +523,18 @@ Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-lear
 - Single-stage Dockerfile shipped to production (pattern 1 weakening)
 - Alpine + glibc compatibility issues recurring (pattern 2 — should consider Wolfi or Debian-slim)
 - BuildKit cache mount missing on package-manager `RUN` (pattern 3 weakening)
-- Secrets shipped in `ENV` rather than via `--mount=type=secret` (anti-pattern 3 — sister `secrets-management.md` violation)
+- Secrets shipped in `ENV` rather than via `--mount=type=secret` (anti-pattern 3 — sister
+  `secrets-management.md` violation)
 - SBOM and provenance not produced on production builds (pattern 5 weakening — SLSA Level 3 gap)
 - PID 1 signal forwarding absent on a Node / Python / Ruby image (pattern 9 weakening)
 - Multi-platform build skipped when arm64 deployment exists (pattern 11 weakening)
 
 **Refinement candidates**:
 
-- New base-image row when an emerging distro (Wolfi 2.x, Bottlerocket, Talos) becomes the team standard
-- New pattern entry when a recurring composition emerges (e.g. eBPF-based observability sidecar, supply-chain attestation chain)
+- New base-image row when an emerging distro (Wolfi 2.x, Bottlerocket, Talos) becomes the team
+  standard
+- New pattern entry when a recurring composition emerges (e.g. eBPF-based observability sidecar,
+  supply-chain attestation chain)
 - Tightening of the SBOM requirement when SLSA Level 3 becomes the baseline
-- New cross-reference when a sister rule (k8s-patterns, helm-patterns, IaC) defines a complementary deployment surface
+- New cross-reference when a sister rule (k8s-patterns, helm-patterns, IaC) defines a complementary
+  deployment surface

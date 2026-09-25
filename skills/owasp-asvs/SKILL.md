@@ -5,24 +5,33 @@ description: OWASP Application Security Verification Standard 4.0.3 — the cano
 
 # OWASP ASVS
 
-The OWASP Top 10 names risk classes; the ASVS names the CONTROLS that mitigate them. This skill turns the 286 ASVS 4.0.3 requirements into actionable engineering patterns mapped to the codebase, with verification commands per chapter.
+> **Size budget: 19 KB** — `token-budget.mjs --check`.
+
+The OWASP Top 10 names risk classes; the ASVS names the CONTROLS that mitigate them. This skill
+turns the 286 ASVS 4.0.3 requirements into actionable engineering patterns mapped to the codebase,
+with verification commands per chapter.
 
 ## Purpose
 
-Security audits driven by OWASP ASVS are the de-facto standard for B2B SaaS procurement, SOC 2 readiness, and enterprise penetration tests. The ASVS spans 14 chapters with three levels:
+Security audits driven by OWASP ASVS are the de-facto standard for B2B SaaS procurement, SOC 2
+readiness, and enterprise penetration tests. The ASVS spans 14 chapters with three levels:
 
 - **L1** (Opportunistic): minimum bar for any internet-facing app; achievable via automated tooling
 - **L2** (Standard): default for apps holding sensitive business data; requires deliberate design
-- **L3** (Advanced): apps handling high-value assets (banking, health, classified) or processing significant volumes of PII
+- **L3** (Advanced): apps handling high-value assets (banking, health, classified) or processing
+  significant volumes of PII
 
-This skill maps the controls to implementation patterns + verification gates so an engineer can answer "are we ASVS L2?" with evidence, not opinion.
+This skill maps the controls to implementation patterns + verification gates so an engineer can
+answer "are we ASVS L2?" with evidence, not opinion.
 
 ## Standards Cited
 
 - **OWASP ASVS 4.0.3** (October 2021) — current GA; the 286 numbered requirements
-- **OWASP ASVS 5.0** (in draft as of 2025) — major restructure; check `github.com/OWASP/ASVS` for current state
+- **OWASP ASVS 5.0** (in draft as of 2025) — major restructure; check `github.com/OWASP/ASVS` for
+  current state
 - **OWASP Top 10 2021** — the risk classes ASVS controls map to
-- **NIST SP 800-53 Rev 5** — federal control catalogue (ASVS controls map to NIST SC, AC, AU, IA families)
+- **NIST SP 800-53 Rev 5** — federal control catalogue (ASVS controls map to NIST SC, AC, AU, IA
+  families)
 - **CIS Critical Security Controls v8** — operational complement
 - **CWE Top 25 (2026)** — weakness types the ASVS prevents
 - **RFC 7231, 7235, 9110** — HTTP authentication semantics
@@ -48,11 +57,14 @@ This skill maps the controls to implementation patterns + verification gates so 
 - **V1.1.2** — SDLC documented; threat modeling for every story touching auth / sensitive data
 - **V1.1.4** — Trust boundaries documented in an architecture doc (DFD or C4)
 - **V1.2.1-4** — Application uses unique, lowest-priv credentials for OS / DB / queue
-- **V1.4.1** — Trusted enforcement points (gateway / handler middleware) — not enforcement at the UI layer alone
+- **V1.4.1** — Trusted enforcement points (gateway / handler middleware) — not enforcement at the UI
+  layer alone
 - **V1.5.1** — Centralised input/output handling (not scattered per-handler)
 - **V1.14.1** — Components segregated (admin vs user vs public)
 
-**Implementation:** ADR for every architectural decision (per `~/.claude/rules-library/common/adr-template.md`); STRIDE pass per `task-intake-due-diligence.md` Q9.
+**Implementation:** ADR for every architectural decision (per
+`~/.claude/rules-library/common/adr-template.md`); STRIDE pass per `task-intake-due-diligence.md`
+Q9.
 
 ### V2 — Authentication
 
@@ -83,15 +95,18 @@ grep -rn "rateLimit\|throttle" src/auth/
 
 ### V3 — Session Management
 
-- **V3.1.1** — Sessions are unique, unpredictable; ≥ 64 bits entropy (use crypto-random, not Math.random)
+- **V3.1.1** — Sessions are unique, unpredictable; ≥ 64 bits entropy (use crypto-random, not
+  Math.random)
 - **V3.2.1** — New session on auth; old session invalidated
 - **V3.2.3** — Cookies: `HttpOnly`, `Secure`, `SameSite=Lax` or `Strict`
 - **V3.3.1** — Logout invalidates the session server-side
 - **V3.3.2** — Idle timeout (default 30 min for L2; 15 min for L3)
 - **V3.3.3** — Absolute timeout (default 24h; sensitive ops require re-auth)
 - **V3.4.1** — Cookie-based sessions use `__Host-` or `__Secure-` prefix
-- **V3.5.1** — JWT verification: ALWAYS verify the signature; explicit `alg` allowlist (never accept `none`)
-- **V3.5.2** — Reference tokens (opaque session id + server-side store) preferred over self-contained tokens for revocability
+- **V3.5.1** — JWT verification: ALWAYS verify the signature; explicit `alg` allowlist (never accept
+  `none`)
+- **V3.5.2** — Reference tokens (opaque session id + server-side store) preferred over
+  self-contained tokens for revocability
 - **V3.7.1** — Session binding to client (IP / device fingerprint) on sensitive ops
 
 ### V4 — Access Control
@@ -103,7 +118,8 @@ grep -rn "rateLimit\|throttle" src/auth/
 - **V4.2.2** — CSRF protection for state-changing requests
 - **V4.3.1** — Admin interfaces: MFA required; separate URL prefix; IP-allowlisted in L3
 
-**Pattern:** Centralised authorize() middleware; row-level security (RLS) in PostgreSQL for multi-tenant data (per `~/.claude/skills/postgres-patterns/`).
+**Pattern:** Centralised authorize() middleware; row-level security (RLS) in PostgreSQL for
+multi-tenant data (per `~/.claude/skills/postgres-patterns/`).
 
 ### V5 — Validation, Sanitization, Encoding
 
@@ -114,7 +130,8 @@ grep -rn "rateLimit\|throttle" src/auth/
 - **V5.3.1** — Output encoding for the right context (HTML, JS, URL, CSS)
 - **V5.3.4** — SQL injection prevention via parameterisation
 - **V5.5.2** — XML parsers configured to prevent XXE
-- **V5.5.3** — Deserialization uses safe libraries (no `pickle.loads` on untrusted; no `unserialize()` in PHP)
+- **V5.5.3** — Deserialization uses safe libraries (no `pickle.loads` on untrusted; no
+  `unserialize()` in PHP)
 
 ### V6 — Stored Cryptography
 
@@ -128,34 +145,41 @@ grep -rn "rateLimit\|throttle" src/auth/
 ### V7 — Error Handling and Logging
 
 - **V7.1.1** — No sensitive info in error messages reaching the client
-- **V7.1.2** — Server-side logs are structured (sister to `~/.claude/skills/observability-patterns/`)
+- **V7.1.2** — Server-side logs are structured (sister to
+  `~/.claude/skills/observability-patterns/`)
 - **V7.3.1** — Logs include success + failure of auth, access control, validation failures
 - **V7.3.4** — Time sources synchronised (NTP)
 - **V7.4.1** — Generic error message to user; full detail server-side
 
 ### V8 — Data Protection
 
-- **V8.1.1** — Sensitive data classified (PII, PHI, financial, etc.) — see `~/.claude/rules-library/common/data-retention.md`
+- **V8.1.1** — Sensitive data classified (PII, PHI, financial, etc.) — see
+  `~/.claude/rules-library/common/data-retention.md`
 - **V8.2.2** — Browser-side caching disabled for sensitive responses (`Cache-Control: no-store`)
-- **V8.3.1** — Sensitive form data has `autocomplete="off"` ONLY when truly necessary (mostly password managers should work)
+- **V8.3.1** — Sensitive form data has `autocomplete="off"` ONLY when truly necessary (mostly
+  password managers should work)
 - **V8.3.4** — Sensitive data is removed from memory ASAP after use
 
 ### V9 — Communications
 
 - **V9.1.1** — TLS used for all communications, including internal
-- **V9.1.2** — TLS configurations match current NIST / Mozilla recommendations (TLS 1.2+, modern ciphers, HSTS preload)
+- **V9.1.2** — TLS configurations match current NIST / Mozilla recommendations (TLS 1.2+, modern
+  ciphers, HSTS preload)
 - **V9.2.1** — Connections to + from external systems use TLS
 
 ### V10 — Malicious Code
 
-- **V10.2.1** — Application source code reviewed for malicious code (signed commits, branch protection)
-- **V10.3.1** — Dependencies obtained from verified sources, signature verified (per `~/.claude/rules-library/common/install-allowlist.md`)
+- **V10.2.1** — Application source code reviewed for malicious code (signed commits, branch
+  protection)
+- **V10.3.1** — Dependencies obtained from verified sources, signature verified (per
+  `~/.claude/rules-library/common/install-allowlist.md`)
 - **V10.3.2** — Application has integrity checks at runtime (subresource integrity for CDN scripts)
 
 ### V11 — Business Logic
 
 - **V11.1.1** — Business logic flows process steps in order; race conditions handled
-- **V11.1.2** — Business logic limits anomalous high volumes (rate-limited per `~/.claude/rules-library/common/rate-limiting.md`)
+- **V11.1.2** — Business logic limits anomalous high volumes (rate-limited per
+  `~/.claude/rules-library/common/rate-limiting.md`)
 - **V11.1.4** — Anti-automation on business-critical flows (signup, checkout)
 
 ### V12 — Files and Resources
@@ -164,7 +188,8 @@ grep -rn "rateLimit\|throttle" src/auth/
 - **V12.1.2** — File upload formats are validated by magic bytes, not MIME header
 - **V12.3.1** — Filenames are sanitized; no path traversal
 - **V12.4.1** — Files stored outside webroot
-- **V12.5.1** — Uploaded files served with the correct `Content-Type` + `Content-Disposition: attachment` for non-display
+- **V12.5.1** — Uploaded files served with the correct `Content-Type` + `Content-Disposition:
+  attachment` for non-display
 
 ### V13 — API and Web Service
 
@@ -178,24 +203,30 @@ grep -rn "rateLimit\|throttle" src/auth/
 ### V14 — Configuration
 
 - **V14.1.1** — Build pipeline is automated + reproducible
-- **V14.2.1** — Third-party deps from trusted source (per `dependency-vulnerabilities.md` + `install-allowlist.md`)
+- **V14.2.1** — Third-party deps from trusted source (per `dependency-vulnerabilities.md` +
+  `install-allowlist.md`)
 - **V14.2.4** — Each environment (dev / staging / prod) has its own config
 - **V14.3.1** — Default error pages / debug interfaces removed in production
-- **V14.4.1** — HTTP security headers configured (CSP, HSTS, X-Content-Type-Options, Referrer-Policy)
+- **V14.4.1** — HTTP security headers configured (CSP, HSTS, X-Content-Type-Options,
+  Referrer-Policy)
 - **V14.5.1** — Cross-origin restricted via CORS allowlist
 
 ## Anti-Patterns
 
 - **`alg: none` accepted in JWT verification** — V3.5.1 violation, trivial auth bypass
-- **Password complexity rules WITHOUT length minimum** — composition rules harm UX without raising entropy
+- **Password complexity rules WITHOUT length minimum** — composition rules harm UX without raising
+  entropy
 - **Session ID in URL** — V3.4.1 violation (leaks via referer, browser history, logs)
-- **Trusting client-supplied user_id in API calls** — IDOR (V4.2.1); always derive from authenticated session
+- **Trusting client-supplied user_id in API calls** — IDOR (V4.2.1); always derive from
+  authenticated session
 - **`SELECT * WHERE user_id = $1` without verifying $1 == session.user_id** — same IDOR class
-- **`Math.random()` for security tokens** — V6.3.1 violation; use `crypto.randomBytes` / `secrets.token_urlsafe`
+- **`Math.random()` for security tokens** — V6.3.1 violation; use `crypto.randomBytes` /
+  `secrets.token_urlsafe`
 - **MD5 / SHA-1 for password hashing** — V6.2.5; use argon2id / bcrypt
 - **Stack traces in production responses** — V7.4.1
 - **CORS `*` with credentials** — disables same-origin protection
-- **`autocomplete="off"` on login forms** — fights password managers, hurts a11y (per `accessible-forms`), violates ASVS V2.1.5
+- **`autocomplete="off"` on login forms** — fights password managers, hurts a11y (per
+  `accessible-forms`), violates ASVS V2.1.5
 
 ## Verification Checklist
 
@@ -245,13 +276,21 @@ gitleaks detect                                  # secret scan
 
 ## Why This Skill Exists
 
-OWASP ASVS is the question security auditors ask in different words: "Show me your password policy / how do you hash it / how do you log auth events / how do you handle session expiry / how do you handle XSS / how do you handle SQL injection."
+OWASP ASVS is the question security auditors ask in different words: "Show me your password policy /
+how do you hash it / how do you log auth events / how do you handle session expiry / how do you
+handle XSS / how do you handle SQL injection."
 
-A team can either answer those questions in real-time during the audit (slow, expensive, looks unprepared) OR have the ASVS controls mapped to code with evidence (fast, professional, signals security maturity).
+A team can either answer those questions in real-time during the audit (slow, expensive, looks
+unprepared) OR have the ASVS controls mapped to code with evidence (fast, professional, signals
+security maturity).
 
-The patterns in this skill produce L2 conformance for a typical SaaS application. L3 requires additional design choices (HSM-backed keys, mTLS for service-to-service, no SMS 2FA, federated identity only) — surface those choices in the architecture doc.
+The patterns in this skill produce L2 conformance for a typical SaaS application. L3 requires
+additional design choices (HSM-backed keys, mTLS for service-to-service, no SMS 2FA, federated
+identity only) — surface those choices in the architecture doc.
 
-The cost of implementing ASVS controls during development: a few extra middleware layers, structured logging, parameterised queries (you should be doing these anyway). The cost of retrofitting after a pentest finding: weeks of remediation + fines + lost deals.
+The cost of implementing ASVS controls during development: a few extra middleware layers, structured
+logging, parameterised queries (you should be doing these anyway). The cost of retrofitting after a
+pentest finding: weeks of remediation + fines + lost deals.
 
 ## Learning hooks
 
@@ -259,17 +298,21 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- V2 (Authentication) control gap: password policy < 12 chars, no rate-limit on login, MFA optional for admin
+- V2 (Authentication) control gap: password policy < 12 chars, no rate-limit on login, MFA optional
+  for admin
 - V3 (Session Management) control gap: session token leaked in URL / log / referrer
-- V4 (Access Control) control gap: IDOR pattern reaches main (resource lookup without ownership check)
+- V4 (Access Control) control gap: IDOR pattern reaches main (resource lookup without ownership
+  check)
 - V5 (Validation, Sanitisation, Encoding) control gap: handler accepts unvalidated input
 - V6 (Stored Cryptography) control gap: SHA-1 / MD5 / DES / no-IV-cipher used for new feature
 - V7 (Error Handling + Logging) control gap: stack trace returned to client; PII in logs
 - V8 (Data Protection) control gap: secret in source / logs / API response
 - V9 (Communication) control gap: HTTP listener / disabled TLS verification / weak cipher suite
-- V10 (Malicious Code) control gap: archived / unmaintained dep introduced (per `updated-frameworks.md`)
+- V10 (Malicious Code) control gap: archived / unmaintained dep introduced (per
+  `updated-frameworks.md`)
 - V11 (Business Logic) control gap: idempotency missing on a financial-effect endpoint
-- V12 (Files + Resources) control gap: upload without size + MIME validation; path-traversal possible
+- V12 (Files + Resources) control gap: upload without size + MIME validation; path-traversal
+  possible
 - V13 (API + Web Service) control gap: missing rate-limit / missing CSRF / missing CORS allowlist
 - V14 (Configuration) control gap: debug mode in prod, default credentials, exposed admin panel
 - New L3 control becomes applicable (e.g., regulated workload added) without uplift
@@ -278,5 +321,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New control mapping row when a recurring control gap appears in production audit
 - Tightening of the L1 → L2 → L3 boundary when the workload's regulatory scope changes
-- New cross-reference when a sister skill (iso27001-controls, soc2-readiness, pci-dss-patterns) cites the same control under a different framework
-- New verification command per control when a new tool / scanner becomes the authoritative check (e.g., Semgrep rule replacing manual review)
+- New cross-reference when a sister skill (iso27001-controls, soc2-readiness, pci-dss-patterns)
+  cites the same control under a different framework
+- New verification command per control when a new tool / scanner becomes the authoritative check
+  (e.g., Semgrep rule replacing manual review)

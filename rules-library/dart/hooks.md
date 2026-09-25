@@ -3,6 +3,8 @@
 > Auto-fires on every `*.dart`, `pubspec.yaml`, `pubspec.lock`,
 > `analysis_options.yaml`, `build.yaml` file. Sister to
 > `~/.claude/rules/common/hooks.md`.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Pre-commit gates
 

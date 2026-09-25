@@ -5,6 +5,8 @@
 > Standards: **CERT C / C++ Coding Standard**, **MISRA C 2023 /
 > MISRA C++ 2023**, **OWASP C / C++ Top 10**, **CWE Top 25 (2026)**,
 > **C++ Core Guidelines (Stroustrup + Sutter)**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

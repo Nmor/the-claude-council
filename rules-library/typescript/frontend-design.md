@@ -20,7 +20,11 @@ paths:
 
 # Frontend Design Aesthetics
 
-> Applies the visual-design quality bar to every UI surface. Works alongside `coding-style.md` and the `frontend-patterns` skill (which owns the visual-design guidelines in its "Visual design quality" section).
+> Applies the visual-design quality bar to every UI surface. Works alongside `coding-style.md` and
+> the `frontend-patterns` skill (which owns the visual-design guidelines in its "Visual design
+> quality" section).
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Mandatory Design Checklist
 
@@ -38,7 +42,8 @@ When creating or modifying any visible UI:
 
 When working on frontend files, these skills activate together:
 
-1. **frontend-patterns** — Component architecture, state management, hooks, performance, AND visual design quality (typography, color, motion, spatial composition)
+1. **frontend-patterns** — Component architecture, state management, hooks, performance, AND visual
+   design quality (typography, color, motion, spatial composition)
 2. **coding-quality-rules** — Code quality, naming, structure, readability
 3. **security-review** — XSS prevention in dynamic content/styling
 

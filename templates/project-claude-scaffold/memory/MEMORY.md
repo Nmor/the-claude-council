@@ -1,22 +1,21 @@
-# Workspace Memory Index
+# Memory Index
 
-> Project-specific memories. Index file — never put memory content
-> here directly; one line per memory file. Per the auto-memory
-> system in `~/.claude/CLAUDE.md`.
+> Shared Claude memory for a project that spans several repositories. Claude Code loads this
+> folder only when each repository's gitignored `.claude/settings.local.json` sets
+> `"autoMemoryDirectory"` to its absolute path; otherwise every repository keeps its own memory
+> under `~/.claude/projects/` and this folder is never read. A single-repository project does
+> not need it. See `~/.claude/rules/common/project-memory.md`.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`. Claude Code loads only the first
+> 200 lines or 25 KB.
 
-## Conventions
+Active plan: none
 
-- Each memory file carries frontmatter (`name`, `description`,
-  `metadata.type`)
-- Type is one of: `user`, `feedback`, `project`, `reference`
-- `MEMORY.md` is the index only — under ~150 chars per line
-- Project-specific memories live HERE; universal preferences live
-  in `~/.claude/projects/-Users-<user>/memory/`
-
-## Index
+- [Functional tests](feedback_functional_test_coverage.md) — a found defect is fixed, not filed
 
 <!--
-Examples (delete when adding real entries):
-- [Stripe live key in keychain](reference_stripe_keys.md) — vault path + rotation cadence
-- [Avoid Sidekiq for cron](feedback_no_sidekiq_cron.md) — use Solid Queue per Rails 8 default
+Replace `none` with the absolute path of the plan this project is executing. Then one line per
+memory file, for example:
+- [Stripe keys live in the vault](reference_stripe_keys.md) — vault path and rotation cadence
+Progress and status belong in the plan, not here.
 -->

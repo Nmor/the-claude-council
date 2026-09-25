@@ -2,6 +2,8 @@
 
 > Auto-fires on every file. Sister to `done-criteria.md`,
 > `official-docs-first.md`, and `no-overclaim.md`.
+>
+> **Size budget: 9 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -157,9 +159,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Signals to watch**:
 
 - Feature PR merged without corresponding `docs/<feature>.md` update (rule 1 violation)
-- README lists a feature that doesn't work end-to-end from fresh clone (advertised-but-broken pattern)
+- README lists a feature that doesn't work end-to-end from fresh clone (advertised-but-broken
+  pattern)
 - Marketing / landing page references a feature that isn't shipped yet
-- Provider integration ships without `docs/provider-research/<provider>.md` (sister-rule `official-docs-first.md` weakening)
+- Provider integration ships without `docs/provider-research/<provider>.md` (sister-rule
+  `official-docs-first.md` weakening)
 - Runbook entry stale > 6 months yet still referenced by alerts (decay pattern)
 - "I'll do the docs next" markers introduced (deferred-docs anti-pattern)
 - Docs-sync gate missing from local pre-flight script in a docs-touching repo
@@ -168,7 +172,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New row in the doc surface table when a recurring artifact class (status page, partner portal, ToS update) emerges
-- Tightening of the docs-sync gate's grep scope when a new surface (e.g., `docs/api/` for OpenAPI) appears
-- New cross-reference when a sister rule (deprecation-lifecycle, runbook-template, adr-template) provides the canonical home for a docs artifact
+- New row in the doc surface table when a recurring artifact class (status page, partner portal, ToS
+  update) emerges
+- Tightening of the docs-sync gate's grep scope when a new surface (e.g., `docs/api/` for OpenAPI)
+  appears
+- New cross-reference when a sister rule (deprecation-lifecycle, runbook-template, adr-template)
+  provides the canonical home for a docs artifact
 - Promotion of `BUG(docs-gap-*)` markers to real tickets when they accumulate past N per service

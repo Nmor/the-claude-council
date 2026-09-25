@@ -6,6 +6,8 @@ paths:
 # Dart/Flutter Security
 
 > Extends `common/security.md` with Dart/Flutter-specific security.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Secure Storage
 

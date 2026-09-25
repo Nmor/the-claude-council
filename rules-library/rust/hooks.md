@@ -2,6 +2,8 @@
 
 > Auto-fires on every `*.rs`, `Cargo.toml`, `Cargo.lock` file.
 > Sister to `~/.claude/rules/common/hooks.md`.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Pre-commit gates
 

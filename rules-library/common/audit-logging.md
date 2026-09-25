@@ -7,6 +7,8 @@
 > Standards: **NIST SP 800-92** (log management), **ISO/IEC 27001
 > Annex A.8.15** (logging), **PCI-DSS 4.0 Requirement 10**,
 > **SOC 2 Trust Services Criteria CC7**, **HIPAA §164.312(b)**.
+>
+> **Size budget: 19 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -409,9 +411,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Audit event emitted on success but not on failure (rule 5 weakening — failed actions are often the most important)
+- Audit event emitted on success but not on failure (rule 5 weakening — failed actions are often the
+  most important)
 - PII surfacing in audit fields (rule 4 PII-handling violation)
-- Audit event not in the same DB transaction as the business write (rule 1 weakening — audit becomes a lie when txn rolls back)
+- Audit event not in the same DB transaction as the business write (rule 1 weakening — audit becomes
+  a lie when txn rolls back)
 - Mutable audit log discovered (append-only enforcement gap)
 - New event class shipped without a schema entry in `docs/audit-events.md` (catalog discipline weak)
 - Retention window too short for the applicable regulation (regulation-driven retention drift)
@@ -423,4 +427,5 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New event class in the catalog when a new security-relevant operation emerges
 - New required field when forensics consistently needs a dimension the canonical shape lacks
 - Tightening of retention minimums when a regulation update lengthens the floor
-- New cross-reference when a sister rule (gdpr-ccpa, security A09) prescribes audit semantics not yet captured
+- New cross-reference when a sister rule (gdpr-ccpa, security A09) prescribes audit semantics not
+  yet captured

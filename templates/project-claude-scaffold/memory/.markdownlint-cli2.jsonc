@@ -1,0 +1,9 @@
+// Memory entries are frontmatter + body by design — the format CLAUDE.md defines for them
+// has no H1, so MD041 is a false positive for every file in this folder.
+// Per-path config in markdownlint-cli2 is a nested config file like this one; the parent
+// config has no "overrides" key.
+{
+  "config": {
+    "MD041": false
+  }
+}

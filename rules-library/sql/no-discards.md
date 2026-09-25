@@ -4,6 +4,8 @@
 > Extends `~/.claude/rules/common/no-discards.md`. Tooling:
 > **sqlfluff** strict; **psql --echo-errors**; **pg_lint**;
 > **squawk** (Postgres migration safety).
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

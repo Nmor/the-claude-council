@@ -6,6 +6,8 @@ command: true
 
 # Instinct Import Command
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 ## Implementation
 
 Run the instinct CLI using the plugin root path:

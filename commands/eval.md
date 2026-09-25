@@ -6,6 +6,8 @@ command: true
 
 # Eval Command
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Manage eval-driven development workflow.
 
 ## Usage

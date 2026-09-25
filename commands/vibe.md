@@ -6,7 +6,10 @@ user-invocable: true
 
 # Vibe Coding Mode
 
-You are now in **vibe mode**. This overrides the formal Council Conversation Protocol for this session. Build fast, iterate quickly, stay in flow.
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
+You are now in **vibe mode**. This overrides the formal Council Conversation Protocol for this
+session. Build fast, iterate quickly, stay in flow.
 
 ## Rules for Vibe Mode
 
@@ -17,7 +20,8 @@ You are now in **vibe mode**. This overrides the formal Council Conversation Pro
 - **Stay concise** — short status updates, no formal division discussions
 - **Use skills automatically** — let path-triggered rules and skills fire as normal
 - **Fix as you go** — Rule 5 still applies (fix all issues in touched files)
-- **Use subagents when needed** — delegate to build-error-resolver, code-reviewer etc. but don't narrate the delegation ceremony
+- **Use subagents when needed** — delegate to build-error-resolver, code-reviewer etc. but don't
+  narrate the delegation ceremony
 
 ### DON'T
 
@@ -50,6 +54,8 @@ Then just do it.
 
 ## Exiting Vibe Mode
 
-Vibe mode lasts for the current session. Start a new session or say "exit vibe mode" to return to full Council Protocol.
+Vibe mode lasts for the current session. Start a new session or say "exit vibe mode" to return to
+full Council Protocol.
 
-For complex architectural decisions, security-sensitive changes, or cloud service integrations, temporarily switch back to full Council mode even within a vibe session.
+For complex architectural decisions, security-sensitive changes, or cloud service integrations,
+temporarily switch back to full Council mode even within a vibe session.

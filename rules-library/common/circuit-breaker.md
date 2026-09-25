@@ -9,6 +9,8 @@
 > archived but referenced); **Polly** (.NET), **resilience4j**
 > (Java), **opossum** (Node), **gobreaker** (Go), **pybreaker**
 > (Python).
+>
+> **Size budget: 14 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -275,9 +277,12 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- External call wrapped in breaker but without timeout (rule 4 weakening — breaker can't measure failure)
-- Per-call-site breaker found instead of per-dependency (rule 3 violation — fragmented failure signal)
-- Breaker OPEN triggered silent success instead of fallback / error envelope (anti-pattern 4 violation)
+- External call wrapped in breaker but without timeout (rule 4 weakening — breaker can't measure
+  failure)
+- Per-call-site breaker found instead of per-dependency (rule 3 violation — fragmented failure
+  signal)
+- Breaker OPEN triggered silent success instead of fallback / error envelope (anti-pattern 4
+  violation)
 - Retry-on-OPEN observed (rule 5 weakening — must respect breaker state)
 - Breaker thresholds tuned identically across deps with very different SLAs (rule 2 weakening)
 - New external dep introduced without a breaker (rule 1 weakening)
@@ -289,4 +294,5 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New per-language library row when a canonical option emerges
 - Tightening of default thresholds when chronic flapping or false-positive opens observed
 - New fallback-path pattern entry when a recurring degradation shape needs naming
-- New cross-reference when a sister rule (rate-limiting, graceful-degradation) defines a complementary signal
+- New cross-reference when a sister rule (rate-limiting, graceful-degradation) defines a
+  complementary signal

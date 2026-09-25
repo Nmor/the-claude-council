@@ -5,6 +5,8 @@ description: Use this skill when writing new features, fixing bugs, or refactori
 
 # Test-Driven Development Workflow
 
+> **Size budget: 22 KB** — `token-budget.mjs --check`.
+
 This skill ensures all code development follows TDD principles with comprehensive test coverage.
 
 ## When to Activate
@@ -436,7 +438,8 @@ npm test && npm run lint
 
 ---
 
-**Remember**: Tests are not optional. They are the safety net that enables confident refactoring, rapid development, and production reliability.
+**Remember**: Tests are not optional. They are the safety net that enables confident refactoring,
+rapid development, and production reliability.
 
 ## Purpose
 
@@ -581,16 +584,21 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - Production code written before its failing test (RED-VERIFY skipped — workflow violation)
 - Test written that passes without the implementation (false-positive RED — flaky guard)
-- "70%" coverage target cited (stale — canonical is 90% touched / 80% project per `extreme-lint-policy.md`)
+- "70%" coverage target cited (stale — canonical is 90% touched / 80% project per
+  `extreme-lint-policy.md`)
 - REFACTOR step skipped — code stays unmaintainable after GREEN
 - Skipped / disabled test introduced without ticket reference + fix deadline
-- Test asserts on `message` not `error_code` (sister `error-handling-with-context.md` rule 10 violation)
+- Test asserts on `message` not `error_code` (sister `error-handling-with-context.md` rule 10
+  violation)
 - Slow test (> 5s) added without justification + isolation
 - Mock used where Testcontainers / real DB would catch the bug class
 
 **Refinement candidates**:
 
 - Tightening of the success-metrics coverage figures when the canonical floor moves
-- New test-pyramid row when a recurring test class emerges (e.g., contract-pact, mutation testing, AI eval harness)
-- New cross-reference when a sister rule (testing, verify-before-claim, local-testability) adds a verification surface
-- New per-framework RED-GREEN-REFACTOR template when a new test runner gains adoption (Vitest 2+, JUnit 6, pytest 9)
+- New test-pyramid row when a recurring test class emerges (e.g., contract-pact, mutation testing,
+  AI eval harness)
+- New cross-reference when a sister rule (testing, verify-before-claim, local-testability) adds a
+  verification surface
+- New per-framework RED-GREEN-REFACTOR template when a new test runner gains adoption (Vitest 2+,
+  JUnit 6, pytest 9)

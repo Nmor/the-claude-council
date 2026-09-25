@@ -6,6 +6,8 @@ paths:
 # C# Security
 
 > Extends `common/security.md` with C#/.NET-specific security.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## SQL Injection
 
@@ -21,7 +23,8 @@ Use ASP.NET Core Identity or JWT Bearer authentication. Never roll custom auth.
 
 ## Secrets
 
-Use `IConfiguration` with User Secrets (dev) or Azure Key Vault / AWS Secrets Manager (prod). Never hardcode in source.
+Use `IConfiguration` with User Secrets (dev) or Azure Key Vault / AWS Secrets Manager (prod). Never
+hardcode in source.
 
 ## CSRF
 

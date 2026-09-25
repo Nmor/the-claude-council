@@ -6,6 +6,8 @@ command: true
 
 # PM2 Init
 
+> **Size budget: 9 KB** — `token-budget.mjs --check`.
+
 Auto-analyze project and generate PM2 service commands.
 
 **Command**: `$ARGUMENTS`
@@ -117,7 +119,8 @@ proc.on('close', (code) => process.exit(code));
 ````markdown
 Start all services and open PM2 monitor.
 ```bash
-cd "{PROJECT_ROOT}" && pm2 start ecosystem.config.cjs && start wt.exe -d "{PROJECT_ROOT}" pwsh -NoExit -c "pm2 monit"
+cd "{PROJECT_ROOT}" && pm2 start ecosystem.config.cjs && start wt.exe -d "{PROJECT_ROOT}" pwsh
+-NoExit -c "pm2 monit"
 ```text
 ````
 
@@ -144,7 +147,8 @@ cd "{PROJECT_ROOT}" && pm2 restart all
 ````markdown
 Start {name} ({port}) and open logs.
 ```bash
-cd "{PROJECT_ROOT}" && pm2 start ecosystem.config.cjs --only {name} && start wt.exe -d "{PROJECT_ROOT}" pwsh -NoExit -c "pm2 logs {name}"
+cd "{PROJECT_ROOT}" && pm2 start ecosystem.config.cjs --only {name} && start wt.exe -d
+"{PROJECT_ROOT}" pwsh -NoExit -c "pm2 logs {name}"
 ```text
 ````
 

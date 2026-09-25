@@ -4,6 +4,8 @@
 > Standards: **.NET Framework Design Guidelines (Cwalina + Abrams)**,
 > **C# Language Reference**, **Microsoft .NET application
 > architecture guides**, **Effective C# (Wagner)**.
+>
+> **Size budget: 10 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

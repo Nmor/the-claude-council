@@ -13,6 +13,8 @@
 > the model still fires divisions mechanically from CLAUDE.md's always-on summary,
 > and the exhaustive catalog loads exactly when Council work touches a matching
 > file. ~21 KB off every session's cold-load.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -29,11 +31,11 @@ trigger matches, the Division engages; if it doesn't, the Division is on standby
 | --- | --- | --- |
 | `~/.claude/CLAUDE.md` — "The Core Five Divisions" table | yes (Floor) | The 5 divisions that always engage, no trigger needed |
 | `~/.claude/CLAUDE.md` — "The Extended Eleven Divisions" table (`Auto-fires on` column) | yes (Floor) | Per-division one-line trigger summary — the decision aid used to fire divisions at task start |
-| `~/.claude/skills/council-rules/SKILL.md` | lazy (`paths:`-gated) | The FULL per-division catalog: every file glob, keyword, change-scope trigger, sub-cluster (payments / health / education), veto authority, cross-cutting composition, agent rosters + personas |
+| `~/.claude/skills/council-rules/SKILL.md` | on demand (invoke the skill) | The FULL per-division catalog: every file glob, keyword, change-scope trigger, sub-cluster (payments / health / education), veto authority, cross-cutting composition, agent rosters + personas |
 
-The skill's `paths:` fire it whenever the work touches `**/.claude/agents/**`,
-`**/.claude/plans/**`, `~/.claude/rules/common/council-*.md`, or `**/COUNCIL.md`
-— i.e. exactly when precise trigger adjudication is needed. The always-on
+Invoke the skill when precise trigger adjudication is needed: it is listed in every
+session but does not load by itself (path triggers cannot reach `~/.claude`, proven
+2026-09-21). The always-on
 CLAUDE.md summary is sufficient to fire the right divisions for the common case;
 the skill adds exhaustive precision when a task is genuinely in a Division's domain.
 
@@ -95,7 +97,6 @@ on the floor; the encyclopedia belongs in the skill that fires when it's relevan
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

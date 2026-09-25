@@ -10,6 +10,8 @@
 > Standard §sandboxing** (iframe sandbox), **Referrer-Policy
 > (W3C)**, **Permissions Policy (W3C)**, **Cross-Origin Opener /
 > Embedder / Resource Policy (Fetch Living Standard)**.
+>
+> **Size budget: 18 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -213,7 +215,8 @@ Cross-Origin-Resource-Policy: same-origin
 ```
 
 - `autocomplete` values from
-  [WHATWG autofill](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill)
+  [WHATWG
+  autofill](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill)
   — `username`, `current-password`, `new-password`, `one-time-code`,
   `cc-number`, `cc-csc`, etc. Password managers depend on these.
 - CSRF token always present on state-changing forms (per

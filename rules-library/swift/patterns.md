@@ -5,6 +5,8 @@
 > (swift.org)**, **Apple Developer Documentation**, **Swift
 > Evolution proposals**, **Modern Concurrency Manifesto**,
 > **Composable Architecture (TCA) / The SwiftUI Lab**.
+>
+> **Size budget: 12 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

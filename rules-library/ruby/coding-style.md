@@ -3,6 +3,8 @@
 > Auto-fires on every `*.rb`, `*.rake`, `*.gemspec`, `Gemfile`,
 > `Rakefile`, `config.ru` file. Standards: **Ruby Style Guide
 > (rubocop-hq)**, **Rails Guides**, **Sandi Metz Rules**, **POODR**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

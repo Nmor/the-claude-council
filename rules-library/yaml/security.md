@@ -8,6 +8,8 @@
 > **YAML 1.2.2 spec** (specifically §10 on schema + tag
 > resolution), **OWASP Deserialization Cheat Sheet** (the YAML
 > parser substitution class of attack).
+>
+> **Size budget: 20 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

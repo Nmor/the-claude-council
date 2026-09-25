@@ -3,6 +3,8 @@
 > Auto-fires on every file matching `.github/workflows/*.yml` or
 > `.github/actions/**/action.yml`. Sister to
 > `deploy-failures-become-checks.md`, `security-controls-org-wide.md`.
+>
+> **Size budget: 16 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -319,9 +321,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `run:` block hitting the 21,000-char expression limit (Gotcha 2 — needs split)
 - Required workflow accesses consumer-repo files directly (Gotcha 3 violation)
 - `set -u` + empty array expansion crashes a step (Gotcha 4 recurrence)
-- `echo "$json" | jq` produces parse error on API response with literal newlines (Gotcha 5 recurrence)
+- `echo "$json" | jq` produces parse error on API response with literal newlines (Gotcha 5
+  recurrence)
 - `actions/*` pinned to a tag instead of full commit SHA (Gotcha 12 — supply-chain risk)
-- Job conclusion shows "cancelled" but the run was intentionally preempted (Gotcha 8 — concurrency mis-read)
+- Job conclusion shows "cancelled" but the run was intentionally preempted (Gotcha 8 — concurrency
+  mis-read)
 - Step has `timeout-minutes` but job doesn't (Gotcha 9 — mismatched timeout)
 - Runner OOM-killed step with post-cleanup `skipped` (Gotcha 10 — sister `ci-test-memory-tuning.md`)
 - `--workerIdleMemoryLimit` set too low causing worker thrash (Gotcha 11 recurrence)
@@ -329,7 +333,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New numbered gotcha when a recurring CI-platform surprise surfaces (e.g., new GitHub limit, new action deprecation cycle)
+- New numbered gotcha when a recurring CI-platform surprise surfaces (e.g., new GitHub limit, new
+  action deprecation cycle)
 - Tightening of the SHA-pin enforcement when a recurring third-party action proves volatile
-- New cross-reference when a sister rule (deploy-failures-become-checks, security-controls-org-wide) adds a CI-side gate
-- Promotion of a "documented gotcha" into a hard lint when its recurrence rate justifies mechanical enforcement
+- New cross-reference when a sister rule (deploy-failures-become-checks, security-controls-org-wide)
+  adds a CI-side gate
+- Promotion of a "documented gotcha" into a hard lint when its recurrence rate justifies mechanical
+  enforcement

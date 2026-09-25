@@ -5,6 +5,8 @@ description: Read and cite primary-source provider documentation BEFORE writing 
 
 # Provider Research
 
+> **Size budget: 15 KB** — `token-budget.mjs --check`.
+
 Companion skill to the global rule `~/.claude/rules/common/official-docs-first.md`.
 Activates on any session that touches integration code against an external provider.
 
@@ -237,17 +239,24 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Signals to watch**:
 
 - Integration code shipped before `docs/provider-research/<provider>.md` exists (rule weakening)
-- Provider-research file older than 6 months and not refreshed before a change (staleness threshold breached)
-- Stack Overflow / npm README / blog post cited as the canonical source (primary-source-first rule weakening)
+- Provider-research file older than 6 months and not refreshed before a change (staleness threshold
+  breached)
+- Stack Overflow / npm README / blog post cited as the canonical source (primary-source-first rule
+  weakening)
 - Auth model section missing scope deprecation cadence + token rotation semantics (failure-mode gap)
 - Rate-limit section missing per-tenant + per-endpoint figures (capacity-planning gap)
-- Commercial-vs-personal tier scope absent or ambiguous (out-of-scope tier silently accepted at runtime)
+- Commercial-vs-personal tier scope absent or ambiguous (out-of-scope tier silently accepted at
+  runtime)
 - Webhook signature verification + replay window absent from research note (security gap)
 - File treated as one-shot artifact rather than living doc updated on every provider change
 
 **Refinement candidates**:
 
-- New section in template when a recurring research-gap surfaces (e.g., SDK breaking-change tracking, region-specific endpoint differences)
-- Freshness-threshold tightening when staleness causes incidents (e.g., 3 months for fast-moving providers like OpenAI vs 6 months for stable like RFC-protocol providers)
-- New provider type when an integration class arrives that doesn't fit existing slots (e.g., blockchain RPC, ML model provider, EDR / SIEM vendor)
-- Automation candidate: provider-research file generator that scaffolds the template + queues canonical URLs for fresh-fetch
+- New section in template when a recurring research-gap surfaces (e.g., SDK breaking-change
+  tracking, region-specific endpoint differences)
+- Freshness-threshold tightening when staleness causes incidents (e.g., 3 months for fast-moving
+  providers like OpenAI vs 6 months for stable like RFC-protocol providers)
+- New provider type when an integration class arrives that doesn't fit existing slots (e.g.,
+  blockchain RPC, ML model provider, EDR / SIEM vendor)
+- Automation candidate: provider-research file generator that scaffolds the template + queues
+  canonical URLs for fresh-fetch

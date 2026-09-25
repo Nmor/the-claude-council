@@ -4,6 +4,8 @@
 > `rule-authoring-global-vs-project.md` (the classification
 > rule), the workspace `CLAUDE.md` of each project, and the
 > scaffold template at `~/.claude/templates/project-claude-scaffold/`.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -25,8 +27,8 @@ in 2+ workspaces are eligible for promotion to global.**
 6. Promotion path (workspace → global)
 7. Demotion path (global → workspace)
 8. The first significant edit triggers scaffold creation
-9. Plan files belong in the workspace `.claude/plans/`
-10. Workspace memories belong in the workspace `.claude/memory/`
+9. A plan belongs to a project by name: its memory's `Active plan:` line
+10. Project memory is the memory Claude Code loads for the project (`project-memory.md`)
 11. Plans + audits are always gitignored + never referenced as repo paths
 
 ## Full text
@@ -34,7 +36,8 @@ in 2+ workspaces are eligible for promotion to global.**
 The hard rules above are the always-on trigger — enough to know the rule applies and
 what it demands. Their full text (worked examples, anti-patterns, tables, procedures)
 lives in the
-**`council-maintenance`** skill, which fires when you touch `.claude/**` — i.e. exactly when the workspace scaffold is in play.
+**`council-maintenance`** skill. Invoke it when the workspace scaffold is in play: it does
+not load by itself.
 
 Read it before acting on this rule. Carrying the full body on the always-on Floor cost
 every turn of every unrelated task for guidance that applies at one specific moment.
@@ -55,7 +58,6 @@ every turn of every unrelated task for guidance that applies at one specific mom
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

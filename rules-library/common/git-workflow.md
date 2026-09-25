@@ -1,5 +1,7 @@
 # Git Workflow
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 ## Per-org git identity (set before the first commit)
 
 When a developer or agent works across multiple GitHub organisations
@@ -74,18 +76,26 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Commit authored with wrong identity for the target org (per-org `includeIf` block missing or misconfigured)
-- Commit unsigned when the repo's policy requires signing (signing-key not registered for that org's identity)
-- First-touch protocol skipped — agent commits before verifying `git config user.email` matches the org (rule "First-touch protocol" weakening)
-- PR created from only the latest commit's diff instead of the full divergence diff vs base (PR workflow violation)
+- Commit authored with wrong identity for the target org (per-org `includeIf` block missing or
+  misconfigured)
+- Commit unsigned when the repo's policy requires signing (signing-key not registered for that org's
+  identity)
+- First-touch protocol skipped — agent commits before verifying `git config user.email` matches the
+  org (rule "First-touch protocol" weakening)
+- PR created from only the latest commit's diff instead of the full divergence diff vs base (PR
+  workflow violation)
 - Branch pushed without `-u` flag on first push (workflow weakening — upstream tracking missing)
-- TDD coverage gate of 70% used instead of canonical 90% touched / 80% project (sister rule `extreme-lint-policy.md` weakening — stale threshold)
+- TDD coverage gate of 70% used instead of canonical 90% touched / 80% project (sister rule
+  `extreme-lint-policy.md` weakening — stale threshold)
 - Already-pushed history rewritten without explicit user authorization
 - Conventional-commits type misused (e.g., `feat:` for a pure refactor; `fix:` for a feature)
 
 **Refinement candidates**:
 
-- New conventional-commit type row when a recurring change class needs distinct labelling (e.g., `revert:`, `deps:`, `i18n:`)
+- New conventional-commit type row when a recurring change class needs distinct labelling (e.g.,
+  `revert:`, `deps:`, `i18n:`)
 - Tightening of the per-org first-touch check when identity mismatches recur in retrospectives
-- New cross-reference when a sister rule (plan-completion-before-push, no-overclaim) provides a pre-push gate
-- New PR template row when a recurring section (security checklist, accessibility checklist) belongs in every PR body
+- New cross-reference when a sister rule (plan-completion-before-push, no-overclaim) provides a
+  pre-push gate
+- New PR template row when a recurring section (security checklist, accessibility checklist) belongs
+  in every PR body

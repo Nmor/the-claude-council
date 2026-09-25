@@ -7,6 +7,8 @@
 > **Semantic Versioning 2.0.0** (semver.org), **Conventional
 > Commits 1.0.0** (drives version bumps), **Keep a Changelog 1.1.0**
 > (release-notes format).
+>
+> **Size budget: 14 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -302,7 +304,9 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New bump-rule row when an emerging change class is ambiguous (e.g., enum addition in serialised form)
+- New bump-rule row when an emerging change class is ambiguous (e.g., enum addition in serialised
+  form)
 - Tightening of the "release notes published with every version" requirement when CHANGELOGs drift
-- New cross-reference when a sister rule (deprecation-lifecycle, api-versioning) prescribes companion semantics
+- New cross-reference when a sister rule (deprecation-lifecycle, api-versioning) prescribes
+  companion semantics
 - New ecosystem row when a language's range syntax gains adoption

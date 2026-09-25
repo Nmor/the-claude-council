@@ -5,7 +5,10 @@ description: PostgreSQL database patterns for query optimization, schema design,
 
 # PostgreSQL Patterns
 
-Quick reference for PostgreSQL best practices. For detailed guidance, use the `database-reviewer` agent.
+> **Size budget: 12 KB** — `token-budget.mjs --check`.
+
+Quick reference for PostgreSQL best practices. For detailed guidance, use the `database-reviewer`
+agent.
 
 ## When to Activate
 
@@ -150,11 +153,14 @@ SELECT pg_reload_conf();
 
 ## Purpose
 
-Principal-level PostgreSQL design + query optimisation: index strategy (B-tree / GIN / GIST / BRIN), partitioning, RLS for multi-tenant, JSONB column patterns, foreign-key + check constraint discipline, EXPLAIN ANALYZE reading, connection pooling, autovacuum tuning.
+Principal-level PostgreSQL design + query optimisation: index strategy (B-tree / GIN / GIST / BRIN),
+partitioning, RLS for multi-tenant, JSONB column patterns, foreign-key + check constraint
+discipline, EXPLAIN ANALYZE reading, connection pooling, autovacuum tuning.
 
 **Negative scope** (NOT what this skill covers):
 
-- ORM-level query patterns (Hibernate / Django ORM / SQLAlchemy / Active Record) — see ORM-specific skills
+- ORM-level query patterns (Hibernate / Django ORM / SQLAlchemy / Active Record) — see ORM-specific
+  skills
 - Migration tooling — see `database-migrations`
 - DynamoDB / NoSQL — see `dynamodb-patterns`
 - Analytical queries — see `clickhouse-io`
@@ -219,7 +225,11 @@ Principal-level PostgreSQL design + query optimisation: index strategy (B-tree /
 
 ## Why this skill exists
 
-Postgres is the most powerful open-source RDBMS — and the easiest to misuse: missing indexes, JSONB-everywhere schemas, OFFSET pagination, disabled autovacuum, queries that look fast on 10K rows and grind to a halt at 10M. The patterns above codify the production-ready posture: parameterised queries, intentional indexing, RLS for tenancy, EXPLAIN ANALYZE before merge, PgBouncer for connection management. Apps following these defaults survive growth without DB-rewrite quarters.
+Postgres is the most powerful open-source RDBMS — and the easiest to misuse: missing indexes,
+JSONB-everywhere schemas, OFFSET pagination, disabled autovacuum, queries that look fast on 10K rows
+and grind to a halt at 10M. The patterns above codify the production-ready posture: parameterised
+queries, intentional indexing, RLS for tenancy, EXPLAIN ANALYZE before merge, PgBouncer for
+connection management. Apps following these defaults survive growth without DB-rewrite quarters.
 
 ## Learning hooks
 
@@ -231,7 +241,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - N+1 query pattern in handler (multiple round-trips when a JOIN / IN-clause would suffice)
 - Long-running transaction holding locks > 10s (advisory + connection-pool starvation risk)
 - `SELECT *` in production code (over-fetch + schema-evolution coupling)
-- Missing RLS policy on a new multi-tenant table (per `~/.claude/rules-library/common/no-ambient-globals.md`)
+- Missing RLS policy on a new multi-tenant table (per
+  `~/.claude/rules-library/common/no-ambient-globals.md`)
 - DDL change without `CREATE INDEX CONCURRENTLY` (lock-the-world risk)
 - Backfill UPDATE on full table without batching (long-transaction lock contention)
 - JSONB column queried without GIN index (sequential scan on every query)
@@ -240,10 +251,12 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New query-pattern row when a recurring access pattern surfaces (e.g., reverse-chronological with cursor)
+- New query-pattern row when a recurring access pattern surfaces (e.g., reverse-chronological with
+  cursor)
 - New index template when a slow-query alert fires repeatedly
 - Tightening of the RLS template when a new multi-tenant table is added
-- New cross-reference when a sister skill (database-migrations, dynamodb-patterns, clickhouse-io) adds a related pattern
+- New cross-reference when a sister skill (database-migrations, dynamodb-patterns, clickhouse-io)
+  adds a related pattern
 
 ---
 

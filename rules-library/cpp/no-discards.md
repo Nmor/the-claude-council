@@ -6,6 +6,8 @@
 > `extreme-lint-policy.md`. Tooling: `clang-tidy`, `clang-format`,
 > `cppcheck`, AddressSanitizer / UndefinedBehaviorSanitizer /
 > ThreadSanitizer.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle (C/C++-specific restatement)
 

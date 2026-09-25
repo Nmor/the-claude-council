@@ -1,0 +1,43 @@
+---
+paths:
+
+- "**/*.go"
+- "**/go.mod"
+- "**/go.sum"
+
+---
+
+<!-- ============================================================
+     Section: golang/testing.md
+     ============================================================ -->
+
+# Go Testing
+
+> This file extends [common/testing.md](../../../rules-library/common/testing.md) with Go specific
+> content.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
+## Framework
+
+Use the standard `go test` with **table-driven tests**.
+
+## Race Detection
+
+Always run with the `-race` flag:
+
+```bash
+go test -race ./...
+```
+
+## Coverage
+
+```bash
+go test -cover ./...
+```
+
+## Reference
+
+See skill: `golang-testing` for detailed Go testing patterns and helpers.
+
+---

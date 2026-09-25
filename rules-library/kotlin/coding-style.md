@@ -6,6 +6,8 @@
 > Guide** (when applicable), **Jetpack Compose Style** (when
 > applicable). Tooling: **ktlint**, **detekt**, **kotlin compiler
 > -progressive -Werror**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

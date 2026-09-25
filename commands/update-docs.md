@@ -6,6 +6,8 @@ command: true
 
 # Update Documentation
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Sync documentation with the codebase, generating from source-of-truth files.
 
 ## Step 1: Identify Sources of Truth

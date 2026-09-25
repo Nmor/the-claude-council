@@ -5,6 +5,8 @@
 > `task-intake-due-diligence.md` Q8 (FMEA) + Q11 (compliance).
 > Standards: **RFC 9110 §9.2.2** (HTTP safe + idempotent methods),
 > **RFC 7231**, **Stripe-style idempotency keys**.
+>
+> **Size budget: 14 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -266,10 +268,13 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Webhook handler processed the same event twice (rule 3 weakening — event-id dedupe missing or broken)
-- Double-charge / double-email / double-insert observed in production (idempotency cache miss or TTL too short)
+- Webhook handler processed the same event twice (rule 3 weakening — event-id dedupe missing or
+  broken)
+- Double-charge / double-email / double-insert observed in production (idempotency cache miss or TTL
+  too short)
 - Retry storm caused by missing idempotency key (rule 2 not adopted on a non-trivial POST)
-- Conditional write affected 0 rows but caller reported success (rule 5 weakening — "already done" vs "did it now" not distinguished)
+- Conditional write affected 0 rows but caller reported success (rule 5 weakening — "already done"
+  vs "did it now" not distinguished)
 - In-memory dedupe used instead of durable store (anti-pattern 3 violation)
 - Idempotency key TTL too short for the operation's natural retry window
 - New external SDK adopted without idempotency primitive verified (rule 6 weakening)
@@ -279,4 +284,5 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - New TTL row in the defaults table when a new mutation class needs a different window
 - New entry in the conditional-write pattern table when a new DB / queue technology surfaces
 - Tightening of the "test idempotency explicitly" rule when a new state-machine gap is observed
-- New cross-reference when a sister rule (error-handling-with-context, no-silent-failures) defines the response shape on replay
+- New cross-reference when a sister rule (error-handling-with-context, no-silent-failures) defines
+  the response shape on replay

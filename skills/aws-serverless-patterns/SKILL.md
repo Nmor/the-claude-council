@@ -12,8 +12,12 @@ description: AWS Lambda + API Gateway + Step Functions + EventBridge + SQS/SNS p
 > publisher. Lambda layers (or shared `/lib/` for monorepo
 > deploys) are the canonical home. Each new handler imports the
 > shared primitives; never re-implement them per handler.
+>
+> **Size budget: 22 KB** — `token-budget.mjs --check`.
 
-Lambda + API Gateway + the surrounding event-driven AWS surface. The patterns here matter because the failure modes (cold starts, lost messages, double-processing, runaway concurrency) show up at customer scale, not in dev.
+Lambda + API Gateway + the surrounding event-driven AWS surface. The patterns here matter because
+the failure modes (cold starts, lost messages, double-processing, runaway concurrency) show up at
+customer scale, not in dev.
 
 ## When to Activate
 
@@ -33,25 +37,33 @@ Cold-start latency comes from two places:
 
 Fixes that work:
 
-- **Tree-shake heavy SDKs** — `import { DynamoDBClient } from "@aws-sdk/client-dynamodb"` only pulls the DDB client, not the whole `aws-sdk` v2 monolith.
-- **Top-of-file imports for the hot path** — keep `await import("...")` for genuinely conditional dependencies; static imports JIT-compile during cold start so they don't pay per-request.
-- **Singleton AWS clients** — instantiate once at module scope so warm invocations reuse them. Never `new DynamoDBClient()` inside a handler.
-- **Provisioned concurrency** — last resort. Use only for user-facing latency-critical endpoints (login, dashboard). Costs money even when idle.
+- **Tree-shake heavy SDKs** — `import { DynamoDBClient } from "@aws-sdk/client-dynamodb"` only pulls
+  the DDB client, not the whole `aws-sdk` v2 monolith.
+- **Top-of-file imports for the hot path** — keep `await import("...")` for genuinely conditional
+  dependencies; static imports JIT-compile during cold start so they don't pay per-request.
+- **Singleton AWS clients** — instantiate once at module scope so warm invocations reuse them. Never
+  `new DynamoDBClient()` inside a handler.
+- **Provisioned concurrency** — last resort. Use only for user-facing latency-critical endpoints
+  (login, dashboard). Costs money even when idle.
 
 Don't fix:
 
-- **Most Lambdas** — async workers (SQS / Stream consumers) are forgiving of 500 ms cold starts. Engineering time spent shaving it off pays nothing.
+- **Most Lambdas** — async workers (SQS / Stream consumers) are forgiving of 500 ms cold starts.
+  Engineering time spent shaving it off pays nothing.
 
 ## Async-By-Default For Webhooks
 
-Every external webhook (Stripe, Slack, GitHub, ClickUp, Twilio, Shopify) has a tight deadline (3-30 s). The synchronous Lambda must:
+Every external webhook (Stripe, Slack, GitHub, ClickUp, Twilio, Shopify) has a tight deadline (3-30
+s). The synchronous Lambda must:
 
 1. **Verify the signature** (HMAC) — sync, < 10 ms
-2. **Claim an idempotency key** — sync DDB Put with `ConditionExpression: "attribute_not_exists(pk)"`, < 50 ms
+2. **Claim an idempotency key** — sync DDB Put with `ConditionExpression:
+   "attribute_not_exists(pk)"`, < 50 ms
 3. **Enqueue to SQS** — sync, < 50 ms
 4. **Return 200** — total budget < 200 ms
 
-The SQS worker then runs the heavy dispatch (API calls, AI inference, downstream writes) without blocking the upstream's retry timer.
+The SQS worker then runs the heavy dispatch (API calls, AI inference, downstream writes) without
+blocking the upstream's retry timer.
 
 ```yaml
 # serverless.yml
@@ -81,28 +93,36 @@ The synchronous handler stays thin; the worker owns the work.
 
 ## Idempotency Is Mandatory
 
-Every async path delivers AT LEAST once. SQS, SNS, EventBridge, DynamoDB Streams, Step Functions — none of them guarantee exactly-once. Defenses:
+Every async path delivers AT LEAST once. SQS, SNS, EventBridge, DynamoDB Streams, Step Functions —
+none of them guarantee exactly-once. Defenses:
 
 - **Conditional writes** — `attribute_not_exists(pk)` rejects the second delivery atomically
-- **Idempotency keys** — claim a key with TTL = max retry window; subsequent deliveries see the claim and short-circuit
-- **Last-writer-wins updates** — order-independent operations (`SET last_seen = :now` if `:now > last_seen`)
+- **Idempotency keys** — claim a key with TTL = max retry window; subsequent deliveries see the
+  claim and short-circuit
+- **Last-writer-wins updates** — order-independent operations (`SET last_seen = :now` if `:now >
+  last_seen`)
 
-A good idempotency key is the upstream's event ID (`stripe:<event_id>`, `slack:<event_id>`, `github:<delivery_id>`). Their uniqueness is part of their contract; you inherit it.
+A good idempotency key is the upstream's event ID (`stripe:<event_id>`, `slack:<event_id>`,
+`github:<delivery_id>`). Their uniqueness is part of their contract; you inherit it.
 
 ## SQS: Backpressure + Partial Failure
 
 Configure every consumer Lambda with:
 
 - `batchSize: 5-10` — small enough that one slow record doesn't block the rest
-- `functionResponseType: ReportBatchItemFailures` — return `{ batchItemFailures: [...] }` to retry only the failing records, not the whole batch
-- `RedrivePolicy: { maxReceiveCount: 3, deadLetterTargetArn }` — fail fast to a DLQ instead of redelivering forever
+- `functionResponseType: ReportBatchItemFailures` — return `{ batchItemFailures: [...] }` to retry
+  only the failing records, not the whole batch
+- `RedrivePolicy: { maxReceiveCount: 3, deadLetterTargetArn }` — fail fast to a DLQ instead of
+  redelivering forever
 - `VisibilityTimeout` — at least `6 * function timeout` (covers the BatchWrite retry window)
 
-A DLQ alarm is mandatory: any message in the DLQ is unprocessed business state and should page on-call.
+A DLQ alarm is mandatory: any message in the DLQ is unprocessed business state and should page
+on-call.
 
 ## SNS Fan-Out For 1:N Delivery
 
-When one event needs N independent consumers (notifications, search index, analytics), SNS Topic + SNS-to-SQS subscriptions decouple them. Each consumer's failure doesn't backpressure the others.
+When one event needs N independent consumers (notifications, search index, analytics), SNS Topic +
+SNS-to-SQS subscriptions decouple them. Each consumer's failure doesn't backpressure the others.
 
 ```yaml
 RunCompletionTopic:
@@ -121,11 +141,13 @@ EmailSnsSubscription:
     Endpoint: !GetAtt EmailDeliveryQueue.Arn
 ```
 
-Don't fan out from application code. SNS is purpose-built for this and gives you per-subscription DLQs for free.
+Don't fan out from application code. SNS is purpose-built for this and gives you per-subscription
+DLQs for free.
 
 ## EventBridge Cron For Scheduled Work
 
-Use `events: schedule:` on a Lambda for cron-like triggers. The schedule expression is `cron(min hour day-of-month month day-of-week year)` — note the year column AWS adds.
+Use `events: schedule:` on a Lambda for cron-like triggers. The schedule expression is `cron(min
+hour day-of-month month day-of-week year)` — note the year column AWS adds.
 
 ```yaml
 auditIntegrityJob:
@@ -136,11 +158,13 @@ auditIntegrityJob:
         enabled: true
 ```
 
-EventBridge cron is at-least-once. Make scheduled jobs idempotent (timestamp-keyed run rows in DDB), or accept that occasional duplicate runs are OK.
+EventBridge cron is at-least-once. Make scheduled jobs idempotent (timestamp-keyed run rows in DDB),
+or accept that occasional duplicate runs are OK.
 
 ## Reserved Concurrency: Capacity Insurance
 
-Without `reservedConcurrency`, one runaway tenant (or a typo'd retry loop) can consume the account's entire concurrency pool and starve every other Lambda. Set it on:
+Without `reservedConcurrency`, one runaway tenant (or a typo'd retry loop) can consume the account's
+entire concurrency pool and starve every other Lambda. Set it on:
 
 - Webhook ingestion (cap so a flood doesn't cascade)
 - Public APIs (cap so a 429 storm doesn't take down internal systems)
@@ -150,33 +174,43 @@ Don't set it everywhere — reserved concurrency removes capacity from the pool 
 
 ## Step Functions Over State In Code
 
-When a workflow has multiple async steps with retries, branches, and timeouts, use Step Functions. Encoding the same logic in handler code with DDB-backed state quickly becomes unmaintainable.
+When a workflow has multiple async steps with retries, branches, and timeouts, use Step Functions.
+Encoding the same logic in handler code with DDB-backed state quickly becomes unmaintainable.
 
 Default state-machine settings:
 
 - `Catch: ["States.ALL"]` on every Task — surface failures, don't crash the execution
-- `Retry: [{ ErrorEquals: [...], IntervalSeconds: 30, MaxAttempts: 3, BackoffRate: 2.0 }]` on idempotent steps
+- `Retry: [{ ErrorEquals: [...], IntervalSeconds: 30, MaxAttempts: 3, BackoffRate: 2.0 }]` on
+  idempotent steps
 - `TimeoutSeconds` on every Task — must be less than the state machine's `TimeoutSeconds`
 
-Use `waitForTaskToken` for human-in-the-loop or external callback steps. Lambdas inside Step Functions should be small enough to fit in 6 MB (the payload limit) — for bigger payloads, write to S3 and pass the key.
+Use `waitForTaskToken` for human-in-the-loop or external callback steps. Lambdas inside Step
+Functions should be small enough to fit in 6 MB (the payload limit) — for bigger payloads, write to
+S3 and pass the key.
 
 ## IAM Least Privilege
 
-Each Lambda's execution role grants only what THAT Lambda needs. Avoid one big role for all functions in the stack. Patterns:
+Each Lambda's execution role grants only what THAT Lambda needs. Avoid one big role for all
+functions in the stack. Patterns:
 
 - **Per-Lambda role** — Serverless Framework: `iamRoleStatements` per-function
 - **Resource ARN locked to `${AWS::AccountId}`** — never `*` in the account-id slot
 - **Resource ARN locked to the stage-suffixed table name** — never `arn:aws:dynamodb:*:*:table/*`
 
-When a cell-based architecture spawns a second cell, per-stage table names + per-stage IAM roles automatically isolate the cells. Cross-cell data access is impossible at the IAM layer.
+When a cell-based architecture spawns a second cell, per-stage table names + per-stage IAM roles
+automatically isolate the cells. Cross-cell data access is impossible at the IAM layer.
 
 ## Observability: Structured Logs + EMF Metrics
 
 Lambdas log to CloudWatch automatically. Make the logs useful:
 
-- **Structured JSON** — never `console.log("user " + id)`. Use `console.log(JSON.stringify({ msg: "...", user_id: id }))` or a logger lib that emits JSON.
-- **Per-request correlation id** — pass through `request_id` (APIGW provides one) on every log line in the request's call chain
-- **EMF metrics** — emit a JSON line with the `_aws.CloudWatchMetrics` envelope; CloudWatch parses it as a metric. Zero SDK calls, zero IAM perms, dimensioned by `organization_id` / `cell_id` / whatever you need.
+- **Structured JSON** — never `console.log("user " + id)`. Use `console.log(JSON.stringify({ msg:
+  "...", user_id: id }))` or a logger lib that emits JSON.
+- **Per-request correlation id** — pass through `request_id` (APIGW provides one) on every log line
+  in the request's call chain
+- **EMF metrics** — emit a JSON line with the `_aws.CloudWatchMetrics` envelope; CloudWatch parses
+  it as a metric. Zero SDK calls, zero IAM perms, dimensioned by `organization_id` / `cell_id` /
+  whatever you need.
 
 ```ts
 console.log(JSON.stringify({
@@ -195,7 +229,9 @@ console.log(JSON.stringify({
 
 ## Canary Deploys + Auto-Rollback
 
-For production-traffic Lambdas, use `serverless-plugin-canary-deployments` (or CDK `CodeDeploy.LambdaDeploymentGroup`). Deploy 10% of traffic to the new version for 5-10 min; auto-rollback on any CloudWatch alarm breach.
+For production-traffic Lambdas, use `serverless-plugin-canary-deployments` (or CDK
+`CodeDeploy.LambdaDeploymentGroup`). Deploy 10% of traffic to the new version for 5-10 min;
+auto-rollback on any CloudWatch alarm breach.
 
 ```yaml
 functions:
@@ -208,7 +244,8 @@ functions:
         - HttpApiDurationAlarm
 ```
 
-The auto-rollback window is your safety net. Outside it, manual rollback (re-deploy the previous SHA) is the procedure.
+The auto-rollback window is your safety net. Outside it, manual rollback (re-deploy the previous
+SHA) is the procedure.
 
 ## Common Smells
 
@@ -235,14 +272,20 @@ The auto-rollback window is your safety net. Outside it, manual rollback (re-dep
 
 ## Purpose
 
-AWS serverless architecture patterns for Lambda + API Gateway + DynamoDB + SQS + EventBridge + Step Functions: handler structure, cold-start optimisation, async-by-default for webhooks, idempotent processing, observability with EMF + X-Ray, and IaC discipline (AWS SAM, CDK, Serverless Framework).
+AWS serverless architecture patterns for Lambda + API Gateway + DynamoDB + SQS + EventBridge + Step
+Functions: handler structure, cold-start optimisation, async-by-default for webhooks, idempotent
+processing, observability with EMF + X-Ray, and IaC discipline (AWS SAM, CDK, Serverless Framework).
 
-**Negative scope**: NOT general backend patterns (use `backend-patterns`). NOT DynamoDB single-table modelling (use `dynamodb-patterns`). NOT GCP / Azure serverless (different SDKs + IAM models). NOT container-on-Fargate workloads (different concurrency + cost model).
+**Negative scope**: NOT general backend patterns (use `backend-patterns`). NOT DynamoDB single-table
+modelling (use `dynamodb-patterns`). NOT GCP / Azure serverless (different SDKs + IAM models). NOT
+container-on-Fargate workloads (different concurrency + cost model).
 
 ## When NOT to use
 
-- Long-running tasks > 15 minutes (Lambda hard limit) → use ECS Fargate or Step Functions with task tokens
-- Workloads with steady > 100 req/s sustained (Lambda becomes more expensive than containers around this point)
+- Long-running tasks > 15 minutes (Lambda hard limit) → use ECS Fargate or Step Functions with task
+  tokens
+- Workloads with steady > 100 req/s sustained (Lambda becomes more expensive than containers around
+  this point)
 - Stateful WebSocket servers (use AppSync or API Gateway WebSocket + DDB session store)
 - Heavy CPU-bound work (Lambda CPU scales with memory; cheaper on dedicated compute)
 - Hot-path workloads with < 50ms P99 latency budget (cold-start tail will breach it)
@@ -279,7 +322,8 @@ AWS serverless architecture patterns for Lambda + API Gateway + DynamoDB + SQS +
 - [ ] Structured logs via Powertools Logger; metrics via EMF inline
 - [ ] X-Ray / OTel tracing enabled with sampling rate documented
 - [ ] IAM role: no `*` resources; per-function least-privilege
-- [ ] Cold-start budget documented per function (e.g., user-facing < 500ms p99 with provisioned conc.)
+- [ ] Cold-start budget documented per function (e.g., user-facing < 500ms p99 with provisioned
+  conc.)
 - [ ] Environment variables resolved from SSM / Secrets Manager — never hardcoded
 - [ ] `sam validate` or `cdk synth` passes; no orphan resources
 
@@ -296,16 +340,21 @@ AWS serverless architecture patterns for Lambda + API Gateway + DynamoDB + SQS +
 
 ## Why this skill exists
 
-Lambda's strengths (autoscaling, no server management, per-request billing) come with sharp edges: 15-min hard timeout, 29-sec API Gateway timeout, ephemeral /tmp, cold-start tail latency, account-wide concurrency limits. The recurring failure modes:
+Lambda's strengths (autoscaling, no server management, per-request billing) come with sharp edges:
+15-min hard timeout, 29-sec API Gateway timeout, ephemeral /tmp, cold-start tail latency,
+account-wide concurrency limits. The recurring failure modes:
 
-- Webhook handler does the work inline → 30s timeout → provider retries → double-processing on Stripe / Twilio
+- Webhook handler does the work inline → 30s timeout → provider retries → double-processing on
+  Stripe / Twilio
 - No DLQ on SQS → one poison-pill message blocks the queue indefinitely → cascading backlog
 - IAM wildcards (`Action: "*"`, `Resource: "*"`) → one compromised function pivots the whole account
 - Hardcoded ARNs → cross-region / cross-account deploys break
 - No reserved concurrency → one Lambda's burst starves the rest; account-wide throttle
-- /tmp persistence assumption → container reuse caches it across invocations; assumption fails on cold container
+- /tmp persistence assumption → container reuse caches it across invocations; assumption fails on
+  cold container
 
-Cost of disciplined serverless patterns: minutes per function at write time. Cost of skipping them: incidents that look like AWS bugs but are configuration gaps.
+Cost of disciplined serverless patterns: minutes per function at write time. Cost of skipping them:
+incidents that look like AWS bugs but are configuration gaps.
 
 ## Compliance & Standards Mapping
 
@@ -333,11 +382,14 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Lambda cold-start sustained > 1s p99 (provisioned concurrency / runtime / bundle-size review)
 - Throttle alarms firing (reserved-concurrency / account-concurrency exhaustion)
 - Webhook handler doing the work inline instead of enqueueing (async-by-default weakening)
-- Local FS write in Lambda source (`fs.writeFile` / `os.Create` / `open(...,"w")` — `no-local-fs.md` violation)
-- Env-bag size approaching 4 KB (multi-cell deployment filler — derive table names from cell-id + stage instead)
+- Local FS write in Lambda source (`fs.writeFile` / `os.Create` / `open(...,"w")` — `no-local-fs.md`
+  violation)
+- Env-bag size approaching 4 KB (multi-cell deployment filler — derive table names from cell-id +
+  stage instead)
 - IAM policy with `*:*` or overbroad resource scope (least-privilege weakening)
 - Stream consumer's iterator-age sustained > 60s (consumer lagging behind producer)
-- Function package > 50 MB (cold-start tax) — split into smaller functions or move to container image
+- Function package > 50 MB (cold-start tax) — split into smaller functions or move to container
+  image
 - Step Function with > 25 states or > 10 deep nesting (split or use distributed map)
 - API Gateway endpoint without throttling configured (DoS exposure)
 - EventBridge rule without DLQ on target (poison-message loss)
@@ -346,5 +398,6 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New IaC template row when a new event-source binding becomes common (e.g., Kafka MSK trigger)
 - Tightening of the env-bag size rule when multi-cell deployment scales
-- New cross-reference when a sister skill (dynamodb-patterns, observability-patterns, deployment-patterns) adds a serverless gate
+- New cross-reference when a sister skill (dynamodb-patterns, observability-patterns,
+  deployment-patterns) adds a serverless gate
 - New cold-start mitigation pattern when a new AWS feature ships (e.g., LLRT, SnapStart for Node)

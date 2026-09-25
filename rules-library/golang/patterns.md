@@ -7,6 +7,8 @@ paths:
 # Go Patterns
 
 > This file extends [common/patterns.md](../common/patterns.md) with Go specific content.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Functional Options
 
@@ -42,4 +44,5 @@ func NewUserService(repo UserRepository, logger Logger) *UserService {
 
 ## Reference
 
-See skill: `golang-patterns` for comprehensive Go patterns including concurrency, error handling, and package organization.
+See skill: `golang-patterns` for comprehensive Go patterns including concurrency, error handling,
+and package organization.

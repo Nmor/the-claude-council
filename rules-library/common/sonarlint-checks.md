@@ -5,23 +5,39 @@ paths:
 
 # SonarLint / SonarQube Checks (Global Default)
 
-> This rule fires on every file. Whenever Claude touches code in any project — new or legacy, with or without a project-level Sonar setup — it must verify the file against the rules below and fix every violation in the touched file (Rule 5: Zero Tolerance).
+> This rule fires on every file. Whenever Claude touches code in any project — new or legacy, with
+> or without a project-level Sonar setup — it must verify the file against the rules below and fix
+> every violation in the touched file (Rule 5: Zero Tolerance).
 >
-> **Threshold-tightening note**: `extreme-lint-policy.md` overrides the Sonar default thresholds globally. Specifically: cognitive complexity (S3776) cap is **10** (not 15), function lines (S138) cap is **80** (not 200), function parameters (S107) cap is **5** (not 7), file lines (S104) cap is **500** (not 1000), nested control-flow depth (S134) cap is **3** (not 4), boolean expression operators (S1067) cap is **2** (not 3), magic-number tolerance (S109) allows only `0, 1, -1, 2`. This file lists the Sonar rule IDs + canonical defaults; the strict overrides in `extreme-lint-policy.md` are what the project enforces.
+> **Threshold-tightening note**: `extreme-lint-policy.md` overrides the Sonar default thresholds
+> globally. Specifically: cognitive complexity (S3776) cap is **10** (not 15), function lines (S138)
+> cap is **80** (not 200), function parameters (S107) cap is **5** (not 7), file lines (S104) cap is
+> **500** (not 1000), nested control-flow depth (S134) cap is **3** (not 4), boolean expression
+> operators (S1067) cap is **2** (not 3), magic-number tolerance (S109) allows only `0, 1, -1, 2`.
+> This file lists the Sonar rule IDs + canonical defaults; the strict overrides in
+> `extreme-lint-policy.md` are what the project enforces.
+>
+> **Size budget: 59 KB** — `token-budget.mjs --check`.
 
 ## Why this is global
 
-SonarLint is a quality safety net that catches the same bugs across every language. Running it as a global default means:
+SonarLint is a quality safety net that catches the same bugs across every language. Running it as a
+global default means:
 
 - Every project benefits, even ones that don't have SonarLint installed locally.
-- Claude doesn't wait to be asked — it sweeps proactively, in line with `feedback_check_sonar_proactively`.
+- Claude doesn't wait to be asked — it sweeps proactively, in line with
+  `feedback_check_sonar_proactively`.
 - The Council's verification-loop has a concrete checklist instead of "looks fine."
 
-The user has SonarLint enabled in their VS Code setup with the highest-signal rules listed here. ErrorLens surfaces these inline. Claude's job is to address them before declaring a task done.
+The user has SonarLint enabled in their VS Code setup with the highest-signal rules listed here.
+ErrorLens surfaces these inline. Claude's job is to address them before declaring a task done.
 
 ## Wiring SonarJS into a TypeScript / JavaScript repo (mandatory step)
 
-Native SonarLint runs in the IDE only. CI and the Council's verification-loop need an automated SonarJS check. For every TS/JS repo Claude touches, ensure the project's ESLint config includes `eslint-plugin-sonarjs` (the official SonarSource plugin — same rule names as SonarLint, ~270 rules):
+Native SonarLint runs in the IDE only. CI and the Council's verification-loop need an automated
+SonarJS check. For every TS/JS repo Claude touches, ensure the project's ESLint config includes
+`eslint-plugin-sonarjs` (the official SonarSource plugin — same rule names as SonarLint, ~270
+rules):
 
 ```bash
 pnpm add -D eslint-plugin-sonarjs
@@ -43,11 +59,13 @@ export default [
 ];
 ```
 
-If the repo lints clean against `sonarjs/recommended`, SonarLint in the IDE will be quiet too. They share the rule set.
+If the repo lints clean against `sonarjs/recommended`, SonarLint in the IDE will be quiet too. They
+share the rule set.
 
 ### Stylistic rules to disable when they cause more churn than value
 
-Most SonarJS rules are bug-class. A handful are pure style and should be turned off project-wide rather than papered-over per-line:
+Most SonarJS rules are bug-class. A handful are pure style and should be turned off project-wide
+rather than papered-over per-line:
 
 | Rule | Why turn off |
 | ---- | ------------ |
@@ -76,7 +94,9 @@ Most SonarJS rules are bug-class. A handful are pure style and should be turned 
 
 ### Eqeqeq + null
 
-When SonarJS `different-types-comparison` flags a `!== null` / `=== null` against a TS-narrowed type that the runtime can still hold null for, the canonical fix is `!= null` / `== null` (matches both null and undefined). Update the project's `eqeqeq` config to allow this exception:
+When SonarJS `different-types-comparison` flags a `!== null` / `=== null` against a TS-narrowed type
+that the runtime can still hold null for, the canonical fix is `!= null` / `== null` (matches both
+null and undefined). Update the project's `eqeqeq` config to allow this exception:
 
 ```js
 eqeqeq: ["error", "always", { null: "ignore" }],
@@ -219,10 +239,13 @@ against ALL of these, not just the recommended set.
 
 After every edit that creates or modifies a code file:
 
-1. Run the project's lint command if one exists (`pnpm lint`, `eslint`, `golangci-lint`, `ruff`, `rubocop`, etc.). Fix every reported issue.
+1. Run the project's lint command if one exists (`pnpm lint`, `eslint`, `golangci-lint`, `ruff`,
+   `rubocop`, etc.). Fix every reported issue.
 2. Grep for the literal-pattern Sonar checks above (especially S7781, S6606, S125). Fix every match.
-3. Re-read any IDE diagnostics surfaced via the `<ide_diagnostics>` PostToolUse hook output. Address every one.
-4. Verify the file's cognitive complexity by structural review — a function over ~50 lines, with nested `if`/`for`, is likely past the S3776 threshold.
+3. Re-read any IDE diagnostics surfaced via the `<ide_diagnostics>` PostToolUse hook output. Address
+   every one.
+4. Verify the file's cognitive complexity by structural review — a function over ~50 lines, with
+   nested `if`/`for`, is likely past the S3776 threshold.
 
 ## Cross-language Sonar coverage
 
@@ -320,9 +343,12 @@ per-line `eslint-disable` directives.
 
 ## Don't silence — fix
 
-Per `feedback_no_silencers`: never add `eslint-disable`, `// @ts-ignore`, `// @ts-expect-error`, `noqa`, `rubocop:disable`, or any other suppression. Either fix the underlying issue or change the code shape so the rule no longer applies.
+Per `feedback_no_silencers`: never add `eslint-disable`, `// @ts-ignore`, `// @ts-expect-error`,
+`noqa`, `rubocop:disable`, or any other suppression. Either fix the underlying issue or change the
+code shape so the rule no longer applies.
 
-If a rule is genuinely wrong for the project, change the project's lint config — don't suppress per-line.
+If a rule is genuinely wrong for the project, change the project's lint config — don't suppress
+per-line.
 
 ## Output expectation
 
@@ -339,7 +365,9 @@ If zero violations were found, state that explicitly. "Looks clean" is not a Son
 
 ## Full SonarJS catalog — every rule, all 269
 
-Each entry: rule code · ESLint rule name · short purpose. The `recState` column shows the default enablement under `sonarjs/recommended` (off = recommended disables it; that does NOT mean we should leave it off — the IDE Sonar enables it).
+Each entry: rule code · ESLint rule name · short purpose. The `recState` column shows the default
+enablement under `sonarjs/recommended` (off = recommended disables it; that does NOT mean we should
+leave it off — the IDE Sonar enables it).
 
 | ID | ESLint rule | Description | recommended |
 | ---- | ---- | ---- | ---- |
@@ -523,7 +551,7 @@ Each entry: rule code · ESLint rule name · short purpose. The `recState` colum
 | **S5148** | sonarjs/link-with-target-blank | Opened windows should not have access to the originating page | error |
 | **S5247** | sonarjs/disabled-auto-escaping | Disabling auto-escaping in template engines is security-sensitive | error |
 | **S5256** | sonarjs/table-header | Tables should have headers | error |
-| **S5257** | sonarjs/no-table-as-layout | HTML "<table>" should not be used for layout purposes | error |
+| **S5257** | sonarjs/no-table-as-layout | HTML `<table>` should not be used for layout purposes | error |
 | **S5260** | sonarjs/table-header-reference | Table cells should reference their headers | error |
 | **S5264** | sonarjs/object-alt-content | "`<object>`" tags should provide an alternative content | error |
 | **S5332** | sonarjs/no-clear-text-protocols | Using clear-text protocols is security-sensitive | error |
@@ -621,16 +649,23 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New TS/JS repo opened without `eslint-plugin-sonarjs` wired (mandatory-step weakening)
 - SonarLint IDE warnings ignored / dismissed across multiple sessions on the same project
-- Per-line `// eslint-disable` / `// @ts-ignore` introduced to silence a Sonar rule (rule-violation shortcut)
+- Per-line `// eslint-disable` / `// @ts-ignore` introduced to silence a Sonar rule (rule-violation
+  shortcut)
 - File-level grep sweep skipped on touched-file audit (sweep procedure step 2 weakening)
-- Recurring rule fires in the same file (e.g., S1192 fires 3× per quarter on `apiClient.ts`) — the underlying pattern needs structural fix
+- Recurring rule fires in the same file (e.g., S1192 fires 3× per quarter on `apiClient.ts`) — the
+  underlying pattern needs structural fix
 - Threshold-tightening note out of sync with `extreme-lint-policy.md` (canonical thresholds drift)
-- Cross-language equivalents missing on touched files (Go / Python / Java / C# / Swift / Rust per-language equivalents skipped)
-- Stylistic disable-list grows with rules that produce real bugs (over-disabling — recurrence audit needed)
+- Cross-language equivalents missing on touched files (Go / Python / Java / C# / Swift / Rust
+  per-language equivalents skipped)
+- Stylistic disable-list grows with rules that produce real bugs (over-disabling — recurrence audit
+  needed)
 
 **Refinement candidates**:
 
-- New rule row when a new SonarJS rule ships (the catalog regularly grows; add columns + fix recipes)
+- New rule row when a new SonarJS rule ships (the catalog regularly grows; add columns + fix
+  recipes)
 - Tightening of the disabled-rules list when a previously-stylistic rule starts catching real bugs
-- New cross-language entry when a recurring shape gains a Sonar equivalent in another language (e.g., SonarRust ships)
-- Promotion of a per-file Sonar exception to a project-wide allowlist with documented rationale (e.g., SSRF validator file exempt from S1313 by design)
+- New cross-language entry when a recurring shape gains a Sonar equivalent in another language
+  (e.g., SonarRust ships)
+- Promotion of a per-file Sonar exception to a project-wide allowlist with documented rationale
+  (e.g., SSRF validator file exempt from S1313 by design)

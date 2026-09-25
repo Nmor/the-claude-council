@@ -3,6 +3,8 @@
 > Auto-fires on every `*.swift`, `Package.swift`, `*.xcconfig` file.
 > Extends `~/.claude/rules/common/no-discards.md`. Tooling: SwiftLint
 > (strict), SwiftFormat, swift-format (Apple), `xcrun swift build`.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

@@ -111,6 +111,10 @@ check "agents missing required frontmatter" "${BAD_AGENTS}" -eq 0
 printf '\n== Phase D: Skill SKILL.md presence ==\n'
 SKILL_NO_FILE=0
 for d in "${PREFIX}"/skills/*/; do
+  # skills/synced/ is Claude Code's own store of account-synced skills
+  # (synced/<account>/<skill>/), not a skill this repo ships; token-budget.mjs
+  # excludes it for the same reason.
+  [ "$(basename "${d}")" = synced ] && continue
   [ -f "${d}SKILL.md" ] || SKILL_NO_FILE=$((SKILL_NO_FILE + 1))
 done
 check "skills missing SKILL.md" "${SKILL_NO_FILE}" -eq 0
@@ -185,8 +189,10 @@ printf '\n== Phase H: Code-graph validation (full scope) ==\n'
 # script, so it includes the full-scope run.
 CODE_GRAPH="${PREFIX}/scripts/code-graph-validate.sh"
 if [ -x "${CODE_GRAPH}" ]; then
-  CODE_GRAPH_OUT=$("${CODE_GRAPH}" --scope=full --prefix="${PREFIX}" 2>&1)
-  CODE_GRAPH_RC=$?
+  # Capture the exit code without letting `set -e` end the script: a failing
+  # validator must still reach the summary and name itself as the failed check.
+  CODE_GRAPH_RC=0
+  CODE_GRAPH_OUT=$("${CODE_GRAPH}" --scope=full --prefix="${PREFIX}" 2>&1) || CODE_GRAPH_RC=$?
   if [ "${VERBOSE}" = true ]; then
     printf '%s\n' "${CODE_GRAPH_OUT}" | sed 's/^/    /'
   else

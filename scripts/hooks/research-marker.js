@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Size budget: 8 KB. Check: wc -c; gate: token-budget.mjs --check.
 // PostToolUse hook (matcher: WebSearch|WebFetch).
 // Records that online research ran this session by writing a per-session marker
 // the research-gate PreToolUse hook checks. Best-effort: never disrupts the

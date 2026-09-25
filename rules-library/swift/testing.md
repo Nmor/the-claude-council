@@ -8,6 +8,8 @@ paths:
 # Swift Testing
 
 > Extends `common/testing.md` with Swift-specific testing conventions.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Minimum Test Coverage: 70%
 

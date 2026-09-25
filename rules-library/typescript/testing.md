@@ -7,7 +7,10 @@ paths:
 ---
 # TypeScript/JavaScript Testing
 
-> This file extends [common/testing.md](../common/testing.md) with TypeScript/JavaScript specific content.
+> This file extends [common/testing.md](../common/testing.md) with TypeScript/JavaScript specific
+> content.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## E2E Testing
 

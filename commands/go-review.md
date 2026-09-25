@@ -5,6 +5,8 @@ description: Comprehensive Go code review for idiomatic patterns, concurrency sa
 
 # Go Code Review
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 This command invokes the **go-reviewer** agent for comprehensive Go-specific code review.
 
 ## What This Command Does

@@ -7,6 +7,8 @@
 > Harassment Policy** (foundational). Legal: **EU EAA enforcement
 > context**, **US Title VII / EEOC**, **GDPR Article 6** (reporter
 > data lawful basis).
+>
+> **Size budget: 16 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -340,7 +342,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New OSS repo created without `CODE_OF_CONDUCT.md` (rule 1 violation)
 - CoC text watered down vs Contributor Covenant baseline (rule 1 weakening)
-- Scope statement missing or ambiguous about specific spaces (Discord, conf parties, social media) — rule 2 weakening
+- Scope statement missing or ambiguous about specific spaces (Discord, conf parties, social media) —
+  rule 2 weakening
 - Enforcement guidelines not documented (the four-tier escalation absent)
 - Single-person enforcement (no committee) — rule 4 violation
 - Reporting paths < 2 OR not visible on website / README / event badges (rule 5 weakening)
@@ -352,7 +355,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New row in the published-Covenant adoptions when a new major OSS or org joins (e.g., new foundation, new vendor)
+- New row in the published-Covenant adoptions when a new major OSS or org joins (e.g., new
+  foundation, new vendor)
 - Tightening of the committee composition criteria when conflict-of-interest patterns recur
-- New cross-reference when a sister rule (audit-logging, gdpr-ccpa) provides the moderation-record contract
-- New scenario in the tabletop-simulation library when a recurring incident class emerges (e.g., DM harassment, doxxing via screenshot, AI-generated impersonation)
+- New cross-reference when a sister rule (audit-logging, gdpr-ccpa) provides the moderation-record
+  contract
+- New scenario in the tabletop-simulation library when a recurring incident class emerges (e.g., DM
+  harassment, doxxing via screenshot, AI-generated impersonation)

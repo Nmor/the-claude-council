@@ -3,6 +3,8 @@
 > Auto-fires on every `tests/*.bats`, `test_*.sh`, `*_test.sh`,
 > `test-*.sh` file. Standards: **bats-core** (Bash Automated
 > Testing System), **shunit2**, **POSIX shell** test conventions.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

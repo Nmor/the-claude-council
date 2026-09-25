@@ -4,6 +4,8 @@
 > **SQL:2023**, **Designing Data-Intensive Applications (Kleppmann)**,
 > **High Performance MySQL (Schwartz et al.)**, **The Art of
 > PostgreSQL (Tagliaferri)**, **dbt best practices**.
+>
+> **Size budget: 9 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

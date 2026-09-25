@@ -6,6 +6,8 @@ paths:
 # Python Security
 
 > This file extends [common/security.md](../common/security.md) with Python specific content.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Secret Management
 

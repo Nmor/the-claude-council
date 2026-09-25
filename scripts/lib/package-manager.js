@@ -1,8 +1,15 @@
+// Size budget: 15 KB. Check: wc -c; gate: token-budget.mjs --check.
 /**
  * Package Manager Detection and Selection
  * Automatically detects the preferred package manager or lets user choose
  *
  * Supports: npm, pnpm, yarn, bun
+ *
+ * Vendored from affaan-m/ECC (formerly everything-claude-code), where every export is typed
+ * public API in a .d.ts and covered by tests. getRunCommand and getExecCommand have no
+ * caller in this install, or upstream; they are kept on purpose so this copy does not drift
+ * from the one it is synced from (owner decision, 2026-09-21). If this copy ever stops
+ * tracking upstream, they become unused code and should go.
  */
 
 const fs = require('fs');
@@ -43,7 +50,10 @@ const PACKAGE_MANAGERS = {
   },
   bun: {
     name: 'bun',
-    lockFile: 'bun.lockb',
+    // Bun v1.2 made the text `bun.lock` the default; older projects still carry the
+    // binary `bun.lockb`, so both identify a Bun project.
+    lockFile: 'bun.lock',
+    legacyLockFile: 'bun.lockb',
     installCmd: 'bun install',
     runCmd: 'bun run',
     execCmd: 'bunx',
@@ -55,6 +65,11 @@ const PACKAGE_MANAGERS = {
 
 // Priority order for detection
 const DETECTION_PRIORITY = ['pnpm', 'bun', 'yarn', 'npm'];
+
+// A name is a package manager only if it is one of ours. Indexing the table directly
+// also answers for inherited keys, so `constructor` or `toString` read as a manager
+// whose every command is undefined.
+const isKnown = (name) => typeof name === 'string' && Object.hasOwn(PACKAGE_MANAGERS, name);
 
 // Config file path
 function getConfigPath() {
@@ -92,10 +107,8 @@ function saveConfig(config) {
 function detectFromLockFile(projectDir = process.cwd()) {
   for (const pmName of DETECTION_PRIORITY) {
     const pm = PACKAGE_MANAGERS[pmName];
-    const lockFilePath = path.join(projectDir, pm.lockFile);
-
-    if (fs.existsSync(lockFilePath)) {
-      return pmName;
+    for (const file of [pm.lockFile, pm.legacyLockFile].filter(Boolean)) {
+      if (fs.existsSync(path.join(projectDir, file))) return pmName;
     }
   }
   return null;
@@ -114,7 +127,7 @@ function detectFromPackageJson(projectDir = process.cwd()) {
       if (pkg.packageManager) {
         // Format: "pnpm@8.6.0" or just "pnpm"
         const pmName = pkg.packageManager.split('@')[0];
-        if (PACKAGE_MANAGERS[pmName]) {
+        if (isKnown(pmName)) {
           return pmName;
         }
       }
@@ -165,7 +178,7 @@ function getPackageManager(options = {}) {
 
   // 1. Check environment variable
   const envPm = process.env.CLAUDE_PACKAGE_MANAGER;
-  if (envPm && PACKAGE_MANAGERS[envPm]) {
+  if (isKnown(envPm)) {
     return {
       name: envPm,
       config: PACKAGE_MANAGERS[envPm],
@@ -179,7 +192,7 @@ function getPackageManager(options = {}) {
   if (projectConfig) {
     try {
       const config = JSON.parse(projectConfig);
-      if (config.packageManager && PACKAGE_MANAGERS[config.packageManager]) {
+      if (isKnown(config.packageManager)) {
         return {
           name: config.packageManager,
           config: PACKAGE_MANAGERS[config.packageManager],
@@ -213,7 +226,7 @@ function getPackageManager(options = {}) {
 
   // 5. Check global user preference
   const globalConfig = loadConfig();
-  if (globalConfig && globalConfig.packageManager && PACKAGE_MANAGERS[globalConfig.packageManager]) {
+  if (globalConfig && isKnown(globalConfig.packageManager)) {
     return {
       name: globalConfig.packageManager,
       config: PACKAGE_MANAGERS[globalConfig.packageManager],
@@ -239,7 +252,7 @@ function getPackageManager(options = {}) {
  * Set user's preferred package manager (global)
  */
 function setPreferredPackageManager(pmName) {
-  if (!PACKAGE_MANAGERS[pmName]) {
+  if (!isKnown(pmName)) {
     throw new Error(`Unknown package manager: ${pmName}`);
   }
 
@@ -260,7 +273,7 @@ function setPreferredPackageManager(pmName) {
  * Set project's preferred package manager
  */
 function setProjectPackageManager(pmName, projectDir = process.cwd()) {
-  if (!PACKAGE_MANAGERS[pmName]) {
+  if (!isKnown(pmName)) {
     throw new Error(`Unknown package manager: ${pmName}`);
   }
 

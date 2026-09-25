@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Size budget: 11 KB. Check: wc -c; gate: token-budget.mjs --check.
 /**
  * PreCompact Hook — Council-mediated preservation brief.
  *
@@ -13,9 +14,13 @@
  *   1. ~/.claude/sessions/<id>-precompact-brief.md   (durable record)
  *   2. Appended to the active session .tmp           (visible to the
  *      summariser — that's the point)
- *   3. If a workspace plan + memory exist, refreshes
- *      <workspace>/.claude/memory/MEMORY.md with the Active-plan
- *      block per `~/.claude/rules/common/project-memory.md` rule 3.
+ *
+ * The plan and memory it summarises are THIS project's (lib/project-context.js): the plan
+ * its memory index names, and that memory index. It used to summarise the newest plan in the
+ * shared ~/.claude/plans (often another project's) and one fixed memory path.
+ *
+ * It does not write memory. It used to rewrite a "Last updated" line without touching the
+ * content, which made stale memory read as freshly maintained (removed 2026-09-21).
  *
  * The brief is intentionally short (~2 KB) so it survives the
  * cost-bound compaction budget. Long-form state stays in
@@ -43,15 +48,7 @@ if (process.env.CLAUDE_COUNCIL_BRIEF === "off") {
 
 const HOME = os.homedir();
 const SESSIONS_DIR = path.join(HOME, ".claude", "sessions");
-const PLANS_DIR = path.join(HOME, ".claude", "plans");
-const MEMORY_INDEX = path.join(
-  HOME,
-  ".claude",
-  "projects",
-  "-Users-APPLE",
-  "memory",
-  "MEMORY.md",
-);
+const pc = require("./lib/project-context.js");
 
 function nowIso() {
   return new Date().toISOString();
@@ -70,28 +67,12 @@ function safeRead(p) {
   }
 }
 
-function newestFile(dir, ext) {
-  let best = { mtime: 0, file: null };
-  try {
-    for (const name of fs.readdirSync(dir)) {
-      if (!name.endsWith(ext)) continue;
-      const full = path.join(dir, name);
-      const stat = fs.statSync(full);
-      if (stat.mtimeMs > best.mtime) {
-        best = { mtime: stat.mtimeMs, file: full };
-      }
-    }
-  } catch (err) {
-    process.stderr.write(
-      `[pre-compact-brief] newestFile soft-fail: ${err.code || err.message}\n`,
-    );
-  }
-  return best.file;
-}
-
 function planSummary() {
-  const activePlan = newestFile(PLANS_DIR, ".md");
-  if (!activePlan) return "No active global plan file.";
+  const plan = pc.activePlan(process.cwd(), HOME);
+  if (plan.state === "none") return "This project runs without a plan (Active plan: none).";
+  if (plan.state === "unset") return `This project names no active plan; add "Active plan: <path>" to ${plan.index}.`;
+  if (plan.state === "missing") return `This project's active plan ${plan.path} no longer exists.`;
+  const activePlan = plan.path;
   const body = safeRead(activePlan);
   // Extract first H1 + first "Phase" line + last "complete" / "in_progress" line
   const lines = body.split("\n");
@@ -118,8 +99,9 @@ function todoSummary() {
 }
 
 function memorySummary() {
-  const body = safeRead(MEMORY_INDEX);
-  if (!body) return "No global MEMORY.md index found.";
+  const index = path.join(pc.memoryDir(process.cwd(), HOME), "MEMORY.md");
+  const body = safeRead(index);
+  if (!body) return `No memory index for this project at ${index}.`;
   // First 30 non-blank lines of memory
   return body
     .split("\n")
@@ -180,7 +162,7 @@ function buildBrief() {
     "steps, any quarantined / skipped tests, any flaky-test tickets",
     "opened this session.",
     "",
-    "## Global memory snapshot",
+    "## Project memory snapshot",
     "",
     memorySummary(),
     "",
@@ -200,26 +182,6 @@ function buildBrief() {
     `_Brief generated ${nowIso()} by pre-compact-council-brief.js_`,
     "",
   ].join("\n");
-}
-
-function refreshWorkspaceMemory() {
-  // If cwd is inside a workspace with .claude/memory/MEMORY.md,
-  // touch the "Last updated" timestamp so SessionStart sees fresh
-  // state. We do NOT rewrite the body — that's the user's content.
-  try {
-    const cwd = process.cwd();
-    const candidate = path.join(cwd, ".claude", "memory", "MEMORY.md");
-    if (!fs.existsSync(candidate)) return;
-    const body = fs.readFileSync(candidate, "utf8");
-    const stamped = body.replace(/(## Last updated\n)[^\n]*/, `$1${nowIso()}`);
-    if (stamped !== body) {
-      fs.writeFileSync(candidate, stamped);
-    }
-  } catch (err) {
-    process.stderr.write(
-      `[pre-compact-brief] workspace-memory refresh skipped: ${err.code || err.message}\n`,
-    );
-  }
 }
 
 function main() {
@@ -249,8 +211,6 @@ function main() {
     );
   }
 
-  refreshWorkspaceMemory();
-
   // Emit a stderr line so the user sees the hook fired
   process.stderr.write(
     `[Council pre-compact] Preservation brief written to ${briefPath}\n`,
@@ -258,4 +218,14 @@ function main() {
   process.exit(0);
 }
 
-main();
+try {
+  main();
+} catch (err) {
+  // A lifecycle hook that throws takes the compaction — and with it the session — down.
+  // Every sibling hook here degrades to a stderr line and exit 0; this one did not, so an
+  // unwritable ~/.claude/sessions crashed it with a stack trace and a non-zero exit.
+  process.stderr.write(
+    `[pre-compact-brief] skipped: ${err.code || err.message}\n`,
+  );
+  process.exit(0);
+}

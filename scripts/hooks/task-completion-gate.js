@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Size budget: 8 KB. Check: wc -c; gate: token-budget.mjs --check.
 'use strict';
 
 // TaskCompleted hook.
@@ -25,12 +26,11 @@ process.stdin.on('end', () => {
 
     if (fs.existsSync(marker)) process.exit(0);   // a gate ran this session: silent
 
-    process.stderr.write(
+    process.stdout.write(JSON.stringify({ systemMessage:
       '[task-gate] A task was marked complete with no verification gate observed this ' +
       'session (no-overclaim.md). "Done" requires the gate to have run THIS TURN, with ' +
       'its output attached. If a gate did run, this marker simply was not written — ' +
-      'attach the block. If it did not, the task is "implemented, verification pending".\n'
-    );
+      'attach the block. If it did not, the task is "implemented, verification pending".' }));
   } catch (err) {
     process.stderr.write(`[task-gate] skipped: ${err.message}\n`);
   }

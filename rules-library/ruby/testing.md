@@ -4,6 +4,8 @@
 > file. Standards: **RSpec 3+**, **Minitest**, **FactoryBot**,
 > **VCR**, **SimpleCov**, **Capybara** (system tests), **Cuprite**
 > (browser driver).
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

@@ -5,7 +5,10 @@ description: Restate requirements, assess risks, and create step-by-step impleme
 
 # Plan Command
 
-This command invokes the **planner** agent to create a comprehensive implementation plan before writing any code.
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
+This command invokes the **planner** agent to create a comprehensive implementation plan before
+writing any code.
 
 ## What This Command Does
 
@@ -95,7 +98,8 @@ Agent (planner):
 
 ## Important Notes
 
-**CRITICAL**: The planner agent will **NOT** write any code until you explicitly confirm the plan with "yes" or "proceed" or similar affirmative response.
+**CRITICAL**: The planner agent will **NOT** write any code until you explicitly confirm the plan
+with "yes" or "proceed" or similar affirmative response.
 
 If you want changes, respond with:
 

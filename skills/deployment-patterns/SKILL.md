@@ -5,6 +5,8 @@ description: Deployment workflows, CI/CD pipeline patterns, Docker containerizat
 
 # Deployment Patterns
 
+> **Size budget: 22 KB** — `token-budget.mjs --check`.
+
 Production deployment workflows and CI/CD best practices.
 
 ## When to Activate
@@ -539,12 +541,16 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Deploy without rollback path tested in staging (per `~/.claude/rules-library/common/deploy-failures-become-checks.md`)
+- Deploy without rollback path tested in staging (per
+  `~/.claude/rules-library/common/deploy-failures-become-checks.md`)
 - Canary stage skipped on a high-risk change (blast-radius weakening — Division 11 Risk concern)
-- Pre-deploy gate (CVE scan, license gate, schema migration dry-run) bypassed (per `~/.claude/rules-library/common/security-controls-org-wide.md`)
+- Pre-deploy gate (CVE scan, license gate, schema migration dry-run) bypassed (per
+  `~/.claude/rules-library/common/security-controls-org-wide.md`)
 - Deploy succeeds without post-deploy health check verification (false-positive success)
-- Database migration shipped in same deploy as code that reads new shape (atomicity violation — per `~/.claude/rules-library/common/schema-evolution.md`)
-- Feature flag introduced without owner / expiry / removal-task (per `~/.claude/rules-library/common/feature-flags.md`)
+- Database migration shipped in same deploy as code that reads new shape (atomicity violation — per
+  `~/.claude/rules-library/common/schema-evolution.md`)
+- Feature flag introduced without owner / expiry / removal-task (per
+  `~/.claude/rules-library/common/feature-flags.md`)
 - Production deploy on Friday afternoon / before weekend without explicit override
 - Deploy that touches > 10% of services without Risk Division engagement
 - Blue-green / canary metric thresholds set arbitrarily (without observed-baseline justification)
@@ -554,5 +560,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New deploy-strategy row when a new pattern emerges (e.g., progressive delivery via service mesh)
 - Tightening of the canary metrics / bake time when a deploy-related incident recurs
-- New cross-reference when a sister skill (aws-serverless-patterns, docker-patterns, ops-reviewer) adds a deploy gate
-- New rollback-procedure template per service class (stateless web, stateful DB, queue consumer, scheduled job)
+- New cross-reference when a sister skill (aws-serverless-patterns, docker-patterns, ops-reviewer)
+  adds a deploy gate
+- New rollback-procedure template per service class (stateless web, stateful DB, queue consumer,
+  scheduled job)

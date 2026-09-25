@@ -5,6 +5,8 @@ description: Patterns for integrating business calendar providers (Google Worksp
 
 # Calendar Provider Integration
 
+> **Size budget: 17 KB** — `token-budget.mjs --check`.
+
 Companion skill to `provider-research` and the global
 `official-docs-first` rule. Activates when touching any
 calendar-provider integration code (`lib/calendar/providers/*`,
@@ -293,18 +295,26 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Calendar handler written before `docs/provider-research/<provider>.md` exists (RFC 4791 / Microsoft Graph / Google Calendar primary-source citation skipped)
+- Calendar handler written before `docs/provider-research/<provider>.md` exists (RFC 4791 /
+  Microsoft Graph / Google Calendar primary-source citation skipped)
 - Refresh-token rotation silently dropped (no-discards extension fires on token write path)
-- Personal Gmail / Outlook.com / iCloud consumer accepted instead of rejected at signup (commercial-tier scope drift)
-- Write-conflict (ETag mismatch / If-Match-failed) silently overwriting remote state (lost-update class)
-- Webhook channel subscription not auto-renewed (Google Calendar 7-day TTL, Graph subscription expiry) — push deliveries silently stop
-- Recurrence expansion (RRULE) computed client-side without timezone-aware library (DST / locale bugs)
+- Personal Gmail / Outlook.com / iCloud consumer accepted instead of rejected at signup
+  (commercial-tier scope drift)
+- Write-conflict (ETag mismatch / If-Match-failed) silently overwriting remote state (lost-update
+  class)
+- Webhook channel subscription not auto-renewed (Google Calendar 7-day TTL, Graph subscription
+  expiry) — push deliveries silently stop
+- Recurrence expansion (RRULE) computed client-side without timezone-aware library (DST / locale
+  bugs)
 - All-day vs floating vs zoned events conflated (Outlook + Google + Apple disagree on semantics)
 - Reconnect flow doesn't preserve in-flight pending writes (data loss on auth-expiry)
 
 **Refinement candidates**:
 
-- New provider row when a new calendar service (FastMail JMAP, ProtonMail Calendar, Zoho Calendar) is integrated
-- Conflict-resolution policy update when a recurring write-collision pattern surfaces (last-write-wins vs OT vs CRDT decision)
+- New provider row when a new calendar service (FastMail JMAP, ProtonMail Calendar, Zoho Calendar)
+  is integrated
+- Conflict-resolution policy update when a recurring write-collision pattern surfaces
+  (last-write-wins vs OT vs CRDT decision)
 - Webhook-renewal cron pattern when push subscriptions drop silently across multiple incidents
-- Timezone-handling addendum when DST / locale bugs recur (e.g., floating events across user's home / travel locales)
+- Timezone-handling addendum when DST / locale bugs recur (e.g., floating events across user's home
+  / travel locales)

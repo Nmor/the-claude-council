@@ -5,6 +5,8 @@
 > SP 800-190** (Application Container Security Guide), **OWASP Docker
 > Top 10**, **SLSA Framework v1.0**, **OCI Distribution Spec 1.1**,
 > **Sigstore Cosign**, **CNCF TAG-Security supply-chain guides**.
+>
+> **Size budget: 19 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -387,12 +389,14 @@ ENTRYPOINT ["java", \
 ## Standards cited
 
 - [CIS Docker Benchmark v1.7](https://www.cisecurity.org/benchmark/docker/)
-- [NIST SP 800-190](https://csrc.nist.gov/publications/detail/sp/800-190/final) — Application Container Security Guide
+- [NIST SP 800-190](https://csrc.nist.gov/publications/detail/sp/800-190/final) — Application
+  Container Security Guide
 - [OWASP Docker Top 10](https://github.com/OWASP/Docker-Security)
 - [SLSA Framework v1.0](https://slsa.dev/)
 - [OCI Distribution Spec 1.1](https://github.com/opencontainers/distribution-spec)
 - [Sigstore Cosign](https://docs.sigstore.dev/cosign/)
-- [Pod Security Standards (Kubernetes)](https://kubernetes.io/docs/concepts/security/pod-security-standards/)
+- [Pod Security Standards
+  (Kubernetes)](https://kubernetes.io/docs/concepts/security/pod-security-standards/)
 
 ## Cross-references
 
@@ -403,7 +407,8 @@ ENTRYPOINT ["java", \
 - [`common/security.md`](../common/security.md) — OWASP umbrella
 - [`common/secrets-management.md`](../common/secrets-management.md) — BuildKit secrets
 - [`common/dependency-vulnerabilities.md`](../common/dependency-vulnerabilities.md) — CVE gate
-- [`common/security-controls-org-wide.md`](../common/security-controls-org-wide.md) — 5-layer enforcement
+- [`common/security-controls-org-wide.md`](../common/security-controls-org-wide.md) — 5-layer
+  enforcement
 - [`common/docker-localhost-binding.md`](../common/docker-localhost-binding.md) — port binding
 
 ## Why this rule exists
@@ -438,8 +443,10 @@ Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-lear
 - Image deployed without Trivy/Grype CVE scan passing (rule 4 violation)
 - SBOM not produced on a production release (rule 5 weakening)
 - Image deployed without Sigstore signature (rule 6 weakening — admission controller bypass)
-- New base image adopted from Docker Hub (rather than private registry) without justification (rule 15 weakening)
-- Distroless rejected on "we need to debug in production" (rule 7 — should be addressed via separate debug image, not weakened production base)
+- New base image adopted from Docker Hub (rather than private registry) without justification (rule
+  15 weakening)
+- Distroless rejected on "we need to debug in production" (rule 7 — should be addressed via separate
+  debug image, not weakened production base)
 - Read-only root filesystem disabled without documented write-path requirement (rule 8 weakening)
 - Capabilities added back to `drop: ["ALL"]` without justification (rule 9 weakening)
 - `--privileged` container shipped (rule 10 violation — escalate to security review)
@@ -447,6 +454,9 @@ Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-lear
 **Refinement candidates**:
 
 - New per-stack hardening row when a runtime adopts the codebase (e.g. Bun, Deno, Mojo, Crystal)
-- Tightening of the CVE gate when a recurring class (zero-day disclosure window) shows MODERATE as insufficient floor
-- New cross-reference when a sister rule (kubernetes-patterns, helm-patterns) defines the orchestrator layer
-- Promotion of `dockle` / `dive` static analysis from optional to mandatory when image-bloat incidents recur
+- Tightening of the CVE gate when a recurring class (zero-day disclosure window) shows MODERATE as
+  insufficient floor
+- New cross-reference when a sister rule (kubernetes-patterns, helm-patterns) defines the
+  orchestrator layer
+- Promotion of `dockle` / `dive` static analysis from optional to mandatory when image-bloat
+  incidents recur

@@ -4,6 +4,8 @@
 > Standards: **SQL:2023 (ISO/IEC 9075)**, **PostgreSQL Style Guide**,
 > **Mode Analytics SQL Style Guide**, **GitLab Data Team SQL Style
 > Guide**, **sqlfluff** (linter / formatter).
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

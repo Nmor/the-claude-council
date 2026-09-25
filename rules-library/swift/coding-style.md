@@ -7,6 +7,8 @@ paths:
 # Swift Coding Style
 
 > Extends `common/coding-style.md` with Swift-specific conventions.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Naming Conventions
 

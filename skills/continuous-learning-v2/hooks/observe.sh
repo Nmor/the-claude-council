@@ -1,4 +1,5 @@
 #!/bin/bash
+# Size budget: 8 KB. Check: wc -c; gate: token-budget.mjs --check.
 # Continuous Learning v2 - Observation Hook
 #
 # Captures tool use events for pattern analysis.

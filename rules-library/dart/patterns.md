@@ -5,6 +5,8 @@
 > (dart.dev/effective-dart), **Flutter Architecture Guide**,
 > **Flutter Performance Best Practices**, **Material 3 / Cupertino
 > design guidelines**.
+>
+> **Size budget: 10 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

@@ -1,3 +1,4 @@
+// Size budget: 15 KB. Check: wc -c; gate: token-budget.mjs --check.
 /**
  * Session Aliases Library for Claude Code
  * Manages session aliases stored in ~/.claude/session-aliases.json
@@ -24,10 +25,15 @@ const ALIAS_VERSION = '1.0';
 /**
  * Default aliases file structure
  */
+// Aliases live in a null-prototype object. A plain `{}` answers for inherited names, so
+// `constructor` resolved to an alias with no session, and assigning `__proto__` replaced
+// the object's prototype instead of storing an alias, which then vanished on save.
+const aliasTable = (from = {}) => Object.assign(Object.create(null), from);
+
 function getDefaultAliases() {
   return {
     version: ALIAS_VERSION,
-    aliases: {},
+    aliases: aliasTable(),
     metadata: {
       totalCount: 0,
       lastUpdated: new Date().toISOString()
@@ -59,6 +65,8 @@ function loadAliases() {
       log('[Aliases] Invalid aliases file structure, resetting');
       return getDefaultAliases();
     }
+
+    data.aliases = aliasTable(data.aliases);
 
     // Ensure version field
     if (!data.version) {

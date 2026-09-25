@@ -10,12 +10,15 @@
 > non-trivial task, mark the ~18 inapplicable ones N/A." That is the opposite of
 > Anthropic's context-engineering guidance — *"find the smallest set of high-signal
 > tokens that maximize the likelihood of your desired outcome"*
-> ([effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)).
+> ([effective context
+> engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)).
 > A 29-row table two-thirds "N/A" buries the load-bearing rows. Now: an
 > always-fire CORE of high-signal questions + domain questions that fire
 > just-in-time on the same triggers as the Extended divisions. No question was
 > removed — every one still fires when its trigger matches; the depth goes where
 > the task actually reaches. Sharper due-diligence, fewer tokens.
+>
+> **Size budget: 16 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -183,7 +186,6 @@ online."**
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

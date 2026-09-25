@@ -3,6 +3,8 @@
 > Auto-fires on every `*.sh`, `*.bash`, `*.zsh` file. Extends
 > `~/.claude/rules/common/no-discards.md`. Tooling: **ShellCheck
 > -S style**, **shfmt -d**, **bats** for tests.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

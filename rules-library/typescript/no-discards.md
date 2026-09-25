@@ -7,6 +7,8 @@
 > `no-silent-failures.md`, `error-handling-with-context.md`.
 > Tooling: `tsc --strict`, `eslint` with `@typescript-eslint/strict-
 > type-checked` + `sonarjs/recommended`, `biome`, `prettier`.
+>
+> **Size budget: 15 KB** — `token-budget.mjs --check`.
 
 ## Core Principle (TS/JS-specific restatement)
 

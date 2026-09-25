@@ -6,6 +6,8 @@ paths:
 # Python Patterns
 
 > This file extends [common/patterns.md](../common/patterns.md) with Python specific content.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Protocol (Duck Typing)
 
@@ -36,4 +38,5 @@ class CreateUserRequest:
 
 ## Reference
 
-See skill: `python-patterns` for comprehensive patterns including decorators, concurrency, and package organization.
+See skill: `python-patterns` for comprehensive patterns including decorators, concurrency, and
+package organization.

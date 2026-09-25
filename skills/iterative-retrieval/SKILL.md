@@ -5,7 +5,10 @@ description: Pattern for progressively refining context retrieval to solve the s
 
 # Iterative Retrieval Pattern
 
-Solves the "context problem" in multi-agent workflows where subagents don't know what context they need until they start working.
+> **Size budget: 16 KB** — `token-budget.mjs --check`.
+
+Solves the "context problem" in multi-agent workflows where subagents don't know what context they
+need until they start working.
 
 ## When to Activate
 
@@ -208,8 +211,10 @@ When retrieving context for this task:
 
 ## Related
 
-- [The Longform Guide](https://x.com/affaanmustafa/status/2014040193557471352) - Subagent orchestration section
-- `continuous-learning-v2` skill - For patterns that improve over time (instinct-based learning with confidence scoring)
+- [The Longform Guide](https://x.com/affaanmustafa/status/2014040193557471352) - Subagent
+  orchestration section
+- `continuous-learning-v2` skill - For patterns that improve over time (instinct-based learning with
+  confidence scoring)
 - Agent definitions in `~/.claude/agents/`
 
 ## Purpose
@@ -317,18 +322,28 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Subagent dispatched with overly-broad query (entire codebase) where targeted glob would suffice (context window waste)
-- Subagent results not synthesised before next dispatch (linear chain instead of iterative refinement)
+- Subagent dispatched with overly-broad query (entire codebase) where targeted glob would suffice
+  (context window waste)
+- Subagent results not synthesised before next dispatch (linear chain instead of iterative
+  refinement)
 - Same subagent spawned in parallel with overlapping scope (duplicate work, redundant token cost)
-- Subagent returns ambiguous result + main agent proceeds without follow-up dispatch (premature consolidation)
-- Subagent description / prompt assumes context the subagent doesn't have (cold-start brief inadequate)
-- Synthesis step delegated to subagent instead of done by main agent (main loses ground truth of the work)
-- Iterative-retrieval pattern used where a single Read / Grep would have answered the question (over-engineering)
-- Subagent loop count > 5 without convergence (the question is mis-framed; restate before continuing)
+- Subagent returns ambiguous result + main agent proceeds without follow-up dispatch (premature
+  consolidation)
+- Subagent description / prompt assumes context the subagent doesn't have (cold-start brief
+  inadequate)
+- Synthesis step delegated to subagent instead of done by main agent (main loses ground truth of the
+  work)
+- Iterative-retrieval pattern used where a single Read / Grep would have answered the question
+  (over-engineering)
+- Subagent loop count > 5 without convergence (the question is mis-framed; restate before
+  continuing)
 
 **Refinement candidates**:
 
-- New dispatch pattern when a recurring class of question (e.g., "find all consumers of X function") surfaces
-- Convergence-criterion update when subagent loops fail to terminate (add explicit "I've found enough" predicate)
-- Brief-template improvement when subagents repeatedly ask for clarification (main agent's brief is under-specified)
+- New dispatch pattern when a recurring class of question (e.g., "find all consumers of X function")
+  surfaces
+- Convergence-criterion update when subagent loops fail to terminate (add explicit "I've found
+  enough" predicate)
+- Brief-template improvement when subagents repeatedly ask for clarification (main agent's brief is
+  under-specified)
 - Synthesis-back-to-main pattern when subagent outputs need structured aggregation

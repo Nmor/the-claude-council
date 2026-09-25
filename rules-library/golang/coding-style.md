@@ -7,6 +7,8 @@ paths:
 # Go Coding Style
 
 > This file extends [common/coding-style.md](../common/coding-style.md) with Go specific content.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Formatting
 

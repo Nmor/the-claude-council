@@ -5,7 +5,12 @@ description: Staging area for learning-loop outputs. Holds artifacts captured by
 
 # Learned — Learning-Loop Staging Area
 
-This directory is the **staging area** for outputs of the continuous-learning loop defined in `~/.claude/rules/common/continuous-learning-mandate.md`. It is NOT a skill that auto-fires on file triggers; it is a holding pen for in-flight learnings that have not yet been promoted to a permanent rule / skill / agent / memory.
+> **Size budget: 12 KB** — `token-budget.mjs --check`.
+
+This directory is the **staging area** for outputs of the continuous-learning loop defined in
+`~/.claude/rules/common/continuous-learning-mandate.md`. It is NOT a skill that auto-fires on file
+triggers; it is a holding pen for in-flight learnings that have not yet been promoted to a permanent
+rule / skill / agent / memory.
 
 ## What lives here
 
@@ -28,8 +33,10 @@ This directory is the **staging area** for outputs of the continuous-learning lo
 
 Per `continuous-learning-mandate.md`:
 
-- After every Council-mediated task, an agent emits a learning-candidate event to `~/.claude/audits/learning-events.jsonl`
-- High-confidence candidates (confidence ≥ 0.8) appearing in 2+ sessions are batched + presented for review
+- After every Council-mediated task, an agent emits a learning-candidate event to
+  `~/.claude/audits/learning-events.jsonl`
+- High-confidence candidates (confidence ≥ 0.8) appearing in 2+ sessions are batched + presented for
+  review
 - Approved candidates become files in this directory pending application to the target
 
 ## Operator interface
@@ -47,7 +54,9 @@ The following commands interact with this directory:
 
 ## Why this directory exists (not a regular skill)
 
-Regular skills under `~/.claude/skills/<name>/` auto-fire on file triggers per `auto-skills.md`. This one does NOT — it is operator-facing infrastructure for the learning system. Its presence signals to agents that:
+Regular skills under `~/.claude/skills/<name>/` auto-fire on file triggers per `auto-skills.md`.
+This one does NOT — it is operator-facing infrastructure for the learning system. Its presence
+signals to agents that:
 
 - Learning candidates have a defined home
 - The loop is wired (not aspirational)
@@ -57,7 +66,8 @@ Regular skills under `~/.claude/skills/<name>/` auto-fire on file triggers per `
 ## Cross-references
 
 - `~/.claude/rules/common/continuous-learning-mandate.md` — the mandate that defines the loop
-- `~/.claude/rules/common/rule-authoring-global-vs-project.md` — classification of approved candidates (global vs project)
+- `~/.claude/rules/common/rule-authoring-global-vs-project.md` — classification of approved
+  candidates (global vs project)
 - `~/.claude/rules/common/project-scoped-artifacts.md` — workspace-side learning loops
 - `~/.claude/audits/learning-events.jsonl` — the canonical event log
 - `~/.claude/audits/learning-archive/` — final disposition store for processed candidates
@@ -161,18 +171,26 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Approved learning candidate not reflected in the targeted artifact (loop-closure gap — file edit step skipped)
-- Candidate marked `applied` but the file diff doesn't contain the refinement (false-positive status)
+- Approved learning candidate not reflected in the targeted artifact (loop-closure gap — file edit
+  step skipped)
+- Candidate marked `applied` but the file diff doesn't contain the refinement (false-positive
+  status)
 - Candidate disposition (`applied` / `rejected` / `deferred`) absent — events stay in pending limbo
-- Multiple candidates with same target artifact processed individually instead of batched (edit-conflict + churn risk)
+- Multiple candidates with same target artifact processed individually instead of batched
+  (edit-conflict + churn risk)
 - `learning-archive/` grows without rotation (archive bloat — needs periodic pruning policy)
-- Cross-workspace promotion candidate not surfaced after 2+ workspaces show same shape (per `rule-authoring-global-vs-project.md` rule 7)
-- Project-specific candidate landed in global (rule-authoring purity violation — `learned` skill should classify before applying)
-- Operator (user) approves candidate but next-session-Claude doesn't see the refinement (the artifact edit didn't happen this turn)
+- Cross-workspace promotion candidate not surfaced after 2+ workspaces show same shape (per
+  `rule-authoring-global-vs-project.md` rule 7)
+- Project-specific candidate landed in global (rule-authoring purity violation — `learned` skill
+  should classify before applying)
+- Operator (user) approves candidate but next-session-Claude doesn't see the refinement (the
+  artifact edit didn't happen this turn)
 
 **Refinement candidates**:
 
-- New disposition state when a recurring outcome (e.g., "queued for next major version", "blocked on external dep") doesn't fit existing slots
+- New disposition state when a recurring outcome (e.g., "queued for next major version", "blocked on
+  external dep") doesn't fit existing slots
 - Archive-rotation policy when `learning-archive/` exceeds size threshold
 - Batched-edit protocol when multiple candidates target the same file
-- Auto-classification per `rule-authoring-global-vs-project.md` when candidate text contains project-specific tokens (regex-match for known workspace names)
+- Auto-classification per `rule-authoring-global-vs-project.md` when candidate text contains
+  project-specific tokens (regex-match for known workspace names)

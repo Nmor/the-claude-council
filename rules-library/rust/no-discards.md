@@ -4,6 +4,8 @@
 > `~/.claude/rules/common/no-discards.md`. Tooling: `cargo clippy
 > -- -D warnings -W clippy::pedantic -W clippy::nursery`,
 > `cargo audit`, `cargo deny check`, `cargo fmt --check`.
+>
+> **Size budget: 9 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

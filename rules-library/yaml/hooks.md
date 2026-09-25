@@ -7,6 +7,8 @@
 > **yamllint 1.38.0**, **kubeconform**, **helm lint**,
 > **spectral**, **actionlint**, **conftest** (OPA / Rego),
 > **trivy config**, **gitleaks**.
+>
+> **Size budget: 14 KB** — `token-budget.mjs --check`.
 
 ## Pre-commit gates
 

@@ -12,7 +12,10 @@ paths:
 
 # C++ Coding Standards
 
-> Auto-activates for C/C++ source files and CMake build files. Chains with `cpp-coding-standards` skill for C++ Core Guidelines.
+> Auto-activates for C/C++ source files and CMake build files. Chains with `cpp-coding-standards`
+> skill for C++ Core Guidelines.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Checklist
 

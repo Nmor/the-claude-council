@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Size budget: 13 KB. Check: wc -c; gate: token-budget.mjs --check.
 
 /**
  * Stop Hook — two independent checks, two bypass env vars
@@ -20,15 +21,19 @@
  *   rule 1. Stop hooks cannot block retroactively; the warning
  *   is visible on the next turn so the agent re-verifies.
  *
- * Stop hooks receive JSON on stdin with a `transcript_path`
- * field pointing at the conversation JSONL. The hook MUST emit
- * the original buffer back on stdout unchanged and exit 0.
+ * Output channels (Claude Code hooks reference, read 2026-09-21): stderr on exit 0 is
+ * written to the debug log only, so warnings travel as `systemMessage`, which the user
+ * sees. The wall uses `hookSpecificOutput.additionalContext`, the documented way for a
+ * Stop hook to keep the turn going with guidance. It previously set `continue` and
+ * `continueReason` inside hookSpecificOutput, fields Stop does not define.
  */
 
 "use strict";
 
 const fs = require("node:fs");
-const { isGitRepo, getGitModifiedFiles, readFile, log } = require("../lib/utils");
+const os = require("node:os");
+const path = require("node:path");
+const { isGitRepo, getGitModifiedFiles, readFile } = require("../lib/utils");
 
 // ──────────────────────────────────────────────────────────────
 // console.log audit (FAMILY 1)
@@ -44,23 +49,22 @@ const EXCLUDED_PATTERNS = [
 ];
 
 function runConsoleLogAudit() {
-  if (!isGitRepo()) return;
+  if (!isGitRepo()) return [];
 
   const files = getGitModifiedFiles(["\\.tsx?$", "\\.jsx?$"])
     .filter((f) => fs.existsSync(f))
     .filter((f) => !EXCLUDED_PATTERNS.some((pattern) => pattern.test(f)));
 
-  let hasConsole = false;
+  const notes = [];
   for (const file of files) {
     const content = readFile(file);
     if (content && content.includes("console.log")) {
-      log(`[Hook] WARNING: console.log found in ${file}`);
-      hasConsole = true;
+      notes.push(`[Hook] WARNING: console.log found in ${file}`);
     }
   }
-  if (hasConsole) {
-    log("[Hook] Remove console.log statements before committing");
-  }
+  if (notes.length)
+    notes.push("[Hook] Remove console.log statements before committing");
+  return notes;
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -90,19 +94,63 @@ const VERIFICATION_MARKERS = [
   /^\s*verification\s*:/im,
   /lint\s+sweep\s*\([^)]*this\s+turn[^)]*\)\s*:/i,
   /^\s*proper[- ]fix\s+audit\s*:/im,
-  /^\s*\|.*\|.*\|.*$/m,
+  // A markdown table row is NOT evidence of verification. The previous entry here was
+  // /^\s*\|.*\|.*\|.*$/m -- any three-column row -- and because the Floor rules ask for
+  // tables in most structured answers, it silenced this audit on nearly every real
+  // response. Measured 2026-09-21: 'The migration is complete.' alone fired; the same
+  // sentence plus a bare table did not. A verification line must name a GATE and carry a
+  // RESULT on the same line.
+  /(?:tsc|eslint|pytest|go\s+test|go\s+vet|staticcheck|golangci|vitest|jest|ruff|mypy|gosec|govulncheck|markdownlint|coverage)[^\n]{0,80}?(?:\d+\s*errors?|\d+\s*issues?|\d+\s*\/\s*\d+|\bclean\b|\bpassed?\b|\bok\b|[0-9.]+\s*%)/i,
 ];
 
-function runVerifyClaimAudit(buf) {
+// Force ONE continuation when a completion claim carries no verification.
+//
+// Until now this audit could only warn, and it warned at Stop -- after the claim had
+// already landed in front of the user. The Stop event supports `continue: true`, which
+// refuses to end the turn and hands the model a reason, so the claim can be verified or
+// withdrawn before anyone reads it. That converts no-overclaim.md from a notice into a wall.
+//
+// THE LATCH IS LOAD-BEARING. A Stop hook that can re-fire on the turn it just extended is
+// an infinite loop. It therefore fires AT MOST ONCE per prompt_id: the latch file is written
+// before the continuation is emitted, and its presence suppresses every later attempt in the
+// same turn. If the model declines to verify, the turn ends normally the second time -- the
+// hook gets one interruption, not a hostage.
+//
+// Disable with CLAUDE_CLAIM_WALL=off (the warning still prints).
+function claimWallLatched(promptId) {
+  if (!promptId) return true; // no turn identity -> cannot latch -> never continue
+  const latch = path.join(os.tmpdir(), `claude-council-claimwall-${promptId}`);
+  if (fs.existsSync(latch)) return true;
+  try {
+    fs.writeFileSync(latch, String(Date.now()));
+  } catch {
+    return true; // cannot latch -> do not risk a loop
+  }
+  return false;
+}
+
+// Returns { warning, wall }: the text to show, and whether to hold the turn open once.
+function runVerifyClaimAudit(buf, promptId) {
+  const none = { warning: "", wall: false };
   const message = extractFinalAssistantMessage(buf);
-  if (!message) return;
+  if (!message) return none;
 
   const claim = findClaim(message);
-  if (!claim) return;
+  if (!claim) return none;
 
-  if (hasVerificationBlock(message)) return;
+  if (hasVerificationBlock(message)) return none;
 
-  emitClaimWarning(claim);
+  const warning = claimWarning(claim);
+  let active = false;
+  try {
+    active = Boolean((JSON.parse(buf || "{}") || {}).stop_hook_active);
+  } catch {
+    active = false;
+  }
+  if (process.env.CLAUDE_CLAIM_WALL === "off" || active)
+    return { warning, wall: false };
+  if (claimWallLatched(promptId)) return { warning, wall: false };
+  return { warning, wall: true };
 }
 
 function extractFinalAssistantMessage(raw) {
@@ -111,6 +159,14 @@ function extractFinalAssistantMessage(raw) {
     parsed = JSON.parse(raw);
   } catch {
     return null;
+  }
+  // The documented field for the just-finished reply. The transcript may not contain
+  // it yet at Stop time, so reading only the file could judge the previous reply.
+  if (
+    typeof parsed.last_assistant_message === "string" &&
+    parsed.last_assistant_message
+  ) {
+    return parsed.last_assistant_message;
   }
   const transcriptPath = parsed.transcript_path;
   if (!transcriptPath || typeof transcriptPath !== "string") return null;
@@ -168,17 +224,17 @@ function hasVerificationBlock(text) {
   return false;
 }
 
-function emitClaimWarning(claim) {
-  process.stderr.write(
+function claimWarning(claim) {
+  return (
     `${CLAIM_AUDIT_PREFIX}WARNING: completion claim emitted without a same-turn\n` +
-      `${CLAIM_AUDIT_PREFIX}verification block.\n` +
-      `${CLAIM_AUDIT_PREFIX}Matched phrase: "${claim}"\n` +
-      `${CLAIM_AUDIT_PREFIX}Per rules/common/verify-before-claim.md rule 1, strong-\n` +
-      `${CLAIM_AUDIT_PREFIX}completion language must be paired with the gates that\n` +
-      `${CLAIM_AUDIT_PREFIX}ran THIS turn. If the user challenges this claim, re-run\n` +
-      `${CLAIM_AUDIT_PREFIX}the verification before re-affirming (rule 6).\n` +
-      `${CLAIM_AUDIT_PREFIX}Bypass: CLAUDE_VERIFY_CLAIM_AUDIT=off if claim is non-\n` +
-      `${CLAIM_AUDIT_PREFIX}completion in context (e.g., describing past state).\n`,
+    `${CLAIM_AUDIT_PREFIX}verification block.\n` +
+    `${CLAIM_AUDIT_PREFIX}Matched phrase: "${claim}"\n` +
+    `${CLAIM_AUDIT_PREFIX}Per rules/common/verify-before-claim.md rule 1, strong-\n` +
+    `${CLAIM_AUDIT_PREFIX}completion language must be paired with the gates that\n` +
+    `${CLAIM_AUDIT_PREFIX}ran THIS turn. If the user challenges this claim, re-run\n` +
+    `${CLAIM_AUDIT_PREFIX}the verification before re-affirming (rule 6).\n` +
+    `${CLAIM_AUDIT_PREFIX}Bypass: CLAUDE_VERIFY_CLAIM_AUDIT=off if claim is non-\n` +
+    `${CLAIM_AUDIT_PREFIX}completion in context (e.g., describing past state).\n`
   );
 }
 
@@ -198,18 +254,47 @@ process.stdin.on("data", (chunk) => {
 });
 
 process.stdin.on("end", () => {
+  let wall = false;
+  let promptId = "";
+  const notes = [];
   try {
+    try {
+      promptId = (JSON.parse(data || "{}") || {}).prompt_id || "";
+    } catch {
+      promptId = "";
+    }
     if (process.env.CLAUDE_CONSOLE_LOG_AUDIT !== "off") {
-      runConsoleLogAudit();
+      notes.push(...runConsoleLogAudit());
     }
     if (process.env.CLAUDE_VERIFY_CLAIM_AUDIT !== "off") {
-      runVerifyClaimAudit(data);
+      const audit = runVerifyClaimAudit(data, promptId);
+      wall = audit.wall;
+      if (audit.warning) notes.push(audit.warning.trimEnd());
     }
   } catch (err) {
-    log(`[Hook] check-console-log error: ${err.message}`);
+    notes.push(`[Hook] check-console-log error: ${err.message}`);
   }
 
-  process.stdout.write(data);
+  if (wall) {
+    // Hold the turn open ONCE, so a completion claim is verified or withdrawn before the
+    // user reads it. The latch in claimWallLatched and stop_hook_active stop it repeating.
+    process.stdout.write(
+      JSON.stringify({
+        hookSpecificOutput: {
+          hookEventName: "Stop",
+          additionalContext:
+            "A completion claim was made with no verification block naming gates that ran " +
+            "THIS turn (verify-before-claim.md r1-r3, no-overclaim.md). Either run the gates " +
+            "and state their real output, or downgrade the claim to what is actually true " +
+            '("implemented - <gate> not run yet"). This interruption fires once per turn.',
+        },
+      }),
+    );
+    process.exit(0);
+  }
+
+  if (notes.length)
+    process.stdout.write(JSON.stringify({ systemMessage: notes.join("\n") }));
   process.exit(0);
 });
 

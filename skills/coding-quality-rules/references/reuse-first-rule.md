@@ -4,6 +4,8 @@
 > `proper-fixes-first.md`, `no-silent-drops.md`. The user-named
 > directive: **"always build with reusable components or functions
 > or objects."**
+>
+> **Size budget: 14 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -239,20 +241,26 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Parallel implementation of an existing primitive shipping (sweep step skipped — rule violation pattern)
+- Parallel implementation of an existing primitive shipping (sweep step skipped — rule violation
+  pattern)
 - Same primitive appearing in 2+ projects (rule-of-three trigger — promote to global shared package)
 - Fork of a shared primitive instead of extend-with-prop (rule violation — log + reinforce)
-- Default value set at every call site instead of moved to primitive (defaults-at-primitive rule weakening)
-- Shared primitive without index entry / README (discoverability gap — even reusable code isn't reusable if unfindable)
+- Default value set at every call site instead of moved to primitive (defaults-at-primitive rule
+  weakening)
+- Shared primitive without index entry / README (discoverability gap — even reusable code isn't
+  reusable if unfindable)
 - Reach for npm dep before exhausting in-project radii (radius escalation discipline weak)
-- "Cleanup PR" deletes a primitive without migrating call sites (silent-drop class — surface to `no-silent-drops.md`)
+- "Cleanup PR" deletes a primitive without migrating call sites (silent-drop class — surface to
+  `no-silent-drops.md`)
 
 **Refinement candidates**:
 
-- New canonical-radius row when a new shared layer emerges (workspace package, monorepo internal lib)
+- New canonical-radius row when a new shared layer emerges (workspace package, monorepo internal
+  lib)
 - New anti-pattern entry when a duplication shortcut recurs across 2+ PRs
 - Tightening of the rule-of-three trigger when duplicates accumulate before extraction
-- New pairing entry when `refactor-cleaner` / `code-reviewer` consistently catches what this rule should have flagged earlier
+- New pairing entry when `refactor-cleaner` / `code-reviewer` consistently catches what this rule
+  should have flagged earlier
 
 ---
 

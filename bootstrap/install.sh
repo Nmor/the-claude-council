@@ -225,21 +225,28 @@ copy_payload() {
   # that running install.sh from a populated ~/.claude/ (or against
   # a self-update layout where the source already has runtime state)
   # cannot leak personal content into the consumer's install.
+  #
+  # A leading `/` anchors a pattern to the repo root. These entries name root-level
+  # paths; unanchored, rsync matched them at EVERY depth, so the project scaffold's
+  # `.gitignore`, `README.md` and `memory/` template and the IDE-config READMEs were
+  # never installed (found 2026-09-21). install.ps1 filters top-level entries only, so
+  # the two installers disagreed; anchoring makes them match. The junk patterns below
+  # stay unanchored on purpose: they should be skipped wherever they appear.
   local -a excludes=(
     # Version control + CI + docs (consumer doesn't need these)
     --exclude='.git'
-    --exclude='.github'
-    --exclude='bootstrap'
-    --exclude='tests'
-    --exclude='docs'
-    --exclude='README.md'
-    --exclude='INSTALL.md'
-    --exclude='CHANGELOG.md'
-    --exclude='CODE_OF_CONDUCT.md'
-    --exclude='SECURITY.md'
-    --exclude='LICENSE'
-    --exclude='.gitignore'
-    --exclude='.markdownlint.jsonc'
+    --exclude='/.github'
+    --exclude='/bootstrap'
+    --exclude='/tests'
+    --exclude='/docs'
+    --exclude='/README.md'
+    --exclude='/INSTALL.md'
+    --exclude='/CHANGELOG.md'
+    --exclude='/CODE_OF_CONDUCT.md'
+    --exclude='/SECURITY.md'
+    --exclude='/LICENSE'
+    --exclude='/.gitignore'
+    --exclude='/.markdownlint.jsonc'
     # OS junk
     --exclude='.DS_Store'
     --exclude='*.swp'
@@ -247,31 +254,31 @@ copy_payload() {
     --exclude='*.orig'
     --exclude='Thumbs.db'
     # Per-user / per-session RUNTIME directories (gitignored)
-    --exclude='projects'
-    --exclude='sessions'
-    --exclude='session-env'
-    --exclude='telemetry'
-    --exclude='statsig'
-    --exclude='file-history'
-    --exclude='shell-snapshots'
-    --exclude='todos'
-    --exclude='ide'
-    --exclude='debug'
-    --exclude='cache'
-    --exclude='downloads'
-    --exclude='backups'
-    --exclude='contexts'
-    --exclude='mcp-configs'
+    --exclude='/projects'
+    --exclude='/sessions'
+    --exclude='/session-env'
+    --exclude='/telemetry'
+    --exclude='/statsig'
+    --exclude='/file-history'
+    --exclude='/shell-snapshots'
+    --exclude='/todos'
+    --exclude='/ide'
+    --exclude='/debug'
+    --exclude='/cache'
+    --exclude='/downloads'
+    --exclude='/backups'
+    --exclude='/contexts'
+    --exclude='/mcp-configs'
     # Per-user PLAN / AUDIT / MEMORY state (gitignored everywhere)
-    --exclude='plans'
-    --exclude='audits'
-    --exclude='memory'
+    --exclude='/plans'
+    --exclude='/audits'
+    --exclude='/memory'
     # Per-user staging surfaces
-    --exclude='.local'
-    --exclude='.last-cleanup'
-    --exclude='.claude-skipped'
-    --exclude='mcp-needs-auth-cache.json'
-    --exclude='plugins/installed_plugins.json'
+    --exclude='/.local'
+    --exclude='/.last-cleanup'
+    --exclude='/.claude-skipped'
+    --exclude='/mcp-needs-auth-cache.json'
+    --exclude='/plugins/installed_plugins.json'
     # Dev tooling artefacts
     --exclude='node_modules'
     --exclude='__pycache__'

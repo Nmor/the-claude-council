@@ -3,6 +3,8 @@
 > Auto-fires on every `*.rb` file. Standards: **POODR (Sandi Metz)**,
 > **Rails Guides**, **Sustainable Web Dev with Ruby on Rails (David
 > Bryant Copeland)**, **Hexagonal Rails (Cohn)**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

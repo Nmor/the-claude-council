@@ -5,21 +5,40 @@ description: ISO/IEC 27001:2022 Information Security Management System (ISMS) im
 
 # ISO/IEC 27001 Controls
 
-> Standards: **ISO/IEC 27001:2022** (the ISMS standard), **ISO/IEC 27002:2022** (the implementation guidance — 93 controls organized in 4 themes), **ISO/IEC 27005:2022** (risk management), **ISO/IEC 27017:2015** (cloud security controls extension), **ISO/IEC 27018:2019** (PII in public cloud), **ISO/IEC 27701:2019** (Privacy Information Management System extension), **ISO/IEC 27031:2011** (BC/DR), **ISO/IEC 27035:2023** (incident management).
+> Standards: **ISO/IEC 27001:2022** (the ISMS standard), **ISO/IEC 27002:2022** (the implementation
+> guidance — 93 controls organized in 4 themes), **ISO/IEC 27005:2022** (risk management), **ISO/IEC
+> 27017:2015** (cloud security controls extension), **ISO/IEC 27018:2019** (PII in public cloud),
+> **ISO/IEC 27701:2019** (Privacy Information Management System extension), **ISO/IEC 27031:2011**
+> (BC/DR), **ISO/IEC 27035:2023** (incident management).
+>
+> **Size budget: 27 KB** — `token-budget.mjs --check`.
 
 ## Purpose
 
-ISO/IEC 27001 is the international standard for an Information Security Management System (ISMS) — a documented, risk-driven, continually improved approach to managing information security. Certification is a procurement requirement for selling to enterprise, government, healthcare, and financial services customers in most of the world outside North America (where SOC 2 dominates but ISO 27001 still wins multinational deals).
+ISO/IEC 27001 is the international standard for an Information Security Management System (ISMS) — a
+documented, risk-driven, continually improved approach to managing information security.
+Certification is a procurement requirement for selling to enterprise, government, healthcare, and
+financial services customers in most of the world outside North America (where SOC 2 dominates but
+ISO 27001 still wins multinational deals).
 
-This skill teaches the **engineering side** of ISO 27001: the technical controls in Annex A that engineering teams implement, the evidence that auditors verify, and the operational practices (access reviews, change management, vulnerability management, incident response) that the ISMS coordinates. The management-system side (policies, roles, management reviews, internal audits) is the security/compliance team's domain — but the engineering team builds the systems that demonstrate the controls work.
+This skill teaches the **engineering side** of ISO 27001: the technical controls in Annex A that
+engineering teams implement, the evidence that auditors verify, and the operational practices
+(access reviews, change management, vulnerability management, incident response) that the ISMS
+coordinates. The management-system side (policies, roles, management reviews, internal audits) is
+the security/compliance team's domain — but the engineering team builds the systems that demonstrate
+the controls work.
 
-The 2022 revision consolidated the 114 controls from the 2013 version into 93 controls across 4 themes — Organizational (37), People (8), Physical (14), Technological (34). This is the version currently audited; certifications against the 2013 version expired 31 October 2025.
+The 2022 revision consolidated the 114 controls from the 2013 version into 93 controls across 4
+themes — Organizational (37), People (8), Physical (14), Technological (34). This is the version
+currently audited; certifications against the 2013 version expired 31 October 2025.
 
 ## Standards Cited
 
-- **ISO/IEC 27001:2022** Clauses 4-10 (Context, Leadership, Planning, Support, Operation, Performance Evaluation, Improvement)
+- **ISO/IEC 27001:2022** Clauses 4-10 (Context, Leadership, Planning, Support, Operation,
+  Performance Evaluation, Improvement)
 - **ISO/IEC 27001:2022** Annex A — 93 controls in 4 themes
-- **ISO/IEC 27002:2022** §5 (Organizational, 37 controls), §6 (People, 8), §7 (Physical, 14), §8 (Technological, 34)
+- **ISO/IEC 27002:2022** §5 (Organizational, 37 controls), §6 (People, 8), §7 (Physical, 14), §8
+  (Technological, 34)
 - **ISO/IEC 27002:2022** §8.2 — Privileged access rights
 - **ISO/IEC 27002:2022** §8.5 — Secure authentication
 - **ISO/IEC 27002:2022** §8.8 — Management of technical vulnerabilities
@@ -32,10 +51,12 @@ The 2022 revision consolidated the 114 controls from the 2013 version into 93 co
 - **ISO/IEC 27002:2022** §8.28 — Secure coding
 - **ISO/IEC 27002:2022** §8.32 — Change management
 - **ISO/IEC 27005:2022** — Risk management process
-- **ISO/IEC 27017:2015** — Cloud-specific controls (CLD.6.3, CLD.8.1, CLD.9.5, CLD.12.1, CLD.12.4, CLD.13.1)
+- **ISO/IEC 27017:2015** — Cloud-specific controls (CLD.6.3, CLD.8.1, CLD.9.5, CLD.12.1, CLD.12.4,
+  CLD.13.1)
 - **ISO/IEC 27018:2019** — PII processor obligations in public cloud
 - **ISO/IEC 27701:2019** — PIMS extension (privacy management)
-- **NIST SP 800-53 Rev 5** — Reference control mapping (Annex A informative mapping in 27002:2022 §Annex B)
+- **NIST SP 800-53 Rev 5** — Reference control mapping (Annex A informative mapping in 27002:2022
+  §Annex B)
 
 ## When to Fire
 
@@ -56,7 +77,9 @@ The 2022 revision consolidated the 114 controls from the 2013 version into 93 co
 
 ### Pattern 1: Statement of Applicability (SoA) as the engineering contract
 
-The SoA lists every Annex A control, marks it Applicable / Not Applicable, and references the implementation evidence. For engineering, the SoA is the inventory of "what we claim we do, and where the auditor can verify it."
+The SoA lists every Annex A control, marks it Applicable / Not Applicable, and references the
+implementation evidence. For engineering, the SoA is the inventory of "what we claim we do, and
+where the auditor can verify it."
 
 ```markdown
 | Control | Title | Applicable | Implementation | Evidence |
@@ -73,11 +96,15 @@ The SoA lists every Annex A control, marks it Applicable / Not Applicable, and r
 | A.7.4 | Physical security monitoring | No | Cloud-only; data centers operated by AWS | AWS SOC 2 / ISO 27001 / inheritable controls statement |
 ```
 
-When something's marked "Not Applicable", state the inheritance — for cloud-native organisations, A.7.* (physical) is largely inherited from AWS/GCP/Azure and supported by the provider's own ISO 27001 certification.
+When something's marked "Not Applicable", state the inheritance — for cloud-native organisations,
+A.7.* (physical) is largely inherited from AWS/GCP/Azure and supported by the provider's own ISO
+27001 certification.
 
 ### Pattern 2: Risk register feeds the SoA + the SDLC
 
-Every system change runs through risk assessment (ISO 27005). For engineering, the risk register translates threats (T) + vulnerabilities (V) + impact (I) + likelihood (L) into prioritized treatment actions:
+Every system change runs through risk assessment (ISO 27005). For engineering, the risk register
+translates threats (T) + vulnerabilities (V) + impact (I) + likelihood (L) into prioritized
+treatment actions:
 
 ```yaml
 # risks/RISK-2026-014.yaml
@@ -115,7 +142,8 @@ risk_owner: cto@example.com
 review_date: 2026-12-15
 ```
 
-The risk register entries reference Annex A controls explicitly — that's the bidirectional traceability auditors require.
+The risk register entries reference Annex A controls explicitly — that's the bidirectional
+traceability auditors require.
 
 ### Pattern 3: A.5.15 + A.8.2 + A.8.3 — Access control architecture
 
@@ -190,11 +218,13 @@ class AccessControl {
 }
 ```
 
-Evidence the auditor looks for: source code, audit log samples, quarterly access review records (A.5.18.1), elevation event logs (A.8.2), separation-of-duties matrix (A.5.3).
+Evidence the auditor looks for: source code, audit log samples, quarterly access review records
+(A.5.18.1), elevation event logs (A.8.2), separation-of-duties matrix (A.5.3).
 
 ### Pattern 4: A.8.8 — Vulnerability management with SLA
 
-A.8.8 requires "timely identification, evaluation, and remediation of vulnerabilities." Defines what "timely" means in your SLA policy:
+A.8.8 requires "timely identification, evaluation, and remediation of vulnerabilities." Defines what
+"timely" means in your SLA policy:
 
 | Severity | Source | SLA |
 | --- | --- | --- |
@@ -205,7 +235,8 @@ A.8.8 requires "timely identification, evaluation, and remediation of vulnerabil
 | Internal pentest finding | Annual or quarterly pentest | Per severity above |
 | Customer-reported (responsible disclosure) | <security@example.com> | Acknowledge 1 day; per severity above |
 
-Evidence: Snyk/Dependabot dashboards, remediation tickets with timestamps, exceptions register for accepted risks.
+Evidence: Snyk/Dependabot dashboards, remediation tickets with timestamps, exceptions register for
+accepted risks.
 
 ### Pattern 5: A.8.15 + A.8.16 — Logging + monitoring
 
@@ -316,31 +347,49 @@ The technical controls auditors verify on every PR / release:
 
 ### Anti-Pattern 1: "We just need the certificate"
 
-Treating ISO 27001 as a checkbox exercise produces brittle certifications that fail at the first surveillance audit. The standard requires demonstrable continuous improvement — incidents tracked, lessons learned, KPIs trending, management reviews showing decisions based on data. Auditors increasingly probe for "is this real?" — not just "does the document exist?"
+Treating ISO 27001 as a checkbox exercise produces brittle certifications that fail at the first
+surveillance audit. The standard requires demonstrable continuous improvement — incidents tracked,
+lessons learned, KPIs trending, management reviews showing decisions based on data. Auditors
+increasingly probe for "is this real?" — not just "does the document exist?"
 
 ### Anti-Pattern 2: SoA covers everything as "Applicable"
 
-Marking every control Applicable means committing to evidence for every control. Genuine exclusions (e.g., no on-premise data centers → A.7.* physical controls largely inherited from cloud provider) should be clearly justified. Auditors prefer 50 well-implemented Applicable controls over 93 weakly-implemented ones.
+Marking every control Applicable means committing to evidence for every control. Genuine exclusions
+(e.g., no on-premise data centers → A.7.* physical controls largely inherited from cloud provider)
+should be clearly justified. Auditors prefer 50 well-implemented Applicable controls over 93
+weakly-implemented ones.
 
 ### Anti-Pattern 3: Risk register frozen at certification time
 
-The risk register must be a living document. New systems, new vendors, new threats (Log4Shell, SolarWinds, MOVEit, xz-utils backdoor) all update the register. A risk register last touched in the previous calendar year is a finding.
+The risk register must be a living document. New systems, new vendors, new threats (Log4Shell,
+SolarWinds, MOVEit, xz-utils backdoor) all update the register. A risk register last touched in the
+previous calendar year is a finding.
 
 ### Anti-Pattern 4: Annex A copied verbatim into "policies"
 
-Many failed audits stem from policies that copy ISO 27002 text without adapting it to the organisation. Auditors want to see organisation-specific policies — "We use AWS Organizations + SSO + Okta for centralized identity (A.5.16)" beats "Identity management shall be implemented."
+Many failed audits stem from policies that copy ISO 27002 text without adapting it to the
+organisation. Auditors want to see organisation-specific policies — "We use AWS Organizations +
+SSO + Okta for centralized identity (A.5.16)" beats "Identity management shall be implemented."
 
 ### Anti-Pattern 5: Access reviews as a quarterly fire-drill
 
-Access reviews (A.5.18.1) done as a frantic spreadsheet exercise lose their value. Implement continuous access review: every joiner triggers role assignment, every leaver triggers role revocation within 24 hours, quarterly review verifies the continuous process worked. Identity governance tools (Okta Identity Governance, SailPoint, Saviynt) automate this.
+Access reviews (A.5.18.1) done as a frantic spreadsheet exercise lose their value. Implement
+continuous access review: every joiner triggers role assignment, every leaver triggers role
+revocation within 24 hours, quarterly review verifies the continuous process worked. Identity
+governance tools (Okta Identity Governance, SailPoint, Saviynt) automate this.
 
 ### Anti-Pattern 6: Crypto policy = "TLS 1.2+"
 
-A.8.24 requires "a policy on the use of cryptography." That's more than TLS. Document: hash algorithms (SHA-256+, no MD5/SHA-1), symmetric (AES-256-GCM minimum), asymmetric (RSA-2048+ deprecated for new; ECDSA P-256/P-384, Ed25519 preferred), key management (KMS, HSM, FIPS 140-2 Level 2/3 boundaries), key rotation, certificate lifecycle, post-quantum migration plan.
+A.8.24 requires "a policy on the use of cryptography." That's more than TLS. Document: hash
+algorithms (SHA-256+, no MD5/SHA-1), symmetric (AES-256-GCM minimum), asymmetric (RSA-2048+
+deprecated for new; ECDSA P-256/P-384, Ed25519 preferred), key management (KMS, HSM, FIPS 140-2
+Level 2/3 boundaries), key rotation, certificate lifecycle, post-quantum migration plan.
 
 ### Anti-Pattern 7: Incident response plan never tested
 
-A.5.24-5.28 cover incident management. The plan must be tested — typically tabletop exercises quarterly + a full-scale exercise annually. Auditors ask for exercise reports + lessons-learned tracking. An untested plan is a fictional plan.
+A.5.24-5.28 cover incident management. The plan must be tested — typically tabletop exercises
+quarterly + a full-scale exercise annually. Auditors ask for exercise reports + lessons-learned
+tracking. An untested plan is a fictional plan.
 
 ## Verification Checklist
 
@@ -375,7 +424,8 @@ A.5.24-5.28 cover incident management. The plan must be tested — typically tab
 - `~/.claude/skills/owasp-asvs/SKILL.md` — V1-V14 maps to many A.8.* technical controls
 - `~/.claude/skills/gdpr-ccpa-compliance/SKILL.md` — ISO 27701 extension covers PIMS
 - `~/.claude/skills/pci-dss-patterns/SKILL.md` — overlap on A.5.15, A.5.18, A.8.2, A.8.5, A.8.15
-- `~/.claude/skills/soc2-readiness/SKILL.md` — significant control overlap; many organisations carry both
+- `~/.claude/skills/soc2-readiness/SKILL.md` — significant control overlap; many organisations carry
+  both
 - `~/.claude/rules-library/common/audit-logging.md` — A.8.15 + A.8.16 implementation
 - `~/.claude/rules-library/common/secrets-management.md` — A.5.17 + A.8.24
 - `~/.claude/rules-library/common/dependency-vulnerabilities.md` — A.8.8
@@ -385,15 +435,33 @@ A.5.24-5.28 cover incident management. The plan must be tested — typically tab
 
 ## Why This Skill Exists
 
-ISO 27001 is the world's most widely-recognised security management certification — adopted in 180+ countries with ~60,000 certified organisations as of 2025. For B2B SaaS selling to enterprises outside North America (and increasingly inside it), it's table stakes. Without certification, RFPs get filtered out before procurement reads them.
+ISO 27001 is the world's most widely-recognised security management certification — adopted in 180+
+countries with ~60,000 certified organisations as of 2025. For B2B SaaS selling to enterprises
+outside North America (and increasingly inside it), it's table stakes. Without certification, RFPs
+get filtered out before procurement reads them.
 
-The cost of certification: typically 6-12 months of preparation for first-time certification, ongoing operational overhead of running the ISMS (monthly meetings, quarterly access reviews, annual internal audit + management review + external surveillance audit, 3-year recertification). Engineering touches most technical controls but rarely owns the management-system parts.
+The cost of certification: typically 6-12 months of preparation for first-time certification,
+ongoing operational overhead of running the ISMS (monthly meetings, quarterly access reviews, annual
+internal audit + management review + external surveillance audit, 3-year recertification).
+Engineering touches most technical controls but rarely owns the management-system parts.
 
-The cost of NOT certifying: lost deals, compensating-controls negotiations on every customer questionnaire, repeated point-in-time pentests instead of ongoing assurance, and the cognitive overhead of "do we do this?" turning into research projects every time a customer asks.
+The cost of NOT certifying: lost deals, compensating-controls negotiations on every customer
+questionnaire, repeated point-in-time pentests instead of ongoing assurance, and the cognitive
+overhead of "do we do this?" turning into research projects every time a customer asks.
 
-This skill exists to make the engineering side legible. The standard's 93 controls translate into concrete patterns — access control architecture, vulnerability SLA, logging architecture, vendor management, secure SDLC. Each pattern has an auditor-facing artefact: the SoA entry, the policy reference, the evidence sample. Knowing what auditors will ask for AT design time means the system is auditable BY design — instead of scrambling to assemble evidence retrospectively in the weeks before the audit.
+This skill exists to make the engineering side legible. The standard's 93 controls translate into
+concrete patterns — access control architecture, vulnerability SLA, logging architecture, vendor
+management, secure SDLC. Each pattern has an auditor-facing artefact: the SoA entry, the policy
+reference, the evidence sample. Knowing what auditors will ask for AT design time means the system
+is auditable BY design — instead of scrambling to assemble evidence retrospectively in the weeks
+before the audit.
 
-When the audit asks "how do you control privileged access?", the answer is the just-in-time elevation system + the Teleport audit log + the quarterly review of break-glass usage. When the audit asks "how do you handle vulnerabilities?", the answer is Snyk + Dependabot + the SLA + the ticket sample with timestamps. The standard rewards organisations that built their systems with the controls in mind from the start, and punishes those who tried to retrofit them at certification time.
+When the audit asks "how do you control privileged access?", the answer is the just-in-time
+elevation system + the Teleport audit log + the quarterly review of break-glass usage. When the
+audit asks "how do you handle vulnerabilities?", the answer is Snyk + Dependabot + the SLA + the
+ticket sample with timestamps. The standard rewards organisations that built their systems with the
+controls in mind from the start, and punishes those who tried to retrofit them at certification
+time.
 
 ## Learning hooks
 
@@ -415,6 +483,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New control mapping row when ISO updates Annex A (e.g., 2026 revision)
-- New cross-reference when a sister skill (soc2-readiness, gdpr-ccpa-compliance, owasp-asvs, pci-dss-patterns) adds a control gate
+- New cross-reference when a sister skill (soc2-readiness, gdpr-ccpa-compliance, owasp-asvs,
+  pci-dss-patterns) adds a control gate
 - New evidence-template row when a recurring auditor request emerges
 - Tightening of the SoA review cadence when control drift recurs

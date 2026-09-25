@@ -12,6 +12,8 @@ description: Process, convert, OCR, extract, redact, sign, and fill documents vi
 > (document lifecycle), `~/.claude/rules-library/common/gdpr-ccpa.md` (when
 > processing PII), `~/.claude/skills/payment-processing-patterns/SKILL.md`
 > (if processing payment-related documents).
+>
+> **Size budget: 22 KB** — `token-budget.mjs --check`.
 
 ## Purpose
 

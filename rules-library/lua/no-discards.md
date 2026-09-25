@@ -3,6 +3,8 @@
 > Auto-fires on every `*.lua`, `*.rockspec`, `*.luacheckrc` file.
 > Extends `~/.claude/rules/common/no-discards.md`. Tooling: `luacheck`,
 > `stylua`, `busted`.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

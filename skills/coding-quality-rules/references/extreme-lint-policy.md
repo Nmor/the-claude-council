@@ -5,6 +5,8 @@
 > `done-criteria.md`, `proper-fixes-first.md`. This rule sets the
 > CEILING for lint strictness — projects may not relax it, only
 > match or exceed it.
+>
+> **Size budget: 14 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -212,10 +214,13 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Per-line suppression attempted (`// eslint-disable`, `//nolint`, `# noqa`, etc.) — rule violation
 - Linter config change that loosens a threshold instead of fixing code (escape-hatch pattern)
 - Same lint class recurring across PRs in 30 days (developer-pattern signal — needs surfaced)
-- New language entering the rebuild without a mandatory-linters row in the table (rule extension needed)
+- New language entering the rebuild without a mandatory-linters row in the table (rule extension
+  needed)
 - Coverage threshold drift below 80% project / 90% touched (extreme-lint enforcement weak)
-- CI lint step set to `continue-on-error` (rule violation — surface in `security-controls-org-wide.md` enforcement)
-- Threshold (cognitive complexity, function length, parameters) creep above the strict cap on a class of functions (architectural smell)
+- CI lint step set to `continue-on-error` (rule violation — surface in
+  `security-controls-org-wide.md` enforcement)
+- Threshold (cognitive complexity, function length, parameters) creep above the strict cap on a
+  class of functions (architectural smell)
 
 **Refinement candidates**:
 

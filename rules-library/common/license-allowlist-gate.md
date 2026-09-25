@@ -3,6 +3,8 @@
 > Auto-fires on every file. Sister to `dependency-vulnerabilities.md`
 > (CVE gate), `security.md` (broader OWASP), and `updated-frameworks.md`
 > (use latest stable).
+>
+> **Size budget: 11 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -182,7 +184,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Signals to watch**:
 
 - Non-allowlisted SPDX shipped (gate weakening — exception added instead of dep replaced)
-- "UNKNOWN" / "non-standard" license carve-out without Trove / GitHub License API cross-check (rule 5 weakening)
+- "UNKNOWN" / "non-standard" license carve-out without Trove / GitHub License API cross-check (rule
+  5 weakening)
 - Per-consumer license-exceptions file found (rule 2 violation — must live in org repo)
 - Exception without expiry (rule 7 weakening — permanent exception drift)
 - New SPDX value emerging in deps that's not yet on allowlist or deny-list (allowlist needs review)
@@ -193,5 +196,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New SPDX row when a new permissive license gains adoption
 - New deny-list entry when a viral / restrictive license emerges
-- Tightening of the cross-check when "UNKNOWN" carve-outs prove load-bearing more often than expected
-- New cross-reference when a sister rule (dependency-vulnerabilities, install-allowlist) overlaps the gate's scope
+- Tightening of the cross-check when "UNKNOWN" carve-outs prove load-bearing more often than
+  expected
+- New cross-reference when a sister rule (dependency-vulnerabilities, install-allowlist) overlaps
+  the gate's scope

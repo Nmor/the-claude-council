@@ -14,6 +14,8 @@ description: Vue 3 idioms — Composition API, `<script setup>`, composables, Pi
 > never fork. Compositional helpers (renderless components,
 > `provide` / `inject`, slot-based APIs) are the canonical
 > mechanism for extending shared primitives in Vue.
+>
+> **Size budget: 21 KB** — `token-budget.mjs --check`.
 
 Vue 3 patterns that go beyond the generic `frontend-patterns` skill. Use
 when the question is "how should this Vue component / composable / store be
@@ -380,7 +382,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - `watchEffect` used where `watch` with explicit deps would be clearer
 - Composable function not prefixed with `use` (Vue convention drift)
 - Pinia store accessed inside `setup` without `storeToRefs` for destructuring (reactivity loss)
-- Template directives misused (`v-if` + `v-for` on same element, deprecated `v-html` without sanitization)
+- Template directives misused (`v-if` + `v-for` on same element, deprecated `v-html` without
+  sanitization)
 - `provide` / `inject` used as a global state shortcut instead of Pinia
 - Component prop typed as `any` / `Object` instead of typed interface
 - `defineExpose` used to leak internals instead of defining a proper public API
@@ -390,5 +393,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New idiom row when Vue ships a new release (e.g., Vapor mode, new macros)
 - Tightening of the `<script setup>` enforcement when Options API recurs in new code
-- New cross-reference when a sister skill (frontend-patterns, typescript-patterns, accessible-forms) adds a Vue-relevant gate
-- New composable template when a recurring shared pattern emerges (e.g., `useDebounce`, `usePagination`)
+- New cross-reference when a sister skill (frontend-patterns, typescript-patterns, accessible-forms)
+  adds a Vue-relevant gate
+- New composable template when a recurring shared pattern emerges (e.g., `useDebounce`,
+  `usePagination`)

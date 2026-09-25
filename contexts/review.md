@@ -1,5 +1,7 @@
 # Code Review Context
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Mode: PR review, code analysis
 Focus: Quality, security, maintainability
 

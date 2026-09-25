@@ -55,13 +55,14 @@ architecture, security, compliance, ops, data, finance, risk,
 strategy, people, ESG, ethics, comms, plus the five core technical
 divisions.
 
-This repo is the *complete* config surface — **24 Floor rules**
+This repo is the *complete* config surface — **25 Floor rules**
 (always-loaded) + **160 Library rules** (lazy-loaded via skill
 triggers, ~1.2 MB), **118 principal-level skills**, **39 specialist
-agents**, **33 commands**, a strict Council protocol, **25 hook
+agents**, **33 commands**, a strict Council protocol, **39 hook
 scripts across 13 events**, and project-scoped artifact bootstrap.
-The dual-surface design keeps the eager cold-load at **~260 KB /
-~65,000 tokens per turn** (Floor + `CLAUDE.md`) while preserving
+The dual-surface design keeps the eager cold-load at **~299 KB /
+~74,800 tokens per turn** (Floor + `CLAUDE.md`, measured 2026-09-21 with
+`scripts/token-budget.mjs`) while preserving
 every rule's full content for on-demand reference via skill
 `paths:` triggers.
 
@@ -320,6 +321,9 @@ Per-IDE walkthroughs live in [INSTALL.md](INSTALL.md).
 ---
 
 ## Verification status
+
+The block below is the v1.2.0 release snapshot. Run `bootstrap/verify.sh` for the
+current state.
 
 ```text
 ═══════════════════════════════════════════════════════════════

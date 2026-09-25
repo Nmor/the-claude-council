@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 # Package Manager Setup
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Configure your preferred package manager for this project or globally.
 
 ## Usage
@@ -31,9 +33,11 @@ When determining which package manager to use, the following order is checked:
 1. **Environment variable**: `CLAUDE_PACKAGE_MANAGER`
 2. **Project config**: `.claude/package-manager.json`
 3. **package.json**: `packageManager` field
-4. **Lock file**: Presence of package-lock.json, yarn.lock, pnpm-lock.yaml, or bun.lockb
+4. **Lock file**: pnpm-lock.yaml, bun.lock (bun.lockb before Bun 1.2), yarn.lock or
+   package-lock.json, checked in that order
 5. **Global config**: `~/.claude/package-manager.json`
-6. **Fallback**: First available package manager (pnpm > bun > yarn > npm)
+6. **Fallback**: npm. Nothing is probed on the machine: spawning a lookup per manager
+   froze session start on Windows.
 
 ## Configuration Files
 

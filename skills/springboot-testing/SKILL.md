@@ -13,6 +13,8 @@ paths:
 
 # Spring Boot TDD Workflow
 
+> **Size budget: 26 KB** — `token-budget.mjs --check`.
+
 TDD guidance for Spring Boot services with 70%+ coverage (unit + integration).
 
 ## When to Use
@@ -164,7 +166,8 @@ class MarketBuilder {
 - Maven: `mvn -T 4 test` or `mvn verify`
 - Gradle: `./gradlew test jacocoTestReport`
 
-**Remember**: Keep tests fast, isolated, and deterministic. Test behavior, not implementation details.
+**Remember**: Keep tests fast, isolated, and deterministic. Test behavior, not implementation
+details.
 
 ## Compliance & Standards Mapping
 
@@ -407,11 +410,14 @@ Issues to Fix:
 - Re-run phases on significant changes or every 30–60 minutes in long sessions
 - Keep a short loop: `mvn -T 4 test` + spotbugs for quick feedback
 
-**Remember**: Fast feedback beats late surprises. Keep the gate strict—treat warnings as defects in production systems.
+**Remember**: Fast feedback beats late surprises. Keep the gate strict—treat warnings as defects in
+production systems.
 
 ## Purpose
 
-Principal-level Spring Boot test methodology: slice tests over full-context loads, JUnit 5 + Mockito + AssertJ idioms, Testcontainers for integration, contract testing for inter-service, mutation testing for safety-critical paths.
+Principal-level Spring Boot test methodology: slice tests over full-context loads, JUnit 5 +
+Mockito + AssertJ idioms, Testcontainers for integration, contract testing for inter-service,
+mutation testing for safety-critical paths.
 
 **Negative scope** (NOT what this skill covers):
 
@@ -421,7 +427,9 @@ Principal-level Spring Boot test methodology: slice tests over full-context load
 - Build pipeline + coverage gates — see `springboot-testing`
 - Architecture review of code under test — see `springboot-patterns`
 
-Principal-level Spring Boot build + verification: Maven / Gradle gate orchestration, dependency CVE scan, license allowlist, code coverage thresholds, mutation testing, OWASP Dependency-Check, Docker image hardening, deploy gates.
+Principal-level Spring Boot build + verification: Maven / Gradle gate orchestration, dependency CVE
+scan, license allowlist, code coverage thresholds, mutation testing, OWASP Dependency-Check, Docker
+image hardening, deploy gates.
 
 **Negative scope** (NOT what this skill covers):
 
@@ -438,15 +446,21 @@ Principal-level Spring Boot build + verification: Maven / Gradle gate orchestrat
 - BDD-style requirement docs (use Cucumber / Spock per project decision)
 
 - Non-Spring JVM projects (use language-specific verification skills)
-- Native-image GraalVM workflows that bypass standard Maven/Gradle gates (defer to project-specific guidance)
+- Native-image GraalVM workflows that bypass standard Maven/Gradle gates (defer to project-specific
+  guidance)
 
 ## Standards Cited
 
-- **JUnit 5 (Jupiter) User Guide** (`junit.org/junit5/docs/current/user-guide/`) — annotations, lifecycle, parameterised tests
-- **Mockito 5 Reference** (`javadoc.io/doc/org.mockito/mockito-core`) — `MockitoExtension`, strictness, `@MockBean` vs `@Mock`
-- **AssertJ Documentation** (`assertj.github.io/doc/`) — fluent assertions, `extracting`, `usingRecursiveComparison`
-- **Testcontainers for Java** (`java.testcontainers.org`) — JUnit 5 extension, Postgres + Kafka + Redis modules
-- **Spring Boot Testing Reference** (`docs.spring.io/spring-boot/reference/testing/`) — `@SpringBootTest`, `@WebMvcTest`, `@DataJpaTest` slices
+- **JUnit 5 (Jupiter) User Guide** (`junit.org/junit5/docs/current/user-guide/`) — annotations,
+  lifecycle, parameterised tests
+- **Mockito 5 Reference** (`javadoc.io/doc/org.mockito/mockito-core`) — `MockitoExtension`,
+  strictness, `@MockBean` vs `@Mock`
+- **AssertJ Documentation** (`assertj.github.io/doc/`) — fluent assertions, `extracting`,
+  `usingRecursiveComparison`
+- **Testcontainers for Java** (`java.testcontainers.org`) — JUnit 5 extension, Postgres + Kafka +
+  Redis modules
+- **Spring Boot Testing Reference** (`docs.spring.io/spring-boot/reference/testing/`) —
+  `@SpringBootTest`, `@WebMvcTest`, `@DataJpaTest` slices
 - **Pact (Consumer-Driven Contracts) v3+** — contract tests
 - **PIT Mutation Testing** (`pitest.org`) — mutation score baseline
 - **JaCoCo 0.8.12+** — coverage instrumentation
@@ -529,9 +543,18 @@ Principal-level Spring Boot build + verification: Maven / Gradle gate orchestrat
 
 ## Why this skill exists
 
-Spring Boot test suites become unusable through two predictable failures: `@SpringBootTest` everywhere (5-30s × thousands of tests = 30-minute CI), and H2-substituted-for-Postgres (passes locally, breaks on the JSONB query in prod). Slice tests + Testcontainers + Awaitility + minimal `@MockBean` keeps the suite fast AND faithful to production. The cost is one test-class-design decision; the benefit is a CI that finishes in 5 minutes instead of 50.
+Spring Boot test suites become unusable through two predictable failures: `@SpringBootTest`
+everywhere (5-30s × thousands of tests = 30-minute CI), and H2-substituted-for-Postgres (passes
+locally, breaks on the JSONB query in prod). Slice tests + Testcontainers + Awaitility + minimal
+`@MockBean` keeps the suite fast AND faithful to production. The cost is one test-class-design
+decision; the benefit is a CI that finishes in 5 minutes instead of 50.
 
-A Spring Boot app that passes `mvn test` can still ship CVE-laden dependencies, MIT-incompatible transitive licenses, and unsigned Docker images. The verification pipeline closes those gaps mechanically: CVE scan blocks MODERATE+, license gate blocks GPL/AGPL, mutation score keeps tests honest, digest-pinned images block supply-chain substitution, SBOM enables downstream audit. The cost is a one-time pipeline build; the benefit is shipping software you can actually defend in a security review.
+A Spring Boot app that passes `mvn test` can still ship CVE-laden dependencies, MIT-incompatible
+transitive licenses, and unsigned Docker images. The verification pipeline closes those gaps
+mechanically: CVE scan blocks MODERATE+, license gate blocks GPL/AGPL, mutation score keeps tests
+honest, digest-pinned images block supply-chain substitution, SBOM enables downstream audit. The
+cost is a one-time pipeline build; the benefit is shipping software you can actually defend in a
+security review.
 
 ## Learning hooks
 
@@ -539,7 +562,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- `@SpringBootTest` used when a slice test (`@WebMvcTest`, `@DataJpaTest`) would suffice (slow-test suite balloon)
+- `@SpringBootTest` used when a slice test (`@WebMvcTest`, `@DataJpaTest`) would suffice (slow-test
+  suite balloon)
 - Mockito mocks on `@Service` from a `@WebMvcTest` instead of using `@MockBean` correctly
 - `@Transactional` test rolling back when test asserts on committed state (false-positive pass)
 - Testcontainers absent for DB-touching integration tests (H2 substitute — false-positive pass)
@@ -551,7 +575,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New slice-test row when a new Spring Boot test annotation ships
-- New cross-reference when a sister skill (springboot-patterns, jpa-patterns, tdd-workflow) adds a Spring-test gate
+- New cross-reference when a sister skill (springboot-patterns, jpa-patterns, tdd-workflow) adds a
+  Spring-test gate
 - New Testcontainers template per service (Postgres, Kafka, Redis, Localstack)
 - Tightening of the coverage threshold when project-wide coverage rises naturally
 
@@ -559,8 +584,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- `mvn verify` succeeds while spotbugs / pmd / checkstyle warnings ignored (gate-strictness weakening)
-- `dependency-check-maven` / OWASP Dependency-Check disabled or set to non-blocking (per `~/.claude/rules-library/common/dependency-vulnerabilities.md`)
+- `mvn verify` succeeds while spotbugs / pmd / checkstyle warnings ignored (gate-strictness
+  weakening)
+- `dependency-check-maven` / OWASP Dependency-Check disabled or set to non-blocking (per
+  `~/.claude/rules-library/common/dependency-vulnerabilities.md`)
 - Jacoco coverage gate set below `extreme-lint-policy.md` thresholds
 - `@SpringBootApplication` startup fails in CI but passes locally (env-config drift)
 - Native-image / GraalVM build broken without prod plan to ship native
@@ -569,7 +596,9 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New verification step when a new Spring Boot tooling lands (e.g., `spring-boot-buildpacks` rotation)
-- New cross-reference when a sister rule (deploy-failures-become-checks, done-criteria) adds a Java gate
+- New verification step when a new Spring Boot tooling lands (e.g., `spring-boot-buildpacks`
+  rotation)
+- New cross-reference when a sister rule (deploy-failures-become-checks, done-criteria) adds a Java
+  gate
 - Tightening of the warnings-as-errors policy when a recurring escape surfaces
 - New CI matrix row when a new JDK LTS becomes the target

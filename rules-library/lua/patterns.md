@@ -5,6 +5,8 @@
 > manual**, **Olivine Labs style guide**, **OpenResty best
 > practices** (when applicable), **plenary.nvim style** (when
 > Neovim).
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

@@ -9,6 +9,8 @@
 > **HTMLHint** (current), **Prettier 3.x**, **@axe-core/playwright**,
 > **Lighthouse CI**, **pa11y-ci**, **size-limit** /
 > **bundlewatch**, **autoprefixer** (via PostCSS).
+>
+> **Size budget: 16 KB** — `token-budget.mjs --check`.
 
 ## Pre-commit gates
 

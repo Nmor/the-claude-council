@@ -6,6 +6,8 @@ auto_activate: true
 
 # Cloud Architecture
 
+> **Size budget: 29 KB** — `token-budget.mjs --check`.
+
 ## Purpose
 
 Design and operate cloud systems against the published Well-
@@ -458,12 +460,17 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Workload deployed to a single AZ when the Reliability tier requires multi-AZ (Well-Architected Reliability pillar weakening)
-- New service ships without an ADR documenting the architectural choice (per `~/.claude/rules-library/common/adr-template.md`)
-- Region selection ignoring carbon-intensity heatmap when ESG tier requires it (Sustainability pillar weakening)
-- Cost-allocation tags missing on new resources (FinOps weakening — per `~/.claude/rules-library/common/dependency-pinning.md` cost section)
+- Workload deployed to a single AZ when the Reliability tier requires multi-AZ (Well-Architected
+  Reliability pillar weakening)
+- New service ships without an ADR documenting the architectural choice (per
+  `~/.claude/rules-library/common/adr-template.md`)
+- Region selection ignoring carbon-intensity heatmap when ESG tier requires it (Sustainability
+  pillar weakening)
+- Cost-allocation tags missing on new resources (FinOps weakening — per
+  `~/.claude/rules-library/common/dependency-pinning.md` cost section)
 - Cross-region replication not configured for a workload with multi-region RPO/RTO target
-- New cloud-native managed service introduced without comparing OSS alternative (per `~/.claude/CLAUDE.md` technology selection policy)
+- New cloud-native managed service introduced without comparing OSS alternative (per
+  `~/.claude/CLAUDE.md` technology selection policy)
 - SPOF (single point of failure) introduced in a critical path
 - Network egress between AZ / region not minimised (data-transfer cost balloon)
 - Auto-scaling bounds set too tight (throttle under load) or too loose (cost overrun)
@@ -471,7 +478,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New row in cloud-service-selection guide when a new managed service materially changes the trade-off
+- New row in cloud-service-selection guide when a new managed service materially changes the
+  trade-off
 - Tightening of the multi-AZ / multi-region rule when a customer SLA tier shifts
-- New cross-reference when a sister skill (network-patterns, datacenter-ops, aws-serverless-patterns, esg-reviewer) adds an architectural gate
-- New ADR template entry when a recurring architectural decision shape emerges (e.g., "service-mesh: yes/no", "saga vs 2PC")
+- New cross-reference when a sister skill (network-patterns, datacenter-ops,
+  aws-serverless-patterns, esg-reviewer) adds an architectural gate
+- New ADR template entry when a recurring architectural decision shape emerges (e.g., "service-mesh:
+  yes/no", "saga vs 2PC")

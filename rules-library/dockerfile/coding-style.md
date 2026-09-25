@@ -6,6 +6,8 @@
 > (Sept 2024), **BuildKit syntax 1.20+**, **Hadolint** lint rule
 > catalogue, **CIS Docker Benchmark 1.7**, **NIST SP 800-190**
 > (Application Container Security Guide).
+>
+> **Size budget: 22 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -448,16 +450,19 @@ with the fix recipe.
 ## Standards cited
 
 - [Dockerfile reference](https://docs.docker.com/reference/dockerfile/)
-- [OCI Image Specification 1.1.1](https://github.com/opencontainers/image-spec/blob/main/spec.md) (Sept 2024)
+- [OCI Image Specification 1.1.1](https://github.com/opencontainers/image-spec/blob/main/spec.md)
+  (Sept 2024)
 - [BuildKit 1.20+ syntax](https://docs.docker.com/build/buildkit/)
 - [CIS Docker Benchmark v1.7](https://www.cisecurity.org/benchmark/docker/)
-- [NIST SP 800-190](https://csrc.nist.gov/publications/detail/sp/800-190/final) — Application Container Security Guide
+- [NIST SP 800-190](https://csrc.nist.gov/publications/detail/sp/800-190/final) — Application
+  Container Security Guide
 - [SLSA Framework v1.0](https://slsa.dev/) — Reproducible builds
 - [Hadolint rule list](https://github.com/hadolint/hadolint/wiki)
 
 ## Cross-references
 
-- [`common/docker-localhost-binding.md`](../common/docker-localhost-binding.md) — port binding to loopback
+- [`common/docker-localhost-binding.md`](../common/docker-localhost-binding.md) — port binding to
+  loopback
 - [`common/dependency-pinning.md`](../common/dependency-pinning.md) — tag + digest pinning
 - [`common/secrets-management.md`](../common/secrets-management.md) — BuildKit secrets
 - [`common/coding-style.md`](../common/coding-style.md) — universal style baseline
@@ -491,7 +496,8 @@ Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-lear
 
 **Signals to watch**:
 
-- New Dockerfile shipped without `# syntax=` directive (BuildKit features unavailable — rule "Mandatory header" weakening)
+- New Dockerfile shipped without `# syntax=` directive (BuildKit features unavailable — rule
+  "Mandatory header" weakening)
 - Base image floats on a tag without digest (rule 2 violation — supply-chain vector reopens)
 - Runtime stage missing `USER` directive (rule 3 violation — root container shipped)
 - `ADD` used where `COPY` would suffice (rule 4 weakening)
@@ -506,4 +512,5 @@ Per [`common/continuous-learning-mandate.md`](../../rules/common/continuous-lear
 - New Hadolint rule row when a recurring image-build defect emerges
 - Tightening of the base-image policy when distroless / Wolfi / Chainguard becomes the team standard
 - New per-stack section when a new runtime (Bun, Deno, Mojo) gains adoption
-- Promotion of a project-specific override (e.g. UBI base for healthcare workloads) to a documented exception
+- Promotion of a project-specific override (e.g. UBI base for healthcare workloads) to a documented
+  exception

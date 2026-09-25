@@ -5,6 +5,8 @@
 > **GFM (GitHub Flavored Markdown) Spec**, **markdownlint rule
 > set MD001–MD059**, **CommonMark Reference Implementation
 > (cmark)**.
+>
+> **Size budget: 16 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

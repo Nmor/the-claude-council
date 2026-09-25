@@ -4,6 +4,8 @@
 > structured-logging foundation), `error-handling-with-context.md`
 > (logs carry the wrapped chain), `no-silent-failures.md` (every
 > failure has a log entry), `security.md` (no PII in logs).
+>
+> **Size budget: 13 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -236,18 +238,25 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - INFO used for genuine handler failure (rule 3 violation — real error hidden)
 - DEBUG enabled globally in production without per-scope gating (rule 4 violation)
 - TRACE-level sampling absent in incident response (rule 7 weakening)
-- Log line lacks the required structured fields (rule 5 weakening — sister `error-handling-with-context.md`)
+- Log line lacks the required structured fields (rule 5 weakening — sister
+  `error-handling-with-context.md`)
 - PII / secrets present in log entries (rule 9 violation)
-- Retry storm produces only ERROR (no escalation from WARN through INFO on eventual success) — rule 10 weakening
-- `console.log` / `print` / freeform `slog` introduced in product code (rule 5 violation — sister `no-discards.md`)
+- Retry storm produces only ERROR (no escalation from WARN through INFO on eventual success) — rule
+  10 weakening
+- `console.log` / `print` / freeform `slog` introduced in product code (rule 5 violation — sister
+  `no-discards.md`)
 - Log ingestion cost crosses per-service budget without action (rule 8 weakening)
 
 **Refinement candidates**:
 
-- New per-library mapping row when a new logger surfaces (e.g., new structured logger in a niche language)
-- Tightening of the WARN-vs-ERROR boundary when a recurring "what level is this?" decision class emerges
-- New PII-redaction entry when a new sensitive field shape recurs (e.g., new identifier format, new biometric)
-- New cross-reference when a sister rule (observability, audit-logging, error-codes) consumes the level taxonomy
+- New per-library mapping row when a new logger surfaces (e.g., new structured logger in a niche
+  language)
+- Tightening of the WARN-vs-ERROR boundary when a recurring "what level is this?" decision class
+  emerges
+- New PII-redaction entry when a new sensitive field shape recurs (e.g., new identifier format, new
+  biometric)
+- New cross-reference when a sister rule (observability, audit-logging, error-codes) consumes the
+  level taxonomy
 
 ---
 

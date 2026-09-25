@@ -6,6 +6,8 @@
 > versioning), `contract-testing.md` (verify-the-contract).
 > Standards: **REST** (Fielding 2000), **GraphQL** (graphql.org spec),
 > **gRPC** (grpc.io), **OpenAPI 3.1**, **AsyncAPI 3.0**.
+>
+> **Size budget: 18 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -355,7 +357,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Breaking change shipped inside an existing major version (rule 4 violation — clients silently broken)
+- Breaking change shipped inside an existing major version (rule 4 violation — clients silently
+  broken)
 - New endpoint added without OpenAPI / GraphQL SDL / Proto schema update (rule 2 weakening)
 - Tolerant-reader pattern not adopted by a client; new server field broke it (rule 1 weakening)
 - `Sunset` / `Deprecation` headers missing on a deprecated endpoint (rule 4 weakening)
@@ -368,5 +371,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New row in the breaking-vs-non-breaking table when a new change shape emerges
 - Tightening of the deprecation-runway minimums when SDK consumers prove slower to upgrade
-- New tooling row when a linter / breaking-change detector (Spectral, buf, GraphQL Inspector) gains adoption
-- New cross-reference when a sister rule (deprecation-lifecycle, contract-testing) prescribes complementary behaviour
+- New tooling row when a linter / breaking-change detector (Spectral, buf, GraphQL Inspector) gains
+  adoption
+- New cross-reference when a sister rule (deprecation-lifecycle, contract-testing) prescribes
+  complementary behaviour

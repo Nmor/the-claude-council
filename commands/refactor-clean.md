@@ -6,6 +6,8 @@ command: true
 
 # Refactor Clean
 
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
+
 Safely identify and remove dead code with test verification at every step.
 
 ## Step 1: Detect Dead Code

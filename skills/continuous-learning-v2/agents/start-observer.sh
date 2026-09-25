@@ -1,4 +1,5 @@
 #!/bin/bash
+# Size budget: 8 KB. Check: wc -c; gate: token-budget.mjs --check.
 # Continuous Learning v2 - Observer Agent Launcher
 #
 # Starts the background observer agent that analyzes observations

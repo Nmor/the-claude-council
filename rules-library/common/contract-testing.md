@@ -6,6 +6,8 @@
 > `testing.md` (broader test strategy). Standards: **Pact**
 > (Consumer-Driven Contracts), **OpenAPI 3.1**, **GraphQL Schema
 > Registry**, **PACT spec v3+**, **Spring Cloud Contract**.
+>
+> **Size budget: 17 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -402,8 +404,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- API change shipped but consumer contract test didn't fail (false-negative — contract was over-broad)
-- Producer deploy blocked but the change was actually backwards-compatible (false-positive — contract was over-narrow)
+- API change shipped but consumer contract test didn't fail (false-negative — contract was
+  over-broad)
+- Producer deploy blocked but the change was actually backwards-compatible (false-positive —
+  contract was over-narrow)
 - CDC broker (Pact / PactFlow / Apollo Studio) outage broke deploys (broker-dependency weakening)
 - Schema-first OR code-first mixed in the same service (rule 3 violation — drift inevitable)
 - Provider mocks the contract instead of declaring its own behaviour (anti-pattern 2)
@@ -413,7 +417,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New tooling row when a contract-test framework (consumer-driven OR schema-based) becomes the team's choice
-- Tightening of the "test the error cases too" requirement when production error paths consistently lack contracts
-- New cross-reference when a sister rule (api-versioning, schema-evolution) defines the surface that contracts test
+- New tooling row when a contract-test framework (consumer-driven OR schema-based) becomes the
+  team's choice
+- Tightening of the "test the error cases too" requirement when production error paths consistently
+  lack contracts
+- New cross-reference when a sister rule (api-versioning, schema-evolution) defines the surface that
+  contracts test
 - New broker-resilience pattern when CDC broker outages become a deploy bottleneck

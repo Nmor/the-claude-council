@@ -5,6 +5,8 @@
 > hook-enforced rule), `done-criteria.md` (the per-language
 > verification suite each hook runs), and `extreme-lint-policy.md`
 > (the strictness thresholds the hooks enforce).
+>
+> **Size budget: 12 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -28,6 +30,27 @@ and a contract.
 
 Each project may add hooks in `~/.claude/settings.json`
 (global) or `<project>/.claude/settings.json` (workspace).
+
+## How a hook reaches Claude (output channels)
+
+Per the Claude Code hooks reference (code.claude.com/docs/en/hooks, read 2026-09-21):
+
+| To | Use | Not |
+| --- | --- | --- |
+| Block, with the reason shown to Claude | stderr + exit 2 | — |
+| Advise without blocking (PreToolUse / PostToolUse) | stdout JSON `hookSpecificOutput.additionalContext` | stderr + exit 0: debug log only, never seen |
+| Keep a Stop / SubagentStop turn going with guidance | the same `additionalContext`, guarded by `stop_hook_active` | `continue` inside `hookSpecificOutput` |
+| Tell the user without reopening a turn | stdout JSON `systemMessage` | stderr + exit 0 |
+
+Stdout carries that JSON object and nothing else. Never echo the input back: each
+hook receives its own stdin, and an echo is parsed as the hook's own output. Read
+event fields from the reference, not memory: SubagentStop sends
+`agent_transcript_path`, not a tool-call list; PostToolUse sends `tool_response`.
+`scripts/hooks/lib/advise.js` is the shared helper.
+
+Measured 2026-09-21: a dozen advisory hooks wrote to stderr on exit 0, so none
+reached the model; the subagent gate read a field SubagentStop never sends and had
+never fired.
 
 ## Mandatory hooks (global default)
 
@@ -223,18 +246,23 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- New rule shipped without corresponding hook enforcement when mechanical enforcement is feasible (drift toward "guideline-only")
-- PostToolUse hook bypassed via `CLAUDE_NO_DISCARDS_HOOK=off` by the agent (operator-only override misused)
+- New rule shipped without corresponding hook enforcement when mechanical enforcement is feasible
+  (drift toward "guideline-only")
+- PostToolUse hook bypassed via `CLAUDE_NO_DISCARDS_HOOK=off` by the agent (operator-only override
+  misused)
 - New language adopted without its PostToolUse gate wired (per-language hook gap)
 - `--no-verify` used to bypass pre-commit / pre-push hook (sister `proper-fixes-first.md` weakening)
 - Auto-accept permissions enabled for destructive / network tools (PreToolUse policy weakening)
 - TodoWrite not invoked on a 3+-step task (rule "TodoWrite practices" weakening)
 - Multiple TodoWrite items `in_progress` simultaneously (one-in-progress invariant violated)
-- Stop hook surfaces uncommitted changes but the agent proceeds to next task anyway (Stop hook ignored)
+- Stop hook surfaces uncommitted changes but the agent proceeds to next task anyway (Stop hook
+  ignored)
 
 **Refinement candidates**:
 
-- New row in the lifecycle table when a new hook event surfaces (e.g., new IDE plugin event, new MCP gateway hook)
+- New row in the lifecycle table when a new hook event surfaces (e.g., new IDE plugin event, new MCP
+  gateway hook)
 - New per-language gate row when a new stack adopts (e.g., new build system, new test runner)
 - Tightening of the auto-accept policy when a destructive false-positive recurs
-- New cross-reference when a sister rule (no-discards, install-allowlist, secrets-management) introduces a hook the rule depends on
+- New cross-reference when a sister rule (no-discards, install-allowlist, secrets-management)
+  introduces a hook the rule depends on

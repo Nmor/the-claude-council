@@ -11,6 +11,8 @@ description: Principal-level clinical data interoperability — FHIR R5, USCDI v
 > aware, terminology-coded shape that an EHR, a payer, a patient
 > app, and a regulator can all consume without translation
 > work.
+>
+> **Size budget: 27 KB** — `token-budget.mjs --check`.
 
 ## Purpose
 
@@ -518,14 +520,16 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New clinical data ingested without FHIR mapping (free-text strings, opaque codes)
 - US Core profile validation absent from CI for FHIR resources (Pattern 2 weakening)
-- USCDI v4 element silently dropped through pipeline (Pattern 3 violation + ONC enforcement exposure)
+- USCDI v4 element silently dropped through pipeline (Pattern 3 violation + ONC enforcement
+  exposure)
 - SMART on FHIR scopes broader than use case requires (Anti-pattern 5; over-privileged app)
 - HL7 v2 parser hand-rolled instead of HAPI / `hl7` / `simple-hl7` (Anti-pattern 3)
 - DICOM share without de-identification + burned-in PHI check (Anti-pattern 4)
 - FHIR resource stored as opaque JSON blob with no extracted indices (Anti-pattern 6)
 - Bulk FHIR cohort export attempted via single-resource API (Anti-pattern 8)
 - Telehealth session without state-licensure check (Anti-pattern 9; criminal exposure)
-- HealthKit / Health Connect data flows to backend without HIPAA + FTC Health Breach Rule scope evaluation (Pattern 10 weakening)
+- HealthKit / Health Connect data flows to backend without HIPAA + FTC Health Breach Rule scope
+  evaluation (Pattern 10 weakening)
 - Patient identifier stored without `system` (Anti-pattern 7)
 - ICD-9 codes lingering in 2026 production (ICD-10 mandatory since Oct 2015)
 - LOINC / SNOMED code versions not stored (terminology drift)
@@ -544,4 +548,5 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 ---
 
-*Last verified: 2026-05-30. Standards refresh cadence: 6 months for FHIR profiles + USCDI; quarterly for terminology releases; annual for ICD-10-CM (Oct 1).*
+*Last verified: 2026-05-30. Standards refresh cadence: 6 months for FHIR profiles + USCDI; quarterly
+for terminology releases; annual for ICD-10-CM (Oct 1).*

@@ -5,6 +5,8 @@
 > `done-criteria.md`, `proper-fixes-first.md`. This rule sets the
 > CEILING for lint strictness — projects may not relax it, only
 > match or exceed it.
+>
+> **Size budget: 19 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -157,22 +159,88 @@ profile.xml` / equivalent that:
 - Sets format-on-save = on (so format-blockers don't accumulate)
 - Disables the IDE's "auto-suppress" features
 
+## The sweep is REPO-WIDE, not diff-scoped
+
+**The unit of compliance is the repository, not the file you happened
+to open.** Run every mandatory linter across the whole tree — not
+`eslint <touched files>`, not `staticcheck ./internal/thing/...` —
+because a finding's severity has nothing to do with whether today's
+task went near it. A defect in a file nobody touched this week is
+still a defect; scoping the sweep to the diff simply moves the
+backlog out of view and lets it compound.
+
+This does NOT mean every task must end with the whole repo at zero —
+a codebase adopting these thresholds may start with hundreds of
+findings, and demanding they all clear before any feature lands is
+how a policy gets abandoned. It means the repo-wide number is
+**measured, stated, and monotonically decreasing**:
+
+### 1. No net-new findings, ever
+
+The repo-wide count after your change is **≤** the count before.
+A change that adds one finding while removing none is rejected, no
+matter how clean its own diff looks.
+
+### 2. State the count; never state it and walk on
+
+Reporting "170 pre-existing discards across the repo" and proceeding
+is not compliance — it is the violation, written down. Whenever a
+sweep surfaces a pre-existing backlog, the same turn either:
+
+- **burns it down** (whole class fixed — usually the right call for
+  mechanical classes: a rename, an import, a loop form), or
+- **burns down a named slice** and records the remaining count with
+  the specific next slice, or
+- **explains why the class cannot be fixed mechanically** and what
+  would make it fixable.
+
+"Pre-existing" is an explanation of origin. It is never a
+disposition.
+
+### 3. Prefer whole-class fixes to per-file fixes
+
+Lint findings arrive in classes, not as individuals. When a class
+has N occurrences, fixing the three in your diff leaves N-3 and
+guarantees the next author meets the same trap. Fix the class:
+mechanical classes are usually a single scripted pass plus one
+careful review of the exceptions.
+
+### 4. The backlog is visible, not implicit
+
+A repository not yet at zero carries its current counts in a
+checked-in artifact (a lint-baseline file, a CI summary, or the
+project's docs) with the trend. An invisible backlog is
+indistinguishable from a clean repo right up until someone measures
+it — which is how a codebase discovers 170 of something.
+
+### 5. New rules are adopted at full strength, with a burn-down
+
+Turning on a linter that surfaces 400 findings is correct. What is
+not correct is enabling it with the findings suppressed, or scoping
+it to changed files "for now" — both make the rule permanently
+decorative (see `no-discards.md` on suppression, and the
+inert-control shape in `wiring-and-usage-review.md`).
+
 ## Verification block
 
-When a file is touched, the verification block names the lint
-sweep result:
+Every completion claim names the lint sweep result, and the counts
+are **repo-wide** unless explicitly labelled otherwise:
 
 ```text
-Lint sweep (this turn):
+Lint sweep (this turn, repo-wide):
 - tsc --strict --noEmit: 0 errors
-- eslint <files>: 0 warnings (sonarjs + strict-type-checked)
-- biome check: 0 warnings
-- prettier --check: clean
+- eslint src/ --max-warnings 0: 0 warnings (sonarjs + strict-type-checked)
+- staticcheck ./... : 0
+- golangci-lint run ./... : 0 issues
 - IDE diagnostics: 0
+- pre-existing backlog: <class>: N remaining (was M) — next slice: <what>
 ```
 
 A line of "looks clean" or "lint passes" without the explicit
-counts is NOT a lint sweep — it's an aspiration.
+counts is NOT a lint sweep — it's an aspiration. Counts scoped to
+the touched files, presented as if they were the repo's, are worse:
+they read as proof while measuring the one region guaranteed to be
+clean.
 
 ## Cross-references
 
@@ -203,23 +271,53 @@ moment.
 
 User directive (verbatim): **"update lint rules extremely"**.
 
+**Amended 2026-09-06** after the diff-scoped reading of this policy
+failed in practice. A session swept a four-repo workspace, found 170
+range-loop discards, 31 tracker-ID comments and 4 outstanding
+`golangci-lint` findings, fixed only the handful that fell inside
+files it had already opened, reported the remaining counts, and moved
+on — all of which the touch-scoped wording permitted. The counts were
+accurate and the work was still wrong: an accurate number attached to
+no action is a backlog with better documentation.
+
+User directive (verbatim, 2026-09-06): **"picking up lint and issues
+should not only be when a file is touched. Update rule"**. The unit of
+compliance is now the repository, and a stated count carries an
+obligation to reduce it.
+
 ## Learning hooks
 
 Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Per-line suppression attempted (`// eslint-disable`, `//nolint`, `# noqa`, etc.) — rule violation
-- Linter config change that loosens a threshold instead of fixing code (escape-hatch pattern)
-- Same lint class recurring across PRs in 30 days (developer-pattern signal — needs surfaced)
-- New language entering the rebuild without a mandatory-linters row in the table (rule extension needed)
-- Coverage threshold drift below 80% project / 90% touched (extreme-lint enforcement weak)
-- CI lint step set to `continue-on-error` (rule violation — surface in `security-controls-org-wide.md` enforcement)
-- Threshold (cognitive complexity, function length, parameters) creep above the strict cap on a class of functions (architectural smell)
+- Per-line suppression attempted (`// eslint-disable`, `//nolint`,
+  `# noqa`, etc.) — rule violation
+- Linter config change that loosens a threshold instead of fixing
+  code (escape-hatch pattern)
+- Same lint class recurring across PRs in 30 days (developer-pattern
+  signal — needs surfaced)
+- New language entering the rebuild without a mandatory-linters row
+  in the table (rule extension needed)
+- Coverage threshold drift below 80% project / 90% touched
+  (extreme-lint enforcement weak)
+- CI lint step set to `continue-on-error` (rule violation — surface
+  in `security-controls-org-wide.md` enforcement)
+- Threshold (cognitive complexity, function length, parameters) creep
+  above the strict cap on a class of functions (architectural smell)
+- A sweep reported repo-wide as scoped-to-touched-files, or a
+  pre-existing count stated with no burn-down in the same turn (the
+  2026-09-06 failure this rule was amended for)
+- A repo-wide count that stops decreasing across consecutive sessions
+  (the backlog has become permanent furniture)
 
 **Refinement candidates**:
 
-- New mandatory-linters row when a language gains presence in the rebuild
-- New strict-threshold value when a default proves too loose for a class of bugs
-- Tightening of the suppression-detection sweep when bypass patterns evolve
-- New cross-reference when a sister rule's enforcement is the better home for a finding class
+- New mandatory-linters row when a language gains presence in the
+  rebuild
+- New strict-threshold value when a default proves too loose for a
+  class of bugs
+- Tightening of the suppression-detection sweep when bypass patterns
+  evolve
+- New cross-reference when a sister rule's enforcement is the better
+  home for a finding class

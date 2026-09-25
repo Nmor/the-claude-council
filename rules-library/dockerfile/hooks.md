@@ -10,6 +10,8 @@
 > Build Cloud**, **BuildKit 1.20+**, **OCI Image Spec 1.1.1**,
 > **SLSA Framework v1.0**, **Sigstore Cosign**, **Hadolint
 > v2.13+**, **GitHub Actions docker/build-push-action v6**.
+>
+> **Size budget: 24 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -582,5 +584,6 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New layer in the pipeline when a new attack surface is documented
 - Tightening of the Hadolint baseline when a recurring lint class is observed
-- New cross-reference when a sister rule (deploy-failures-become-checks, github-actions-gotchas) prescribes a new gate
+- New cross-reference when a sister rule (deploy-failures-become-checks, github-actions-gotchas)
+  prescribes a new gate
 - Promotion of project-specific Hadolint exceptions to org-wide bans when they recur

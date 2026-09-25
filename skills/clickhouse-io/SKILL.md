@@ -5,6 +5,8 @@ description: ClickHouse database patterns, query optimization, analytics, and da
 
 # ClickHouse Analytics Patterns
 
+> **Size budget: 21 KB** — `token-budget.mjs --check`.
+
 ClickHouse-specific patterns for high-performance analytics and data engineering.
 
 ## When to Activate
@@ -18,7 +20,8 @@ ClickHouse-specific patterns for high-performance analytics and data engineering
 
 ## Overview
 
-ClickHouse is a column-oriented database management system (DBMS) for online analytical processing (OLAP). It's optimized for fast analytical queries on large datasets.
+ClickHouse is a column-oriented database management system (DBMS) for online analytical processing
+(OLAP). It's optimized for fast analytical queries on large datasets.
 
 **Key Features:**
 
@@ -441,7 +444,8 @@ pgClient.on('notification', async (msg) => {
 - Check merge operations
 - Review slow query log
 
-**Remember**: ClickHouse excels at analytical workloads. Design tables for your query patterns, batch inserts, and leverage materialized views for real-time aggregations.
+**Remember**: ClickHouse excels at analytical workloads. Design tables for your query patterns,
+batch inserts, and leverage materialized views for real-time aggregations.
 
 ## Purpose
 
@@ -474,7 +478,8 @@ mutation cost awareness, and the ClickHouse data-type discipline
 
 - **ClickHouse Documentation v25.x** (clickhouse.com/docs) — engine
   reference + system tables + tuning
-- **MergeTree Engine Reference** — clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree
+- **MergeTree Engine Reference** —
+  clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree
 - **SQL:2023 (ISO/IEC 9075)** — base SQL semantics; ClickHouse extends
 - **Altinity Best Practices** — community-canonical operational guide
 - **OWASP ASVS 4.0.3 §13.3 (SQL Queries)** — parameterisation
@@ -516,7 +521,8 @@ mutation cost awareness, and the ClickHouse data-type discipline
 - `~/.claude/skills/postgres-patterns/SKILL.md` — OLTP sister; ClickHouse is the OLAP complement
 - `~/.claude/skills/dynamodb-patterns/SKILL.md` — operational NoSQL sister
 - `~/.claude/skills/database-migrations/SKILL.md` — schema evolution discipline
-- `~/.claude/skills/observability-patterns/SKILL.md` — ClickHouse is often the metrics / log store backend
+- `~/.claude/skills/observability-patterns/SKILL.md` — ClickHouse is often the metrics / log store
+  backend
 - `~/.claude/rules-library/common/schema-evolution.md` — additive, reversible migrations
 - `~/.claude/agents/database-reviewer.md` — Council Division 9 reviewer
 - `~/.claude/agents/data-reviewer.md` — schema + analytics governance
@@ -543,7 +549,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 - Single-row INSERT into MergeTree (batching weakening — should be ≥ 1000 rows / batch)
 - Query missing PRIMARY KEY prefix in WHERE clause (full-table scan)
 - ORDER BY column not in sort key (sort-on-read latency balloon)
-- Materialized view that re-aggregates the same data the source table already aggregates (cost duplication)
+- Materialized view that re-aggregates the same data the source table already aggregates (cost
+  duplication)
 - Disk merging stuck (Too many parts warning — insert rate too high vs background merge)
 - Dictionary lookup not used where it would replace a JOIN (perf opportunity)
 - Skipping index (data_skipping_indices) absent on high-cardinality filter column
@@ -553,7 +560,9 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New row in MergeTree engine selection guide (e.g., ReplicatedReplacingMergeTree, AggregatingMergeTree)
+- New row in MergeTree engine selection guide (e.g., ReplicatedReplacingMergeTree,
+  AggregatingMergeTree)
 - New materialized-view pattern when a recurring real-time aggregation shape emerges
-- New cross-reference when a sister skill (postgres-patterns, dynamodb-patterns, observability-patterns) adds an analytical pattern
+- New cross-reference when a sister skill (postgres-patterns, dynamodb-patterns,
+  observability-patterns) adds an analytical pattern
 - Tightening of the insert-batch rule when ingestion rate scales

@@ -2,6 +2,8 @@
 
 > Auto-fires on every file. Companion to `done-criteria.md`,
 > `no-discards.md`, `no-silent-failures.md`, and `sonarlint-checks.md`.
+>
+> **Size budget: 11 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -149,8 +151,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - Archived / deprecated package added or kept on first-touch (Hard rule 1 violation)
 - EOL runtime (Go ≤ 1.21, Node ≤ 18, Python ≤ 3.9) targeted by new code (Hard rule 2 violation)
-- HIGH / CRITICAL CVE present in pinned version (Hard rule 3 violation — sister `dependency-vulnerabilities.md` gate weakening)
-- Pre-release (alpha / beta / RC / nightly) pinned without documented user request (Hard rule 4 violation)
+- HIGH / CRITICAL CVE present in pinned version (Hard rule 3 violation — sister
+  `dependency-vulnerabilities.md` gate weakening)
+- Pre-release (alpha / beta / RC / nightly) pinned without documented user request (Hard rule 4
+  violation)
 - Drift > 1 major behind ecosystem current (Hard rule 5 violation)
 - Lockfile missing in committed tree (Hard rule 6 violation)
 - Renovate / Dependabot not enabled on repo (Hard rule 7 violation — security PRs lag)
@@ -158,10 +162,14 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New row in the abandoned-deps table when a new archive surfaces (e.g., `node-postgres` ↔ `pg`, new SDK retirements)
-- Tightening of the "one major behind maximum" cap when N-1 versions consistently carry security debt
-- New cross-reference when a sister rule (dependency-overrides-not-exceptions, install-allowlist) provides the replacement workflow
-- New layer row in the "what rule applies to" table when a new artifact class (browser extension, edge worker, IoT runtime) emerges
+- New row in the abandoned-deps table when a new archive surfaces (e.g., `node-postgres` ↔ `pg`, new
+  SDK retirements)
+- Tightening of the "one major behind maximum" cap when N-1 versions consistently carry security
+  debt
+- New cross-reference when a sister rule (dependency-overrides-not-exceptions, install-allowlist)
+  provides the replacement workflow
+- New layer row in the "what rule applies to" table when a new artifact class (browser extension,
+  edge worker, IoT runtime) emerges
 
 ---
 

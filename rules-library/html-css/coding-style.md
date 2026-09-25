@@ -9,6 +9,8 @@
 > 2023), **ARIA 1.2**, **stylelint 17.11.0** with
 > **stylelint-config-standard 40.0.0**, **HTMLHint** (current),
 > **Prettier 3.x** (formatting only).
+>
+> **Size budget: 22 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

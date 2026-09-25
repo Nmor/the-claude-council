@@ -4,6 +4,8 @@
 > `plan-execution-progress.md`, `proper-fixes-first.md`, and the
 > project-scoped-artifacts work. This rule governs WHERE a new rule
 > lands when one is added mid-work.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -38,7 +40,8 @@ benefit from it.
 The hard rules above are the always-on trigger — enough to know the rule applies and
 what it demands. Their full text (worked examples, anti-patterns, tables, procedures)
 lives in the
-**`council-maintenance`** skill, which fires when you touch `.claude/rules/**`, `.claude/skills/**`, `.claude/agents/**` or `CLAUDE.md` — i.e. exactly when you are authoring or moving a rule.
+**`council-maintenance`** skill. Invoke it when authoring or moving a rule, skill, agent or
+CLAUDE.md: it does not load by itself.
 
 Read it before acting on this rule. Carrying the full body on the always-on Floor cost
 every turn of every unrelated task for guidance that applies at one specific moment.
@@ -59,7 +62,6 @@ every turn of every unrelated task for guidance that applies at one specific mom
 ## Learning hooks
 
 Signals to watch + refinement candidates for this rule live in the
-`council-maintenance` skill, which auto-fires when you touch a rule, skill,
-agent or CLAUDE.md — i.e. exactly when you are refining the framework. They are
-instructions for maintaining THIS ARTIFACT, not for doing the task at hand, so
-they load then rather than on every turn.
+`council-maintenance` skill. Invoke it when refining this rule: it does not load
+by itself. They are instructions for maintaining THIS ARTIFACT, not for doing
+the task at hand, so they are not carried on every turn.

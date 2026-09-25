@@ -6,6 +6,8 @@
 > **AssertJ / Strikt**, **Testcontainers**, **Coroutines-Test**,
 > **Compose UI Test** (Android), **Roborazzi / Paparazzi**
 > (Android snapshots).
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

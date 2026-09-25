@@ -3,6 +3,8 @@
 > Auto-fires on every `*.rb` file. Extends
 > `~/.claude/rules/common/no-discards.md`. Tooling: RuboCop with
 > strict cops + rubocop-performance + rubocop-rails + Brakeman.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

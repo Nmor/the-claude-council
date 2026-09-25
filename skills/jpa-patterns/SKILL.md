@@ -5,6 +5,8 @@ description: JPA/Hibernate patterns for entity design, relationships, query opti
 
 # JPA/Hibernate Patterns
 
+> **Size budget: 14 KB** — `token-budget.mjs --check`.
+
 Use for data modeling, repositories, and performance tuning in Spring Boot.
 
 ## When to Activate
@@ -149,19 +151,24 @@ spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 ## Testing Data Access
 
 - Prefer `@DataJpaTest` with Testcontainers to mirror production
-- Assert SQL efficiency using logs: set `logging.level.org.hibernate.SQL=DEBUG` and `logging.level.org.hibernate.orm.jdbc.bind=TRACE` for parameter values
+- Assert SQL efficiency using logs: set `logging.level.org.hibernate.SQL=DEBUG` and
+  `logging.level.org.hibernate.orm.jdbc.bind=TRACE` for parameter values
 
-**Remember**: Keep entities lean, queries intentional, and transactions short. Prevent N+1 with fetch strategies and projections, and index for your read/write paths.
+**Remember**: Keep entities lean, queries intentional, and transactions short. Prevent N+1 with
+fetch strategies and projections, and index for your read/write paths.
 
 ## Purpose
 
-Principal-level JPA / Hibernate patterns: entity modelling, association fetching strategies (N+1 prevention), Criteria + JPQL query design, projections, second-level cache, transaction scoping, schema migration discipline.
+Principal-level JPA / Hibernate patterns: entity modelling, association fetching strategies (N+1
+prevention), Criteria + JPQL query design, projections, second-level cache, transaction scoping,
+schema migration discipline.
 
 **Negative scope** (NOT what this skill covers):
 
 - Spring Boot wiring around the persistence layer — see `springboot-patterns`
 - Raw SQL optimisation outside JPA — see `postgres-patterns`
-- Schema migration safety (squawk, expand-contract) — see `schema-evolution.md` + `database-migrations`
+- Schema migration safety (squawk, expand-contract) — see `schema-evolution.md` +
+  `database-migrations`
 - Test methodology for repositories — see `springboot-testing`
 - DynamoDB / NoSQL patterns — see `dynamodb-patterns`
 
@@ -174,9 +181,12 @@ Principal-level JPA / Hibernate patterns: entity modelling, association fetching
 
 ## Standards Cited
 
-- **JSR 338 — Jakarta Persistence 3.1** (`jakarta.ee/specifications/persistence/3.1`) — core specification
-- **Hibernate ORM 6.6 User Guide** (`docs.jboss.org/hibernate/orm/6.6/userguide/`) — implementation reference
-- **Spring Data JPA 3.4 Reference** (`docs.spring.io/spring-data/jpa/reference`) — repository abstractions
+- **JSR 338 — Jakarta Persistence 3.1** (`jakarta.ee/specifications/persistence/3.1`) — core
+  specification
+- **Hibernate ORM 6.6 User Guide** (`docs.jboss.org/hibernate/orm/6.6/userguide/`) — implementation
+  reference
+- **Spring Data JPA 3.4 Reference** (`docs.spring.io/spring-data/jpa/reference`) — repository
+  abstractions
 - **SQL:2023 (ISO/IEC 9075)** — query semantics
 - **Effective Java 3e — Item 50, Item 17** — defensive copies, immutability for entities
 - **Vlad Mihalcea's High-Performance Java Persistence** (canonical reference; matches Hibernate 6.x)
@@ -205,7 +215,8 @@ Principal-level JPA / Hibernate patterns: entity modelling, association fetching
 - [ ] No `CascadeType.ALL` on shared associations
 - [ ] Pagination via `Pageable` or cursor; no unbounded `findAll()`
 - [ ] Schema migrations via Flyway / Liquibase; `hbm2ddl.auto=validate` in prod
-- [ ] Slow-query log enabled (`spring.jpa.properties.hibernate.session.events.log.LOG_QUERIES_SLOWER_THAN_MS=200`)
+- [ ] Slow-query log enabled
+  (`spring.jpa.properties.hibernate.session.events.log.LOG_QUERIES_SLOWER_THAN_MS=200`)
 
 ## Cross-References
 
@@ -220,7 +231,13 @@ Principal-level JPA / Hibernate patterns: entity modelling, association fetching
 
 ## Why this skill exists
 
-JPA's "object-relational mapping" abstraction is leaky in two directions: developers who treat entities as plain Java objects encounter N+1 queries, accidental EAGER cascades, and `LazyInitializationException`; developers who treat it as raw SQL miss out on caching, dirty-checking, and identity-map benefits. The patterns above strike the principal-level balance: lean entities, intentional fetches, DTO projections for reads, transactional discipline, migrations in version control. Apps following these defaults survive 10× load without rewriting the persistence layer.
+JPA's "object-relational mapping" abstraction is leaky in two directions: developers who treat
+entities as plain Java objects encounter N+1 queries, accidental EAGER cascades, and
+`LazyInitializationException`; developers who treat it as raw SQL miss out on caching,
+dirty-checking, and identity-map benefits. The patterns above strike the principal-level balance:
+lean entities, intentional fetches, DTO projections for reads, transactional discipline, migrations
+in version control. Apps following these defaults survive 10× load without rewriting the persistence
+layer.
 
 ## Compliance & Standards Mapping
 
@@ -247,7 +264,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - N+1 query pattern (`@OneToMany` accessed in loop without `JOIN FETCH`)
 - `FetchType.EAGER` on `@OneToMany` / `@ManyToMany` (default-eager weakening)
-- Entity returned from controller (entity-vs-DTO leakage; serialization triggers lazy-load LazyInitializationException)
+- Entity returned from controller (entity-vs-DTO leakage; serialization triggers lazy-load
+  LazyInitializationException)
 - `@Transactional` not on service / handler but on repository (TX boundary anti-pattern)
 - `@Modifying` query without `clearAutomatically = true` (stale persistence context)
 - Native query with string-concat parameter (per `~/.claude/rules-library/sql/no-discards.md`)
@@ -259,6 +277,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New entity-relation pattern row when a new modeling shape recurs
-- New cross-reference when a sister skill (postgres-patterns, database-migrations, springboot-patterns) adds a JPA gate
+- New cross-reference when a sister skill (postgres-patterns, database-migrations,
+  springboot-patterns) adds a JPA gate
 - Tightening of the fetch-strategy default when N+1 incidents recur
 - New row in the indexing checklist per workload class (read-heavy vs write-heavy)

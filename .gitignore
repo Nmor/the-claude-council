@@ -91,3 +91,9 @@ settings.json.bak-*
 # carry absolute paths / local state, so they must not enter the repo.
 .mcp.json
 hooks/cbm-*
+
+# --- Per-owner / third-party content (not Council guidance) ---
+skills/synced/
+skills/.trash/
+skills/graphify/
+rules/owner-preferences-*.md

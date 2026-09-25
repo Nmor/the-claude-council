@@ -1,6 +1,13 @@
+// Size budget: 17 KB. Check: wc -c; gate: token-budget.mjs --check.
 /**
  * Cross-platform utility functions for Claude Code hooks and scripts
  * Works on Windows, macOS, and Linux
+ *
+ * Vendored from affaan-m/ECC (formerly everything-claude-code), where every export is typed
+ * public API in a .d.ts and covered by tests. isMacOS, isLinux and grepFile have no
+ * caller in this install, or upstream; they are kept on purpose so this copy does not drift
+ * from the one it is synced from (owner decision, 2026-09-21). If this copy ever stops
+ * tracking upstream, they become unused code and should go.
  */
 
 const fs = require('fs');

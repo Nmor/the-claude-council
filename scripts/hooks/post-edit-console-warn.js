@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Size budget: 8 KB. Check: wc -c; gate: token-budget.mjs --check.
 /**
  * PostToolUse Hook: Warn about console.log statements after edits
  *
@@ -10,6 +11,8 @@
  */
 
 const { readFile } = require('../lib/utils');
+const { advise } = require('./lib/advise.js');
+const { stripQuoted } = require('./lib/no-discards-rules.js');
 
 const MAX_STDIN = 1024 * 1024; // 1MB limit
 let data = '';
@@ -23,32 +26,38 @@ process.stdin.on('data', chunk => {
 });
 
 process.stdin.on('end', () => {
+  let input = {};
   try {
-    const input = JSON.parse(data);
+    input = JSON.parse(data);
     const filePath = input.tool_input?.file_path;
 
-    if (filePath && /\.(ts|tsx|js|jsx)$/.test(filePath)) {
+    // The hooks describe console.log in order to catch it; like no-discards, they are exempt.
+    if (filePath && /\.(ts|tsx|js|jsx)$/.test(filePath) && !/[/\\]\.claude[/\\]scripts[/\\]hooks[/\\]/.test(filePath)) {
       const content = readFile(filePath);
-      if (!content) { process.stdout.write(data); process.exit(0); }
+      if (!content) process.exit(0);
       const lines = content.split('\n');
       const matches = [];
 
       lines.forEach((line, idx) => {
-        if (/console\.log/.test(line)) {
+        const t = line.trim();
+        if (t.startsWith('//') || t.startsWith('*') || t.startsWith('/*')) return;
+        if (/\bconsole\.log\s*\(/.test(stripQuoted(line))) {
           matches.push((idx + 1) + ': ' + line.trim());
         }
       });
 
       if (matches.length > 0) {
-        console.error('[Hook] WARNING: console.log found in ' + filePath);
-        matches.slice(0, 5).forEach(m => console.error(m));
-        console.error('[Hook] Remove console.log before committing');
+        advise(
+          input,
+          ['[Hook] WARNING: console.log found in ' + filePath, ...matches.slice(0, 5),
+            '[Hook] Remove console.log before committing'].join('\n'),
+          'PostToolUse',
+        );
       }
     }
   } catch {
-    // Invalid input — pass through
+    // Unreadable input: nothing to check.
   }
 
-  process.stdout.write(data);
   process.exit(0);
 });

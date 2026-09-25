@@ -6,7 +6,10 @@ command: true
 
 # Plan - Multi-Model Collaborative Planning
 
-Multi-model collaborative planning - Context retrieval + Dual-model analysis → Generate step-by-step implementation plan.
+> **Size budget: 11 KB** — `token-budget.mjs --check`.
+
+Multi-model collaborative planning - Context retrieval + Dual-model analysis → Generate step-by-step
+implementation plan.
 
 $ARGUMENTS
 
@@ -14,11 +17,15 @@ $ARGUMENTS
 
 ## Core Protocols
 
-- **Language Protocol**: Use **English** when interacting with tools/models, communicate with user in their language
-- **Mandatory Parallel**: Codex/Gemini calls MUST use `run_in_background: true` (including single model calls, to avoid blocking main thread)
-- **Code Sovereignty**: External models have **zero filesystem write access**, all modifications by Claude
+- **Language Protocol**: Use **English** when interacting with tools/models, communicate with user
+  in their language
+- **Mandatory Parallel**: Codex/Gemini calls MUST use `run_in_background: true` (including single
+  model calls, to avoid blocking main thread)
+- **Code Sovereignty**: External models have **zero filesystem write access**, all modifications by
+  Claude
 - **Stop-Loss Mechanism**: Do not proceed to next phase until current phase output is validated
-- **Planning Only**: This command allows reading context and writing to `.claude/plan/*` plan files, but **NEVER modify production code**
+- **Planning Only**: This command allows reading context and writing to `.claude/plan/*` plan files,
+  but **NEVER modify production code**
 
 ---
 
@@ -44,7 +51,8 @@ EOF",
 
 **Model Parameter Notes**:
 
-- `{{GEMINI_MODEL_FLAG}}`: When using `--backend gemini`, replace with `--gemini-model gemini-3-pro-preview` (note trailing space); use empty string for codex
+- `{{GEMINI_MODEL_FLAG}}`: When using `--backend gemini`, replace with `--gemini-model
+  gemini-3-pro-preview` (note trailing space); use empty string for codex
 
 **Role Prompts**:
 
@@ -53,7 +61,8 @@ EOF",
 | Analysis | `~/.claude/.ccg/prompts/codex/analyzer.md` | `~/.claude/.ccg/prompts/gemini/analyzer.md` |
 | Planning | `~/.claude/.ccg/prompts/codex/architect.md` | `~/.claude/.ccg/prompts/gemini/architect.md` |
 
-**Session Reuse**: Each call returns `SESSION_ID: xxx` (typically output by wrapper), **MUST save** for subsequent `/ccg:execute` use.
+**Session Reuse**: Each call returns `SESSION_ID: xxx` (typically output by wrapper), **MUST save**
+for subsequent `/ccg:execute` use.
 
 **Wait for Background Tasks** (max timeout 600000ms = 10 minutes):
 
@@ -64,8 +73,10 @@ TaskOutput({ task_id: "<task_id>", block: true, timeout: 600000 })
 **IMPORTANT**:
 
 - Must specify `timeout: 600000`, otherwise default 30 seconds will cause premature timeout
-- If still incomplete after 10 minutes, continue polling with `TaskOutput`, **NEVER kill the process**
-- If waiting is skipped due to timeout, **MUST call `AskUserQuestion` to ask user whether to continue waiting or kill task**
+- If still incomplete after 10 minutes, continue polling with `TaskOutput`, **NEVER kill the
+  process**
+- If waiting is skipped due to timeout, **MUST call `AskUserQuestion` to ask user whether to
+  continue waiting or kill task**
 
 ---
 
@@ -89,7 +100,8 @@ mcp__ace-tool__enhance_prompt({
 })
 ```
 
-Wait for enhanced prompt, **replace original $ARGUMENTS with enhanced result** for all subsequent phases.
+Wait for enhanced prompt, **replace original $ARGUMENTS with enhanced result** for all subsequent
+phases.
 
 #### 1.2 Context Retrieval
 
@@ -110,7 +122,8 @@ mcp__ace-tool__search_context({
 
 - Must obtain **complete definitions and signatures** for relevant classes, functions, variables
 - If context insufficient, trigger **recursive retrieval**
-- Prioritize output: entry file + line number + key symbol name; add minimal code snippets only when necessary to resolve ambiguity
+- Prioritize output: entry file + line number + key symbol name; add minimal code snippets only when
+  necessary to resolve ambiguity
 
 #### 1.4 Requirement Alignment
 
@@ -137,7 +150,8 @@ Distribute **original requirement** (without preset opinions) to both models:
    - Focus: UI/UX impact, user experience, visual design
    - OUTPUT: Multi-perspective solutions + pros/cons analysis
 
-Wait for both models' complete results with `TaskOutput`. **Save SESSION_ID** (`CODEX_SESSION` and `GEMINI_SESSION`).
+Wait for both models' complete results with `TaskOutput`. **Save SESSION_ID** (`CODEX_SESSION` and
+`GEMINI_SESSION`).
 
 #### 2.2 Cross-Validation
 
@@ -150,17 +164,21 @@ Integrate perspectives and iterate for optimization:
 
 #### 2.3 (Optional but Recommended) Dual-Model Plan Draft
 
-To reduce risk of omissions in Claude's synthesized plan, can parallel have both models output "plan drafts" (still **NOT allowed** to modify files):
+To reduce risk of omissions in Claude's synthesized plan, can parallel have both models output "plan
+drafts" (still **NOT allowed** to modify files):
 
 1. **Codex Plan Draft** (Backend authority):
    - ROLE_FILE: `~/.claude/.ccg/prompts/codex/architect.md`
-   - OUTPUT: Step-by-step plan + pseudo-code (focus: data flow/edge cases/error handling/test strategy)
+   - OUTPUT: Step-by-step plan + pseudo-code (focus: data flow/edge cases/error handling/test
+     strategy)
 
 2. **Gemini Plan Draft** (Frontend authority):
    - ROLE_FILE: `~/.claude/.ccg/prompts/gemini/architect.md`
-   - OUTPUT: Step-by-step plan + pseudo-code (focus: information architecture/interaction/accessibility/visual consistency)
+   - OUTPUT: Step-by-step plan + pseudo-code (focus: information
+     architecture/interaction/accessibility/visual consistency)
 
-Wait for both models' complete results with `TaskOutput`, record key differences in their suggestions.
+Wait for both models' complete results with `TaskOutput`, record key differences in their
+suggestions.
 
 #### 2.4 Generate Implementation Plan (Claude Final Version)
 
@@ -201,7 +219,8 @@ Synthesize both analyses, generate **Step-by-step Implementation Plan**:
 **`/ccg:plan` responsibilities end here, MUST execute the following actions**:
 
 1. Present complete implementation plan to user (including pseudo-code)
-2. Save plan to `.claude/plan/<feature-name>.md` (extract feature name from requirement, e.g., `user-auth`, `payment-module`)
+2. Save plan to `.claude/plan/<feature-name>.md` (extract feature name from requirement, e.g.,
+   `user-auth`, `payment-module`)
 3. Output prompt in **bold text** (MUST use actual saved file path):
 
    ---
@@ -235,7 +254,8 @@ Synthesize both analyses, generate **Step-by-step Implementation Plan**:
 After planning completes, save plan to:
 
 - **First planning**: `.claude/plan/<feature-name>.md`
-- **Iteration versions**: `.claude/plan/<feature-name>-v2.md`, `.claude/plan/<feature-name>-v3.md`...
+- **Iteration versions**: `.claude/plan/<feature-name>-v2.md`,
+  `.claude/plan/<feature-name>-v3.md`...
 
 Plan file write should complete before presenting plan to user.
 
@@ -268,4 +288,5 @@ After user approves, **manually** execute:
 2. **No Y/N prompts** – Only present plan, let user decide next steps
 3. **Trust Rules** – Backend follows Codex, Frontend follows Gemini
 4. External models have **zero filesystem write access**
-5. **SESSION_ID Handoff** – Plan must include `CODEX_SESSION` / `GEMINI_SESSION` at end (for `/ccg:execute resume <SESSION_ID>` use)
+5. **SESSION_ID Handoff** – Plan must include `CODEX_SESSION` / `GEMINI_SESSION` at end (for
+   `/ccg:execute resume <SESSION_ID>` use)

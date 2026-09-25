@@ -4,6 +4,8 @@
 > `~/.claude/rules/common/security.md`. Tooling: `cargo audit`,
 > `cargo deny`, `cargo geiger` (unsafe usage detector), `cargo
 > outdated`.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

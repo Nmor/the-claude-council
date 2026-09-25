@@ -3,6 +3,8 @@
 > Auto-fires on every `*_spec.lua`, `*_test.lua`, `tests/**/*.lua`,
 > `spec/**/*.lua` file. Standards: **busted**, **LuaUnit**,
 > **plenary.nvim** (Neovim plugins), **luacov** (coverage).
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

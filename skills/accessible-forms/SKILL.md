@@ -5,11 +5,19 @@ description: Production form accessibility — labels, errors, autocomplete, val
 
 # Accessible Forms
 
-The form is where accessibility most often breaks. Visual designers prioritise clean layouts; engineers reach for `placeholder` as a label; validation surfaces errors at submit; keyboard users get trapped in modal flows; screen-reader users discover required fields after submission. This skill encodes the patterns that pass real audits.
+> **Size budget: 20 KB** — `token-budget.mjs --check`.
+
+The form is where accessibility most often breaks. Visual designers prioritise clean layouts;
+engineers reach for `placeholder` as a label; validation surfaces errors at submit; keyboard users
+get trapped in modal flows; screen-reader users discover required fields after submission. This
+skill encodes the patterns that pass real audits.
 
 ## Purpose
 
-Forms are conversion-critical (signup, checkout, contact, KYC) AND accessibility-critical (auth, payment, account management are AAA paths per `wcag-accessibility`). The patterns below cover every input type, every state transition, every validation pattern, and the two new WCAG 2.2 SCs that specifically target authentication forms.
+Forms are conversion-critical (signup, checkout, contact, KYC) AND accessibility-critical (auth,
+payment, account management are AAA paths per `wcag-accessibility`). The patterns below cover every
+input type, every state transition, every validation pattern, and the two new WCAG 2.2 SCs that
+specifically target authentication forms.
 
 ## Standards Cited
 
@@ -23,9 +31,11 @@ Forms are conversion-critical (signup, checkout, contact, KYC) AND accessibility
 - **WCAG 2.2 §3.3.7** — Redundant Entry (NEW in 2.2)
 - **WCAG 2.2 §3.3.8** — Accessible Authentication Minimum (NEW in 2.2)
 - **WCAG 2.2 §3.3.9** — Accessible Authentication Enhanced (NEW in 2.2)
-- **HTML Living Standard** — `<label>`, `<input>`, `autocomplete` attribute, constraint validation API
+- **HTML Living Standard** — `<label>`, `<input>`, `autocomplete` attribute, constraint validation
+  API
 - **WAI-ARIA 1.2** — `aria-required`, `aria-invalid`, `aria-describedby`, `aria-errormessage`
-- **WHATWG Autocomplete tokens** — `username`, `current-password`, `new-password`, `one-time-code`, `email`, etc.
+- **WHATWG Autocomplete tokens** — `username`, `current-password`, `new-password`, `one-time-code`,
+  `email`, etc.
 
 ## When to Fire
 
@@ -66,7 +76,8 @@ Forms are conversion-critical (signup, checkout, contact, KYC) AND accessibility
 </label>
 ```
 
-When the label must be visually hidden (e.g., search input in a header), use the `sr-only` pattern — NOT `aria-label` (which loses the visible label when AT switches to braille / sound only):
+When the label must be visually hidden (e.g., search input in a header), use the `sr-only` pattern —
+NOT `aria-label` (which loses the visible label when AT switches to braille / sound only):
 
 ```html
 <form role="search">
@@ -103,12 +114,14 @@ Browsers + password managers + autofill need to identify input purpose. Use the 
 <input type="text" name="cc-csc"    autocomplete="cc-csc" inputmode="numeric" />
 ```
 
-Disabling autocomplete (`autocomplete="off"`) on auth fields fails WCAG 1.3.5 AND fights password managers — banned outside narrow cases (e.g., shared kiosk).
+Disabling autocomplete (`autocomplete="off"`) on auth fields fails WCAG 1.3.5 AND fights password
+managers — banned outside narrow cases (e.g., shared kiosk).
 
 ### Validation timing — three correct moments
 
 1. **On blur** for format checks ("Invalid email") — debounce 300ms; don't fire while user is typing
-2. **On change** for cross-field checks ("Passwords don't match") — only after both fields blurred once
+2. **On change** for cross-field checks ("Passwords don't match") — only after both fields blurred
+   once
 3. **On submit** for server-side checks (email unique, payment authorised)
 
 Banned:
@@ -140,7 +153,8 @@ Banned:
 
 - `aria-invalid="true"` flips when the field is invalid; flip back to `"false"` once corrected
 - `aria-describedby` joins multiple ids (hint + error); the error message reads on focus
-- `role="alert"` announces the error immediately when it appears (use `aria-live="polite"` if the error should NOT interrupt — e.g., for non-blocking warnings)
+- `role="alert"` announces the error immediately when it appears (use `aria-live="polite"` if the
+  error should NOT interrupt — e.g., for non-blocking warnings)
 
 ### Error message content
 
@@ -174,7 +188,8 @@ The user enters info ONCE per session. If you need confirmation, SHOW + allow ed
 
 ### WCAG 3.3.8 — Accessible Authentication
 
-Cognitive function tests (memorising passwords, solving puzzles, transcribing characters) must have an accessible alternative:
+Cognitive function tests (memorising passwords, solving puzzles, transcribing characters) must have
+an accessible alternative:
 
 | Auth method | 3.3.8 (AA) status |
 | --- | --- |
@@ -189,7 +204,8 @@ Cognitive function tests (memorising passwords, solving puzzles, transcribing ch
 | Image puzzles ("find the bus") | ❌ FAILS unless alternative offered |
 | Math problems | ❌ FAILS |
 
-If you ship a CAPTCHA, provide an accessible alternative (audio CAPTCHA, email link, support contact).
+If you ship a CAPTCHA, provide an accessible alternative (audio CAPTCHA, email link, support
+contact).
 
 ### Required vs optional
 
@@ -232,7 +248,8 @@ NEVER use only color (red border) to indicate required — WCAG 1.4.1.
 </fieldset>
 ```
 
-Screen readers announce the legend before each input within the fieldset — context for what the field belongs to.
+Screen readers announce the legend before each input within the fieldset — context for what the
+field belongs to.
 
 ### Multi-step forms
 
@@ -266,7 +283,8 @@ After upload, announce the filename via `aria-live`:
 
 ### Date pickers
 
-Native `<input type="date">` is accessible by default. Custom date pickers (React DayPicker, etc.) MUST implement the APG dialog + grid keyboard model:
+Native `<input type="date">` is accessible by default. Custom date pickers (React DayPicker, etc.)
+MUST implement the APG dialog + grid keyboard model:
 
 - Arrow keys move between days
 - Page Up / Page Down = month
@@ -292,15 +310,20 @@ Banned: spinner that spins forever with no announcement.
 
 ### Anti-pattern 1: Placeholder as label
 
-Placeholders disappear when the field has a value. Users with cognitive disabilities, ADHD, or simply tabbing back to verify lose the field's purpose. Always use a real `<label>`.
+Placeholders disappear when the field has a value. Users with cognitive disabilities, ADHD, or
+simply tabbing back to verify lose the field's purpose. Always use a real `<label>`.
 
 ### Anti-pattern 2: Disabling form fields without explanation
 
-`<input disabled>` is invisible to most screen readers OR announced confusingly. If a field is conditionally available, prefer hiding it entirely (with `aria-live` announcing the change) or showing it readonly with explanation: "Country: United States (set during signup; contact support to change)".
+`<input disabled>` is invisible to most screen readers OR announced confusingly. If a field is
+conditionally available, prefer hiding it entirely (with `aria-live` announcing the change) or
+showing it readonly with explanation: "Country: United States (set during signup; contact support to
+change)".
 
 ### Anti-pattern 3: Errors at the top of the form only
 
-Inline errors per-field are more actionable. If you ALSO show a summary, link from the summary to each field via `<a href="#field-id">`.
+Inline errors per-field are more actionable. If you ALSO show a summary, link from the summary to
+each field via `<a href="#field-id">`.
 
 ### Anti-pattern 4: Custom checkboxes without `:checked` state
 
@@ -321,19 +344,24 @@ input[type="checkbox"]:focus + label::before {
 
 ### Anti-pattern 5: Honeypot fields without `aria-hidden`
 
-Honeypot anti-spam fields MUST be `aria-hidden="true"` AND `tabindex="-1"` AND visually hidden — screen-reader users would otherwise fill them and be flagged as bots.
+Honeypot anti-spam fields MUST be `aria-hidden="true"` AND `tabindex="-1"` AND visually hidden —
+screen-reader users would otherwise fill them and be flagged as bots.
 
 ### Anti-pattern 6: Auto-advancing OTP inputs without paste support
 
-The 6-digit OTP UI with 6 separate inputs that auto-advance breaks copy-paste from SMS auto-fill. Use a single `<input autocomplete="one-time-code" inputmode="numeric">` — iOS + Android auto-fill works natively.
+The 6-digit OTP UI with 6 separate inputs that auto-advance breaks copy-paste from SMS auto-fill.
+Use a single `<input autocomplete="one-time-code" inputmode="numeric">` — iOS + Android auto-fill
+works natively.
 
 ## Verification Checklist
 
 - [ ] Every `<input>` has a `<label for>` OR is wrapped in `<label>`
 - [ ] No `placeholder`-as-label patterns
 - [ ] `autocomplete` tokens set on every applicable field (per WHATWG list)
-- [ ] Required fields: `required` + `aria-required="true"` + visible indicator + form-level legend explaining the indicator
-- [ ] Errors: `aria-invalid` + `aria-describedby` pointing to error text + `role="alert"` on the error element
+- [ ] Required fields: `required` + `aria-required="true"` + visible indicator + form-level legend
+  explaining the indicator
+- [ ] Errors: `aria-invalid` + `aria-describedby` pointing to error text + `role="alert"` on the
+  error element
 - [ ] Error messages SUGGEST a fix (per WCAG 3.3.3)
 - [ ] Tab order matches visual order; Shift+Tab works in reverse
 - [ ] Submit button shows submitting state via `aria-busy`
@@ -354,7 +382,8 @@ The 6-digit OTP UI with 6 separate inputs that auto-advance breaks copy-paste fr
 - `~/.claude/rules-library/common/a11y.md` — always-on rule
 - `~/.claude/rules-library/common/i18n.md` — form field localisation (labels, errors, formats)
 - `~/.claude/rules-library/common/error-codes.md` — error codes drive error messages
-- `~/.claude/rules-library/common/error-handling-with-context.md` — server-side errors map to client-rendered messages
+- `~/.claude/rules-library/common/error-handling-with-context.md` — server-side errors map to
+  client-rendered messages
 - `~/.claude/skills/frontend-patterns/SKILL.md` — broader component patterns
 - `accessibility-reviewer` agent — opus-model audit
 
@@ -365,10 +394,13 @@ Form a11y failures cause:
 - Abandoned signups (conversion loss)
 - Failed checkouts (revenue loss)
 - Failed support requests (the user can't reach support because the contact form excludes them)
-- Legal exposure (forms are the most-litigated a11y surface — they're concrete, demonstrable, and the harm is easy to prove)
+- Legal exposure (forms are the most-litigated a11y surface — they're concrete, demonstrable, and
+  the harm is easy to prove)
 - Brand damage (publicly shamed for inaccessible signup)
 
-The patterns are mechanical: real labels, autocomplete tokens, ARIA states, validation timing, accessible auth. The cost is one extra attribute per input + one extra div for errors. The benefit is conversions that wouldn't have happened.
+The patterns are mechanical: real labels, autocomplete tokens, ARIA states, validation timing,
+accessible auth. The cost is one extra attribute per input + one extra div for errors. The benefit
+is conversions that wouldn't have happened.
 
 ## Learning hooks
 
@@ -392,6 +424,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New input-pattern row when a new HTML autocomplete token / `inputmode` becomes useful
-- New cross-reference when a sister skill (wcag-accessibility, interaction-design, frontend-patterns) adds a forms gate
+- New cross-reference when a sister skill (wcag-accessibility, interaction-design,
+  frontend-patterns) adds a forms gate
 - Tightening of the validation-timing rule when premature-validation incidents recur
 - New row in the auth-accessibility checklist when new SSO / passkey UX emerges

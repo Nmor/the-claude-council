@@ -8,6 +8,8 @@
 > Standards: **OpenTelemetry**, **CloudWatch Embedded Metric
 > Format (EMF)**, **W3C Trace Context** (`traceparent`),
 > **OpenMetrics**, **Google SRE workbook** (Four Golden Signals).
+>
+> **Size budget: 14 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 
@@ -278,7 +280,8 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Incident takes > expected MTTR because traces / logs / metrics weren't correlated (rule 9 weakening)
+- Incident takes > expected MTTR because traces / logs / metrics weren't correlated (rule 9
+  weakening)
 - Alert fires on heuristic threshold instead of SLO breach (rule 8 weakening — alert fatigue)
 - High-cardinality tag attached to a metric (rule 3 violation — cost explosion)
 - Trace propagation broken across a service boundary (rule 5 weakening — disconnected traces)
@@ -289,7 +292,10 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Refinement candidates**:
 
-- New row in the required-field schema when a context dimension proves load-bearing in production debugging
-- New Golden-Signal entry when a recurring class of failure (cold start, throttle, iterator age) needs its own metric
+- New row in the required-field schema when a context dimension proves load-bearing in production
+  debugging
+- New Golden-Signal entry when a recurring class of failure (cold start, throttle, iterator age)
+  needs its own metric
 - Tightening of the "no PII in logs" linter when new PII shapes surface
-- New cross-reference when a sister rule (log-levels, error-handling-with-context) defines the shape the pillar depends on
+- New cross-reference when a sister rule (log-levels, error-handling-with-context) defines the shape
+  the pillar depends on

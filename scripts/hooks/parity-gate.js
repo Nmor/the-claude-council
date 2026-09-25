@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Size budget: 8 KB. Check: wc -c; gate: token-budget.mjs --check.
 'use strict';
 
 // PostToolUse hook (matcher: Edit|Write|MultiEdit).
@@ -11,7 +12,7 @@
 // ship discovery filters in the same wave) is not silently skipped.
 //
 // Modes (env CLAUDE_PARITY_GATE):
-//   unset / "nudge"  -> NON-BLOCKING reminder on stderr, exit 0 (default)
+//   unset / "nudge"  -> NON-BLOCKING reminder next to the tool result, exit 0 (default)
 //   "off"            -> disabled (exit 0, silent)
 // There is no "block" mode: a wave-close is model-authored prose, not a tool call,
 // so this gates the observable proxy (the plan file's content) as a reminder only.
@@ -33,13 +34,16 @@ const CLOSE_SIGNAL = /(retrospective sweep|\b(wave|phase|part)\b[^\n]{0,60}(comp
 // The Step-6 artefact that must accompany a close.
 const PARITY_BLOCK = /competitive[\s-]?parity/i;
 
+const { advise } = require('./lib/advise.js');
+
 let data = '';
 process.stdin.on('data', (c) => { data += c; });
 process.stdin.on('end', () => {
   let warn = null;
+  let input = {};
   try {
     if (MODE === 'off') { process.exit(0); }
-    const input = JSON.parse(data || '{}');
+    input = JSON.parse(data || '{}');
     const file = (input.tool_input && input.tool_input.file_path) || '';
     const sid = input.session_id || '';
     if (!file || !sid) { process.exit(0); }
@@ -65,6 +69,6 @@ process.stdin.on('end', () => {
   } catch (err) {
     warn = `[parity-gate] skipped: ${err.message}`;
   }
-  if (warn) { process.stderr.write(warn + '\n'); }
+  advise(input, warn, 'PostToolUse');
   process.exit(0);
 });

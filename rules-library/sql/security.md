@@ -6,6 +6,8 @@
 > Cheat Sheet**, **CIS PostgreSQL / MySQL Benchmarks**,
 > **PostgreSQL Row-Level Security**, **PCI-DSS** (cardholder
 > data tables), **HIPAA** (PHI tables), **GDPR** (PII tables).
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

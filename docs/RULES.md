@@ -9,8 +9,9 @@
 
 ## Counts
 
-- **`rules/common/`** — 24 Floor rules (always-loaded every session,
-  ~240 KB; with `CLAUDE.md` that is ~260 KB / ~65,000 tokens per turn)
+- **`rules/common/`** — 26 Floor rules, always loaded. With `CLAUDE.md` that measured
+  297 KB / 74,322 tokens per turn on 2026-09-21. Quote it only after re-measuring:
+  `node scripts/token-budget.mjs`
 - **`rules-library/common/`** — 60 lazy-loaded universal rules
 - **`rules-library/<lang>/`** — 100 language rules across 18 subfolders
   (bash, cpp, csharp, dart, dockerfile, golang, html-css, java, kotlin,
@@ -42,6 +43,7 @@ language rules are listed under
 | [`task-intake-due-diligence.md`](../rules/common/task-intake-due-diligence.md) | Trigger-gated intake before any non-trivial task |
 | [`plan-task-breakdown.md`](../rules/common/plan-task-breakdown.md) | Long list of small atomic tasks; mandatory bloat-removal phase |
 | [`plan-execution-progress.md`](../rules/common/plan-execution-progress.md) | Structured per-phase progress updates |
+| [`one-plan-per-workspace.md`](../rules/common/one-plan-per-workspace.md) | One plan file per workspace, named by its memory's `Active plan:` line; new work enriches it (`one-plan-gate.js`) |
 | [`plan-completion-before-push.md`](../rules/common/plan-completion-before-push.md) | Active plan declares commit-policy; no push until plan complete |
 | [`verify-before-claim.md`](../rules/common/verify-before-claim.md) | Every completion claim preceded by same-turn verification |
 | [`validate-payloads-before-coding.md`](../rules/common/validate-payloads-before-coding.md) | Validate any external payload against the real contract before writing the code that produces / consumes it |
@@ -144,7 +146,7 @@ language rules are listed under
 | [`local-dev-setup.md`](../rules-library/common/local-dev-setup.md) | One bootstrap command; 30-minute first-run target |
 | [`project-scoped-artifacts.md`](../rules/common/project-scoped-artifacts.md) | Workspace `.claude/` scaffold on first significant work |
 | [`rule-authoring-global-vs-project.md`](../rules/common/rule-authoring-global-vs-project.md) | Classify global vs project before writing |
-| [`project-memory.md`](../rules/common/project-memory.md) | Gitignored `<workspace>/.claude/memory/MEMORY.md` that survives compaction |
+| [`project-memory.md`](../rules/common/project-memory.md) | Each project's durable facts in the memory Claude Code loads for it; its `MEMORY.md` names the active plan on one `Active plan:` line; the Stop gate refuses memory it can prove stale |
 | [`continuous-learning-mandate.md`](../rules/common/continuous-learning-mandate.md) | Every artifact has a learning loop |
 | [`git-workflow.md`](../rules-library/common/git-workflow.md) | Per-org git identity; conventional commits; PR workflow |
 | [`testing.md`](../rules-library/common/testing.md) | Coverage targets; test types; TDD mandate |

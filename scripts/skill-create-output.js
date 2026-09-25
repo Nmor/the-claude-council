@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Size budget: 10 KB. Check: wc -c; gate: token-budget.mjs --check.
 /**
  * Skill Creator - Pretty Output Formatter
  *

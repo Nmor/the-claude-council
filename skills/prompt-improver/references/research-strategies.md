@@ -1,6 +1,9 @@
 # Research Strategies for Context Gathering
 
-This reference provides systematic approaches for researching codebase context, best practices, and patterns before formulating clarifying questions.
+> **Size budget: 19 KB** — `token-budget.mjs --check`.
+
+This reference provides systematic approaches for researching codebase context, best practices, and
+patterns before formulating clarifying questions.
 
 ## Table of Contents
 
@@ -79,7 +82,8 @@ Summarize what you learned:
 
 ### Strategy 1: Pattern Discovery (Task/Explore Agent)
 
-**When to use:** Need to understand architecture, find similar implementations, or explore unknown territory
+**When to use:** Need to understand architecture, find similar implementations, or explore unknown
+territory
 
 **Approach:**
 
@@ -535,7 +539,7 @@ Research:
 
 ### Multi-Tool Research Patterns
 
-**Pattern 1: Architecture Discovery**
+#### Pattern 1: Architecture Discovery
 
 ```text
 1. Read: package.json (understand stack)
@@ -545,7 +549,7 @@ Research:
 5. Read: Representative files
 ```
 
-**Pattern 2: Implementation Approach**
+#### Pattern 2: Implementation Approach
 
 ```text
 1. Grep: Search for existing pattern
@@ -555,7 +559,7 @@ Research:
 5. Synthesize: Combine findings
 ```
 
-**Pattern 3: Bug Investigation**
+#### Pattern 3: Bug Investigation
 
 ```text
 1. Review: Conversation history for errors
@@ -687,4 +691,5 @@ Before asking questions:
 4. ALWAYS use conversation history first
 5. DOCUMENT research findings before asking
 
-Research is the foundation of effective clarification. The quality of your questions depends entirely on the thoroughness of your research.
+Research is the foundation of effective clarification. The quality of your questions depends
+entirely on the thoroughness of your research.

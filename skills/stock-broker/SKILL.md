@@ -5,17 +5,33 @@ description: Principal-level trade execution and broker workflow — order types
 
 # Stock Broker / Execution
 
+> **Size budget: 26 KB** — `token-budget.mjs --check`.
+
 ## Purpose
 
-The broker (registered representative on the retail side; execution trader on the institutional side) is the operational endpoint that converts an investment decision into actual settled positions in client accounts. The work spans pre-trade analysis (sizing, venue selection, expected market impact), live execution (order types, algos, dark pools, RFQs), post-trade reporting (TCA, settlement, reconciliation), regulatory compliance (best execution, suitability, KYC, AML, sanctions), and client communication. Done well, the broker minimises transaction costs (which compound destructively over portfolio horizon), executes within regulatory standards, and acts as a fiduciary to client interests. Done badly, the broker churns accounts, executes on conflicted venues, hides costs in spreads, and exposes the firm to regulatory enforcement and litigation.
+The broker (registered representative on the retail side; execution trader on the institutional
+side) is the operational endpoint that converts an investment decision into actual settled positions
+in client accounts. The work spans pre-trade analysis (sizing, venue selection, expected market
+impact), live execution (order types, algos, dark pools, RFQs), post-trade reporting (TCA,
+settlement, reconciliation), regulatory compliance (best execution, suitability, KYC, AML,
+sanctions), and client communication. Done well, the broker minimises transaction costs (which
+compound destructively over portfolio horizon), executes within regulatory standards, and acts as a
+fiduciary to client interests. Done badly, the broker churns accounts, executes on conflicted
+venues, hides costs in spreads, and exposes the firm to regulatory enforcement and litigation.
 
-This skill governs principal-level broker work: pre-trade cost estimation, venue + algorithm selection, live execution discipline, transaction cost analysis, settlement operations, regulatory compliance, suitability and KYC, and the broker-as-fiduciary mindset that builds long-term client relationships.
+This skill governs principal-level broker work: pre-trade cost estimation, venue + algorithm
+selection, live execution discipline, transaction cost analysis, settlement operations, regulatory
+compliance, suitability and KYC, and the broker-as-fiduciary mindset that builds long-term client
+relationships.
 
 ## Standards Cited
 
-- **Securities Exchange Act of 1934 §11A + SEC Regulation NMS (Reg NMS, 17 CFR §242.600-612)** — National Market System, Order Protection Rule, Access Rule
-- **FINRA Rule 5310 — Best Execution + Interpositioning** — broker's duty to seek best price + handling reasonable care
-- **FINRA Rule 2111 — Suitability** — reasonable basis, customer-specific, quantitative suitability tests
+- **Securities Exchange Act of 1934 §11A + SEC Regulation NMS (Reg NMS, 17 CFR §242.600-612)** —
+  National Market System, Order Protection Rule, Access Rule
+- **FINRA Rule 5310 — Best Execution + Interpositioning** — broker's duty to seek best price +
+  handling reasonable care
+- **FINRA Rule 2111 — Suitability** — reasonable basis, customer-specific, quantitative suitability
+  tests
 - **FINRA Rule 2090 — Know Your Customer (KYC)**
 - **SEC Rule 606 + Rule 605** — order routing disclosure + execution quality reporting
 - **SEC Rule 15c3-5 — Market Access Rule** — pre-trade risk controls
@@ -23,7 +39,8 @@ This skill governs principal-level broker work: pre-trade cost estimation, venue
 - **Bank Secrecy Act / USA PATRIOT Act + FinCEN AML Rule** — AML program, SARs, CTRs
 - **OFAC sanctions lists** — pre-trade sanctions screening
 - **NYSE Rule 80B + Reg SHO** — circuit breakers + short-sale locate / threshold lists
-- **Almgren-Chriss (2000) "Optimal Execution of Portfolio Transactions"** — transaction cost modelling
+- **Almgren-Chriss (2000) "Optimal Execution of Portfolio Transactions"** — transaction cost
+  modelling
 - **Kissell + Glantz (2003) "Optimal Trading Strategies"** — implementation shortfall framework
 
 ## When to Fire
@@ -99,7 +116,9 @@ pre_trade_checklist:
 | **Dark / Mid-Point Peg** | Hide intent; capture spread midpoint | Slower fills; cross venue when block matches |
 | **RFQ (request for quote)** | Block trade in OTC / fixed income | Information leakage risk; multiple dealer competition mitigates |
 
-The choice of order type is the broker's primary lever for managing transaction cost. Misuse: market orders for large blocks (impact crushes fill), stop orders that trigger on noise (whipsaw), VWAP across the entire day for an urgent order (carries overnight risk).
+The choice of order type is the broker's primary lever for managing transaction cost. Misuse: market
+orders for large blocks (impact crushes fill), stop orders that trigger on noise (whipsaw), VWAP
+across the entire day for an urgent order (carries overnight risk).
 
 ### Pattern 3: Transaction Cost Analysis (TCA)
 
@@ -148,7 +167,9 @@ def tca_report(trade: dict) -> dict:
     }
 ```
 
-TCA quarterly report by trader, by algorithm, by venue, by symbol. Use to identify systematic patterns: algorithms that consistently underperform, venues with poor fill quality, traders who over-trade. Best-execution committee reviews TCA at minimum quarterly.
+TCA quarterly report by trader, by algorithm, by venue, by symbol. Use to identify systematic
+patterns: algorithms that consistently underperform, venues with poor fill quality, traders who
+over-trade. Best-execution committee reviews TCA at minimum quarterly.
 
 ### Pattern 4: Best execution committee process
 
@@ -175,7 +196,9 @@ best_execution_committee:
     - 7+ year retention
 ```
 
-Best execution is a duty, not a result. Even when a single trade gets a bad fill, the question is whether the FRAMEWORK is reasonable — venue selection process, algorithm choice, broker discretion. Documentation is the defence.
+Best execution is a duty, not a result. Even when a single trade gets a bad fill, the question is
+whether the FRAMEWORK is reasonable — venue selection process, algorithm choice, broker discretion.
+Documentation is the defence.
 
 ### Pattern 5: Suitability + KYC
 
@@ -227,11 +250,14 @@ suitability_check_per_trade:
   quantitative: aggregate activity reasonable (turnover ratio 12%, well below excessive churning threshold)
 ```
 
-KYC + suitability are mandatory pre-trade. Failure produces FINRA enforcement actions, customer arbitration awards, and reputational damage. Annual refresh; trigger refresh on material life events.
+KYC + suitability are mandatory pre-trade. Failure produces FINRA enforcement actions, customer
+arbitration awards, and reputational damage. Annual refresh; trigger refresh on material life
+events.
 
 ### Pattern 6: Block trade execution
 
-Block trades (typically > 10% of ADV) require special handling — market impact can be catastrophic if displayed openly.
+Block trades (typically > 10% of ADV) require special handling — market impact can be catastrophic
+if displayed openly.
 
 ```text
 BLOCK EXECUTION PLAYBOOK
@@ -305,49 +331,67 @@ trade_lifecycle:
     - AML risk assessment review
 ```
 
-US equity settlement is T+1 as of May 28, 2024 (per SEC Rule 15c6-1 amendment). Other markets vary (T+2 in EU until October 2027 transition).
+US equity settlement is T+1 as of May 28, 2024 (per SEC Rule 15c6-1 amendment). Other markets vary
+(T+2 in EU until October 2027 transition).
 
 ## Anti-Patterns
 
 ### Anti-pattern 1: Front-running client orders
 
-The broker's own account (or affiliated proprietary trader) buys ahead of a known client order. FINRA Rule 5270 prohibits this. Career and firm-ending — both criminal and regulatory exposure.
+The broker's own account (or affiliated proprietary trader) buys ahead of a known client order.
+FINRA Rule 5270 prohibits this. Career and firm-ending — both criminal and regulatory exposure.
 
 ### Anti-pattern 2: Pre-arranged trading / wash sales
 
-Trading designed to create artificial volume or move price (e.g., to trigger client stop orders, or to support a position the firm holds). Both SEC enforcement and criminal exposure.
+Trading designed to create artificial volume or move price (e.g., to trigger client stop orders, or
+to support a position the firm holds). Both SEC enforcement and criminal exposure.
 
 ### Anti-pattern 3: Churning client accounts
 
-Excessive trading that generates commissions but doesn't fit client objectives. FINRA Rule 2111 quantitative suitability test (turnover ratio, cost-to-equity ratio). Reps measured on commission income alone produce churning patterns.
+Excessive trading that generates commissions but doesn't fit client objectives. FINRA Rule 2111
+quantitative suitability test (turnover ratio, cost-to-equity ratio). Reps measured on commission
+income alone produce churning patterns.
 
 ### Anti-pattern 4: Hidden mark-ups
 
-OTC bonds, IPO allocations, and structured products historically had hidden mark-ups (broker buys at $99, sells to client at $102 without disclosing). MSRB + FINRA now require disclosed mark-ups for many trades. Hiding mark-ups is fraud.
+OTC bonds, IPO allocations, and structured products historically had hidden mark-ups (broker buys at
+$99, sells to client at $102 without disclosing). MSRB + FINRA now require disclosed mark-ups for
+many trades. Hiding mark-ups is fraud.
 
 ### Anti-pattern 5: Ignoring PFOF (Payment for Order Flow) conflicts
 
-If the broker routes orders to a market maker that pays for flow, the broker has an incentive to route there regardless of execution quality. PFOF must be disclosed per Rule 606; the broker still owes best execution. Robinhood paid $65M SEC settlement (2020) on PFOF disclosure issues.
+If the broker routes orders to a market maker that pays for flow, the broker has an incentive to
+route there regardless of execution quality. PFOF must be disclosed per Rule 606; the broker still
+owes best execution. Robinhood paid $65M SEC settlement (2020) on PFOF disclosure issues.
 
 ### Anti-pattern 6: Stale KYC / suitability
 
-Client's circumstances changed (job loss, retirement, divorce, inheritance) but the file shows their state from 2018. Annual refresh + event-triggered refresh is mandatory. Stale KYC is the most common AML enforcement deficiency.
+Client's circumstances changed (job loss, retirement, divorce, inheritance) but the file shows their
+state from 2018. Annual refresh + event-triggered refresh is mandatory. Stale KYC is the most common
+AML enforcement deficiency.
 
 ### Anti-pattern 7: Inadequate sanctions screening
 
-Client is sanctioned (or has UBO that's sanctioned). Trade executes. The firm has just violated OFAC. Pre-trade sanctions screening on every order; ongoing monitoring of book.
+Client is sanctioned (or has UBO that's sanctioned). Trade executes. The firm has just violated
+OFAC. Pre-trade sanctions screening on every order; ongoing monitoring of book.
 
 ### Anti-pattern 8: Trading too aggressively in illiquid names
 
-A name that trades 50,000 shares/day cannot absorb a 200,000 share buy in a single day without 100+ bps of impact. Multi-day execution with patient algos required. Block desks + dark pools may be the only paths.
+A name that trades 50,000 shares/day cannot absorb a 200,000 share buy in a single day without 100+
+bps of impact. Multi-day execution with patient algos required. Block desks + dark pools may be the
+only paths.
 
 ### Anti-pattern 9: Forgetting tax considerations
 
-Client tax status drives execution (e.g., year-end tax-loss harvesting). FIFO vs HIFO lot selection affects realised gains. Wash-sale rule (30-day) constrains certain repurchases. Brokers who ignore tax can lose clients real money.
+Client tax status drives execution (e.g., year-end tax-loss harvesting). FIFO vs HIFO lot selection
+affects realised gains. Wash-sale rule (30-day) constrains certain repurchases. Brokers who ignore
+tax can lose clients real money.
 
 ### Anti-pattern 10: Trading the day's first / last 5 minutes for size
 
-First 5 minutes (open auction): wide spreads, news catch-up, volatility. Last 5 minutes (close auction): indexers rebalancing, flow imbalance. Both are EXPENSIVE for size; use auctions deliberately, not by accident.
+First 5 minutes (open auction): wide spreads, news catch-up, volatility. Last 5 minutes (close
+auction): indexers rebalancing, flow imbalance. Both are EXPENSIVE for size; use auctions
+deliberately, not by accident.
 
 ## Verification Checklist
 
@@ -374,30 +418,43 @@ First 5 minutes (open auction): wide spreads, news catch-up, volatility. Last 5 
 
 - `~/.claude/skills/portfolio-theory/SKILL.md` — portfolio decisions that produce orders
 - `~/.claude/skills/investment-research/SKILL.md` — research that drives decisions
-- `~/.claude/skills/investor-due-diligence/SKILL.md` — diligence on the broker's own venues + counterparties
+- `~/.claude/skills/investor-due-diligence/SKILL.md` — diligence on the broker's own venues +
+  counterparties
 - `~/.claude/skills/financial-analyst/SKILL.md` — analyst output that feeds PM decisions
 - `~/.claude/skills/valuation-models/SKILL.md` — fair-value reference for limit prices
 - `~/.claude/skills/bookkeeping-patterns/SKILL.md` — settlement booking + ledger posting
 - `~/.claude/skills/gdpr-ccpa-compliance/SKILL.md` — client data privacy
 - `~/.claude/skills/iso27001-controls/SKILL.md` — broker-dealer security controls
-- `~/.claude/rules-library/common/audit-logging.md` — order + execution + allocation audit trail (FINRA recordkeeping)
-- `~/.claude/rules/common/no-overclaim.md` — never promise "best price" — promise "best execution duty"
+- `~/.claude/rules-library/common/audit-logging.md` — order + execution + allocation audit trail
+  (FINRA recordkeeping)
+- `~/.claude/rules/common/no-overclaim.md` — never promise "best price" — promise "best execution
+  duty"
 
 ## Why This Skill Exists
 
 Failures in broker execution destroy client capital and firm reputation in well-documented ways:
 
-- **Knight Capital (August 2012)**: faulty algo deployment cost $460M in 45 minutes; firm acquired in distress
-- **Robinhood (2020)**: SEC enforcement on PFOF disclosure inadequacy ($65M settlement) and execution quality
-- **Charles Schwab (2022)**: $187M SEC settlement on robo-advisor disclosures and cash-allocation conflicts
+- **Knight Capital (August 2012)**: faulty algo deployment cost $460M in 45 minutes; firm acquired
+  in distress
+- **Robinhood (2020)**: SEC enforcement on PFOF disclosure inadequacy ($65M settlement) and
+  execution quality
+- **Charles Schwab (2022)**: $187M SEC settlement on robo-advisor disclosures and cash-allocation
+  conflicts
 - **Wells Fargo (multiple)**: Account-opening fraud + churning enforcement; billions in penalties
 - **MF Global (2011)**: Client funds commingled with proprietary; bankruptcy + client losses
 
-The discipline of pre-trade analysis + appropriate order types + TCA + best-execution governance + suitability + KYC + AML + settlement operations is what separates a fiduciary broker from a commission-extracting middleman. Costs that look invisible (a few basis points per trade) compound destructively across a portfolio's lifetime. Regulatory failures are enterprise-ending.
+The discipline of pre-trade analysis + appropriate order types + TCA + best-execution governance +
+suitability + KYC + AML + settlement operations is what separates a fiduciary broker from a
+commission-extracting middleman. Costs that look invisible (a few basis points per trade) compound
+destructively across a portfolio's lifetime. Regulatory failures are enterprise-ending.
 
-The broker who serves clients well — through transparency, fiduciary mindset, disciplined execution, and rigorous compliance — wins multi-decade relationships. The broker who treats clients as commission-source customers gets sued, fined, and barred. The choice is not subtle.
+The broker who serves clients well — through transparency, fiduciary mindset, disciplined execution,
+and rigorous compliance — wins multi-decade relationships. The broker who treats clients as
+commission-source customers gets sued, fined, and barred. The choice is not subtle.
 
-In a fragmented market with 16+ US equity exchanges, dozens of dark pools, retail wholesalers, and HFT market makers, the broker's ability to navigate is the differentiator. Operational excellence is the moat.
+In a fragmented market with 16+ US equity exchanges, dozens of dark pools, retail wholesalers, and
+HFT market makers, the broker's ability to navigate is the differentiator. Operational excellence is
+the moat.
 
 ## Compliance & Standards Mapping
 
@@ -442,6 +499,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New venue row when new exchange / dark pool comes online
-- New cross-reference when a sister skill (portfolio-theory, investment-research, financial-analyst) adds a broker gate
+- New cross-reference when a sister skill (portfolio-theory, investment-research, financial-analyst)
+  adds a broker gate
 - New compliance template when new regulation passes (e.g., SEC equity market structure rules)
 - Tightening of the best-ex policy when execution-quality regression recurs

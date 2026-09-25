@@ -5,23 +5,63 @@ description: Principal-level MLOps — feature stores, model registry, training 
 
 # MLOps Patterns
 
+> **Size budget: 26 KB** — `token-budget.mjs --check`.
+
 ## Purpose
 
-MLOps is the engineering discipline that takes a model from notebook to production and keeps it healthy across the long lifecycle of retraining, monitoring, drift, A/B testing, and eventual deprecation. Without MLOps, ML teams burn 60-80% of their time on glue code, debugging environment drift, manually retraining, chasing data quality issues, and explaining why the model's offline metrics no longer match production behaviour. With MLOps, models are software artefacts subject to the same discipline as any other production system: versioned in a registry, tested via CI, deployed via blue/green or canary, monitored via metrics + drift detectors, rolled back on regression. The discipline is operational, not statistical; the result is reliable ML systems that scale to many models and many teams.
+MLOps is the engineering discipline that takes a model from notebook to production and keeps it
+healthy across the long lifecycle of retraining, monitoring, drift, A/B testing, and eventual
+deprecation. Without MLOps, ML teams burn 60-80% of their time on glue code, debugging environment
+drift, manually retraining, chasing data quality issues, and explaining why the model's offline
+metrics no longer match production behaviour. With MLOps, models are software artefacts subject to
+the same discipline as any other production system: versioned in a registry, tested via CI, deployed
+via blue/green or canary, monitored via metrics + drift detectors, rolled back on regression. The
+discipline is operational, not statistical; the result is reliable ML systems that scale to many
+models and many teams.
 
-This skill governs the platform-side ML lifecycle: feature stores, training pipelines, model registry, packaging, deployment patterns, real-time vs batch inference, monitoring (data drift, prediction drift, performance drift, fairness drift), A/B testing, retraining triggers, and the cost / latency / safety controls that production ML demands.
+This skill governs the platform-side ML lifecycle: feature stores, training pipelines, model
+registry, packaging, deployment patterns, real-time vs batch inference, monitoring (data drift,
+prediction drift, performance drift, fairness drift), A/B testing, retraining triggers, and the cost
+/ latency / safety controls that production ML demands.
 
 ## Standards Cited
 
 - **Google "Rules of Machine Learning" (Zinkevich, ongoing)** — 43 operational ML rules
-- **Google "Hidden Technical Debt in Machine Learning Systems" (Sculley et al., NeurIPS 2015)** — landmark paper on ML system debt
-- **Microsoft "Software Engineering for Machine Learning" (Amershi et al., 2019)** — engineering practices
+- **Google "Hidden Technical Debt in Machine Learning Systems" (Sculley et al., NeurIPS 2015)** —
+  landmark paper on ML system debt
+- **Microsoft "Software Engineering for Machine Learning" (Amershi et al., 2019)** — engineering
+  practices
 - **ML Test Score (Breck et al., 2017)** — operational ML testing rubric
-- **Continuous Delivery for Machine Learning (Sato + Wider + Windheuser, 2019, ThoughtWorks)** — CD4ML framework
+- **Continuous Delivery for Machine Learning (Sato + Wider + Windheuser, 2019, ThoughtWorks)** —
+  CD4ML framework
 - **MLflow + Weights & Biases + Neptune + DVC** — standard tools
 - **Kubeflow / Vertex AI / SageMaker / Databricks** — managed platforms
 - **Feast + Tecton + Hopsworks** — feature stores
 - **NIST AI RMF 1.0 (2023) + EU AI Act + Anthropic Responsible Scaling Policy**
+
+- **NIST AI RMF 1.0** — AI risk management framework (Govern / Map /
+  Measure / Manage functions; MEASURE 2 covers model evaluation)
+- **NIST SP 800-218A SSDF for AI** — Secure Software Development
+  Framework profile for AI models (§PW.4, §PW.6, §PW.8)
+- **NIST SP 800-53 Rev 5 §SI-4, §SI-7** — Information system
+  monitoring + software integrity (applies to model + dataset
+  artifacts)
+- **ISO/IEC 23053:2022 §7** — Framework for AI systems using ML
+- **ISO/IEC 23894:2023** — AI risk management
+- **ISO/IEC 42001:2023** — AI management system requirements
+- **OWASP Top 10 for LLM Applications (2025)** — LLM01 Prompt
+  Injection, LLM02 Sensitive Information Disclosure, LLM06
+  Excessive Agency, LLM09 Misinformation, LLM10 Unbounded
+  Consumption
+- **OWASP ML Top 10 (2023)** — ML01-ML10 (adversarial inputs,
+  data poisoning, model inversion, etc.)
+- **CWE-1039** — Automated recognition mechanism with inadequate
+  detection or handling of adversarial input perturbations
+- **CWE-1426** — Improper validation of generative AI output
+- **EU AI Act (Regulation 2024/1689)** — risk-based obligations
+  for general-purpose AI models + high-risk systems
+- **`~/.claude/rules/common/council-triggers.md`** (Division 15) — bias,
+  fairness, dataset provenance, human-in-the-loop gates
 
 ## When to Fire
 
@@ -66,7 +106,8 @@ This skill governs the platform-side ML lifecycle: feature stores, training pipe
 └────────────────────────────────────────────────────────────┘
 ```
 
-Don't build all layers yourself. For most teams: cloud-managed (SageMaker, Vertex, Databricks ML) handles 80% of needs at lower TCO than custom Kubeflow.
+Don't build all layers yourself. For most teams: cloud-managed (SageMaker, Vertex, Databricks ML)
+handles 80% of needs at lower TCO than custom Kubeflow.
 
 ### Pattern 2: Feature store — train/serve consistency
 
@@ -102,7 +143,9 @@ features = store.get_online_features(
 ).to_dict()
 ```
 
-The feature store solves training-serving skew: the SAME logic computes features for offline training and online inference. Point-in-time correctness is critical — training features must reflect what would have been known at decision time, not after.
+The feature store solves training-serving skew: the SAME logic computes features for offline
+training and online inference. Point-in-time correctness is critical — training features must
+reflect what would have been known at decision time, not after.
 
 ### Pattern 3: Training pipeline as code
 
@@ -246,7 +289,8 @@ def should_retrain(monitoring: dict) -> tuple[bool, str]:
     return False, "no_trigger"
 ```
 
-Don't retrain on a fixed cadence alone — retrain when SIGNALS demand it. Otherwise compute waste compounds.
+Don't retrain on a fixed cadence alone — retrain when SIGNALS demand it. Otherwise compute waste
+compounds.
 
 ### Pattern 8: Rollback discipline
 
@@ -271,45 +315,60 @@ rollback_protocol:
   rollback_time_target_minutes: 5
 ```
 
-Every production model MUST have a pre-tested rollback path. The "we'll figure it out if it breaks" approach destroys customer trust during the inevitable first incident.
+Every production model MUST have a pre-tested rollback path. The "we'll figure it out if it breaks"
+approach destroys customer trust during the inevitable first incident.
 
 ## Anti-Patterns
 
 ### Anti-pattern 1: Notebook-to-production via copy-paste
 
-Data scientist's notebook imported to production handler. No tests, no versioning, no reproducibility. The model that scored 0.87 in the notebook scores 0.72 in production due to environment differences.
+Data scientist's notebook imported to production handler. No tests, no versioning, no
+reproducibility. The model that scored 0.87 in the notebook scores 0.72 in production due to
+environment differences.
 
 ### Anti-pattern 2: No feature store, train-serve skew
 
-Training features computed via Pandas + offline SQL; serving features computed via real-time stream. Subtle differences in null handling, time zones, default values. Production accuracy silently lower than offline metrics.
+Training features computed via Pandas + offline SQL; serving features computed via real-time stream.
+Subtle differences in null handling, time zones, default values. Production accuracy silently lower
+than offline metrics.
 
 ### Anti-pattern 3: Manual deployment
 
-Engineer SSHs into prod box, copies a pickle file, restarts the service. No versioning, no audit, no rollback. Standard practice in 2014; malpractice in 2026.
+Engineer SSHs into prod box, copies a pickle file, restarts the service. No versioning, no audit, no
+rollback. Standard practice in 2014; malpractice in 2026.
 
 ### Anti-pattern 4: No monitoring after deployment
 
-Model deployed. Six months later, accuracy is 40% lower than launch, but nobody noticed because no monitoring was in place. Drift wasn't detected; retraining wasn't triggered.
+Model deployed. Six months later, accuracy is 40% lower than launch, but nobody noticed because no
+monitoring was in place. Drift wasn't detected; retraining wasn't triggered.
 
 ### Anti-pattern 5: Ignoring label delay
 
-Fraud model trained on data from 90 days ago because that's when labels mature. Deployed today. Drift detector compares today's input distribution to 90-day-old training distribution — false positive drift alerts. Properly account for label delay in drift detection.
+Fraud model trained on data from 90 days ago because that's when labels mature. Deployed today.
+Drift detector compares today's input distribution to 90-day-old training distribution — false
+positive drift alerts. Properly account for label delay in drift detection.
 
 ### Anti-pattern 6: Conflating prediction logging with feature logging
 
-Only logging model outputs but not the input features. Six months later you can't reproduce a misprediction because the features that produced it aren't available. Log BOTH (sample if volume is too high).
+Only logging model outputs but not the input features. Six months later you can't reproduce a
+misprediction because the features that produced it aren't available. Log BOTH (sample if volume is
+too high).
 
 ### Anti-pattern 7: Catastrophic A/B test design
 
-A/B test results show treatment beats control 0.5% on click-through rate. P-value 0.04. Ship. Reality: multiple comparisons across 8 metrics, peeking at results daily, no proper sample-size calculation. False positive ships; production metric doesn't move.
+A/B test results show treatment beats control 0.5% on click-through rate. P-value 0.04. Ship.
+Reality: multiple comparisons across 8 metrics, peeking at results daily, no proper sample-size
+calculation. False positive ships; production metric doesn't move.
 
 ### Anti-pattern 8: No fairness monitoring
 
-Hiring model live for 18 months. Plaintiff lawsuit. Discovery shows protected-attribute disparities grew steadily. Pre-commit fairness budget + monitoring would have flagged at month 3.
+Hiring model live for 18 months. Plaintiff lawsuit. Discovery shows protected-attribute disparities
+grew steadily. Pre-commit fairness budget + monitoring would have flagged at month 3.
 
 ### Anti-pattern 9: Same model behind every prediction
 
-Different user segments have different needs. Single monolithic model under-serves the minorities. Segment-aware models or ensembles often work better.
+Different user segments have different needs. Single monolithic model under-serves the minorities.
+Segment-aware models or ensembles often work better.
 
 ## Verification Checklist
 
@@ -326,7 +385,8 @@ Different user segments have different needs. Single monolithic model under-serv
 - [ ] Cost per 1k predictions tracked + budgeted
 - [ ] Inference latency p99 within SLO
 - [ ] Feature freshness monitored
-- [ ] Model cards published + maintained per `~/.claude/rules/common/task-intake-due-diligence.md` Q24
+- [ ] Model cards published + maintained per `~/.claude/rules/common/task-intake-due-diligence.md`
+  Q24
 - [ ] Fairness audit on cadence; results reviewed by ethics committee
 - [ ] A/B test design pre-registered (sample size, primary metric, stop rule)
 - [ ] On-call runbook for ML incidents
@@ -337,15 +397,20 @@ Different user segments have different needs. Single monolithic model under-serv
 - `~/.claude/skills/ml-model-selection/SKILL.md` — model choice upstream of deployment
 - `~/.claude/skills/rag-design/SKILL.md` — RAG-specific deployment patterns
 - `~/.claude/skills/fine-tuning-workflows/SKILL.md` — fine-tuning operational concerns
-- `~/.claude/skills/observability-patterns/SKILL.md` — general observability that ML monitoring layers onto
+- `~/.claude/skills/observability-patterns/SKILL.md` — general observability that ML monitoring
+  layers onto
 - `~/.claude/skills/cost-aware-llm-pipeline/SKILL.md` — cost discipline for LLM workloads
 - `~/.claude/skills/aws-serverless-patterns/SKILL.md` — Lambda deployment for low-cost inference
 - `~/.claude/rules-library/common/runbook-template.md` — incident response
-- `~/.claude/rules-library/common/deploy-failures-become-checks.md` — every ML deploy failure becomes a pre-deploy check
+- `~/.claude/rules-library/common/deploy-failures-become-checks.md` — every ML deploy failure
+  becomes a pre-deploy check
 
 ## Why This Skill Exists
 
-The 2015 Google "Hidden Technical Debt in Machine Learning Systems" paper identified the core problem: in production ML, the model code is 5% of the system. The other 95% — feature stores, pipelines, monitoring, retraining, rollback — determines whether ML actually works at scale. Without MLOps discipline:
+The 2015 Google "Hidden Technical Debt in Machine Learning Systems" paper identified the core
+problem: in production ML, the model code is 5% of the system. The other 95% — feature stores,
+pipelines, monitoring, retraining, rollback — determines whether ML actually works at scale. Without
+MLOps discipline:
 
 - Models silently degrade over months
 - Training pipelines break and nobody notices for weeks
@@ -354,33 +419,10 @@ The 2015 Google "Hidden Technical Debt in Machine Learning Systems" paper identi
 - Cost balloons (idle GPUs, redundant retraining, oversized inference fleets)
 - Incidents have no rollback path
 
-MLOps maturity is the difference between teams that ship 1 model and rebuild it constantly versus teams that ship 50 models and maintain them sustainably. The investment in platform infrastructure pays back across every subsequent model. The team that builds the platform first ships more, ships faster, and sleeps better.
-
-## Standards Cited
-
-- **NIST AI RMF 1.0** — AI risk management framework (Govern / Map /
-  Measure / Manage functions; MEASURE 2 covers model evaluation)
-- **NIST SP 800-218A SSDF for AI** — Secure Software Development
-  Framework profile for AI models (§PW.4, §PW.6, §PW.8)
-- **NIST SP 800-53 Rev 5 §SI-4, §SI-7** — Information system
-  monitoring + software integrity (applies to model + dataset
-  artifacts)
-- **ISO/IEC 23053:2022 §7** — Framework for AI systems using ML
-- **ISO/IEC 23894:2023** — AI risk management
-- **ISO/IEC 42001:2023** — AI management system requirements
-- **OWASP Top 10 for LLM Applications (2025)** — LLM01 Prompt
-  Injection, LLM02 Sensitive Information Disclosure, LLM06
-  Excessive Agency, LLM09 Misinformation, LLM10 Unbounded
-  Consumption
-- **OWASP ML Top 10 (2023)** — ML01-ML10 (adversarial inputs,
-  data poisoning, model inversion, etc.)
-- **CWE-1039** — Automated recognition mechanism with inadequate
-  detection or handling of adversarial input perturbations
-- **CWE-1426** — Improper validation of generative AI output
-- **EU AI Act (Regulation 2024/1689)** — risk-based obligations
-  for general-purpose AI models + high-risk systems
-- **`~/.claude/rules/common/council-triggers.md`** (Division 15) — bias,
-  fairness, dataset provenance, human-in-the-loop gates
+MLOps maturity is the difference between teams that ship 1 model and rebuild it constantly versus
+teams that ship 50 models and maintain them sustainably. The investment in platform infrastructure
+pays back across every subsequent model. The team that builds the platform first ships more, ships
+faster, and sleeps better.
 
 ## Learning hooks
 
@@ -402,6 +444,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New deployment-pattern row when a new serving infra ships (e.g., vLLM, Triton)
-- New cross-reference when a sister skill (ml-model-selection, rag-design, observability-patterns) adds a MLOps gate
+- New cross-reference when a sister skill (ml-model-selection, rag-design, observability-patterns)
+  adds a MLOps gate
 - New rollback template per model class (online inference, batch scoring, recommendation)
 - Tightening of the drift-monitoring policy when silent-decay incident recurs

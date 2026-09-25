@@ -5,24 +5,42 @@ description: Principal-level investment research methodology — thesis developm
 
 # Investment Research
 
+> **Size budget: 25 KB** — `token-budget.mjs --check`.
+
 ## Purpose
 
-Investment research turns published filings, channel checks, expert interviews, and observable market data into a defensible thesis about a security's mispricing. The output is a research note: a one-line recommendation backed by 10-40 pages of analysis, model output, risk identification, and post-publication monitoring plan. Principal-level research is disciplined — every assertion is sourced, every model assumption is justified, every counter-argument is documented and addressed, and every recommendation is monitored for thesis breakage. Amateur research is conviction without sources, narrative without model, and entry without exit plan.
+Investment research turns published filings, channel checks, expert interviews, and observable
+market data into a defensible thesis about a security's mispricing. The output is a research note: a
+one-line recommendation backed by 10-40 pages of analysis, model output, risk identification, and
+post-publication monitoring plan. Principal-level research is disciplined — every assertion is
+sourced, every model assumption is justified, every counter-argument is documented and addressed,
+and every recommendation is monitored for thesis breakage. Amateur research is conviction without
+sources, narrative without model, and entry without exit plan.
 
-This skill governs the full research lifecycle: idea generation, hypothesis framing, primary + secondary data collection, financial modelling, valuation triangulation (via the `valuation-models` skill), risk register, counter-thesis enumeration, publication, and post-publication monitoring against the breakage indicators identified pre-trade.
+This skill governs the full research lifecycle: idea generation, hypothesis framing, primary +
+secondary data collection, financial modelling, valuation triangulation (via the `valuation-models`
+skill), risk register, counter-thesis enumeration, publication, and post-publication monitoring
+against the breakage indicators identified pre-trade.
 
 ## Standards Cited
 
-- **CFA Institute Body of Knowledge — Equity Investments + Fixed Income** (2026 edition) — fundamental analysis framework, financial statement analysis
-- **CFA Institute Code of Ethics + Standards of Professional Conduct** + **Asset Manager Code** — research independence, disclosure of conflicts, integrity of capital markets
-- **SEC Regulation Fair Disclosure (Reg FD, 17 CFR §243.100-243.103)** — selective disclosure prohibition; equal access
+- **CFA Institute Body of Knowledge — Equity Investments + Fixed Income** (2026 edition) —
+  fundamental analysis framework, financial statement analysis
+- **CFA Institute Code of Ethics + Standards of Professional Conduct** + **Asset Manager Code** —
+  research independence, disclosure of conflicts, integrity of capital markets
+- **SEC Regulation Fair Disclosure (Reg FD, 17 CFR §243.100-243.103)** — selective disclosure
+  prohibition; equal access
 - **MiFID II Article 24** — research unbundling; explicit research payments separated from execution
 - **FINRA Rule 2241** — research analyst conflicts of interest, communication standards
-- **AICPA SAS 145 + PCAOB AS 2110** — risk assessment in financial statements (informs analyst's audit-quality review)
-- **Penman "Financial Statement Analysis and Security Valuation" 5e** — accruals, residual income, abnormal earnings
-- **Greenblatt "You Can Be a Stock Market Genius"** + **Klarman "Margin of Safety"** — special-situation framework
+- **AICPA SAS 145 + PCAOB AS 2110** — risk assessment in financial statements (informs analyst's
+  audit-quality review)
+- **Penman "Financial Statement Analysis and Security Valuation" 5e** — accruals, residual income,
+  abnormal earnings
+- **Greenblatt "You Can Be a Stock Market Genius"** + **Klarman "Margin of Safety"** —
+  special-situation framework
 - **Mauboussin "More Than You Know" + "The Success Equation"** — base rates, expectations investing
-- **Damodaran "Narrative and Numbers"** (2017, Columbia Business School Press) — bridging story to spreadsheet
+- **Damodaran "Narrative and Numbers"** (2017, Columbia Business School Press) — bridging story to
+  spreadsheet
 
 ## When to Fire
 
@@ -32,9 +50,11 @@ This skill governs the full research lifecycle: idea generation, hypothesis fram
 - Capital markets day, analyst day, investor day — multi-hour management presentations
 - Strategic event — M&A announced, spin-off proposed, restructuring announced
 - Industry event — major regulation, competitor's disruption, supply shock
-- Risk event — short report published, accounting concern raised, executive departure, regulatory inquiry
+- Risk event — short report published, accounting concern raised, executive departure, regulatory
+  inquiry
 - Quarterly portfolio review — re-rate every holding against current price
-- Thesis-breakage trigger fired — pre-defined indicator (revenue miss, margin compression, customer concentration) materialised
+- Thesis-breakage trigger fired — pre-defined indicator (revenue miss, margin compression, customer
+  concentration) materialised
 
 ## Core Patterns
 
@@ -84,11 +104,13 @@ ENTRY PLAN: 50% now, 25% at $135, 25% at $128
 EXIT PLAN: Trim at $185 (target); sell at $200 (above range); sell at $115 (thesis-break)
 ```
 
-The one-pager is the discipline. If the thesis can't be stated this concisely, the analyst doesn't understand it well enough to size it.
+The one-pager is the discipline. If the thesis can't be stated this concisely, the analyst doesn't
+understand it well enough to size it.
 
 ### Pattern 2: Primary research — go beyond filings
 
-Read the 10-K, 10-Q, 8-K, proxy, annual reports of every issuer in scope. But filings are necessary, not sufficient. The differentiated edge comes from primary research:
+Read the 10-K, 10-Q, 8-K, proxy, annual reports of every issuer in scope. But filings are necessary,
+not sufficient. The differentiated edge comes from primary research:
 
 | Source | What it gives |
 | --- | --- |
@@ -103,7 +125,10 @@ Read the 10-K, 10-Q, 8-K, proxy, annual reports of every issuer in scope. But fi
 | **Patent filings** (USPTO, EPO) | Tech direction, IP defensibility |
 | **FOIA + regulatory submissions** | FDA approval timelines, drug trial data, environmental compliance |
 
-Compliance: NEVER trade on Material Non-Public Information (MNPI). Channel checks must respect Reg FD — get information from the broader ecosystem (suppliers, customers, competitors) but never from a company insider who hasn't already publicly disclosed it. Document every expert call: source, date, topic, no MNPI signed off.
+Compliance: NEVER trade on Material Non-Public Information (MNPI). Channel checks must respect Reg
+FD — get information from the broader ecosystem (suppliers, customers, competitors) but never from a
+company insider who hasn't already publicly disclosed it. Document every expert call: source, date,
+topic, no MNPI signed off.
 
 ### Pattern 3: Financial model — audit-quality
 
@@ -144,7 +169,9 @@ SECTION 5: SCENARIOS
 - Probability-weighted expected value
 ```
 
-Every cell in the spreadsheet should be auditable: blue cells are inputs (sourced), black cells are formulas, NO cells are hardcoded over formulas. Versions saved with date stamps; the live model is a SINGLE source of truth.
+Every cell in the spreadsheet should be auditable: blue cells are inputs (sourced), black cells are
+formulas, NO cells are hardcoded over formulas. Versions saved with date stamps; the live model is a
+SINGLE source of truth.
 
 ### Pattern 4: Risk register — name every risk before publication
 
@@ -199,11 +226,14 @@ risks:
     monitoring_signal: DSO above 75 days; auditor change; SEC comment letters
 ```
 
-A research note without an explicit risk register is incomplete. Risks aren't disqualifiers — they're inputs to position sizing.
+A research note without an explicit risk register is incomplete. Risks aren't disqualifiers —
+they're inputs to position sizing.
 
 ### Pattern 5: Counter-thesis — argue the other side
 
-Every long thesis has a bear case; every short thesis has a bull case. The analyst must articulate the counter-thesis at the level of detail of someone who actually believes it. If the bear case can't be summarised in 5 bullets, the analyst hasn't done the work.
+Every long thesis has a bear case; every short thesis has a bull case. The analyst must articulate
+the counter-thesis at the level of detail of someone who actually believes it. If the bear case
+can't be summarised in 5 bullets, the analyst hasn't done the work.
 
 ```text
 BEAR THESIS (Acme Corp):
@@ -230,49 +260,69 @@ A research note is not a one-time event. Once published, monitor the leading ind
 - Quarterly: earnings prints — model update, KPI track, thesis re-confirm
 - Triggered: 8-K filings, news events, sector rotations, macro changes
 
-When a thesis breaker fires, the recommendation is updated within 24 hours — not "let's see how next quarter plays out." Discipline.
+When a thesis breaker fires, the recommendation is updated within 24 hours — not "let's see how next
+quarter plays out." Discipline.
 
 ## Anti-Patterns
 
 ### Anti-pattern 1: Confirmation bias
 
-Once invested, the analyst seeks data confirming the thesis and ignores contradicting evidence. Mitigations: pre-commit thesis breakers in writing; have a sceptical peer review; rotate to a different sector annually to break psychological anchoring.
+Once invested, the analyst seeks data confirming the thesis and ignores contradicting evidence.
+Mitigations: pre-commit thesis breakers in writing; have a sceptical peer review; rotate to a
+different sector annually to break psychological anchoring.
 
 ### Anti-pattern 2: Narrative over numbers
 
-"The company is the leader in AI and trades at a premium because the future is AI" — vague narrative without specific demand, pricing, margin, capital model. Damodaran's "Narrative and Numbers" is the antidote: every narrative element should map to a model input.
+"The company is the leader in AI and trades at a premium because the future is AI" — vague narrative
+without specific demand, pricing, margin, capital model. Damodaran's "Narrative and Numbers" is the
+antidote: every narrative element should map to a model input.
 
 ### Anti-pattern 3: Inadequate primary research
 
-Reading filings and a few sell-side notes ≠ research. Differentiated edge requires primary work — channel checks, expert calls, alternative data. Without it, the analyst is repeating consensus and paying active fees for index returns.
+Reading filings and a few sell-side notes ≠ research. Differentiated edge requires primary work —
+channel checks, expert calls, alternative data. Without it, the analyst is repeating consensus and
+paying active fees for index returns.
 
 ### Anti-pattern 4: Hidden conflicts of interest
 
-Analyst's spouse owns the stock. Analyst's brokerage relationship with company. Analyst's investment in private placement. Per CFA Code + FINRA Rule 2241, conflicts must be disclosed at note level. Failure to disclose is career-ending.
+Analyst's spouse owns the stock. Analyst's brokerage relationship with company. Analyst's investment
+in private placement. Per CFA Code + FINRA Rule 2241, conflicts must be disclosed at note level.
+Failure to disclose is career-ending.
 
 ### Anti-pattern 5: Recency bias on macro
 
-Modelling next year's macro as last year's macro. Markets rotate; mean-reversion is the strongest empirical signal. Stress-test against historical recessions, expansions, oil shocks, rate-hike cycles.
+Modelling next year's macro as last year's macro. Markets rotate; mean-reversion is the strongest
+empirical signal. Stress-test against historical recessions, expansions, oil shocks, rate-hike
+cycles.
 
 ### Anti-pattern 6: No exit plan
 
-Buy at $142 with TP $185 but no published trim plan. When the stock rips to $200, the analyst rationalises holding. The pre-committed trim plan is what locks in gains.
+Buy at $142 with TP $185 but no published trim plan. When the stock rips to $200, the analyst
+rationalises holding. The pre-committed trim plan is what locks in gains.
 
 ### Anti-pattern 7: Anchoring to entry price
 
-"I bought at $142; it's now $120; let me hold until it returns to my cost basis." The market does not care about your cost basis. Hold/sell decisions are made on prospective return from CURRENT price vs alternatives, not on prior decisions.
+"I bought at $142; it's now $120; let me hold until it returns to my cost basis." The market does
+not care about your cost basis. Hold/sell decisions are made on prospective return from CURRENT
+price vs alternatives, not on prior decisions.
 
 ### Anti-pattern 8: Underestimating accounting complexity
 
-Revenue recognition under ASC 606 / IFRS 15, lease accounting under ASC 842 / IFRS 16, equity-method investments, segment reporting changes, restructuring charges, one-time items. Misreading the financials produces wrong inputs to the model. When in doubt, read the actual accounting standard plus the auditor's report.
+Revenue recognition under ASC 606 / IFRS 15, lease accounting under ASC 842 / IFRS 16, equity-method
+investments, segment reporting changes, restructuring charges, one-time items. Misreading the
+financials produces wrong inputs to the model. When in doubt, read the actual accounting standard
+plus the auditor's report.
 
 ### Anti-pattern 9: Ignoring base rates
 
-"This management team will execute the turnaround." Base rate for management turnarounds: ~20% success over 5 years. Build the bear case at base rate; require evidence to deviate from base rate.
+"This management team will execute the turnaround." Base rate for management turnarounds: ~20%
+success over 5 years. Build the bear case at base rate; require evidence to deviate from base rate.
 
 ### Anti-pattern 10: Failing to update on new information
 
-Quarter prints; thesis-relevant data emerges; analyst doesn't update the model or the note. The stale note becomes a misleading artifact. Standard: every material event triggers a note update within 24-48 hours.
+Quarter prints; thesis-relevant data emerges; analyst doesn't update the model or the note. The
+stale note becomes a misleading artifact. Standard: every material event triggers a note update
+within 24-48 hours.
 
 ## Verification Checklist
 
@@ -280,7 +330,8 @@ Quarter prints; thesis-relevant data emerges; analyst doesn't update the model o
 - [ ] Recommendation, TP, upside/downside, time horizon specified
 - [ ] At least 3 primary research sources (not just filings + sell-side)
 - [ ] Financial model auditable: inputs sourced, formulas not overwritten
-- [ ] Valuation triangulated via at least 3 methods (per `~/.claude/skills/valuation-models/SKILL.md`)
+- [ ] Valuation triangulated via at least 3 methods (per
+  `~/.claude/skills/valuation-models/SKILL.md`)
 - [ ] Risk register names 5-10 risks with likelihood, impact, monitoring signals
 - [ ] Counter-thesis articulated with 5+ specific arguments
 - [ ] Thesis breakers defined in writing — pre-trade
@@ -300,21 +351,32 @@ Quarter prints; thesis-relevant data emerges; analyst doesn't update the model o
 - `~/.claude/skills/investor-due-diligence/SKILL.md` — manager / fund / private-company diligence
 - `~/.claude/skills/financial-analyst/SKILL.md` — analyst workflow underlying the research note
 - `~/.claude/skills/stock-broker/SKILL.md` — execution venue + transaction-cost analysis
-- `~/.claude/skills/ifrs-gaap-reporting/SKILL.md` — accounting standards underlying financial statements
+- `~/.claude/skills/ifrs-gaap-reporting/SKILL.md` — accounting standards underlying financial
+  statements
 - `~/.claude/skills/fp-and-a/SKILL.md` — operating metrics consumed by the model
 - `~/.claude/rules/common/no-overclaim.md` — recommendations are HYPOTHESES, not certainties
 
 ## Why This Skill Exists
 
-Sell-side and buy-side research that is shallow, undisciplined, or conflicted destroys investor capital. Empirical evidence:
+Sell-side and buy-side research that is shallow, undisciplined, or conflicted destroys investor
+capital. Empirical evidence:
 
-- Murphy + McCallum + Berton (2018, Journal of Financial Economics) — analyst recommendations have positive but modest predictive power; "buy" recommendations on conflicted broker pairs underperform
-- SPIVA reports — most active funds underperform their benchmark over 10-year horizons; the underperformance is largely driven by costs that the research process should overcome but often doesn't
-- Behavioural research (Kahneman, Tversky, Thaler) — analysts (like everyone) suffer from anchoring, recency, confirmation bias, overconfidence
+- Murphy + McCallum + Berton (2018, Journal of Financial Economics) — analyst recommendations have
+  positive but modest predictive power; "buy" recommendations on conflicted broker pairs
+  underperform
+- SPIVA reports — most active funds underperform their benchmark over 10-year horizons; the
+  underperformance is largely driven by costs that the research process should overcome but often
+  doesn't
+- Behavioural research (Kahneman, Tversky, Thaler) — analysts (like everyone) suffer from anchoring,
+  recency, confirmation bias, overconfidence
 
-The discipline of one-page thesis + primary research + audit-quality model + risk register + counter-thesis + thesis breakers + post-publication monitoring is what separates institutional research from speculation. Done at scale across hundreds of analysts, this discipline is how value-add active management exists. Without it, active management is just expensive index-tracking.
+The discipline of one-page thesis + primary research + audit-quality model + risk register +
+counter-thesis + thesis breakers + post-publication monitoring is what separates institutional
+research from speculation. Done at scale across hundreds of analysts, this discipline is how
+value-add active management exists. Without it, active management is just expensive index-tracking.
 
-Edge in research is RARE. The analyst who doesn't believe edge is rare hasn't been in the business long enough.
+Edge in research is RARE. The analyst who doesn't believe edge is rare hasn't been in the business
+long enough.
 
 ## Compliance & Standards Mapping
 
@@ -359,6 +421,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 **Refinement candidates**:
 
 - New thesis-template row when a new asset class becomes coverage
-- New cross-reference when a sister skill (financial-analyst, valuation-models, investor-due-diligence) adds a research gate
+- New cross-reference when a sister skill (financial-analyst, valuation-models,
+  investor-due-diligence) adds a research gate
 - Tightening of the catalyst-discipline policy when soft-thesis regression recurs
 - New post-publication monitoring template when stale-thesis pattern emerges

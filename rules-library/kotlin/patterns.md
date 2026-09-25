@@ -4,6 +4,8 @@
 > Kotlin (Marcin Moskała)**, **Spring Boot 3.x reference**, **Ktor
 > docs**, **Android Architecture Components**, **Jetpack Compose
 > guidelines**.
+>
+> **Size budget: 8 KB** — `token-budget.mjs --check`.
 
 ## Core Principle
 

@@ -1,6 +1,9 @@
 # Question Patterns for Effective Clarification
 
-This reference provides templates, patterns, and best practices for formulating clarifying questions that are grounded in research and lead to actionable answers.
+> **Size budget: 22 KB** — `token-budget.mjs --check`.
+
+This reference provides templates, patterns, and best practices for formulating clarifying questions
+that are grounded in research and lead to actionable answers.
 
 ## Table of Contents
 
@@ -125,8 +128,10 @@ Before formulating questions, verify:
 - Include trade-offs or implications
 - Provide context for decision-making
 - Examples:
-  - "Stateless authentication using JWT access tokens (short-lived) and refresh tokens (stored securely). Best for distributed systems."
-  - "Server-side session storage using Redis. Simpler but requires sticky sessions or shared session store."
+  - "Stateless authentication using JWT access tokens (short-lived) and refresh tokens (stored
+    securely). Best for distributed systems."
+  - "Server-side session storage using Redis. Simpler but requires sticky sessions or shared session
+    store."
 
 ## Question Templates by Category
 
@@ -134,7 +139,7 @@ Before formulating questions, verify:
 
 **When:** Unclear which file, function, or component to modify
 
-**Template 1: File Selection**
+#### Template 1: File Selection
 
 ```json
 {
@@ -158,7 +163,7 @@ Before formulating questions, verify:
 }
 ```
 
-**Template 2: Function/Method Selection**
+#### Template 2: Function/Method Selection
 
 ```json
 {
@@ -186,7 +191,7 @@ Before formulating questions, verify:
 
 **When:** Target is clear, but implementation approach is ambiguous
 
-**Template 1: Technical Approach**
+#### Template 1: Technical Approach
 
 ```json
 {
@@ -210,7 +215,7 @@ Before formulating questions, verify:
 }
 ```
 
-**Template 2: Architectural Pattern**
+#### Template 2: Architectural Pattern
 
 ```json
 {
@@ -238,7 +243,7 @@ Before formulating questions, verify:
 
 **When:** Unclear how much work should be done
 
-**Template 1: Feature Scope**
+#### Template 1: Feature Scope
 
 ```json
 {
@@ -262,7 +267,7 @@ Before formulating questions, verify:
 }
 ```
 
-**Template 2: Test Coverage Scope**
+#### Template 2: Test Coverage Scope
 
 ```json
 {
@@ -290,7 +295,7 @@ Before formulating questions, verify:
 
 **When:** Multiple tasks or unclear which to tackle first
 
-**Template 1: Task Priority**
+#### Template 1: Task Priority
 
 ```json
 {
@@ -314,7 +319,7 @@ Before formulating questions, verify:
 }
 ```
 
-**Template 2: Feature Ordering**
+#### Template 2: Feature Ordering
 
 ```json
 {
@@ -342,7 +347,7 @@ Before formulating questions, verify:
 
 **When:** Implementation requires configuration choices
 
-**Template 1: Library/Tool Selection**
+#### Template 1: Library/Tool Selection
 
 ```json
 {
@@ -366,7 +371,7 @@ Before formulating questions, verify:
 }
 ```
 
-**Template 2: Configuration Values**
+#### Template 2: Configuration Values
 
 ```json
 {
@@ -627,7 +632,8 @@ Research Results:
 
 **Why bad:** Overwhelming, decision paralysis
 
-**Fix:** Narrow to 2-4 most relevant options based on research. If more than 4, create multiple questions or categorize.
+**Fix:** Narrow to 2-4 most relevant options based on research. If more than 4, create multiple
+questions or categorize.
 
 ### Pitfall 3: Leading Questions
 
@@ -734,4 +740,5 @@ Before using AskUserQuestion tool:
 - [ ] multiSelect explicitly set (true/false)
 - [ ] question ends with `?`
 
-**Remember:** The goal is clarity through specificity. Every option should be traceable back to research findings. Generic or assumed options undermine trust and lead to poor decisions.
+**Remember:** The goal is clarity through specificity. Every option should be traceable back to
+research findings. Generic or assumed options undermine trust and lead to poor decisions.

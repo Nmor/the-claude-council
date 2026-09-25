@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Size budget: 21 KB. Check: wc -c; gate: token-budget.mjs --check.
 // pre-write-governance-sweep.js
 //
 // PreToolUse hook on the Write tool. Mechanically enforces
@@ -159,7 +160,6 @@ stdin.on("data", (c) => {
 stdin.on("end", () => {
   const parsed = parsePayload(buf);
   if (!parsed || parsed.toolName !== "Write" || !parsed.filePath) {
-    process.stdout.write(buf);
     return;
   }
 
@@ -172,7 +172,6 @@ stdin.on("end", () => {
   }
 
   if (findings.length === 0) {
-    process.stdout.write(buf);
     return;
   }
   emitBlock(parsed.filePath, findings);

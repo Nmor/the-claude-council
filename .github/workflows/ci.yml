@@ -104,7 +104,7 @@ jobs:
 
       - name: Run markdownlint-cli2 on every *.md
         # DavidAnson/markdownlint-cli2-action@v20.0.0
-        uses: DavidAnson/markdownlint-cli2-action@6bf21b07787794f89a243495939cd651942aeabe
+        uses: DavidAnson/markdownlint-cli2-action@21c1be1b93ad9ed58fa840aacc3f279cde2a72ff
         with:
           globs: |
             **/*.md

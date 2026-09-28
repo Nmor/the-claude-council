@@ -18,7 +18,7 @@
                     ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝╚═╝╚══════╝
 ```
 
-## A principal-level, 16-division multi-agent Council for Claude Code
+## A principal-level, 16-division multi-agent Council for Claude Code and Codex
 
 *Drop-in `~/.claude/` config — runs on any machine, any project, every IDE.*
 
@@ -28,7 +28,8 @@
 [![Council](https://img.shields.io/badge/divisions-5%20core%20%2B%2011%20extended-dc7800?style=for-the-badge)](docs/COUNCIL.md)
 [![License](https://img.shields.io/badge/license-MIT-238636?style=for-the-badge)](LICENSE)
 
-[**Install**](#three-minute-install) ·
+[**Install Claude**](#three-minute-install) ·
+[**Install Codex**](docs/CODEX.md) ·
 [**Council in 5 paragraphs**](#the-council-in-5-paragraphs) ·
 [**Architecture**](docs/ARCHITECTURE.md) ·
 [**Rules**](docs/RULES.md) ·
@@ -45,6 +46,21 @@
 > — The user directive that drove the v1.0.0 build
 
 ---
+
+## Codex support
+
+A separate native installer adds Council skills, specialist roles and compatible
+hooks to Codex while preserving your existing configuration and Claude installation:
+
+```bash
+python3 bootstrap/codex.py install --dry-run
+python3 bootstrap/codex.py install
+python3 bootstrap/codex.py verify
+```
+
+See [the Codex installation and compatibility guide](docs/CODEX.md) for prerequisites,
+hook review/trust, existing-plan mappings, supported behavior and removal. The Claude
+installation instructions below continue to apply to Claude Code.
 
 ## Why this exists
 

@@ -7,6 +7,19 @@ and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+**Native Codex adaptation (2026-09-28).** A separate Python installer adds Council
+instructions, 152 skill entrypoints, 39 native specialist roles and five compatible
+hook registrations without replacing existing Codex configuration or changing Claude.
+
+- Transactional install, repeat-install, integrity verification and removal preserve
+  existing shared files; modified managed files cause an explicit conflict.
+- Project mappings reuse an existing implementation plan across agent handoffs.
+- Native hooks give scoped reminders and patch-plan protection; they require normal
+  Codex trust review. Unsupported Claude automation is documented, not silently enabled.
+- Portable lifecycle and hook fixtures run in CI on Linux, macOS and Windows; optional
+  real-client discovery verifies skills and hook registration without a model turn.
+- See [Codex installation and compatibility](docs/CODEX.md).
+
 **A model that hits its plan limit is routed around (2026-09-25).** Claude Code's
 `fallbackModel` skips rate-limit and billing errors, and no hook can switch the model or
 retry (model-config and hooks references, read 2026-09-25). So every Council spawn kept

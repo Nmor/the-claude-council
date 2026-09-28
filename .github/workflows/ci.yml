@@ -198,3 +198,21 @@ jobs:
             exit 1
           fi
           echo "All CI checks passed."
+
+  codex-adapter:
+    name: Codex adapter (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Verify Python requirement
+        run: python -c "import sys; assert sys.version_info >= (3, 11), sys.version"
+      - name: Test native Codex installer and hooks
+        run: python -m unittest discover -s tests/codex -v

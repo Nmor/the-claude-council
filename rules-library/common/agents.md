@@ -18,29 +18,12 @@ Located in `~/.claude/agents/`:
 | refactor-cleaner | Dead code cleanup | Code maintenance |
 | doc-updater | Documentation | Updating docs |
 
-## Immediate Agent Usage
+## Deliberate delegation
 
-No user prompt needed:
-
-1. Complex feature requests - Use **planner** agent
-2. Code just written/modified - Use **code-reviewer** agent
-3. Bug fix or new feature - Use **tdd-guide** agent
-4. Architectural decision - Use **architect** agent
-
-## Parallel Task Execution
-
-ALWAYS use parallel Task execution for independent operations:
-
-```markdown
-# GOOD: Parallel execution
-Launch 3 agents in parallel:
-1. Agent 1: Security analysis of auth module
-2. Agent 2: Performance review of cache system
-3. Agent 3: Type checking of utilities
-
-# BAD: Sequential when unnecessary
-First agent 1, then agent 2, then agent 3
-```
+Follow the current adaptive workflow in `~/.claude/CLAUDE.md`: work locally by default,
+use one scoped helper when it adds independent evidence, and avoid recursive or duplicate
+reviews. Queue additional tasks instead of automatic multi-agent fan-out. See
+`~/.claude/skills/council-rules/references/agent-delegation.md` for the handoff contract.
 
 ## Multi-Perspective Analysis
 

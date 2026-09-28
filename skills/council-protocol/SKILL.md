@@ -1,33 +1,18 @@
 ---
 name: council-protocol
-description: Council Conversation Protocol — Phase 0 Deep Research (29-question intake + codebase exploration + online research), Phase 1 Council Discussion (5 Core + 11 Extended divisions), Phase 2 Consensus (GO/NO-GO + vetoes), Phase 3 Implementation, and Post-Implementation Review templates. Plus Research Requirements by Task Type and Conversation Rules (order of speaking, disagreement protocol, escalation). Use when running Council Protocol against any non-trivial task, when authoring plans/ADRs/runbooks, or when delegating to specialized agents in a structured multi-phase flow.
+description: Deep review templates for high-risk architecture, security or delivery decisions, or an explicitly requested full Council review.
 ---
 
 # Council Conversation Protocol
 
-> Migrated 2026-06-02 from `~/.claude/CLAUDE.md` lines 338-921 as
-> part of the lazy-rules-loading plan. The Council Protocol's
-> "always-on" contract lives in Floor (`council-default.md`,
-> `principal-level-mandate.md`); the FULL phase templates +
-> per-task research requirements + conversation rules + post-
-> implementation review live HERE and lazy-load when a
-> plan / ADR / agent / runbook file is touched.
->
+Use these detailed templates when the risk or requested depth warrants them.
+Current `CLAUDE.md` and `council-default.md` govern: work in the main session by
+default, use at most one justified helper, and skip irrelevant or already answered
+questions. The historical mandatory phase headings below describe a full review;
+they do not require exhaustive research, five speeches or fresh intake for every task.
+Opening a plan or touching an ADR does not automatically activate this skill.
+
 > **Size budget: 25 KB** — `token-budget.mjs --check`.
-
-## When to activate
-
-This skill fires when:
-
-- Any plan file under `~/.claude/plans/` or
-  `<workspace>/.claude/plans/` is opened or edited
-- Any ADR file under `docs/adr/` is opened or edited
-- Any agent file under `~/.claude/agents/` is opened or edited
-- Any runbook file (e.g. `docs/runbook.md`) is opened or edited
-
-The Floor rule `council-default.md` keeps the Council always-
-convening; this skill provides the FULL TEMPLATES so the
-assistant doesn't have to reconstruct them from memory.
 
 ## Phase 0: Deep Research (MANDATORY before any discussion)
 

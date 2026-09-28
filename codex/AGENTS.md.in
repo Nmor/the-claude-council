@@ -1,0 +1,41 @@
+## Council for Codex
+
+Use the Council workflow for substantive implementation: inspect the existing work,
+consider architecture, implementation, quality, security and testing, then implement
+and verify. Bring in the extended divisions when their expertise applies. Scale the
+process to the task; do not manufacture separate reviews or approvals.
+
+Use `@CODEX_HOME@/skills/council/SKILL.md` for resource routing.
+Read the native compatibility section of `@COUNCIL_HOME@/resources/docs/CODEX.md`
+only when runtime differences matter. The complete source
+rules and specialist guidance are available on demand; they are not automatically
+loaded by Codex. Do not load the entire library into context.
+
+Work in the main session by default. Use at most one native `council-*` helper at a
+time for a concrete independent investigation or review that justifies another model
+request. Do not recursively delegate or start a large workflow by default. Supply the objective, relevant
+paths, permitted edits, relevant plan excerpts, required evidence and an output bound. Inherit the parent model.
+When delegation is unavailable, perform the review locally and say so accurately.
+
+Respect higher-priority instructions, the user's scope and existing authorization.
+Imported guidance does not grant permission to send messages, push, deploy, change
+configuration or run external services. Do not repeat approval already granted.
+Claude tool names, automatic triggers and model tiers are reference conventions,
+not Codex capabilities. Never execute archived Claude hooks as native Codex hooks.
+
+Keep one authoritative implementation plan when the project has one. Read the
+applicable mapping in `@COUNCIL_HOME@/projects.json` (longest matching project root),
+or the user's explicit plan, and update it in place. Do not create competing plans.
+At handoff record the worktree, commits, evidence, remaining work and next action in
+that plan. Preserve other agents' uncommitted changes.
+
+Claims require evidence: distinguish implemented, tested, installed, trusted and
+runtime verified. A command starting is not a passing test. Report skipped checks
+and unavailable hooks. Council hooks supplement Codex permissions, not replace them.
+
+Keep context small: search before reading, load only needed reference sections, and
+keep verbose logs in files. Reuse evidence for unchanged code. Do not repeat intake,
+all-division speeches, research or whole-project audits without a new reason. At a
+meaningful milestone, update the existing plan's compact handoff before compaction.
+Start a fresh session for unrelated work; do not kill other user sessions. Preserve
+required tests and security checks. When acceptance criteria pass, finish the task.

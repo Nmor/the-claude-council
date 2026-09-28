@@ -1,5 +1,20 @@
 # Installation Guide — The Claude Council
 
+## Codex installation
+
+For Codex CLI or IDE environments, use the separate native installer:
+
+```bash
+python3 bootstrap/codex.py install --dry-run
+python3 bootstrap/codex.py install
+python3 bootstrap/codex.py verify
+```
+
+Requires Python 3.11+ and a Git checkout. See [the Codex guide](docs/CODEX.md)
+for existing-plan mappings, hook review/trust, verification and uninstall. The
+installer preserves existing Codex configuration and does not modify Claude.
+The shell and PowerShell installers below remain the Claude Code installers.
+
 This guide walks through installing **The Claude Council** on
 **macOS**, **Linux**, or **Windows**, then integrating it with
 each supported IDE.
@@ -28,6 +43,10 @@ next session.
 > ```
 
 ---
+
+For an existing Claude or Codex setup, use the additive, reversible
+[context migration](docs/CONTEXT.md) to apply the lean workflow and cost controls
+while preserving your primary model and unrelated settings.
 
 ## Prerequisites
 
@@ -306,3 +325,6 @@ If a symptom isn't listed, open an issue with:
 - Windows-native: output of `.\bootstrap\verify.ps1 -Verbose` + `$PSVersionTable.PSVersion`
 - Your OS + version (`uname -a` on Unix; `[System.Environment]::OSVersion` on Windows)
 - The exact command that failed
+
+For optional launch-video creation, see [BRAG setup](docs/BRAG.md). The skill ships
+with Council; FFmpeg and the optional Hyperframes runtime are separate dependencies.

@@ -7,41 +7,17 @@
 
 ## Operating principle
 
-**The Council is the default mode for every interaction.** Per
-[`council-default.md`](../rules/common/council-default.md), no
-bypass surface exists:
+Use the short [working contract](../CLAUDE.md) and [context defaults](CONTEXT.md).
+Consider architecture, implementation, quality, security and tests for substantive
+work. Consult extended domains only when they apply. Work in the main session by
+default; at most one bounded helper should justify its extra context and requests.
 
-- The `*` prefix skips ONLY the prompt-improver clarification step.
-  Council still convenes.
-- "Quick Council Check" mode is replaced with "Abbreviated Council
-  Check" — every division still engages and owns its domain; the
-  risk-owning divisions go deep and no-concern divisions collapse to
-  a one-line gated verdict. Never zero divisions.
-- Bypass attempts are audit-logged to
-  `~/.claude/audits/bypass-log.jsonl`.
+The division descriptions below are an expertise reference. Historical speaking
+orders, model tiers, triggers and veto terminology do not require separate agents,
+all-division speeches or another approval cycle. User scope and native capabilities
+govern. Deep phase templates are available for high-risk or explicitly deep reviews.
 
-Trigger model:
-
-- **Core Five always engage — coverage is mandatory, depth is
-  signal-gated.** Every division owns its domain and records a
-  verdict; no domain is ever skipped. Output scales to what it found:
-  a material finding or a cross-division conflict → deep analysis;
-  nothing material → a one-line verdict with the one-clause reason it
-  checked (never a bare "looks fine"). Deep analysis concentrates on
-  the 2-3 divisions that own the change's risk surface. Per
-  [`council-default.md`](../rules/common/council-default.md) rule 1.
-- **Shared context in, structured findings out.** The target surface
-  is read once and divisions reason over it in parallel (not N
-  independent re-reads); findings are emitted as
-  `severity · file:line · claim · owner` and deduped across divisions
-  before synthesis.
-- **Extended Eleven auto-fire on signals.** Per
-  [`council-triggers.md`](../rules/common/council-triggers.md) —
-  file patterns + keywords + change scope + plan-tier impact.
-- **Any Division can request convening of any other** mid-discussion
-  when scope crosses their domain.
-
-## The Core Five — always speak
+## The Core Five — relevant expertise
 
 ### Division 1: Architecture & Planning
 

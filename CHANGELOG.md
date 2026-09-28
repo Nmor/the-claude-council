@@ -7,6 +7,41 @@ and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+**BRAG for Claude and Codex (2026-09-28).** Add an on-demand launch-video skill adapted
+from latent-spaces/brag at a pinned commit with MIT attribution. The lean route preserves
+the user's model; explicit full/voice requests use Hyperframes. Creative storyboards
+stay separate from the existing implementation plan, and output remains local.
+Dependency and media checks distinguish installed tools from verified artifacts.
+See [BRAG setup and usage](docs/BRAG.md); upstream music assets are not redistributed.
+
+**Lower default context and delegation cost (2026-09-28).** The eager Claude contract
+is reduced from 297,740 to 19,428 bytes; all detailed standards remain available on
+demand. Codex defaults to one discoverable router with an optional full skill profile.
+
+- Default to local work, one justified helper, scoped prompts and concise handoffs.
+- Disable Claude dynamic workflows and repetitive prompt-intake injection by default;
+  use a 100k auto-compact window and bound nesting/tool concurrency.
+- Add reversible existing-install migration preserving primary models, personal
+  settings and original files; optional Codex controls cap compaction and delegation.
+- Add an independent 24,576-byte eager-context regression gate and migration tests.
+- Make hook wiring tests read checkout settings instead of the operator's installation;
+  fix memory lint falsely flagging placeholder paths on clean hosts.
+- See [context controls, measurement and limitations](docs/CONTEXT.md). Instruction
+  byte savings do not establish real billing savings; measure comparable sessions.
+
+**Native Codex adaptation (2026-09-28).** A separate Python installer adds Council
+instructions, compact routing (optional 153 skill entrypoints), 39 native specialist roles and five compatible
+hook registrations without replacing existing Codex configuration or changing Claude.
+
+- Transactional install, repeat-install, integrity verification and removal preserve
+  existing shared files; modified managed files cause an explicit conflict.
+- Project mappings reuse an existing implementation plan across agent handoffs.
+- Native hooks give scoped reminders and patch-plan protection; they require normal
+  Codex trust review. Unsupported Claude automation is documented, not silently enabled.
+- Portable lifecycle and hook fixtures run in CI on Linux, macOS and Windows; optional
+  real-client discovery verifies skills and hook registration without a model turn.
+- See [Codex installation and compatibility](docs/CODEX.md).
+
 **A model that hits its plan limit is routed around (2026-09-25).** Claude Code's
 `fallbackModel` skips rate-limit and billing errors, and no hook can switch the model or
 retry (model-config and hooks references, read 2026-09-25). So every Council spawn kept

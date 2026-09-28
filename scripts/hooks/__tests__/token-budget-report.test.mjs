@@ -1,4 +1,4 @@
-// Size budget: 5 KB. Check: wc -c; gate: token-budget.mjs --check.
+// Size budget: 8 KB. Check: wc -c; gate: token-budget.mjs --check.
 // token-budget.mjs, report half: the numbers CLAUDE.md quotes about its own cost.
 //
 // The --check gate is tested in tools.test.mjs. The report was not, so the figures the
@@ -51,8 +51,9 @@ describe('token-budget report — the figures a reader can check by hand', () =>
   test('the plain report says the same numbers in words', () => {
     const r = report();
     assert.equal(r.code, 0);
-    assert.match(r.out, /Floor \(every turn\)\s+350 tokens/);
-    assert.match(r.out, /Worst single turn\s+7,850 tokens/);
+    assert.match(r.out, /Eager Floor\s+~350 estimated tokens/);
+    assert.match(r.out, /Floor \+ largest skill\s+~7,850 estimated tokens/);
+    assert.match(r.out, /not billed tokens/);
     assert.match(r.out, /Skills over the 25,000 B cap: 2 of 3/);
     assert.match(r.out, /1 of 2 use progressive disclosure/);
     assert.match(r.out, /vendored, not counted: synced, graphify/);
@@ -65,5 +66,81 @@ describe('token-budget report — the figures a reader can check by hand', () =>
     assert.match(r.out, /big-a \(1 ref/);
     assert.match(r.out, /big-b/);
     assert.doesNotMatch(r.out, /\bsmall\b/, 'a skill under the cap is not listed');
+  });
+});
+
+describe('token-budget selected root and independent eager cap', () => {
+  const fixture = (t, files) => {
+    const root = mkdtempSync(join(tmpdir(), 'tb-root-'));
+    t.after(() => rmSync(root, { recursive: true, force: true }));
+    for (const [name, body] of Object.entries(files)) {
+      const target = join(root, name);
+      mkdirSync(join(target, '..'), { recursive: true });
+      writeFileSync(target, body);
+    }
+    return root;
+  };
+  const selected = (root, ...args) => spawnSync(process.execPath,
+    [SCRIPT, '--root', root, ...args], {
+      cwd: tmpdir(), encoding: 'utf8', env: { ...process.env, HOME: home },
+    });
+
+  test('--root measures the selected checkout from an unrelated cwd', (t) => {
+    const root = fixture(t, { 'CLAUDE.md': 'x'.repeat(800), 'skills/a/SKILL.md': 'x'.repeat(200) });
+    const result = selected(root, '--json');
+    assert.equal(result.status, 0);
+    const report = JSON.parse(result.stdout);
+    assert.equal(report.root, root);
+    assert.deepEqual(report.floor, { bytes: 800, tokens: 200, files: 1 });
+    assert.equal(report.estimate.billedTokens, false);
+    assert.equal(report.worstCase.skill, 'a');
+  });
+
+  test('nested unscoped rules count; scoped rules and lazy library do not', (t) => {
+    const unscoped = 'nested eager';
+    const emptyScope = '---\npaths: []\n---\nstill eager';
+    const block = '---\npaths:\n  - "src/**"\n---\nscoped';
+    const inline = '---\r\npaths: ["tests/**"]\r\n---\r\nscoped';
+    const root = fixture(t, {
+      'CLAUDE.md': 'root', 'rules/a/b/c/d/e.md': unscoped,
+      'rules/empty.md': emptyScope, 'rules/block.md': block, 'rules/inline.md': inline,
+      'rules-library/archive.md': 'x'.repeat(50000),
+    });
+    const result = selected(root, '--json');
+    assert.equal(result.status, 0);
+    const report = JSON.parse(result.stdout);
+    assert.equal(report.floor.bytes, 4 + unscoped.length + emptyScope.length);
+    assert.equal(report.floor.files, 3);
+    assert.deepEqual(report.scopedRules, { bytes: block.length + inline.length, files: 2 });
+  });
+
+  test('raising file declarations cannot evade aggregate eager cap', (t) => {
+    const content = '# Rule\nSize budget: 1000 KB\n' + 'x'.repeat(13000);
+    const root = fixture(t, { 'CLAUDE.md': content, 'rules/nested/eager.md': content });
+    const result = selected(root, '--check');
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, /OVER eager Floor:.*24,576 B aggregate cap/);
+    assert.match(result.stderr, /aggregate cap/);
+    assert.doesNotMatch(result.stderr, /file\(s\) over their own/);
+    assert.equal(selected(root, '--check', '--max-floor-bytes', '30000').status, 0);
+  });
+
+  test('scoped content is excluded from aggregate cap but keeps its declared gate', (t) => {
+    const root = fixture(t, { 'CLAUDE.md': '# Floor',
+      'rules/scoped.md': '---\npaths:\n  - "src/**"\n---\nSize budget: 50 KB\n' + 'x'.repeat(30000) });
+    assert.equal(selected(root, '--check').status, 0);
+    writeFileSync(join(root, 'rules/scoped.md'),
+      '---\npaths: ["src/**"]\n---\nSize budget: 1 KB\n' + 'x'.repeat(3000));
+    const result = selected(root, '--check');
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, /OVER\s+scoped\.md/);
+  });
+
+  test('invalid explicit root and aggregate limit fail with clear errors', (t) => {
+    const root = fixture(t, {});
+    assert.equal(selected(join(root, 'missing'), '--json').status, 2);
+    for (const limit of ['0', '-1', 'not-a-number', '2.5']) {
+      assert.equal(selected(root, '--check', '--max-floor-bytes', limit).status, 2);
+    }
   });
 });

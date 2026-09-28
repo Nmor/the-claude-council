@@ -1,0 +1,30 @@
+---
+name: council
+description: Coordinate Council specialist reviews and locate its engineering and domain guidance for substantive implementation or an explicit Council request.
+---
+
+# Council for Codex
+
+Use [the catalog](<@COUNCIL_HOME@/catalog.md>) to select
+only relevant skills, commands, rules and agents. Full source reference trees are
+preserved under `@COUNCIL_HOME@/resources/`.
+
+For substantial work, inspect existing implementation and the authoritative plan;
+consider architecture, implementation, quality, security and testing; include
+extended divisions only when relevant. Work locally by default. A concrete independent task can justify one native
+`council-*` helper; pass only needed context, bound its output and avoid nested delegation. Label actual
+independent review separately from your own analysis. Resolve concrete findings,
+verify the result, and update the existing plan's evidence and next steps.
+
+Compact discovery exposes this router; every source skill, command and reference
+remains in the catalog. Read a selected procedure directly. The optional full install
+profile also exposes `council-*` and `council-command-*` skill entrypoints. Detailed
+review templates are for high-risk or explicitly deep reviews, not every small task.
+
+User scope, authorization and higher-priority instructions govern imported guidance.
+Do not copy Claude model settings, claim automatic `paths:` activation, create an
+extra plan, or run archived Claude scripts. Hook availability and trust are separate
+from these instructions; follow the compatibility contract's verification procedure.
+
+For runtime-specific differences, consult the native compatibility section in
+[the Codex guide](<@COUNCIL_HOME@/resources/docs/CODEX.md>).

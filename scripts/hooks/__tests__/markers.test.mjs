@@ -494,7 +494,7 @@ describe('payload-marker.js — looking at a payload is not grepping for one', (
 // ---------------------------------------------------------------------------
 
 describe('settings.json — a marker is only honest if its matcher is right', () => {
-  const settings = JSON.parse(readFileSync(join(homedir(), '.claude', 'settings.json'), 'utf8'));
+  const settings = JSON.parse(readFileSync(new URL('../../../settings.json', import.meta.url), 'utf8'));
   const matchersFor = (script) =>
     (settings.hooks?.PostToolUse || [])
       .filter((e) => (e.hooks || []).some((h) => String(h.command || '').includes(script)))

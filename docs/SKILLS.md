@@ -1,19 +1,16 @@
 # Skills Catalog
 
-> Index of every skill shipped with The Claude Council. Skills are
-> reusable patterns and methodologies — where a rule says "do not
-> write X," a skill says "here is how to design Y." Skills auto-fire
-> based on file type per
-> [`auto-skills.md`](../rules-library/common/auto-skills.md). Total: 122
-> skills across 15 domain clusters; 36 declare `paths:` triggers
-> for auto-fire on file globs, the rest are slash-command or
-> by-name skills loaded on demand.
+> Index of Council's 119 source skills. Choose guidance by task relevance,
+> description or explicit invocation; file patterns are routing suggestions,
+> not automatic skill activation. Codex compact discovery uses one catalog router.
+> The [context policy](CONTEXT.md) keeps detailed guidance on demand.
 
-## Each skill follows the principal-level template
+## Skill structure
 
 Per
 [`principal-level-mandate.md`](../rules/common/principal-level-mandate.md),
-every `SKILL.md` carries:
+Use the following elements when they help the task; short skills need not repeat
+a large fixed template:
 
 - **Purpose** — why this skill exists; what problem class it solves
 - **Standards Cited** — primary-source references with version +
@@ -25,6 +22,14 @@ every `SKILL.md` carries:
 - **Cross-References** — sister rules, skills, agents
 - **Why This Skill Exists** — failure mode it prevents + cost of
   getting it wrong
+
+## Launch video
+
+| Skill | Purpose |
+| --- | --- |
+| [`brag`](../skills/brag/) | On-demand project/website launch video, poster and share copy; lean by default, optional Hyperframes/voice route |
+
+See [BRAG setup and verification](BRAG.md).
 
 ## Skills by cluster
 

@@ -5,47 +5,13 @@
 > 16-division detail and with [RULES.md](RULES.md) / [SKILLS.md](SKILLS.md) /
 > [AGENTS.md](AGENTS.md) for the catalogs.
 
-## Mental model
+## Workflow
 
-The Claude Council is a layered system that turns a single prompt
-into the deliberate output of a multi-disciplinary team. The layers,
-top to bottom:
-
-```text
-                       USER PROMPT
-                            │
-                            ▼
-                ┌────────────────────────┐
-                │  Prompt-improver       │  hook + skill
-                │  (clarity gate)        │
-                └───────────┬────────────┘
-                            ▼
-                ┌────────────────────────┐
-                │  Council Protocol      │  CLAUDE.md
-                │  Phase 0 → 1 → 2 → 3   │
-                └───────────┬────────────┘
-            ┌───────────────┼───────────────┐
-            ▼               ▼               ▼
-        ┌────────┐   ┌────────────┐   ┌────────────┐
-        │ Rules  │   │   Skills   │   │   Agents   │
-        │ load   │   │ auto-fire  │   │  delegate  │
-        └────────┘   └────────────┘   └────────────┘
-            │               │               │
-            └───────────────┼───────────────┘
-                            ▼
-                ┌────────────────────────┐
-                │  Hooks                 │  PostToolUse,
-                │  (mechanical gates)    │  pre-commit, CI
-                └───────────┬────────────┘
-                            ▼
-                ┌────────────────────────┐
-                │  Verification block    │  same-turn proof
-                └────────────────────────┘
-```
-
-Every layer is composable, every layer is auditable, and every layer
-is overridable by an explicit project rule that is **stricter**, never
-looser, than the global one.
+Inspect the existing work and plan, consider relevant risks, implement and verify.
+The main session owns routine work. Use at most one justified helper at a time and
+load detailed standards only when needed. The prompt-improver remains optional;
+it no longer intercepts every prompt. See [context controls](CONTEXT.md) and the
+[native Codex compatibility contract](CODEX.md).
 
 ## The five primary surfaces
 
@@ -54,18 +20,14 @@ looser, than the global one.
 `~/.claude/CLAUDE.md` is loaded at the start of every Claude Code
 session. It declares:
 
-- The five Core Council Divisions (Architecture, Implementation,
-  Quality, Security, Testing) that always speak.
-- The eleven Extended Divisions that auto-fire on triggers.
-- The Council Conversation Protocol (Phase 0 → Phase 1 → Phase 2 →
-  Phase 3).
-- The Tiebreaker Matrix (who casts ties, who holds veto).
-- The five Golden Rules.
+- A concise working contract covering architecture, implementation, quality,
+  security and testing without separate speeches.
+- Scoped delegation, evidence reuse, the single existing plan and compact handoffs.
+- On-demand routing to detailed rules and specialist guidance.
 
-When a workspace `CLAUDE.md` exists, it loads ADDITIVELY — never
-relaxing. When layers conflict, the stricter wins.
+User instructions and native instruction precedence govern conflicting references.
 
-### 2. `rules/common/` + `rules/<lang>/` — the principles
+### 2. `rules/common/` + `rules-library/` — the principles
 
 Rules are pure guidance. They never name a specific project, vendor,
 or session — only abstract principles, banned patterns, verification
@@ -78,7 +40,7 @@ Two flavors:
 - **`rules/common/`** — universal guidance that applies regardless of
   language. Examples: `no-discards.md`, `verify-before-claim.md`,
   `secrets-management.md`, `audit-logging.md`, `idempotency.md`.
-- **`rules/<lang>/`** — language-specific extensions of the common
+- **`rules-library/<lang>/`** — language-specific extensions of the common
   rules. Each language has its own `coding-style.md`,
   `no-discards.md`, `security.md`, `testing.md`, `patterns.md`,
   `hooks.md`. The lang rule **extends** the common rule with
@@ -91,13 +53,10 @@ Two flavors:
 Skills are reusable patterns and methodologies. Where a rule says
 "do not write X," a skill says "here is how to design Y."
 
-Auto-discovery: each skill lives in `~/.claude/skills/<name>/SKILL.md`.
-The `auto-skills.md` rule maps file types to the skills that should
-auto-fire when those file types are touched. For example, touching
-a `*.go` file auto-fires `golang-patterns`, `golang-testing`,
-`coding-quality-rules`, `security-review`, `tdd-workflow` skills and the
-`go-reviewer`, `go-build-resolver`, `tdd-guide`, `security-reviewer`
-agents.
+Skills are selected by their descriptions, task relevance or explicit invocation.
+File patterns in source guidance are routing suggestions; skill `paths:` metadata
+does not implement automatic activation. Native Codex compact discovery uses one
+router and a catalog; full discovery is optional.
 
 Skills span 13 domain clusters: code-quality, accessibility,
 security-compliance, finance-accounting, investment, AI/ML, design,

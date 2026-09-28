@@ -139,8 +139,9 @@ MCP server build (this turn):
   principles
 - `~/.claude/skills/observability-patterns/SKILL.md` — logger
   shape + metric naming
-- `~/.claude/skills/claude-api/SKILL.md` — building Claude API
-  apps; MCP is the tool layer beneath
+- Claude's bundled `/claude-api` skill, when available in the runtime, for
+  Claude API applications; it is not a file shipped in this repository.
+  Otherwise consult the official provider documentation.
 - `~/.claude/skills/aws-serverless-patterns/SKILL.md` — when MCP
   server runs as a Lambda
 - Reference implementations:

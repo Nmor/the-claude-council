@@ -1,7 +1,8 @@
 {
   "env": {
     "MAX_THINKING_TOKENS": "100000",
-    "autoCompactEnabled": "false"
+    "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "1",
+    "CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY": "2"
   },
   "permissions": {
     "allow": [],
@@ -162,6 +163,26 @@
           {
             "type": "command",
             "command": "node \"$HOME/.claude/scripts/hooks/destructive-command-gate.js\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/one-plan-gate.js\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$HOME/.claude/scripts/hooks/one-plan-gate.js\"",
             "timeout": 10
           }
         ]
@@ -374,17 +395,6 @@
         ]
       }
     ],
-    "UserPromptSubmit": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ~/.claude/hooks/improve-prompt.py"
-          }
-        ]
-      }
-    ],
     "SessionEnd": [
       {
         "matcher": "*",
@@ -502,5 +512,9 @@
     }
   },
   "switchModelsOnFlag": true,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "autoCompactWindow": 100000,
+  "disableWorkflows": true,
+  "workflowSizeGuideline": "small",
+  "autoCompactEnabled": true
 }

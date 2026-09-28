@@ -273,7 +273,7 @@ deep code archaeology, cross-repo audits, multi-file research.
 | Subagent writes code | Tool-permission expansion; review surface explodes | Subagent reads only; main agent writes |
 | No convergence criterion | Subagent loops forever | Brief includes "stop when X" predicate |
 | Main agent ignores subagent's "I couldn't find X" signal | False-negative finding bubbles up | Treat empty result as a signal; ask follow-up |
-| Sequential subagents when parallel would work | Latency × N | Spawn independent subagents in one Agent block (parallel) |
+| Automatic parallel fan-out | Duplicate context and multiple model requests | Work locally by default; justify one bounded helper at a time |
 | Subagent inherits secrets via context | Privilege expansion | Brief carries only the question + scope, never tokens |
 | Subagent result quoted verbatim into prod artifact | Bypass review; potential prompt-injection content | Synthesise + validate before promotion |
 
@@ -288,8 +288,8 @@ deep code archaeology, cross-repo audits, multi-file research.
 - [ ] Subagent output budget (≤ 500 words back to main agent
       unless explicitly larger)
 - [ ] Subagent failures surface back to main; never silent
-- [ ] Independent subagents spawned in parallel (single
-      Agent tool block with multiple calls)
+- [ ] Delegation justifies its extra context and requests; at most one helper
+      at a time by default, without recursive delegation
 
 ## Cross-References
 

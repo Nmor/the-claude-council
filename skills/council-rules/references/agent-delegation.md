@@ -30,39 +30,20 @@ Located in `~/.claude/agents/`:
 | refactor-cleaner | Dead code cleanup | Code maintenance |
 | doc-updater | Documentation | Updating docs |
 
-## Immediate Agent Usage
+## Deliberate delegation
 
-No user prompt needed:
+Work in the main session by default. A specialist is useful when it owns a concrete
+independent investigation or review that improves the result. A matching role name
+alone is not a reason to launch an agent.
 
-1. Complex feature requests - Use **planner** agent
-2. Code just written/modified - Use **code-reviewer** agent
-3. Bug fix or new feature - Use **tdd-guide** agent
-4. Architectural decision - Use **architect** agent
+Use one helper at a time by default; queue further tasks. Parallel tool reads do not
+require separate model sessions. Avoid recursive delegation and overlapping reviews.
+Give a helper the objective, exact paths, relevant excerpts, acceptance criterion and
+a concise output bound. Reuse a suitable existing helper and finish it when done.
 
-## Parallel Task Execution
-
-ALWAYS use parallel Task execution for independent operations:
-
-```markdown
-# GOOD: Parallel execution
-Launch 3 agents in parallel:
-1. Agent 1: Security analysis of auth module
-2. Agent 2: Performance review of cache system
-3. Agent 3: Type checking of utilities
-
-# BAD: Sequential when unnecessary
-First agent 1, then agent 2, then agent 3
-```
-
-## Multi-Perspective Analysis
-
-For complex problems, use split role sub-agents:
-
-- Factual reviewer
-- Senior engineer
-- Security expert
-- Consistency reviewer
-- Redundancy checker
+Read only the active handoff and relevant plan sections. Do not copy the full history
+or load every rule. Scale specialist depth to risk and preserve required security and
+verification checks. Explicit user requests for a larger team can override this default.
 
 ## Learning hooks
 
@@ -70,12 +51,11 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 **Signals to watch**:
 
-- Agent not delegated to when its description matches the work (Immediate Agent Usage rule
-  weakening)
-- Sequential agent calls when parallel was possible (Parallel Task Execution rule weakening)
-- Complex feature shipped without `planner` agent producing a phased plan
+- An expensive delegation produced no independent evidence or duplicated parent work
+- Parallel agents multiplied context without reducing a meaningful dependency
+- Complex work lacked useful dependencies or acceptance criteria in its existing plan
 - Code shipped without `code-reviewer` / language-specific reviewer pass
-- TDD-eligible task started without `tdd-guide` agent invocation
+- Changed behavior lacked meaningful verification
 - Security-sensitive change shipped without `security-reviewer` audit
 - Multi-perspective analysis skipped on a complex / ambiguous problem (single-perspective bias risk)
 - Agent invoked without the required context (description, file paths, expected output shape)
@@ -84,7 +64,7 @@ Per `~/.claude/rules/common/continuous-learning-mandate.md`:
 
 - New row in the "Available Agents" table when a new specialist agent ships (e.g.,
   `accessibility-reviewer`, `data-reviewer`)
-- Tightening of the "Immediate Agent Usage" criteria when an agent's expertise proves load-bearing
+- Tightening of delegation criteria when an agent's expertise proves load-bearing
   in retrospectives
 - New parallel-execution template when a recurring fan-out pattern emerges (e.g., three-language
   security audit)

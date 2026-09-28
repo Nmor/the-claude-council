@@ -151,7 +151,7 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(snapshot(self.home), self.before)
 
     def test_all_agents_native_no_model_override_and_all_source_references_preserved(self):
-        self.install()
+        self.install(skill_profile='full')
         for file in (self.home / 'agents').glob('council-*.toml'):
             agent = tomllib.loads(file.read_text(encoding="utf-8"))
             self.assertEqual(set(agent), {'name', 'description', 'developer_instructions'})
@@ -168,6 +168,41 @@ class InstallTests(unittest.TestCase):
             if file.endswith('.md'):
                 expected = installer.adapt_reference(expected.decode(), self.home).encode()
             self.assertEqual(target.read_bytes(), expected, file)
+
+    def test_compact_profile_and_roundtrip_preserve_resources_and_personal_files(self):
+        result = self.install()
+        self.assertEqual(result['skill_profile'], 'compact')
+        def wrappers():
+            return list((self.home / 'skills').glob('council*/SKILL.md'))
+        self.assertEqual(len(wrappers()), 1)
+        self.assertLess(sum(p.stat().st_size for p in wrappers()), 2500)
+        self.assertEqual(len(list((self.home / 'agents').glob('council-*.toml'))), 39)
+        compact = snapshot(self.home / 'council/resources')
+        self.install(skill_profile='full')
+        self.assertGreater(len(wrappers()), 100)
+        self.assertEqual(self.install()['skill_profile'], 'full')
+        self.install(skill_profile='compact')
+        self.assertEqual(len(wrappers()), 1)
+        self.assertEqual(snapshot(self.home / 'council/resources'), compact)
+        installer.uninstall(self.home)
+        self.assertEqual(snapshot(self.home), self.before)
+
+    def test_pre_profile_install_migrates_to_compact(self):
+        self.install(skill_profile='full')
+        path = self.home / 'council/manifest.json'
+        manifest = json.loads(path.read_text())
+        del manifest['skill_profile']
+        path.write_text(json.dumps(manifest))
+        self.assertEqual(self.install()['skill_profile'], 'compact')
+        self.assertEqual(len(list((self.home / 'skills').glob('council*/SKILL.md'))), 1)
+
+    def test_malformed_manifest_rejected(self):
+        path = self.home / 'council/manifest.json'
+        path.parent.mkdir()
+        for value in [[], {'version': 1, 'files': {'AGENTS.md': None}}]:
+            path.write_text(json.dumps(value))
+            with self.assertRaises(ValueError):
+                self.install()
 
     def test_migrated_rule_references_resolve_without_rewriting_runtime_plan(self):
         converted = installer.adapt_reference(

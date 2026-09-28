@@ -44,6 +44,10 @@ next session.
 
 ---
 
+For an existing Claude or Codex setup, use the additive, reversible
+[context migration](docs/CONTEXT.md) to apply the lean workflow and cost controls
+while preserving your primary model and unrelated settings.
+
 ## Prerequisites
 
 | Requirement | Minimum | How to install |

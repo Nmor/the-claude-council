@@ -9,9 +9,11 @@
 
 ## Counts
 
-- **`rules/common/`** — 26 Floor rules, always loaded. With `CLAUDE.md` that measured
-  297 KB / 74,322 tokens per turn on 2026-09-21. Quote it only after re-measuring:
-  `node scripts/token-budget.mjs`
+- **`rules/common/`** — 26 concise Floor rules. With `CLAUDE.md`, 19,428 bytes
+  on 2026-09-28 (bytes/4 estimate: 4,857 tokens; not billed usage).
+  Measure with `node scripts/token-budget.mjs --root . --check`.
+- **`rules-library/council-detail/`** — 27 preserved detailed references; read only
+  relevant sections under the current [adaptive workflow](CONTEXT.md).
 - **`rules-library/common/`** — 60 lazy-loaded universal rules
 - **`rules-library/<lang>/`** — 100 language rules across 18 subfolders
   (bash, cpp, csharp, dart, dockerfile, golang, html-css, java, kotlin,

@@ -22,8 +22,8 @@ plugin configuration. An existing `AGENTS.override.md` must be reconciled first
 because it would shadow the installed `AGENTS.md` block.
 
 Start a fresh Codex session so the global instructions and agent definitions load.
-Use `$council` for the main workflow and catalog. Check `/skills` for the namespaced
-skills. The adapter was tested with Codex CLI `0.155.0-alpha.16.3`; older clients
+Use `$council` for the main workflow and catalog. Compact discovery exposes one
+router; the optional full profile exposes all namespaced skills. The adapter was tested with Codex CLI `0.155.0-alpha.16.3`; older clients
 may not support the same agent and hook configuration. Check your client's actual
 capabilities before treating installed files as active features.
 
@@ -64,8 +64,8 @@ pushes, deployment or configuration changes beyond the requested work.
 
 Use available native tools for the intent of imported procedures. Claude names such
 as `Task`, `TodoWrite`, `WebSearch`, `Read`, `Edit` and slash commands are source
-conventions, not promises that those tools exist. Delegate bounded independent
-work to `council-*` roles when supported; otherwise do the work locally and report
+conventions, not promises that those tools exist. Work locally by default. Justify at most one bounded independent
+helper at a time; otherwise do the work locally and report
 that it was not an independent agent review. Never fabricate Council votes or tests.
 
 The source archive is reference material. **Do not execute archived Claude hooks,
@@ -79,8 +79,8 @@ Resolve the current authoritative plan from user context and the project mapping
 | Source capability | Codex adaptation |
 | --- | --- |
 | Council workflow and Floor | Concise managed `AGENTS.md` block; complete rules available on demand |
-| 118 tracked skills | Namespaced `council-*` skills linking to complete source/reference trees |
-| 33 command workflows | `council-command-*` skill entrypoints; source-specific operations remain reference guidance |
+| 118 tracked skills | Full source/reference trees in the catalog; `council-*` entrypoints in full profile |
+| 33 command workflows | Catalog routes; full profile adds `council-command-*` entrypoints |
 | 39 specialist agents | Native TOML roles with embedded guidance and inherited parent model |
 | Claude `paths:` activation | Explicit skill/catalog selection; no claim of automatic file-trigger loading |
 | Model ladder/exhaustion | No Claude model overrides or exhaustion hook emulation |
@@ -112,9 +112,13 @@ feedback for the actual tests, review, permissions or single-plan working agreem
     manifest.json           # private hashes and original shared-file backups
 ```
 
-Large skill catalogs can exceed Codex's discovery budget. The main `council` skill
-and `council/catalog.md` provide explicit access to every installed resource. Read
-only relevant references; the full source Floor is not injected into every prompt.
+Compact discovery is the default: one `council` skill, the complete source catalog,
+and all 39 specialist roles. To expose all 152 skill entrypoints, pass
+`install --skill-profile full`. Later installs retain the selected profile; older
+installations without profile metadata migrate to compact unless full is explicit.
+Read only relevant reference sections. See [context and session controls](CONTEXT.md)
+for the separate, reversible 100k compaction and one-helper runtime settings.
+
 Large pre-existing global or project instructions can also exhaust Codex's combined
 instruction budget. Check that the Council block loaded in the session; file-integrity
 verification cannot detect runtime truncation.

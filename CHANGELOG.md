@@ -7,8 +7,21 @@ and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+**Lower default context and delegation cost (2026-09-28).** The eager Claude contract
+is reduced from 297,740 to 19,428 bytes; all detailed standards remain available on
+demand. Codex defaults to one discoverable router with an optional full skill profile.
+
+- Default to local work, one justified helper, scoped prompts and concise handoffs.
+- Disable Claude dynamic workflows and repetitive prompt-intake injection by default;
+  use a 100k auto-compact window and bound nesting/tool concurrency.
+- Add reversible existing-install migration preserving primary models, personal
+  settings and original files; optional Codex controls cap compaction and delegation.
+- Add an independent 24,576-byte eager-context regression gate and migration tests.
+- See [context controls, measurement and limitations](docs/CONTEXT.md). Instruction
+  byte savings do not establish real billing savings; measure comparable sessions.
+
 **Native Codex adaptation (2026-09-28).** A separate Python installer adds Council
-instructions, 152 skill entrypoints, 39 native specialist roles and five compatible
+instructions, compact routing (optional 152 skill entrypoints), 39 native specialist roles and five compatible
 hook registrations without replacing existing Codex configuration or changing Claude.
 
 - Transactional install, repeat-install, integrity verification and removal preserve

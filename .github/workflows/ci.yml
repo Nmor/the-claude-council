@@ -169,6 +169,8 @@ jobs:
       - markdownlint
       - shellcheck
       - gitleaks
+      - codex-adapter
+      - context-budget
     if: always()
     steps:
       - name: Report aggregate result
@@ -182,6 +184,8 @@ jobs:
             [markdownlint]="${{ needs.markdownlint.result }}"
             [shellcheck]="${{ needs.shellcheck.result }}"
             [gitleaks]="${{ needs.gitleaks.result }}"
+            [codex-adapter]="${{ needs.codex-adapter.result }}"
+            [context-budget]="${{ needs.context-budget.result }}"
           )
           failed=0
           for job in "${!results[@]}"; do
@@ -216,3 +220,17 @@ jobs:
         run: python -c "import sys; assert sys.version_info >= (3, 11), sys.version"
       - name: Test native Codex installer and hooks
         run: python -m unittest discover -s tests/codex -v
+
+  context-budget:
+    name: Context budget and Claude hooks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Enforce aggregate eager-context budget
+        run: node scripts/token-budget.mjs --root . --check
+      - name: Test Claude hooks and budget reporting
+        run: node --test scripts/hooks/__tests__/*.test.mjs

@@ -1,11 +1,12 @@
 #!/usr/bin/env node
-// Measure what the Council actually costs per turn.
+// Estimate Council instruction size, not billed tokens or actual per-turn usage.
 //
 //   node ~/.claude/scripts/token-budget.mjs          # summary
 //   node ~/.claude/scripts/token-budget.mjs --full   # every over-cap skill
 //   node ~/.claude/scripts/token-budget.mjs --json   # machine-readable
 //   node ~/.claude/scripts/token-budget.mjs --check  # GATE: exit 1 if any file is
-//                                                    # over the budget it declares
+//                                                    # over its budget or eager cap
+//   node scripts/token-budget.mjs --root . --json    # measure this checkout
 //
 // WHY THIS EXISTS. CLAUDE.md carries a measured Floor figure and an instruction to re-measure
 // before quoting it, because the number before it ("~110-130 KB") "was never true and went
@@ -19,10 +20,27 @@
 // people stop running.
 // Size budget: 12 KB. Check: wc -c; gate: token-budget.mjs --check.
 import { readdirSync, statSync, existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve, relative } from 'node:path';
 import { homedir } from 'node:os';
+import { parseArgs } from 'node:util';
 
-const ROOT = join(homedir(), '.claude');
+let options;
+try {
+  options = parseArgs({ options: {
+    root: { type: 'string' }, 'max-floor-bytes': { type: 'string' },
+    full: { type: 'boolean' }, json: { type: 'boolean' }, check: { type: 'boolean' },
+  } }).values;
+} catch (error) {
+  process.stderr.write(`token-budget: ${error.message}\n`);
+  process.exit(2);
+}
+const ROOT = options.root ? resolve(options.root) : join(homedir(), '.claude');
+const MAX_FLOOR_BYTES = Number(options['max-floor-bytes'] ?? 24_576);
+if (!Number.isSafeInteger(MAX_FLOOR_BYTES) || MAX_FLOOR_BYTES <= 0 ||
+    (options.root && (!existsSync(ROOT) || !statSync(ROOT).isDirectory()))) {
+  process.stderr.write('token-budget: --root must be a directory; --max-floor-bytes must be a positive integer\n');
+  process.exit(2);
+}
 const SKILL_CAP = 25_000; // bytes; CLAUDE.md's progressive-disclosure threshold
 // Installed and updated by their own tools, not authored here: `synced` by the claude.ai skill
 // sync, `graphify` by the graphify installer. Neither is ours to split, budget or reformat, and
@@ -41,7 +59,7 @@ function bytesOf(files) {
   }, 0);
 }
 
-function mdIn(dir, depth = 3) {
+function mdIn(dir, depth = Infinity) {
   const out = [];
   const walk = (d, left) => {
     if (left < 0) return;
@@ -61,16 +79,27 @@ function mdIn(dir, depth = 3) {
   return out;
 }
 
-// The Floor: loaded on every single turn, whatever the task.
+// Rules without paths frontmatter are eager; scoped rules load only when matched.
+// Empty/null paths do not establish a scope. Recognize YAML inline/block lists;
+// this intentionally is not a general YAML validator.
+function isScoped(file) {
+  const front = readFileSync(file, 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)?.[1];
+  if (!front) return false;
+  return /^paths:\s*\[[^\]\r\n]*[^\s\[\]\r\n][^\]\r\n]*\]/m.test(front) ||
+    /^paths:[ \t]*(?:#[^\r\n]*)?\r?\n(?:[ \t]*(?:#[^\r\n]*)?\r?\n)*[ \t]+-[ \t]+\S/m.test(front);
+}
+const ruleFiles = mdIn(join(ROOT, 'rules'));
+const scopedFiles = ruleFiles.filter(isScoped);
+const scopedSet = new Set(scopedFiles);
 const floorFiles = [
-  ...mdIn(join(ROOT, 'rules', 'common'), 0),
+  ...ruleFiles.filter((file) => !scopedSet.has(file)),
   join(ROOT, 'CLAUDE.md'),
 ].filter((f) => existsSync(f));
 const floorBytes = bytesOf(floorFiles);
 
 // Per-rule breakdown, largest first.
 const floorRules = floorFiles
-  .map((f) => ({ name: f.split('/').pop(), bytes: statSync(f).size }))
+  .map((f) => ({ name: relative(ROOT, f), bytes: statSync(f).size }))
   .sort((a, b) => b.bytes - a.bytes);
 
 // Skills: lazy, but a gated skill is deferred rather than free. When it fires it is added to
@@ -95,7 +124,12 @@ skills.sort((a, b) => b.bytes - a.bytes);
 const over = skills.filter((s) => s.bytes > SKILL_CAP);
 
 const report = {
+  root: ROOT,
+  estimate: { method: 'bytes / 4, rounded', billedTokens: false,
+    note: 'Static instruction-size estimate; excludes scoped matches, referenced content, conversation, tools and caching.' },
   floor: { bytes: floorBytes, tokens: tok(floorBytes), files: floorFiles.length },
+  floorLimitBytes: MAX_FLOOR_BYTES,
+  scopedRules: { bytes: bytesOf(scopedFiles), files: scopedFiles.length },
   worstCase: {
     skill: skills[0]?.name ?? null,
     tokens: tok(floorBytes + (skills[0]?.bytes ?? 0)),
@@ -179,8 +213,11 @@ if (process.argv.includes('--check')) {
       `  OVER  ${o.name}: ${fmt(o.bytes)} B > ${fmt(o.budget)} B declared\n`,
     );
   }
-  if (over.length) {
-    process.stderr.write(`\n${over.length} file(s) over their own declared budget.\n`);
+  const floorOver = floorBytes > MAX_FLOOR_BYTES;
+  process.stdout.write(`  ${floorOver ? 'OVER' : 'OK'} eager Floor: ${fmt(floorBytes)} B / ${fmt(MAX_FLOOR_BYTES)} B aggregate cap\n`);
+  if (over.length || floorOver) {
+    if (over.length) process.stderr.write(`\n${over.length} file(s) over their own declared budget.\n`);
+    if (floorOver) process.stderr.write('Eager Floor exceeds the aggregate cap; move task-specific detail to lazy references.\n');
     process.exit(1);
   }
   process.stdout.write('  all declaring files within budget\n');
@@ -194,30 +231,32 @@ if (process.argv.includes('--json')) {
 }
 
 const L = [];
-L.push('Council token budget');
+L.push('Council instruction-size estimate (bytes / 4; not billed tokens)');
 L.push('');
-L.push(`  Floor (every turn)   ${fmt(report.floor.tokens)} tokens   ${fmt(floorBytes)} B across ${report.floor.files} files`);
-L.push(`  Worst single turn    ${fmt(report.worstCase.tokens)} tokens   Floor + ${report.worstCase.skill}`);
+L.push(`  Eager Floor          ~${fmt(report.floor.tokens)} estimated tokens   ${fmt(floorBytes)} B across ${report.floor.files} files`);
+L.push(`  Floor + largest skill ~${fmt(report.worstCase.tokens)} estimated tokens   ${report.worstCase.skill ?? '(no skills)'}`);
+L.push(`  Path-scoped rules    ${fmt(report.scopedRules.bytes)} B across ${report.scopedRules.files} files (excluded from eager Floor)`);
 L.push('');
 L.push('  Largest always-on rules');
 for (const r of floorRules.slice(0, 6)) {
-  L.push(`    ${String(fmt(tok(r.bytes))).padStart(6)} tok  ${r.name}`);
+  L.push(`    ${String(fmt(tok(r.bytes))).padStart(6)} estimated tok  ${r.name}`);
 }
 L.push('');
 L.push(`  Skills over the ${fmt(SKILL_CAP)} B cap: ${report.skills.overCap} of ${report.skills.total}`);
 L.push(`    (vendored, not counted: ${[...VENDORED].join(', ')})`);
-L.push(`    ${fmt(report.skills.overCapTokens)} tokens if every one fired`);
+L.push(`    ~${fmt(report.skills.overCapTokens)} estimated tokens if every one fired`);
 L.push(`    ${report.skills.withProgressiveDisclosure} of ${report.skills.overCap} use progressive disclosure (a routing SKILL.md + references/)`);
 
 if (process.argv.includes('--full')) {
   L.push('');
   L.push('  Every over-cap skill');
   for (const s of over) {
-    L.push(`    ${String(fmt(tok(s.bytes))).padStart(6)} tok  ${s.name}${s.refs ? ` (${s.refs} refs)` : '  << no references/'}`);
+    L.push(`    ${String(fmt(tok(s.bytes))).padStart(6)} estimated tok  ${s.name}${s.refs ? ` (${s.refs} refs)` : '  << no references/'}`);
   }
 }
 
 L.push('');
+L.push('  Static sizes exclude conversation, tool results, matched scopes, extra references and caching.');
 L.push('  A gated skill is deferred, not free: when it fires it is added to the Floor.');
 L.push('  Per CLAUDE.md, anything over the cap should be a routing table plus references/.');
 process.stdout.write(L.join('\n') + '\n');

@@ -5,14 +5,16 @@ consider architecture, implementation, quality, security and testing, then imple
 and verify. Bring in the extended divisions when their expertise applies. Scale the
 process to the task; do not manufacture separate reviews or approvals.
 
-Start with `@COUNCIL_HOME@/resources/docs/CODEX.md` for the native compatibility contract
-and `@CODEX_HOME@/skills/council/SKILL.md` for resource routing. The complete source
+Use `@CODEX_HOME@/skills/council/SKILL.md` for resource routing.
+Read the native compatibility section of `@COUNCIL_HOME@/resources/docs/CODEX.md`
+only when runtime differences matter. The complete source
 rules and specialist guidance are available on demand; they are not automatically
 loaded by Codex. Do not load the entire library into context.
 
-Use native `council-*` specialist agents for concrete independent investigations or
-reviews when delegation is available and appropriate. Supply the objective, relevant
-paths, permitted edits, existing plan, and required evidence. Inherit the parent model.
+Work in the main session by default. Use at most one native `council-*` helper at a
+time for a concrete independent investigation or review that justifies another model
+request. Do not recursively delegate or start a large workflow by default. Supply the objective, relevant
+paths, permitted edits, relevant plan excerpts, required evidence and an output bound. Inherit the parent model.
 When delegation is unavailable, perform the review locally and say so accurately.
 
 Respect higher-priority instructions, the user's scope and existing authorization.
@@ -30,3 +32,10 @@ that plan. Preserve other agents' uncommitted changes.
 Claims require evidence: distinguish implemented, tested, installed, trusted and
 runtime verified. A command starting is not a passing test. Report skipped checks
 and unavailable hooks. Council hooks supplement Codex permissions, not replace them.
+
+Keep context small: search before reading, load only needed reference sections, and
+keep verbose logs in files. Reuse evidence for unchanged code. Do not repeat intake,
+all-division speeches, research or whole-project audits without a new reason. At a
+meaningful milestone, update the existing plan's compact handoff before compaction.
+Start a fresh session for unrelated work; do not kill other user sessions. Preserve
+required tests and security checks. When acceptance criteria pass, finish the task.

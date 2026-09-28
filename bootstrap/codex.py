@@ -67,11 +67,11 @@ def load_manifest(home: Path) -> dict:
     if not path.exists():
         return {'version': 1, 'files': {}}
     value = json.loads(path.read_text(encoding="utf-8"))
-    if value.get('version') != 1 or not isinstance(value.get('files'), dict):
+    if not isinstance(value, dict) or value.get('version') != 1 or not isinstance(value.get('files'), dict):
         raise ValueError('Unsupported or invalid Council manifest')
     for name, entry in value['files'].items():
         safe_target(home, name)
-        if name == MANIFEST or not isinstance(entry.get('sha256'), str):
+        if not isinstance(entry, dict) or name == MANIFEST or not isinstance(entry.get('sha256'), str):
             raise ValueError('Invalid Council manifest entry')
         if entry.get('original') is not None:
             base64.b64decode(entry['original'], validate=True)
@@ -151,21 +151,22 @@ def entrypoint(name: str, description: str, reference: Path, home: Path) -> byte
     if len(description) > 220:
         description = description[:217].rsplit(' ', 1)[0] + '...'
     return (f'---\nname: {name}\ndescription: {json.dumps(description, ensure_ascii=False)}\n---\n\n'
-            f'# {name}\n\nRead `{home.as_posix()}/council/resources/docs/CODEX.md` for the Codex\n'
-            'compatibility contract, then read the full procedure below and only the\n'
-            'supporting references relevant to the task. Imported rules do not override\n'
+            f'# {name}\n\nUse the current adaptive Council workflow. Read only relevant procedure sections\n'
+            'and supporting references. For native runtime differences, consult the compatibility\n'
+            f'section of `{home.as_posix()}/council/resources/docs/CODEX.md`. Imported rules do not override\n'
             'user scope, existing authorization, or higher-priority instructions.\n\n'
             f'[{name} procedure](<{reference.as_posix()}>)\n').encode()
 
 
 def agent_toml(name: str, description: str, body: str, home: Path) -> bytes:
-    instructions = (f'Read {home.as_posix()}/council/resources/docs/CODEX.md before using the '
-                    'imported role below. User scope, existing authorization and higher-priority '
-                    'instructions govern. Use available native tools; inherit the parent model. '
-                    'Update the existing authoritative plan, never create a competing plan. '
+    instructions = ('Follow the current adaptive Council workflow in the global instructions. '
+                    'Work only on the delegated scope; read relevant excerpts, not the entire plan or library. '
+                    'Return concise findings with evidence and stop. Do not delegate further unless explicitly requested. '
+                    'User scope, authorization and higher-priority instructions govern source procedures below. '
+                    'Inherit the parent model. Update only the existing plan when needed. '
                     'Do not execute archived Claude scripts.\n\n' + adapt_reference(body, home))
     value = '\n'.join(f'{key} = {json.dumps(val, ensure_ascii=False)}' for key, val in (
-        ('name', name), ('description', description), ('developer_instructions', instructions))) + '\n'
+        ('name', name), ('description', description[:180]), ('developer_instructions', instructions))) + '\n'
     tomllib.loads(value)
     return value.encode()
 
@@ -188,10 +189,10 @@ def original_bytes(manifest: dict, home: Path, name: str) -> bytes | None:
 
 
 def build_payload(source: Path, home: Path, manifest: dict,
-                  projects: list[str], plan: str | None) -> dict[str, bytes]:
+                  projects: list[str], plan: str | None, skill_profile: str) -> dict[str, bytes]:
     payload = {}
     names = tracked_resources(source)
-    catalog = ['# Council resource catalog', '', 'Read CODEX.md before imported procedures.', '']
+    catalog = ['# Council resource catalog', '', 'Select only the relevant procedure. Compact installations use `$council` to route here;', 'named skill entrypoints listed below are exposed by the optional full profile.', '']
     for name in names:
         raw = (source / name).read_bytes()
         if name.endswith('.md'):
@@ -221,6 +222,8 @@ def build_payload(source: Path, home: Path, manifest: dict,
     payload['council/catalog.md'] = ('\n'.join(catalog) + '\n').encode()
     payload['council/resources/docs/CODEX.md'] = (source / 'docs/CODEX.md').read_bytes()
     payload['council/hooks.py'] = (source / 'codex/hooks.py').read_bytes()
+    if skill_profile == 'compact':
+        payload = {name: value for name, value in payload.items() if not name.startswith('skills/')}
     payload['skills/council/SKILL.md'] = render((source / 'codex/SKILL.md.in').read_text(encoding="utf-8"), home).encode()
     original = original_bytes(manifest, home, 'AGENTS.md') or b''
     if BEGIN.encode() in original or END.encode() in original:
@@ -299,12 +302,15 @@ def transact(home: Path, changes: dict[str, bytes | None]) -> None:
         raise
 
 
-def install(home: Path, source: Path, projects=(), plan=None, dry_run=False) -> dict:
+def install(home: Path, source: Path, projects=(), plan=None, dry_run=False, skill_profile=None) -> dict:
     manifest = load_manifest(home)
     check_installed(home, manifest)
     if (home / 'AGENTS.override.md').exists():
         raise ValueError('AGENTS.override.md shadows AGENTS.md; reconcile the override before installation')
-    payload = build_payload(source, home, manifest, list(projects), plan)
+    skill_profile = skill_profile or manifest.get('skill_profile', 'compact')
+    if skill_profile not in ('compact', 'full'):
+        raise ValueError('Unknown skill profile')
+    payload = build_payload(source, home, manifest, list(projects), plan, skill_profile)
     records = {}
     for name, content in payload.items():
         existing = read_optional(safe_target(home, name))
@@ -317,11 +323,11 @@ def install(home: Path, source: Path, projects=(), plan=None, dry_run=False) -> 
     for name in manifest['files'].keys() - records.keys():
         changes[name] = original_bytes(manifest, home, name)
     revision = subprocess.check_output(['git', '-C', str(source), 'rev-parse', 'HEAD'], text=True).strip()
-    result = {'version': 1, 'source_revision': revision, 'files': records}
+    result = {'version': 1, 'source_revision': revision, 'skill_profile': skill_profile, 'files': records}
     changes[MANIFEST] = json_bytes(result)
     if not dry_run:
         transact(home, changes)
-    return {'files': len(records), 'source_revision': revision, 'dry_run': dry_run}
+    return {'files': len(records), 'source_revision': revision, 'skill_profile': skill_profile, 'dry_run': dry_run}
 
 
 def uninstall(home: Path, dry_run=False) -> dict:
@@ -361,6 +367,7 @@ def main() -> int:
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--project', action='append', default=[])
     parser.add_argument('--plan')
+    parser.add_argument('--skill-profile', choices=('compact', 'full'))
     args = parser.parse_args()
     home = args.home.expanduser().absolute()
     lock = home / '.council-install.lock'
@@ -373,7 +380,7 @@ def main() -> int:
             lock.mkdir()
             locked = True
         if args.action == 'install':
-            result = install(home, SOURCE, args.project, args.plan, args.dry_run)
+            result = install(home, SOURCE, args.project, args.plan, args.dry_run, args.skill_profile)
         elif args.action == 'uninstall':
             result = uninstall(home, args.dry_run)
         else:

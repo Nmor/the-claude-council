@@ -29,7 +29,7 @@ const LIMIT_BYTES = 25 * 1024;
 
 // An absolute path in prose: home-relative, or rooted at a top-level directory that holds
 // project files. Placeholders (<project>, *, {x}, $VAR) are not claims about a real file.
-const PATH = /(?:^|[\s`'"(\[<=])((?:~|\/(?:Users|home|private|opt|var|tmp|Volumes|srv|etc))\/[^\s`'"()\[\]<>,;|]+)/g;
+const PATH = /(?:^|[\s`'"(\[<=])((?:~|\/(?:Users|home|private|opt|var|tmp|Volumes|srv|etc))\/(?:<[^>\n]+>|[^\s`'"()\[\]<>,;|])+)/g;
 const PLACEHOLDER = /[<>*{}$]|\.\.\./;
 
 const PROGRESS = [

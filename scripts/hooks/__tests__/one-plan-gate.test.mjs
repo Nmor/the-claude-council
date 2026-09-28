@@ -5,7 +5,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdirSync, writeFileSync, chmodSync, existsSync, readFileSync, symlinkSync } from 'node:fs';
-import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { run, advice, said } from './helpers.mjs';
 import { memoryIndex, planWorkspace as ws } from './plan-world.mjs';
@@ -283,7 +282,7 @@ describe('one-plan-gate.js — modes and failing open', () => {
 
 describe('settings.json — the gate is wired on both paths a plan can be created by', () => {
   // A gate registered only for Write would let `cat > second.md` through, and vice versa.
-  const pre = JSON.parse(readFileSync(join(homedir(), '.claude', 'settings.json'), 'utf8')).hooks?.PreToolUse || [];
+  const pre = JSON.parse(readFileSync(new URL('../../../settings.json', import.meta.url), 'utf8')).hooks?.PreToolUse || [];
   const matchers = pre.filter((e) => (e.hooks || []).some((h) => String(h.command || '').includes(HOOK))).map((e) => e.matcher);
   test('registered for Edit|Write|MultiEdit and for Bash', () => {
     assert.deepEqual(matchers.sort(), ['Bash', 'Edit|Write|MultiEdit']);

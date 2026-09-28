@@ -33,7 +33,7 @@ def target(home, name):
 
 
 def claude_payload(home):
-    paths = ['CLAUDE.md', 'settings.json', 'scripts/token-budget.mjs']
+    paths = ['CLAUDE.md', 'settings.json', 'scripts/token-budget.mjs', 'scripts/hooks/lib/memory-lint.js']
     paths += [p.relative_to(ROOT).as_posix() for p in (ROOT / 'rules/common').glob('*.md')]
     paths += [p.relative_to(ROOT).as_posix() for p in (ROOT / 'rules-library/council-detail').glob('*.md')]
     paths += ['docs/CONTEXT.md', 'rules-library/common/agents.md',

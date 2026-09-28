@@ -17,6 +17,8 @@ demand. Codex defaults to one discoverable router with an optional full skill pr
 - Add reversible existing-install migration preserving primary models, personal
   settings and original files; optional Codex controls cap compaction and delegation.
 - Add an independent 24,576-byte eager-context regression gate and migration tests.
+- Make hook wiring tests read checkout settings instead of the operator's installation;
+  fix memory lint falsely flagging placeholder paths on clean hosts.
 - See [context controls, measurement and limitations](docs/CONTEXT.md). Instruction
   byte savings do not establish real billing savings; measure comparable sessions.
 

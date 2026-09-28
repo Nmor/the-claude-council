@@ -73,7 +73,14 @@ describe('memory-lint — a memory entry that is wrong on its face is reported',
 
   test('placeholders and fenced examples are not claims about a real file', () => {
     const body = fm('a') + 'Stored at ~/.claude/projects/<project>/memory/.\n```\ncat /tmp/example-only/file\n```\n';
-    assert.deepEqual(kinds(memory({ 'a.md': body })), []);
+    assert.deepEqual(kinds(memory({ 'a.md': body }), { home: '/tmp/nonexistent-council-home' }), []);
+  });
+
+  test('a placeholder does not hide a separate missing real path on the same line', () => {
+    const body = fm('a') + '~/.claude/projects/<project>/memory/ and /tmp/nonexistent-council-file.md';
+    const findings = lintMemory(memory({ 'a.md': body }), { home: '/tmp/nonexistent-council-home' });
+    assert.equal(findings.length, 1);
+    assert.match(findings[0].message, /nonexistent-council-file/);
   });
 
   test('an example inside an HTML comment is not a link or a claim', () => {

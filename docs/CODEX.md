@@ -79,7 +79,7 @@ Resolve the current authoritative plan from user context and the project mapping
 | Source capability | Codex adaptation |
 | --- | --- |
 | Council workflow and Floor | Concise managed `AGENTS.md` block; complete rules available on demand |
-| 118 tracked skills | Full source/reference trees in the catalog; `council-*` entrypoints in full profile |
+| 119 tracked skills | Full source/reference trees in the catalog; `council-*` entrypoints in full profile |
 | 33 command workflows | Catalog routes; full profile adds `council-command-*` entrypoints |
 | 39 specialist agents | Native TOML roles with embedded guidance and inherited parent model |
 | Claude `paths:` activation | Explicit skill/catalog selection; no claim of automatic file-trigger loading |
@@ -113,7 +113,7 @@ feedback for the actual tests, review, permissions or single-plan working agreem
 ```
 
 Compact discovery is the default: one `council` skill, the complete source catalog,
-and all 39 specialist roles. To expose all 152 skill entrypoints, pass
+and all 39 specialist roles. To expose all 153 skill entrypoints, pass
 `install --skill-profile full`. Later installs retain the selected profile; older
 installations without profile metadata migrate to compact unless full is explicit.
 Read only relevant reference sections. See [context and session controls](CONTEXT.md)

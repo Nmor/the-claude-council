@@ -39,6 +39,8 @@ def claude_payload(home):
     paths += ['docs/CONTEXT.md', 'rules-library/common/agents.md',
               'skills/council-rules/references/agent-delegation.md', 'skills/mcp-builder/SKILL.md',
               'skills/council-protocol/SKILL.md', 'skills/iterative-retrieval/SKILL.md']
+    paths += [name for name in core.tracked_resources(ROOT) if name.startswith('skills/brag/')]
+    paths += ['docs/BRAG.md']
     result = {name: (ROOT / name).read_bytes() for name in paths if name != 'settings.json'}
     settings = json.loads(target(home, 'settings.json').read_text(encoding='utf-8'))
     if not isinstance(settings, dict) or not isinstance(settings.get('env', {}), dict):
@@ -130,6 +132,9 @@ def _apply(home, kind, dry_run=False, restore=False):
         entries = {}
         for name, content in payload.items():
             path = target(home, name)
+            if (name.startswith('skills/brag/') and name not in old['files'] and
+                    path.exists() and path.read_bytes() != content):
+                raise ValueError(f'Unmanaged BRAG file collision: {path}')
             original = old['files'].get(name, {}).get('original') if name in old['files'] else (
                 base64.b64encode(path.read_bytes()).decode() if path.exists() else None)
             entries[name] = {'sha256': hashlib.sha256(content).hexdigest(), 'original': original}

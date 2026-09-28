@@ -60,10 +60,21 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(actual['env']['CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH'], '1')
         self.assertEqual(installed['plans/existing.md'], self.before['plans/existing.md'])
         self.assertTrue((self.home / 'rules-library/council-detail/council-doctrine.md').is_file())
+        self.assertTrue((self.home / 'skills/brag/LICENSE').is_file())
+        self.assertTrue((self.home / 'skills/brag/scripts/brag.py').is_file())
         context.apply(self.home, 'claude')
         self.assertEqual(snapshot(self.home), installed)
         context.apply(self.home, 'claude', restore=True)
         self.assertEqual(snapshot(self.home), self.before)
+
+    def test_existing_brag_skill_collision_preserves_everything(self):
+        skill = self.home / 'skills/brag/SKILL.md'
+        skill.parent.mkdir(parents=True)
+        skill.write_text('Independent customized BRAG skill')
+        before = snapshot(self.home)
+        with self.assertRaisesRegex(ValueError, 'collision'):
+            context.apply(self.home, 'claude')
+        self.assertEqual(snapshot(self.home), before)
 
     def test_codex_config_parse_preservation_and_restore(self):
         context.apply(self.home, 'codex')

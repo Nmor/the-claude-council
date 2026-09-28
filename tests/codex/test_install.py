@@ -91,7 +91,7 @@ class InstallTests(unittest.TestCase):
     def test_changed_files_refuse_upgrade_and_uninstall(self):
         self.install()
         path = self.home / 'agents/council-planner.toml'
-        path.write_text(path.read_text(encoding="utf-8") + '# User customization\n')
+        path.write_text(path.read_text(encoding="utf-8") + '# User customization\n', encoding='utf-8')
         before = snapshot(self.home)
         with self.assertRaisesRegex(ValueError, 'changed'):
             self.install()

@@ -7,6 +7,13 @@ and this project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+**BRAG for Claude and Codex (2026-09-28).** Add an on-demand launch-video skill adapted
+from latent-spaces/brag at a pinned commit with MIT attribution. The lean route preserves
+the user's model; explicit full/voice requests use Hyperframes. Creative storyboards
+stay separate from the existing implementation plan, and output remains local.
+Dependency and media checks distinguish installed tools from verified artifacts.
+See [BRAG setup and usage](docs/BRAG.md); upstream music assets are not redistributed.
+
 **Lower default context and delegation cost (2026-09-28).** The eager Claude contract
 is reduced from 297,740 to 19,428 bytes; all detailed standards remain available on
 demand. Codex defaults to one discoverable router with an optional full skill profile.
@@ -23,7 +30,7 @@ demand. Codex defaults to one discoverable router with an optional full skill pr
   byte savings do not establish real billing savings; measure comparable sessions.
 
 **Native Codex adaptation (2026-09-28).** A separate Python installer adds Council
-instructions, compact routing (optional 152 skill entrypoints), 39 native specialist roles and five compatible
+instructions, compact routing (optional 153 skill entrypoints), 39 native specialist roles and five compatible
 hook registrations without replacing existing Codex configuration or changing Claude.
 
 - Transactional install, repeat-install, integrity verification and removal preserve

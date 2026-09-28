@@ -325,3 +325,6 @@ If a symptom isn't listed, open an issue with:
 - Windows-native: output of `.\bootstrap\verify.ps1 -Verbose` + `$PSVersionTable.PSVersion`
 - Your OS + version (`uname -a` on Unix; `[System.Environment]::OSVersion` on Windows)
 - The exact command that failed
+
+For optional launch-video creation, see [BRAG setup](docs/BRAG.md). The skill ships
+with Council; FFmpeg and the optional Hyperframes runtime are separate dependencies.

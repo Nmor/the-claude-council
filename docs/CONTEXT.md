@@ -60,7 +60,7 @@ the migration replaces it with the actual boolean settings key.
 
 The native installer now defaults to compact skill discovery: one `council` router,
 all source skills/commands/references in the catalog, and all 39 native specialist
-roles. This keeps the full library accessible without advertising 152 skill entries
+roles. This keeps the full library accessible without advertising 153 skill entries
 on every request. Full discovery remains an explicit option:
 
 ```bash

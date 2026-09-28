@@ -22,7 +22,7 @@
 
 *Drop-in `~/.claude/` config — runs on any machine, any project, every IDE.*
 
-[![Skills](https://img.shields.io/badge/skills-118-2ea043?style=for-the-badge)](docs/SKILLS.md)
+[![Skills](https://img.shields.io/badge/skills-119-2ea043?style=for-the-badge)](docs/SKILLS.md)
 [![Rules](https://img.shields.io/badge/rules-24%20Floor%20%2B%20160%20Library-1f6feb?style=for-the-badge)](docs/RULES.md)
 [![Agents](https://img.shields.io/badge/agents-39-8957e5?style=for-the-badge)](docs/AGENTS.md)
 [![Council](https://img.shields.io/badge/divisions-5%20core%20%2B%2011%20extended-dc7800?style=for-the-badge)](docs/COUNCIL.md)
@@ -72,7 +72,7 @@ strategy, people, ESG, ethics, comms, plus the five core technical
 divisions.
 
 The repo includes **26 short Floor rules**, **187 on-demand Library rules**,
-**118 skills**, **39 specialist agents** and **33 command workflows**. The default
+**119 skills**, **39 specialist agents** and **33 command workflows**. The default
 workflow runs in the main session and uses at most one justified helper at a time.
 Full standards remain available when relevant.
 
@@ -81,6 +81,8 @@ down from 297,740 source bytes before this revision. These are instruction-size
 measurements, not billed usage. A fixed 24,576-byte CI cap prevents regression.
 Codex defaults to one discoverable Council router with the full library in its catalog.
 See [context controls and existing-install migration](docs/CONTEXT.md).
+For requested launch videos, [BRAG](docs/BRAG.md) adds a lean creative workflow and an
+optional Hyperframes route for Claude and Codex, with local media verification.
 
 > **Two hazards that keep that number honest.** Both were real
 > regressions in this repo, and both are invisible until measured.
@@ -247,7 +249,7 @@ system improves itself with every interaction.
 | **Doctrine** | `CLAUDE.md` | 1 | Concise working contract — loaded every session |
 | **Floor rules** | `rules/common/` | 26 | Always-loaded; Council protocol, intake, verification, plan structure, project memory, silent-failure / wiring / no-bloat / payload-validation / phase-retrospective enforcement |
 | **Library rules** | `rules-library/` | 187 | On-demand standards, including 27 preserved detailed Council references |
-| **Skills** | `skills/` | 118 | Guidance selected by description, task relevance or explicit invocation |
+| **Skills** | `skills/` | 119 | Guidance selected by description, task relevance or explicit invocation |
 | **Agents** | `agents/` | 39 | Specialist agents organised into the 16 Council divisions |
 | **Commands** | `commands/` | 33 | Slash commands — `/learn`, `/evolve`, `/instinct-status`, `/verify`, and more |
 | **Hooks** | `scripts/hooks/` | 25 | PreToolUse + PostToolUse + UserPromptSubmit + PreCompact + SessionStart/End — mechanical enforcement (no-discards, governance-sweep, pre-push gate, Council pre-compact brief) |
@@ -487,7 +489,7 @@ system improves itself with every interaction.
 | **Doctrine** | `CLAUDE.md` | 1 | Concise working contract — loaded every session |
 | **Floor rules** | `rules/common/` | 26 | Always-loaded; Council protocol, intake, verification, plan structure, project memory, silent-failure / wiring / no-bloat / payload-validation / phase-retrospective enforcement |
 | **Library rules** | `rules-library/` | 187 | On-demand standards, including 27 preserved detailed Council references |
-| **Skills** | `skills/` | 118 | Guidance selected by description, task relevance or explicit invocation |
+| **Skills** | `skills/` | 119 | Guidance selected by description, task relevance or explicit invocation |
 | **Agents** | `agents/` | 39 | Specialist agents organised into the 16 Council divisions |
 | **Commands** | `commands/` | 33 | Slash commands — `/learn`, `/evolve`, `/instinct-status`, `/verify`, and more |
 | **Hooks** | `scripts/hooks/` | 25 | PreToolUse + PostToolUse + UserPromptSubmit + PreCompact + SessionStart/End — mechanical enforcement (no-discards, governance-sweep, pre-push gate, Council pre-compact brief) |
